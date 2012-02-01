@@ -32,4 +32,4 @@ All of the shortcuts with "Shift" key pressed cycles backward.
 Hit "Esc" during cycling to cancel.
 Hit "q"  during cycling to close highlighted window.
 
-You can change the background colour and gradient by adjusting the corresponding values in the stylesheet.css file.
+You can change the background color and gradient by adjusting the corresponding values in the stylesheet.css file.
