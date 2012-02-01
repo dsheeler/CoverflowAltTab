@@ -12,7 +12,7 @@ This is only a 1:1 port of the CoverflowAltTab extension for Gnome-Shell from ht
 Installation
 ================
 
-	1) Copy the folder CoverflowAltTab@dmo60.de to "~/.local/share/cinnamon/extensions/".
+	1) Copy the folder "CoverflowAltTab@dmo60.de" to "~/.local/share/cinnamon/extensions/".
 	
 	2) Enable the extension in cinnamon settings. (Eventually you have to restart cinnamon: Press Alt+F2, type 'r' and enter)
 
