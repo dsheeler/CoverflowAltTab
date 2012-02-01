@@ -94,7 +94,7 @@ Switcher.prototype = {
 		Main.uiGroup.add_actor(this.actor);
 	},
 
-	show: function(shellwm, binding, mask, window, backwords) {
+	show: function(shellwm, binding, mask, window, backwards) {
 		if (!Main.pushModal(this.actor)) {
 			return false;
 		}
@@ -232,8 +232,8 @@ Switcher.prototype = {
 				   action == Meta.KeyBindingAction.SWITCH_WINDOWS ||
 				   action == Meta.KeyBindingAction.SWITCH_PANELS) {
 			backwards ? this._previous() : this._next();
-		} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWORD ||
-				   action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWORD) {
+		} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
+				   action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD) {
 			this._previous();
 		}
 

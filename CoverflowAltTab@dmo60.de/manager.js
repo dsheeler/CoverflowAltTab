@@ -32,7 +32,7 @@ Manager.prototype = {
 		win.delete(global.get_current_time());
 	},
 
-	_startWindowSwitcher: function (shellwm, binding, mask, window, backwords) {
+	_startWindowSwitcher: function (shellwm, binding, mask, window, backwards) {
 		let windows = [];
 		let actions = {};
 		let currentWorkspace = global.screen.get_active_workspace();
@@ -89,7 +89,7 @@ Manager.prototype = {
 			let switcher = new Switcher.Switcher(windows, actions);
 			switcher._currentIndex = currentIndex;
 
-			if (!switcher.show(shellwm, binding, mask, window, backwords)) {
+			if (!switcher.show(shellwm, binding, mask, window, backwards)) {
 				switcher.destroy();
 			}
 		}
