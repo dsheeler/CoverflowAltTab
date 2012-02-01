@@ -5,7 +5,7 @@ CoverflowAltTab is an extension for Cinnamon (http://cinnamon.linuxmint.com/).
 
 It let's you Alt-Tab through your windows in a cover-flow manner.
 
-This is only a 1:1 port of the CoverflowAltTab extension for Gnome-Shell from http://code.google.com/p/gnome-shell-extensions-coverflowalttab/, so all credits to the original author!
+This is only a 1:1 port of the CoverflowAltTab extension for Gnome-Shell by palatis from http://code.google.com/p/gnome-shell-extensions-coverflowalttab/, so all credits to the original author!
 
  
 
@@ -31,3 +31,5 @@ All of the shortcuts with "Shift" key pressed cycles backward.
 
 Hit "Esc" during cycling to cancel.
 Hit "q"  during cycling to close highlighted window.
+
+You can change the background colour and gradient by adjusting the corresponding values in the stylesheet.css file.
