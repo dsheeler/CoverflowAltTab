@@ -3,5 +3,5 @@
 	"uuid": "CoverflowAltTab@dmo60.de",
 	"name": "Coverflow Alt-Tab",
 	"description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
-	"url": "http://code.google.com/p/gnome-shell-extensions-coverflowalttab/"
+	"url": "https://github.com/dmo60/CoverflowAltTab"
 }
