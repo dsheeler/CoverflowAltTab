@@ -32,4 +32,11 @@ All of the shortcuts with "Shift" key pressed cycles backward.
 Hit "Esc" during cycling to cancel.
 Hit "q"  during cycling to close highlighted window.
 
+
+
+Customization
+===============
+
 You can change the background color and gradient by adjusting the corresponding values in the stylesheet.css file.
+For those who want, it's also possible to change the position of the window title box (top or bottom), the icon size and spacing and the vertical offset.
+To do so, open the 'switcher.js' file within the CoverflowAltTab extensions directory and modify the corresponding lines (they are highlighted). 
