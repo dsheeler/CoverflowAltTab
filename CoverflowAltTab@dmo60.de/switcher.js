@@ -17,6 +17,30 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 
 let WINDOWPREVIEW_SCALE = 0.5;
+let POSITION_TOP = 1;
+let POSITION_BOTTOM = 7;
+
+
+/* SET POSITION OF ICON AND WINDOW TITLE HERE:
+ * possible values are: POSITION_TOP or POSITION_BOTTOM
+ * -------------------------------------------------------- */
+let ICON_TITLE_POSITION = POSITION_BOTTOM;
+/* -------------------------------------------------------- */
+
+
+/* SET ICON SIZE AND SPACING BETWEEN ICON AND WINDOW TITLE HERE:
+ * -------------------------------------------------------- */
+let ICON_SIZE = 64;  // default: 64
+let ICON_TITLE_SPACING = 10;  // default: 10
+/* -------------------------------------------------------- */
+
+
+/* SET OFFSET HERE:
+ * positive vlaue means moving everything up, negative down. 
+ * -------------------------------------------------------- */
+let OFFSET = 0;  // default: 0
+/* -------------------------------------------------------- */
+
 
 function Switcher(windows, actions) {
 	this._init(windows, actions);
@@ -26,6 +50,7 @@ Switcher.prototype = {
 	_init: function(windows, actions) {
 		this._windows = windows;
 		this._windowTitle = null;
+		this._icon = null;
 		this._modifierMask = null;
 		this._currentIndex = 0;
 		this._actions = actions;
@@ -84,7 +109,7 @@ Switcher.prototype = {
 				clone.target_height = height * scale;
 				clone.target_width_side = width * scale * 0.5;
 				clone.target_height_side = height * scale * 0.7;
-
+								
 				this._previews.push(clone);
 				this._previewLayer.add_actor(clone);
 			}
@@ -164,13 +189,50 @@ Switcher.prototype = {
 		this._windowTitle.add_style_class_name('run-dialog');
 		this._windowTitle.add_style_class_name('coverflow-window-title-label');
 		this._background.add_actor(this._windowTitle);
-		this._windowTitle.x = (monitor.width - this._windowTitle.width) / 2;
-		this._windowTitle.y = monitor.height - this._windowTitle.height - 100;
+		this._windowTitle.x = (monitor.width - this._windowTitle.width + ICON_SIZE + ICON_TITLE_SPACING) / 2;
+		this._windowTitle.y = monitor.height * ICON_TITLE_POSITION / 8 - this._windowTitle.height / 2 - OFFSET;
 		Tweener.addTween(this._windowTitle, {
 			opacity: 255,
 			time: 0.25,
 			transition: 'easeOutQuad',
 		});
+		
+		// window icon
+		if (this._applicationIconBox) {
+			Tweener.addTween(this._applicationIconBox, {
+				opacity: 0,
+				time: 0.25,
+				transition: 'easeOutQuad',
+				onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox),
+			});
+		}
+		let tracker = Shell.WindowTracker.get_default();
+        let app = tracker.get_window_app(this._windows[this._currentIndex]); 
+		this._icon = null;
+        if (app) {
+            this._icon = app.create_icon_texture(ICON_SIZE);
+        }
+        if (!this._icon) {
+            this._icon = new St.Icon({ icon_name: 'applications-other',
+                                 icon_type: St.IconType.FULLCOLOR,
+                                 icon_size: ICON_SIZE });
+        }
+        this._icon.width = ICON_SIZE;
+        this._icon.height = ICON_SIZE;
+        
+        this._applicationIconBox = new St.Bin({ style_class: 'window-iconbox' });
+        this._applicationIconBox.set_opacity(255);
+        this._applicationIconBox.add_actor(this._icon);
+        
+        this._background.add_actor(this._applicationIconBox);
+		this._applicationIconBox.x = this._windowTitle.x - this._applicationIconBox.width - ICON_TITLE_SPACING;
+		this._applicationIconBox.y = monitor.height * ICON_TITLE_POSITION / 8 - this._applicationIconBox.height / 2 - OFFSET;
+		Tweener.addTween(this._applicationIconBox, {
+			opacity: 255,
+			time: 0.25,
+			transition: 'easeOutQuad',
+		});
+		
 
 		// preview windows
 		for (let i in this._previews) {
@@ -181,7 +243,7 @@ Switcher.prototype = {
 				Tweener.addTween(preview, {
 					opacity: 255,
 					x: (monitor.width - preview.target_width) / 2,
-					y: (monitor.height - preview.target_height) / 2,
+					y: (monitor.height - preview.target_height) / 2 - OFFSET,
 					width: preview.target_width,
 					height: preview.target_height,
 					rotation_angle_y: 0.0,
@@ -193,7 +255,7 @@ Switcher.prototype = {
 				Tweener.addTween(preview, {
 					opacity: 255,
 					x: monitor.width * 0.2 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
-					y: (monitor.height - preview.target_height_side) / 2,
+					y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
 					width: preview.target_width_side,
 					height: preview.target_height_side,
 					rotation_angle_y: 60.0,
@@ -205,7 +267,7 @@ Switcher.prototype = {
 				Tweener.addTween(preview, {
 					opacity: 255,
 					x: monitor.width * 0.8 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
-					y: (monitor.height - preview.target_height_side) / 2,
+					y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
 					width: preview.target_width_side,
 					height: preview.target_height_side,
 					rotation_angle_y: -60.0,
@@ -308,6 +370,8 @@ Switcher.prototype = {
 
 		this._windows = null;
 		this._windowTitle = null;
+		this._icon = null;
+		this._applicationIconBox = null;
 		this._previews = null;
 		this._previewLayer = null;
 	},
