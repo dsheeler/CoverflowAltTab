@@ -35,8 +35,9 @@ let ICON_TITLE_SPACING = 10;  // default: 10
 /* -------------------------------------------------------- */
 
 
-/* SET OFFSET HERE:
- * positive vlaue means moving everything up, negative down. 
+/* SET VERTICAL OFFSET HERE:
+ * Positive vlaue means moving everything up, negative down.
+ * Default means previews are located in the middle of the screen.
  * -------------------------------------------------------- */
 let OFFSET = 0;  // default: 0
 /* -------------------------------------------------------- */
