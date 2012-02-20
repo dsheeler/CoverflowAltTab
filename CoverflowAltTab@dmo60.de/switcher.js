@@ -194,8 +194,8 @@ Switcher.prototype = {
 			this._windowTitle.add_style_class_name('run-dialog');
 			this._windowTitle.add_style_class_name('coverflow-window-title-label');
 			this._background.add_actor(this._windowTitle);
-			this._windowTitle.x = (monitor.width - this._windowTitle.width + ICON_SIZE + ICON_TITLE_SPACING) / 2;
-			this._windowTitle.y = monitor.height * ICON_TITLE_POSITION / 8 - this._windowTitle.height / 2 - OFFSET;
+			this._windowTitle.x = Math.round((monitor.width - this._windowTitle.width + ICON_SIZE + ICON_TITLE_SPACING) / 2);
+			this._windowTitle.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - this._windowTitle.height / 2 - OFFSET);
 			Tweener.addTween(this._windowTitle, {
 				opacity: 255,
 				time: 0.25,
@@ -230,8 +230,8 @@ Switcher.prototype = {
 			this._applicationIconBox.add_actor(this._icon);
 
 			this._background.add_actor(this._applicationIconBox);
-			this._applicationIconBox.x = this._windowTitle.x - this._applicationIconBox.width - ICON_TITLE_SPACING;
-			this._applicationIconBox.y = monitor.height * ICON_TITLE_POSITION / 8 - this._applicationIconBox.height / 2 - OFFSET;
+			this._applicationIconBox.x = Math.round(this._windowTitle.x - this._applicationIconBox.width - ICON_TITLE_SPACING);
+			this._applicationIconBox.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - this._applicationIconBox.height / 2 - OFFSET);
 			Tweener.addTween(this._applicationIconBox, {
 				opacity: 255,
 				time: 0.25,
