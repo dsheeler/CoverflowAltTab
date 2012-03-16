@@ -15,6 +15,7 @@ const Shell = imports.gi.Cinnamon;
 const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
+const Pango = imports.gi.Pango;
 
 let WINDOWPREVIEW_SCALE = 0.5;
 let POSITION_TOP = 1;
@@ -45,6 +46,8 @@ let ICON_TITLE_SPACING = 10;  // default: 10
  */
 let OFFSET = 0;  // default: 0
 /* -------------------------------------------------------- */
+
+
 
 
 function Switcher(windows, actions) {
@@ -191,6 +194,13 @@ Switcher.prototype = {
 				text: this._windows[this._currentIndex].get_title(),
 				opacity: 0,
 			});
+			
+			// ellipsize if title is too long
+			this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+			if (this._windowTitle.clutter_text.width > (monitor.width - 200)) {
+				this._windowTitle.clutter_text.width = monitor.width - 200;
+			}
+			
 			this._windowTitle.add_style_class_name('run-dialog');
 			this._windowTitle.add_style_class_name('coverflow-window-title-label');
 			this._background.add_actor(this._windowTitle);
