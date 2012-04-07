@@ -17,6 +17,9 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
+//const CoverflowAltTab = imports.ui.extensionSystem.extensions["PrettyAltTab@dmo60.de"];
+//const Manager = CoverflowAltTab.manager;
+
 let WINDOWPREVIEW_SCALE = 0.5;
 let POSITION_TOP = 1;
 let POSITION_BOTTOM = 7;
@@ -63,7 +66,8 @@ Switcher.prototype = {
 			this._currentIndex = 0;
 			this._actions = actions;
 			this._haveModal = false;
-
+			this._tracker = Shell.WindowTracker.get_default();
+			
 			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true });
 
@@ -108,16 +112,33 @@ Switcher.prototype = {
 						opacity: (metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
 								source: texture,
 								reactive: false,
-								rotation_center_y: new Clutter.Vertex({ x: width * scale / 2, y: 0.0, z: 0.0 }),
-								x: compositor.x,
-								y: compositor.y,
+								//rotation_center_y: new Clutter.Vertex({ x: width * scale / 2, y: 0.0, z: 0.0 }),
+								anchor_gravity: Clutter.Gravity.CENTER,
+								x: compositor.x + compositor.width / 2,
+								y: compositor.y + compositor.height / 2,
 					});
-
-					clone.target_width = width * scale;
-					clone.target_height = height * scale;
-					clone.target_width_side = width * scale * 0.5;
-					clone.target_height_side = height * scale * 0.7;
-
+										
+					clone.target_width = Math.round(width * scale);
+					clone.target_height = Math.round(height * scale);
+//					clone.target_width_side = Math.round(width * scale * 0.9);
+//					clone.target_height_side = Math.round(height * scale * 0.9);
+					
+//					let frame = new St.Bin({
+//						visible: true, 
+//						x: clone.x - 10,
+//						y: clone.y - 10,
+//						width: clone.width + 20,
+//						height: clone.height + 20,
+//					});
+//					
+//					frame.target_width = width * scale;
+//					frame.target_height = height * scale;
+//					frame.target_width_side = width * scale * 0.5;
+//					frame.target_height_side = height * scale * 0.7;
+//					
+//					frame.add_actor(clone);
+//					frame.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+					
 					this._previews.push(clone);
 					this._previewLayer.add_actor(clone);
 				}
@@ -125,6 +146,20 @@ Switcher.prototype = {
 
 			this.actor.add_actor(this._previewLayer);
 			Main.uiGroup.add_actor(this.actor);
+			
+//			// shade effect
+//			try {
+//				let color = new Clutter.Color();
+//				color.red = 0;
+//				color.green = 0;
+//				color.blue = 0;
+//				color.alpha = 255;
+//				this._shade_effect = new Clutter.ColorizeEffect();
+//				this._shade_effect.set_tint(color);
+//			} catch (e) {
+//				global.log(e);
+//			}
+			
 		},
 
 		show: function(shellwm, binding, mask, window, backwards) {
@@ -178,6 +213,7 @@ Switcher.prototype = {
 		},
 
 		_updateCoverflow: function() {
+//			global.log("nach update " + global.get_window_actors().length);
 			let monitor = Main.layoutManager.primaryMonitor;
 
 			// window title label
@@ -195,6 +231,8 @@ Switcher.prototype = {
 				opacity: 0,
 			});
 			
+			this._windowTitle.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+			
 			// ellipsize if title is too long
 			this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 			if (this._windowTitle.clutter_text.width > (monitor.width - 200)) {
@@ -204,8 +242,8 @@ Switcher.prototype = {
 			this._windowTitle.add_style_class_name('run-dialog');
 			this._windowTitle.add_style_class_name('coverflow-window-title-label');
 			this._background.add_actor(this._windowTitle);
-			this._windowTitle.x = Math.round((monitor.width - this._windowTitle.width + ICON_SIZE + ICON_TITLE_SPACING) / 2);
-			this._windowTitle.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - this._windowTitle.height / 2 - OFFSET);
+			this._windowTitle.x = Math.round((monitor.width + ICON_SIZE + ICON_TITLE_SPACING) / 2);
+			this._windowTitle.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - OFFSET);
 			Tweener.addTween(this._windowTitle, {
 				opacity: 255,
 				time: 0.25,
@@ -221,8 +259,8 @@ Switcher.prototype = {
 					onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox),
 				});
 			}
-			let tracker = Shell.WindowTracker.get_default();
-			let app = tracker.get_window_app(this._windows[this._currentIndex]); 
+			
+			let app = this._tracker.get_window_app(this._windows[this._currentIndex]); 
 			this._icon = null;
 			if (app) {
 				this._icon = app.create_icon_texture(ICON_SIZE);
@@ -238,10 +276,11 @@ Switcher.prototype = {
 			this._applicationIconBox = new St.Bin({ style_class: 'window-iconbox' });
 			this._applicationIconBox.set_opacity(255);
 			this._applicationIconBox.add_actor(this._icon);
+			this._applicationIconBox.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
 
 			this._background.add_actor(this._applicationIconBox);
-			this._applicationIconBox.x = Math.round(this._windowTitle.x - this._applicationIconBox.width - ICON_TITLE_SPACING);
-			this._applicationIconBox.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - this._applicationIconBox.height / 2 - OFFSET);
+			this._applicationIconBox.x = Math.round(this._windowTitle.x - (this._windowTitle.width + this._applicationIconBox.width) / 2 - ICON_TITLE_SPACING);
+			this._applicationIconBox.y = this._windowTitle.y;
 			Tweener.addTween(this._applicationIconBox, {
 				opacity: 255,
 				time: 0.25,
@@ -254,11 +293,12 @@ Switcher.prototype = {
 				let preview = this._previews[i];
 
 				if (i == this._currentIndex) {
+					preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
 					preview.raise_top();
 					Tweener.addTween(preview, {
 						opacity: 255,
-						x: (monitor.width - preview.target_width) / 2,
-						y: (monitor.height - preview.target_height) / 2 - OFFSET,
+						x: (monitor.width) / 2,
+						y: (monitor.height) / 2 - OFFSET,
 						width: preview.target_width,
 						height: preview.target_height,
 						rotation_angle_y: 0.0,
@@ -266,26 +306,46 @@ Switcher.prototype = {
 						transition: 'easeOutQuad',
 					});
 				} else if (i < this._currentIndex) {
+					preview.move_anchor_point_from_gravity(Clutter.Gravity.WEST);
 					preview.raise_top();
 					Tweener.addTween(preview, {
+//						opacity: 255,
+//						x: monitor.width * 0.2 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
+//						y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
+//						width: preview.target_width_side,
+//						height: preview.target_height_side,
+//						rotation_angle_y: 60.0,
+//						time: 0.25,
+//						transition: 'easeOutQuad',
 						opacity: 255,
-						x: monitor.width * 0.2 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
-						y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
-						width: preview.target_width_side,
-						height: preview.target_height_side,
+						x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
+						y: monitor.height / 2 - OFFSET,
+						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: 60.0,
+//						effect: this._shade_effect,
 						time: 0.25,
 						transition: 'easeOutQuad',
 					});
 				} else if (i > this._currentIndex) {
+					preview.move_anchor_point_from_gravity(Clutter.Gravity.EAST);
 					preview.lower_bottom();
 					Tweener.addTween(preview, {
+//						opacity: 255,
+//						x: monitor.width * 0.8 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
+//						y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
+//						width: preview.target_width_side,
+//						height: preview.target_height_side,
+//						rotation_angle_y: -60.0,
+//						time: 0.25,
+//						transition: 'easeOutQuad',
 						opacity: 255,
-						x: monitor.width * 0.8 - preview.target_width_side / 2 + 25 * (i - this._currentIndex),
-						y: (monitor.height - preview.target_height_side) / 2 - OFFSET,
-						width: preview.target_width_side,
-						height: preview.target_height_side,
+						x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
+						y: monitor.height / 2 - OFFSET,
+						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: -60.0,
+//						effect: this._shade_effect,
 						time: 0.25,
 						transition: 'easeOutQuad',
 					});
@@ -304,7 +364,22 @@ Switcher.prototype = {
 				this.destroy();
 			} else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
-				this.destroy();
+				if (this._windows.length == 1) {
+					this.destroy();
+				} else {
+					this._windows.splice(this._currentIndex, 1);
+					this._previews[this._currentIndex].destroy();
+					this._previews.splice(this._currentIndex, 1);
+					this._currentIndex = this._currentIndex % this._windows.length;
+					this._updateCoverflow();
+//					// check if window was removed successfully
+//					if (global.get_window_actors().length > this._windows.length + this._windows_skipped + 1) {
+//						this.destroy();
+//					} else {
+////						global.log("nach q " + global.get_window_actors().length);
+//						this._updateCoverflow();
+//					}
+				}
 			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
 					action == Meta.KeyBindingAction.SWITCH_WINDOWS ||
 					action == Meta.KeyBindingAction.SWITCH_PANELS) {
@@ -356,13 +431,16 @@ Switcher.prototype = {
 				let preview = this._previews[i];
 				let metaWin = this._windows[i];
 				let compositor = this._windows[i].get_compositor_private();
-
+				
+				preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+				
 				Tweener.addTween(preview, {
-					opacity: (metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-							x: compositor.x,
-							y: compositor.y,
-							width: compositor.width,
-							height: compositor.height,
+							opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
+									  || metaWin.is_on_all_workspaces()) ? 255 : 0,
+							x: compositor.x + compositor.width / 2,
+							y: compositor.y + compositor.height / 2,
+							width: (metaWin.minimized) ? 0 : compositor.width,
+							height: (metaWin.minimized) ? 0 : compositor.height,
 							rotation_angle_y: 0.0,
 							time: 0.25,
 							transition: 'easeOutQuad',
