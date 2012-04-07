@@ -1,10 +1,10 @@
 .coverflow-switcher {
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
 .coverflow-switcher-gradient {
 	background-gradient-start: rgba(0, 0, 0, 0.0);
-	background-gradient-end: rgba(0, 0, 0, 0.3);
+	background-gradient-end: rgba(0, 0, 0, 0.7);
 	background-gradient-direction: vertical;
 }
 
