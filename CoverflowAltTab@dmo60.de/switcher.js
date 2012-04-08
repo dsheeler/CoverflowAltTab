@@ -10,15 +10,13 @@ const Lang = imports.lang;
 const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
-const Shell = imports.gi.Cinnamon;
+const Shell = imports.gi.Shell;
 
 const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
-//const CoverflowAltTab = imports.ui.extensionSystem.extensions["PrettyAltTab@dmo60.de"];
-//const Manager = CoverflowAltTab.manager;
 
 let WINDOWPREVIEW_SCALE = 0.5;
 let POSITION_TOP = 1;
