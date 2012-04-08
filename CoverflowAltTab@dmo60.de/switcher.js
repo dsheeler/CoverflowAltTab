@@ -117,6 +117,8 @@ Switcher.prototype = {
 										
 					clone.target_width = Math.round(width * scale);
 					clone.target_height = Math.round(height * scale);
+					clone.target_width_side = clone.target_width * 2/3;
+					clone.target_height_side = clone.target_height;
 					
 					this._previews.push(clone);
 					this._previewLayer.add_actor(clone);
@@ -310,8 +312,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: 60.0,
 //						effect: this._shade_effect,
 						time: animation_time,
@@ -325,8 +327,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: -60.0,
 //						effect: this._shade_effect,
 						time: animation_time,
