@@ -77,15 +77,16 @@ Switcher.prototype = {
 				y: 0,
 				opacity: 0,
 				width: monitor.width,
-				height: monitor.height,
+				height: monitor.height
 			});
+			// background gradient
 			this._background.add_actor(new St.Bin({
 				style_class: 'coverflow-switcher-gradient',
 				visible: true,
 				x: 0,
 				y: monitor.height / 2,
 				width: monitor.width,
-				height: monitor.height / 2,
+				height: monitor.height / 2
 			}));
 			this.actor.add_actor(this._background);
 
@@ -93,7 +94,7 @@ Switcher.prototype = {
 			let currentWorkspace = global.screen.get_active_workspace();
 			this._previewLayer = new St.Group({ visible: true });
 			this._previews = [];
-			for (let i in windows) {
+			for (i in windows) {
 				let metaWin = windows[i];
 				let compositor = windows[i].get_compositor_private();
 				if (compositor) {
@@ -107,16 +108,18 @@ Switcher.prototype = {
 					}
 
 					let clone = new Clutter.Clone({
-						opacity: (metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-								source: texture,
-								reactive: false,
-								anchor_gravity: Clutter.Gravity.CENTER,
-								x: compositor.x + compositor.width / 2,
-								y: compositor.y + compositor.height / 2,
+						opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
+						source: texture,
+						reactive: false,
+						anchor_gravity: Clutter.Gravity.CENTER,
+						x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
+						y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2
 					});
 										
 					clone.target_width = Math.round(width * scale);
 					clone.target_height = Math.round(height * scale);
+					clone.target_width_side = clone.target_width * 2/3;
+					clone.target_height_side = clone.target_height;
 					
 					this._previews.push(clone);
 					this._previewLayer.add_actor(clone);
@@ -125,20 +128,6 @@ Switcher.prototype = {
 
 			this.actor.add_actor(this._previewLayer);
 			Main.uiGroup.add_actor(this.actor);
-			
-//			// shade effect
-//			try {
-//				let color = new Clutter.Color();
-//				color.red = 0;
-//				color.green = 0;
-//				color.blue = 0;
-//				color.alpha = 255;
-//				this._shade_effect = new Clutter.ColorizeEffect();
-//				this._shade_effect.set_tint(color);
-//			} catch (e) {
-//				global.log(e);
-//			}
-			
 		},
 
 		show: function(shellwm, binding, mask, window, backwards) {
@@ -155,7 +144,7 @@ Switcher.prototype = {
 
 			// hide all window actors
 			let windows = global.get_window_actors();
-			for (let i in windows) {
+			for (i in windows) {
 				windows[i].hide();
 			}
 
@@ -180,23 +169,32 @@ Switcher.prototype = {
 
 			return true;
 		},
-
+		
+		// If next() is called on the last window, we want to
+		// trigger a loop animation: calling previous() until we
+		// are back on the first window and accelerate animations.
+		// If there are only two windows, we don't need a loop, we
+		// can do a simple previous().
+		//
+		// @loop: indicating whether we're currently doing a loop
 		_next: function(loop) {
-			if (this._currentIndex == this._windows.length -1) {
-				this._previous(true);
+			if (this._currentIndex == this._windows.length - 1) {
+				this._previous((this._windows.length > 2) ? true : false);
 			} else {
 				this._currentIndex = this._currentIndex + 1;
-				this._updateCoverflow(loop, "next");
+				this._updateCoverflow((this._currentIndex == this._windows.length - 1) ? false : loop, "next");
 			}
 			
 		},
-
+		
+		// The same here like in next(),
+		// but of course the other way around
 		_previous: function(loop) {
 			if (this._currentIndex == 0) {
-				this._next(true);
+				this._next((this._windows.length > 2) ? true : false);
 			} else {
 				this._currentIndex = this._currentIndex - 1;
-				this._updateCoverflow(loop, "previous");
+				this._updateCoverflow((this._currentIndex == 0) ? false : loop, "previous");
 			}
 			
 		},
@@ -204,7 +202,8 @@ Switcher.prototype = {
 		_updateCoverflow: function(loop, direction) {
 			if (loop == undefined) {
 				loop = false;
-			} 
+			}
+			// on a loop, we want a faster and linear animation
 			let animation_time = loop ? 0.075 : 0.25;
 			let transition_type = loop ? 'linear' : 'easeOutQuad';
 			
@@ -216,32 +215,29 @@ Switcher.prototype = {
 					opacity: 0,
 					time: animation_time,
 					transition: transition_type,
-					onComplete: Lang.bind(this._background, this._background.remove_actor, this._windowTitle),
+					onComplete: Lang.bind(this._background, this._background.remove_actor, this._windowTitle)
 				});
 			}
 			this._windowTitle = new St.Label({
 				style_class: 'modal-dialog',
 				text: this._windows[this._currentIndex].get_title(),
 				opacity: 0,
-			});
-			
-			this._windowTitle.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-			
+				anchor_gravity: Clutter.Gravity.CENTER,
+				x: Math.round((monitor.width + ICON_SIZE + ICON_TITLE_SPACING) / 2),
+				y: Math.round(monitor.height * ICON_TITLE_POSITION / 8 - OFFSET)
+			});	
 			// ellipsize if title is too long
 			this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 			if (this._windowTitle.clutter_text.width > (monitor.width - 200)) {
 				this._windowTitle.clutter_text.width = monitor.width - 200;
 			}
-			
 			this._windowTitle.add_style_class_name('run-dialog');
 			this._windowTitle.add_style_class_name('coverflow-window-title-label');
 			this._background.add_actor(this._windowTitle);
-			this._windowTitle.x = Math.round((monitor.width + ICON_SIZE + ICON_TITLE_SPACING) / 2);
-			this._windowTitle.y = Math.round(monitor.height * ICON_TITLE_POSITION / 8 - OFFSET);
 			Tweener.addTween(this._windowTitle, {
-				opacity: 255,
+				opacity: loop ? 0 : 255,
 				time: animation_time,
-				transition: transition_type,
+				transition: transition_type
 			});
 
 			// window icon
@@ -250,40 +246,39 @@ Switcher.prototype = {
 					opacity: 0,
 					time: animation_time,
 					transition: transition_type,
-					onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox),
+					onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox)
 				});
 			}
-			
 			let app = this._tracker.get_window_app(this._windows[this._currentIndex]); 
 			this._icon = null;
 			if (app) {
 				this._icon = app.create_icon_texture(ICON_SIZE);
 			}
 			if (!this._icon) {
-				this._icon = new St.Icon({ icon_name: 'applications-other',
+				this._icon = new St.Icon({ 
+					icon_name: 'applications-other',
 					icon_type: St.IconType.FULLCOLOR,
-					icon_size: ICON_SIZE });
+					icon_size: ICON_SIZE 
+				});
 			}
-			this._icon.width = ICON_SIZE;
-			this._icon.height = ICON_SIZE;
-
-			this._applicationIconBox = new St.Bin({ style_class: 'window-iconbox' });
-			this._applicationIconBox.set_opacity(255);
+			this._applicationIconBox = new St.Bin({ 
+				style_class: 'window-iconbox',
+				opacity: 0,
+				anchor_gravity: Clutter.Gravity.CENTER,
+				x: Math.round(this._windowTitle.x - (this._windowTitle.width + ICON_SIZE) / 2 - ICON_TITLE_SPACING),
+				y: this._windowTitle.y
+			});
 			this._applicationIconBox.add_actor(this._icon);
-			this._applicationIconBox.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-
 			this._background.add_actor(this._applicationIconBox);
-			this._applicationIconBox.x = Math.round(this._windowTitle.x - (this._windowTitle.width + this._applicationIconBox.width) / 2 - ICON_TITLE_SPACING);
-			this._applicationIconBox.y = this._windowTitle.y;
 			Tweener.addTween(this._applicationIconBox, {
-				opacity: 255,
+				opacity: loop ? 0 : 255,
 				time: animation_time,
-				transition: transition_type,
+				transition: transition_type
 			});
 
 
 			// preview windows
-			for (let i in this._previews) {
+			for (i in this._previews) {
 				let preview = this._previews[i];
 
 				if (i == this._currentIndex) {
@@ -300,8 +295,9 @@ Switcher.prototype = {
 						height: preview.target_height,
 						rotation_angle_y: 0.0,
 						time: animation_time,
-						transition: transition_type,
+						transition: transition_type
 					});
+					
 				} else if (i < this._currentIndex) {
 					preview.move_anchor_point_from_gravity(Clutter.Gravity.WEST);
 					preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
@@ -310,13 +306,13 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: 60.0,
-//						effect: this._shade_effect,
 						time: animation_time,
-						transition: transition_type,
+						transition: transition_type
 					});
+					
 				} else if (i > this._currentIndex) {
 					preview.move_anchor_point_from_gravity(Clutter.Gravity.EAST);
 					preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
@@ -325,37 +321,34 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: -60.0,
-//						effect: this._shade_effect,
 						time: animation_time,
 						transition: transition_type,
 						onCompleteParams: [loop, direction, i],
 						onComplete: this._onUpdateComplete,
-						onCompleteScope: this,
+						onCompleteScope: this
 					});
-				};
+				};;
 			};
 		},
 
 		
+		// Called by every window on the right side on animation completion,
+		// because if we do a loop, we want to know when a next() or previous()
+		// shift is finished
 		_onUpdateComplete: function(loop, direction, index) {
-			if (!loop)
+			// if we don't want a loop or if this isn't the last window,
+			// do nothing
+			if (!loop || index != this._windows.length-1)
 				return;
-			if (direction == "next") {
-				if (this._currentIndex == this._windows.length -1 || index != this._windows.length-1) {
-					return;
-				} else {
-					this._next(true);
-				};
-			} else {
-				if (this._currentIndex == 0 || index != this._windows.length-1) {
-					return;
-				} else {
-					this._previous(true);
-				};
-			}
+			
+			// otherwise do the loop by calling next()/previous() again
+			if (direction == "next")
+				this._next(true);
+			else
+				this._previous(true);
 		},
 		
 		_keyPressEvent: function(actor, event) {
@@ -364,10 +357,13 @@ Switcher.prototype = {
 
 			let backwards = event_state & Clutter.ModifierType.SHIFT_MASK;
 			let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
-
+			
+			// Esc -> close CoverFlow
 			if (keysym == Clutter.Escape) {
 				this.destroy();
-			} else if (keysym == Clutter.q || keysym == Clutter.Q) {
+			}
+			// Q -> Close window, update previews
+			else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
 				if (this._windows.length == 1) {
 					this.destroy();
@@ -378,10 +374,11 @@ Switcher.prototype = {
 					this._currentIndex = this._currentIndex % this._windows.length;
 					this._updateCoverflow();
 //					// check if window was removed successfully
-//					if (global.get_window_actors().length > this._windows.length + this._windows_skipped + 1) {
+//					if (global.get_window_actors().length > this._windows.length +
+//						this._windows_skipped + 1) {
 //						this.destroy();
 //					} else {
-////						global.log("nach q " + global.get_window_actors().length);
+//						// global.log("nach q " + global.get_window_actors().length);
 //						this._updateCoverflow();
 //					}
 				}
@@ -419,7 +416,7 @@ Switcher.prototype = {
 			// show all window actors
 			let currentWorkspace = global.screen.get_active_workspace();
 			let windows = global.get_window_actors();
-			for (let i in windows) {
+			for (i in windows) {
 				let metaWin = windows[i].get_meta_window();
 				if (metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) {
 					windows[i].show();
@@ -432,7 +429,7 @@ Switcher.prototype = {
 
 			// preview windows
 			let currentWorkspace = global.screen.get_active_workspace();
-			for (let i in this._previews) {
+			for (i in this._previews) {
 				let preview = this._previews[i];
 				let metaWin = this._windows[i];
 				let compositor = this._windows[i].get_compositor_private();
@@ -440,15 +437,15 @@ Switcher.prototype = {
 				preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
 				
 				Tweener.addTween(preview, {
-							opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
-									  || metaWin.is_on_all_workspaces()) ? 255 : 0,
-							x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
-							y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2,
-							width: (metaWin.minimized) ? 0 : compositor.width,
-							height: (metaWin.minimized) ? 0 : compositor.height,
-							rotation_angle_y: 0.0,
-							time: 0.25,
-							transition: 'easeOutQuad',
+					opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
+							  || metaWin.is_on_all_workspaces()) ? 255 : 0,
+					x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
+					y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2,
+					width: (metaWin.minimized) ? 0 : compositor.width,
+					height: (metaWin.minimized) ? 0 : compositor.height,
+					rotation_angle_y: 0.0,
+					time: 0.25,
+					transition: 'easeOutQuad'
 				});
 			}
 
@@ -458,7 +455,7 @@ Switcher.prototype = {
 				opacity: 0,
 				time: 0.25,
 				transition: 'easeOutQuad',
-				onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
+				onComplete: Lang.bind(this, this._onHideBackgroundCompleted)
 			});
 
 			if (this._haveModal) {
