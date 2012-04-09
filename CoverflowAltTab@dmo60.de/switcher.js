@@ -79,6 +79,7 @@ Switcher.prototype = {
 				width: monitor.width,
 				height: monitor.height
 			});
+			// background gradient
 			this._background.add_actor(new St.Bin({
 				style_class: 'coverflow-switcher-gradient',
 				visible: true,
@@ -93,7 +94,7 @@ Switcher.prototype = {
 			let currentWorkspace = global.screen.get_active_workspace();
 			this._previewLayer = new St.Group({ visible: true });
 			this._previews = [];
-			for (let i in windows) {
+			for (i in windows) {
 				let metaWin = windows[i];
 				let compositor = windows[i].get_compositor_private();
 				if (compositor) {
@@ -143,7 +144,7 @@ Switcher.prototype = {
 
 			// hide all window actors
 			let windows = global.get_window_actors();
-			for (let i in windows) {
+			for (i in windows) {
 				windows[i].hide();
 			}
 
@@ -168,7 +169,14 @@ Switcher.prototype = {
 
 			return true;
 		},
-
+		
+		// If next() is called on the last window, we want to
+		// trigger a loop animation: calling previous() until we
+		// are back on the first window and accelerate animations.
+		// If there are only two windows, we don't need a loop, we
+		// can do a simple previous().
+		//
+		// @loop: indicating whether we're currently doing a loop
 		_next: function(loop) {
 			if (this._currentIndex == this._windows.length - 1) {
 				this._previous((this._windows.length > 2) ? true : false);
@@ -178,7 +186,9 @@ Switcher.prototype = {
 			}
 			
 		},
-
+		
+		// The same here like in next(),
+		// but of course the other way around
 		_previous: function(loop) {
 			if (this._currentIndex == 0) {
 				this._next((this._windows.length > 2) ? true : false);
@@ -192,7 +202,8 @@ Switcher.prototype = {
 		_updateCoverflow: function(loop, direction) {
 			if (loop == undefined) {
 				loop = false;
-			} 
+			}
+			// on a loop, we want a faster and linear animation
 			let animation_time = loop ? 0.075 : 0.25;
 			let transition_type = loop ? 'linear' : 'easeOutQuad';
 			
@@ -267,7 +278,7 @@ Switcher.prototype = {
 
 
 			// preview windows
-			for (let i in this._previews) {
+			for (i in this._previews) {
 				let preview = this._previews[i];
 
 				if (i == this._currentIndex) {
@@ -324,22 +335,20 @@ Switcher.prototype = {
 		},
 
 		
+		// Called by every window on the right side on animation completion,
+		// because if we do a loop, we want to know when a next() or previous()
+		// shift is finished
 		_onUpdateComplete: function(loop, direction, index) {
-			if (!loop)
+			// if we don't want a loop or if this isn't the last window,
+			// do nothing
+			if (!loop || index != this._windows.length-1)
 				return;
-			if (direction == "next") {
-				if (this._currentIndex == this._windows.length -1 || index != this._windows.length-1) {
-					return;
-				} else {
-					this._next(true);
-				};
-			} else {
-				if (this._currentIndex == 0 || index != this._windows.length-1) {
-					return;
-				} else {
-					this._previous(true);
-				};
-			}
+			
+			// otherwise do the loop by calling next()/previous() again
+			if (direction == "next")
+				this._next(true);
+			else
+				this._previous(true);
 		},
 		
 		_keyPressEvent: function(actor, event) {
@@ -348,10 +357,13 @@ Switcher.prototype = {
 
 			let backwards = event_state & Clutter.ModifierType.SHIFT_MASK;
 			let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
-
+			
+			// Esc -> close CoverFlow
 			if (keysym == Clutter.Escape) {
 				this.destroy();
-			} else if (keysym == Clutter.q || keysym == Clutter.Q) {
+			}
+			// Q -> Close window, update previews
+			else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
 				if (this._windows.length == 1) {
 					this.destroy();
@@ -404,7 +416,7 @@ Switcher.prototype = {
 			// show all window actors
 			let currentWorkspace = global.screen.get_active_workspace();
 			let windows = global.get_window_actors();
-			for (let i in windows) {
+			for (i in windows) {
 				let metaWin = windows[i].get_meta_window();
 				if (metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) {
 					windows[i].show();
@@ -417,7 +429,7 @@ Switcher.prototype = {
 
 			// preview windows
 			let currentWorkspace = global.screen.get_active_workspace();
-			for (let i in this._previews) {
+			for (i in this._previews) {
 				let preview = this._previews[i];
 				let metaWin = this._windows[i];
 				let compositor = this._windows[i].get_compositor_private();
