@@ -178,10 +178,10 @@ Switcher.prototype = {
 		//
 		// @loop: indicating whether we're currently doing a loop
 		_next: function(loop) {
-			if (this._currentIndex == this._windows.length - 1) {
+			if ((this._currentIndex == this._windows.length - 1) && (this._windows.length > 1)) {
 				this._previous((this._windows.length > 2) ? true : false);
 			} else {
-				this._currentIndex = this._currentIndex + 1;
+				this._currentIndex = (this._currentIndex + 1) % this._windows.length;
 				this._updateCoverflow((this._currentIndex == this._windows.length - 1) ? false : loop, "next");
 			}
 			
