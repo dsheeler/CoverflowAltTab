@@ -17,17 +17,16 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
-
-let WINDOWPREVIEW_SCALE = 0.5;
-let POSITION_TOP = 1;
-let POSITION_BOTTOM = 7;
+const WINDOWPREVIEW_SCALE = 0.5;
+const POSITION_TOP = 1;
+const POSITION_BOTTOM = 7;
 
 
 /*
  * SET POSITION OF ICON AND WINDOW TITLE HERE: possible values are: POSITION_TOP
  * or POSITION_BOTTOM --------------------------------------------------------
  */
-let ICON_TITLE_POSITION = POSITION_BOTTOM;
+const ICON_TITLE_POSITION = POSITION_BOTTOM;
 /* -------------------------------------------------------- */
 
 
@@ -35,8 +34,8 @@ let ICON_TITLE_POSITION = POSITION_BOTTOM;
  * SET ICON SIZE AND SPACING BETWEEN ICON AND WINDOW TITLE HERE:
  * --------------------------------------------------------
  */
-let ICON_SIZE = 64;  // default: 64
-let ICON_TITLE_SPACING = 10;  // default: 10
+const ICON_SIZE = 64;  // default: 64
+const ICON_TITLE_SPACING = 10;  // default: 10
 /* -------------------------------------------------------- */
 
 
@@ -45,7 +44,7 @@ let ICON_TITLE_SPACING = 10;  // default: 10
  * down. Default means previews are located in the middle of the screen.
  * --------------------------------------------------------
  */
-let OFFSET = 0;  // default: 0
+const OFFSET = 0;  // default: 0
 /* -------------------------------------------------------- */
 
 
@@ -67,12 +66,13 @@ Switcher.prototype = {
 			this._tracker = Shell.WindowTracker.get_default();
 			
 			let monitor = Main.layoutManager.primaryMonitor;
-			this.actor = new St.Group({ visible: true });
+			this.actor = new St.Group({ visible: true, reactive: true, });
 
 			// background
 			this._background = new St.Group({
 				style_class: 'coverflow-switcher',
 				visible: true,
+				reactive: true,
 				x: 0,
 				y: 0,
 				opacity: 0,
@@ -83,6 +83,7 @@ Switcher.prototype = {
 			this._background.add_actor(new St.Bin({
 				style_class: 'coverflow-switcher-gradient',
 				visible: true,
+				reactive: true,
 				x: 0,
 				y: monitor.height / 2,
 				width: monitor.width,
@@ -92,7 +93,7 @@ Switcher.prototype = {
 
 			// create previews
 			let currentWorkspace = global.screen.get_active_workspace();
-			this._previewLayer = new St.Group({ visible: true });
+			this._previewLayer = new St.Group({ visible: true, reactive: true });
 			this._previews = [];
 			for (i in windows) {
 				let metaWin = windows[i];
@@ -110,7 +111,7 @@ Switcher.prototype = {
 					let clone = new Clutter.Clone({
 						opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
 						source: texture,
-						reactive: false,
+						reactive: true,
 						anchor_gravity: Clutter.Gravity.CENTER,
 						x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
 						y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2
@@ -121,12 +122,15 @@ Switcher.prototype = {
 					clone.target_width_side = clone.target_width * 2/3;
 					clone.target_height_side = clone.target_height;
 					
+//					clone.connect('button-release-event', Lang.bind(this, this._buttonReleaseEvent));
+					
 					this._previews.push(clone);
 					this._previewLayer.add_actor(clone);
 				};
 			}
 
 			this.actor.add_actor(this._previewLayer);
+			this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
 			Main.uiGroup.add_actor(this.actor);
 		},
 
@@ -140,6 +144,7 @@ Switcher.prototype = {
 
 			this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
 			this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
+			
 			this.actor.show();
 
 			// hide all window actors
@@ -178,25 +183,27 @@ Switcher.prototype = {
 		//
 		// @loop: indicating whether we're currently doing a loop
 		_next: function(loop) {
+			this.actor.set_reactive(false);
 			if ((this._currentIndex == this._windows.length - 1) && (this._windows.length > 1)) {
 				this._previous((this._windows.length > 2) ? true : false);
 			} else {
 				this._currentIndex = (this._currentIndex + 1) % this._windows.length;
 				this._updateCoverflow((this._currentIndex == this._windows.length - 1) ? false : loop, "next");
 			}
-			
+			this.actor.set_reactive(true);
 		},
 		
 		// The same here like in next(),
 		// but of course the other way around
 		_previous: function(loop) {
+			this.actor.set_reactive(false);
 			if (this._currentIndex == 0) {
 				this._next((this._windows.length > 2) ? true : false);
 			} else {
 				this._currentIndex = this._currentIndex - 1;
 				this._updateCoverflow((this._currentIndex == 0) ? false : loop, "previous");
 			}
-			
+			this.actor.set_reactive(true);
 		},
 
 		_updateCoverflow: function(loop, direction) {
@@ -404,7 +411,27 @@ Switcher.prototype = {
 
 			return true;
 		},
-
+		
+		
+//		_buttonReleaseEvent: function(actor, event) {
+//			global.log("click");
+//			for (i in this._previews) {
+//				if (this._previews[i] == actor) {
+//					this._currentIndex = i;
+//					this._activateSelected();
+//				}
+//			}
+//			return true;
+//		},
+		
+		_scrollEvent: function(actor, event) {
+			actor.set_reactive(false);
+			let dir = event.get_scroll_direction();
+			(dir == Clutter.ScrollDirection.UP) ? this._next() : this._previous();
+			actor.set_reactive(true);
+			return true;
+		},
+		
 		_activateSelected: function() {
 			this._actions['activate_selected'](this._windows[this._currentIndex]);
 			this.destroy();
