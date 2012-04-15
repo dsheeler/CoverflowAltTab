@@ -9,7 +9,7 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 
 
-![Screenshot](http://www.dmo60.de/CoverflowAltTabScreenshotklein.jpg)
+![Screenshot](http://www.dmo60.de/CoverflowAltTabScreenshotkleinneu.jpg)
 
 
 
