@@ -13,6 +13,7 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 
 
+
 Installation
 -------------
 
@@ -33,7 +34,8 @@ Switch to branch Cinnamon or head over to [Cinnamon-Spices](http://cinnamon-spic
 	
   2. Enable the extension in Cinnamon Settings. (Eventually you have to restart Cinnamon: Press Alt+F2, type 'r' and enter)
 	 
-	 
+
+
 
 Usage
 ------
@@ -51,6 +53,7 @@ All of the shortcuts with **Shift** key pressed cycles backward.
   - Hit **d** to hide all windows and show the desktop.
 
 You can also use the **arrow keys** or your **mouse wheel** to cycle through the windows. 
+
 
 
 
