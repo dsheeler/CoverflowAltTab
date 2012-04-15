@@ -84,17 +84,12 @@ Manager.prototype = {
 			if (windows.length) {
 				actions['activate_selected'] = this._activateSelectedWindow;
 				actions['remove_selected'] = this._removeSelectedWindow;
-
+				
 				if (!global.display.focus_window) {
 					currentIndex = -1;
 				}
 
-				let switcher = new Switcher.Switcher(windows, actions);
-				switcher._currentIndex = currentIndex;
-
-				if (!switcher.show(shellwm, binding, mask, window, backwards)) {
-					switcher.destroy();
-				}
+				let switcher = new Switcher.Switcher(windows, actions, mask, currentIndex);
 			};
 		},
 };
