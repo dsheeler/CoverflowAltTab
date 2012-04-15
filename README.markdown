@@ -14,9 +14,9 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 
 Installation
-==============
+-------------
 
-### Gnome-Shell ###
+#### Gnome-Shell ####
 
 Make sure you are on branch Gnome-Shell (it is the default) to download the extension for Gnome-Shell.
 
@@ -25,7 +25,7 @@ Make sure you are on branch Gnome-Shell (it is the default) to download the exte
   2. Use Gnome-Tweak-Tool (aka Advanced Settings) to enable the extension. (Eventually you have to restart Gnome-Shell: Press Alt+F2, type 'r' and enter)
 	
 
-### Cinnamon ###
+#### Cinnamon ####
 
 Switch to branch Cinnamon or head over to [Cinnamon-Spices](http://cinnamon-spices.linuxmint.com/extensions/view/3) to download the extension for Cinnamon. 
 
@@ -36,7 +36,7 @@ Switch to branch Cinnamon or head over to [Cinnamon-Spices](http://cinnamon-spic
 	 
 
 Usage
-======
+------
 
 This extension uses the following key bindings (you can change or disable them in your system settings):
 
@@ -55,7 +55,7 @@ You can also use the **arrow keys** or your **mouse wheel** to cycle through the
 
 
 Customization
-==============
+--------------
 
 You can change the background color and gradient by adjusting the corresponding values in the `stylesheet.css` file.
 
