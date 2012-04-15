@@ -11,7 +11,7 @@ const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Shell = imports.gi.Shell;
-
+//const Mainloop = imports.mainloop;
 const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
@@ -20,6 +20,8 @@ const Pango = imports.gi.Pango;
 const WINDOWPREVIEW_SCALE = 0.5;
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
+
+//const INITIAL_DELAY_TIMEOUT = 1000;
 
 
 /*
@@ -50,17 +52,17 @@ const OFFSET = 0;  // default: 0
 
 
 
-function Switcher(windows, actions) {
-	this._init(windows, actions);
+function Switcher(windows, actions, mask, currentIndex) {
+	this._init(windows, actions, mask, currentIndex);
 }
 
 Switcher.prototype = {
-		_init: function(windows, actions) {
+		_init: function(windows, actions, mask, currentIndex) {
 			this._windows = windows;
 			this._windowTitle = null;
 			this._icon = null;
 			this._modifierMask = null;
-			this._currentIndex = 0;
+			this._currentIndex = currentIndex;
 			this._actions = actions;
 			this._haveModal = false;
 			this._tracker = Shell.WindowTracker.get_default();
@@ -121,20 +123,15 @@ Switcher.prototype = {
 					clone.target_height = Math.round(height * scale);
 					clone.target_width_side = clone.target_width * 2/3;
 					clone.target_height_side = clone.target_height;
-					
-//					clone.connect('button-release-event', Lang.bind(this, this._buttonReleaseEvent));
-					
+										
 					this._previews.push(clone);
 					this._previewLayer.add_actor(clone);
 				};
 			}
 
 			this.actor.add_actor(this._previewLayer);
-			this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
 			Main.uiGroup.add_actor(this.actor);
-		},
-
-		show: function(shellwm, binding, mask, window, backwards) {
+			
 			if (!Main.pushModal(this.actor)) {
 				return false;
 			}
@@ -144,7 +141,25 @@ Switcher.prototype = {
 
 			this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
 			this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
+			this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
 			
+			// There's a race condition; if the user released Alt before
+			// we got the grab, then we won't be notified. (See
+			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+			// details) So we check now. (Have to do this after updating
+			// selection.)
+			let [x, y, mods] = global.get_pointer();
+			if (!(mods & this._modifierMask)) {
+				this._activateSelected();
+			}
+			
+//			this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT,
+//                    Lang.bind(this, this.show));
+			
+			this.show();
+		},
+
+		show: function(shellwm, binding, mask, window, backwards) {
 			this.actor.show();
 
 			// hide all window actors
@@ -153,26 +168,13 @@ Switcher.prototype = {
 				windows[i].hide();
 			}
 
-			this._next();
-
-			// There's a race condition; if the user released Alt before
-			// we gotthe grab, then we won't be notified. (See
-			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-			// details) So we check now. (Have to do this after updating
-			// selection.)
-			let [x, y, mods] = global.get_pointer();
-			if (!(mods & this._modifierMask)) {
-				this._activateSelected();
-				return false;
-			}
-
 			Tweener.addTween(this._background, {
 				opacity: 255,
 				time: 0.25,
-				transition: 'easeOutQuad'
+				transition: 'easeOutQuad',
 			});
-
-			return true;
+			
+			this._next();
 		},
 		
 		// If next() is called on the last window, we want to
@@ -211,7 +213,7 @@ Switcher.prototype = {
 				loop = false;
 			}
 			// on a loop, we want a faster and linear animation
-			let animation_time = loop ? 0.075 : 0.25;
+			let animation_time = loop ? 0.05 : 0.25;
 			let transition_type = loop ? 'linear' : 'easeOutQuad';
 			
 			let monitor = Main.layoutManager.primaryMonitor;
@@ -222,7 +224,7 @@ Switcher.prototype = {
 					opacity: 0,
 					time: animation_time,
 					transition: transition_type,
-					onComplete: Lang.bind(this._background, this._background.remove_actor, this._windowTitle)
+					onComplete: Lang.bind(this._background, this._background.remove_actor, this._windowTitle),
 				});
 			}
 			this._windowTitle = new St.Label({
@@ -244,7 +246,7 @@ Switcher.prototype = {
 			Tweener.addTween(this._windowTitle, {
 				opacity: loop ? 0 : 255,
 				time: animation_time,
-				transition: transition_type
+				transition: transition_type,
 			});
 
 			// window icon
@@ -253,7 +255,7 @@ Switcher.prototype = {
 					opacity: 0,
 					time: animation_time,
 					transition: transition_type,
-					onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox)
+					onComplete: Lang.bind(this._background, this._background.remove_actor, this._applicationIconBox),
 				});
 			}
 			let app = this._tracker.get_window_app(this._windows[this._currentIndex]); 
@@ -280,7 +282,7 @@ Switcher.prototype = {
 			Tweener.addTween(this._applicationIconBox, {
 				opacity: loop ? 0 : 255,
 				time: animation_time,
-				transition: transition_type
+				transition: transition_type,
 			});
 
 
@@ -302,7 +304,7 @@ Switcher.prototype = {
 						height: preview.target_height,
 						rotation_angle_y: 0.0,
 						time: animation_time,
-						transition: transition_type
+						transition: transition_type,
 					});
 					
 				} else if (i < this._currentIndex) {
@@ -317,7 +319,7 @@ Switcher.prototype = {
 						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
 						rotation_angle_y: 60.0,
 						time: animation_time,
-						transition: transition_type
+						transition: transition_type,
 					});
 					
 				} else if (i > this._currentIndex) {
@@ -335,7 +337,7 @@ Switcher.prototype = {
 						transition: transition_type,
 						onCompleteParams: [loop, direction, i],
 						onComplete: this._onUpdateComplete,
-						onCompleteScope: this
+						onCompleteScope: this,
 					});
 				};;
 			};
@@ -364,7 +366,7 @@ Switcher.prototype = {
 
 			let backwards = event_state & Clutter.ModifierType.SHIFT_MASK;
 			let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
-			
+						
 			// Esc -> close CoverFlow
 			if (keysym == Clutter.Escape) {
 				this.destroy();
@@ -389,6 +391,12 @@ Switcher.prototype = {
 //						this._updateCoverflow();
 //					}
 				}
+			} else if (keysym == Clutter.Right) {
+				this._next();
+			} else if (keysym == Clutter.Left) {
+				this._previous();
+			} else if (keysym == Clutter.d || keysym == Clutter.D) {
+				this._showDesktop();
 			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
 					action == Meta.KeyBindingAction.SWITCH_WINDOWS ||
 					action == Meta.KeyBindingAction.SWITCH_PANELS) {
@@ -412,18 +420,6 @@ Switcher.prototype = {
 			return true;
 		},
 		
-		
-//		_buttonReleaseEvent: function(actor, event) {
-//			global.log("click");
-//			for (i in this._previews) {
-//				if (this._previews[i] == actor) {
-//					this._currentIndex = i;
-//					this._activateSelected();
-//				}
-//			}
-//			return true;
-//		},
-		
 		_scrollEvent: function(actor, event) {
 			actor.set_reactive(false);
 			let dir = event.get_scroll_direction();
@@ -434,6 +430,14 @@ Switcher.prototype = {
 		
 		_activateSelected: function() {
 			this._actions['activate_selected'](this._windows[this._currentIndex]);
+			this.destroy();
+		},
+		
+		_showDesktop: function() {
+			for (i in this._windows) {
+				if (!this._windows[i].minimized)
+					this._windows[i].minimize();
+			}
 			this.destroy();
 		},
 
@@ -453,7 +457,7 @@ Switcher.prototype = {
 
 		_onDestroy: function() {
 			let monitor = Main.layoutManager.primaryMonitor;
-
+			
 			// preview windows
 			let currentWorkspace = global.screen.get_active_workspace();
 			for (i in this._previews) {
@@ -461,7 +465,14 @@ Switcher.prototype = {
 				let metaWin = this._windows[i];
 				let compositor = this._windows[i].get_compositor_private();
 				
+				let rotation_vertex_x = 0.0;
+				if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
+					rotation_vertex_x = preview.width / 2;
+				} else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
+					rotation_vertex_x = -preview.width / 2;
+				}
 				preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+				preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
 				
 				Tweener.addTween(preview, {
 					opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
@@ -472,7 +483,7 @@ Switcher.prototype = {
 					height: (metaWin.minimized) ? 0 : compositor.height,
 					rotation_angle_y: 0.0,
 					time: 0.25,
-					transition: 'easeOutQuad'
+					transition: 'easeOutQuad',
 				});
 			}
 
@@ -482,7 +493,7 @@ Switcher.prototype = {
 				opacity: 0,
 				time: 0.25,
 				transition: 'easeOutQuad',
-				onComplete: Lang.bind(this, this._onHideBackgroundCompleted)
+				onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
 			});
 
 			if (this._haveModal) {
@@ -496,6 +507,7 @@ Switcher.prototype = {
 			this._applicationIconBox = null;
 			this._previews = null;
 			this._previewLayer = null;
+//			this._initialDelayTimeoutId = null;
 		},
 
 		destroy: function() {
