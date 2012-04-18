@@ -66,6 +66,10 @@ Switcher.prototype = {
 			this._actions = actions;
 			this._haveModal = false;
 			this._tracker = Shell.WindowTracker.get_default();
+			this._shellwm =  global.window_manager;
+			
+			this._shellwm.connect('destroy', Lang.bind(this, this._destroyWindow));
+			this._shellwm.connect('map', Lang.bind(this, this._mapWindow));
 			
 			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true, reactive: true, });
@@ -131,6 +135,10 @@ Switcher.prototype = {
 
 			this.actor.add_actor(this._previewLayer);
 			Main.uiGroup.add_actor(this.actor);
+			
+//			let dimShader = Shell.get_file_contents_utf8_sync(global.datadir + '/shaders/dim-window.glsl');
+//			this._effect = new Clutter.ShaderEffect({ shader_type: Clutter.ShaderType.FRAGMENT_SHADER });
+//            this._effect.set_shader_source(dimShader);
 			
 			if (!Main.pushModal(this.actor)) {
 				return false;
@@ -374,14 +382,14 @@ Switcher.prototype = {
 			// Q -> Close window, update previews
 			else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
-				if (this._windows.length == 1) {
-					this.destroy();
-				} else {
-					this._windows.splice(this._currentIndex, 1);
-					this._previews[this._currentIndex].destroy();
-					this._previews.splice(this._currentIndex, 1);
-					this._currentIndex = this._currentIndex % this._windows.length;
-					this._updateCoverflow();
+//				if (this._windows.length == 1) {
+//					this.destroy();
+//				} else {
+//					this._windows.splice(this._currentIndex, 1);
+//					this._previews[this._currentIndex].destroy();
+//					this._previews.splice(this._currentIndex, 1);
+//					this._currentIndex = this._currentIndex % this._windows.length;
+//					this._updateCoverflow();
 //					// check if window was removed successfully
 //					if (global.get_window_actors().length > this._windows.length +
 //						this._windows_skipped + 1) {
@@ -391,7 +399,7 @@ Switcher.prototype = {
 //						this._updateCoverflow();
 //					}
 				}
-			} else if (keysym == Clutter.Right) {
+			else if (keysym == Clutter.Right) {
 				this._next();
 			} else if (keysym == Clutter.Left) {
 				this._previous();
@@ -426,6 +434,29 @@ Switcher.prototype = {
 			(dir == Clutter.ScrollDirection.UP) ? this._next() : this._previous();
 			actor.set_reactive(true);
 			return true;
+		},
+		
+		_destroyWindow: function(shellwm, actor) {
+			let window = actor.meta_window;
+			
+			for (i in this._windows) {
+				if (window == this._windows[i]) {
+					if (this._windows.length == 1) {
+						this.destroy();
+					} else {
+						this._windows.splice(i, 1);
+						this._previews[i].destroy();
+						this._previews.splice(i, 1);
+						this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : this._currentIndex;
+						this._updateCoverflow();
+						return;
+					}
+				}
+			}
+		},
+		
+		_mapWindow: function(shellwm, actor) {
+			this.destroy();
 		},
 		
 		_activateSelected: function() {
