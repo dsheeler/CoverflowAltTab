@@ -16,6 +16,7 @@ const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
+//const WindowManager = imports.ui.windowManager;
 
 const WINDOWPREVIEW_SCALE = 0.5;
 const POSITION_TOP = 1;
@@ -135,10 +136,6 @@ Switcher.prototype = {
 
 			this.actor.add_actor(this._previewLayer);
 			Main.uiGroup.add_actor(this.actor);
-			
-//			let dimShader = Shell.get_file_contents_utf8_sync(global.datadir + '/shaders/dim-window.glsl');
-//			this._effect = new Clutter.ShaderEffect({ shader_type: Clutter.ShaderType.FRAGMENT_SHADER });
-//            this._effect.set_shader_source(dimShader);
 			
 			if (!Main.pushModal(this.actor)) {
 				return false;
@@ -314,6 +311,7 @@ Switcher.prototype = {
 						time: animation_time,
 						transition: transition_type,
 					});
+//					this._undimWindow(preview, true);
 					
 				} else if (i < this._currentIndex) {
 					preview.move_anchor_point_from_gravity(Clutter.Gravity.WEST);
@@ -329,6 +327,7 @@ Switcher.prototype = {
 						time: animation_time,
 						transition: transition_type,
 					});
+//					this._dimWindow(preview, true);
 					
 				} else if (i > this._currentIndex) {
 					preview.move_anchor_point_from_gravity(Clutter.Gravity.EAST);
@@ -347,6 +346,7 @@ Switcher.prototype = {
 						onComplete: this._onUpdateComplete,
 						onCompleteScope: this,
 					});
+//					this._dimWindow(preview, true);
 				};;
 			};
 		},
@@ -418,6 +418,28 @@ Switcher.prototype = {
 			actor.set_reactive(true);
 			return true;
 		},
+		
+//		_dimWindow: function(window, animate) {
+//	        if (animate)
+//	            Tweener.addTween(WindowManager.getWindowDimmer(window),
+//	                             { dimFraction: 1.0,
+//	                               time: 0.25,
+//	                               transition: 'linear'
+//	                             });
+//	        else
+//	        	WindowManager.getWindowDimmer(window).dimFraction = 1.0;
+//	    },
+//
+//	    _undimWindow: function(window, animate) {
+//	        if (animate)
+//	            Tweener.addTween(WindowManager.getWindowDimmer(window),
+//	                             { dimFraction: 0.0,
+//	                               time: 0.25,
+//	                               transition: 'linear'
+//	                             });
+//	        else
+//	        	WindowManager.getWindowDimmer(window).dimFraction = 0.0;
+//	    },
 		
 		_windowDestroyed: function(shellwm, actor) {
 			let window = actor.meta_window;
