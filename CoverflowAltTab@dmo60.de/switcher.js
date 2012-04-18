@@ -66,6 +66,10 @@ Switcher.prototype = {
 			this._actions = actions;
 			this._haveModal = false;
 			this._tracker = Shell.WindowTracker.get_default();
+			this._shellwm =  global.window_manager;
+			
+			this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
+			this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
 			
 			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true, reactive: true, });
@@ -374,23 +378,6 @@ Switcher.prototype = {
 			// Q -> Close window, update previews
 			else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
-				if (this._windows.length == 1) {
-					this.destroy();
-				} else {
-					this._windows.splice(this._currentIndex, 1);
-					this._previews[this._currentIndex].destroy();
-					this._previews.splice(this._currentIndex, 1);
-					this._currentIndex = this._currentIndex % this._windows.length;
-					this._updateCoverflow();
-//					// check if window was removed successfully
-//					if (global.get_window_actors().length > this._windows.length +
-//						this._windows_skipped + 1) {
-//						this.destroy();
-//					} else {
-//						// global.log("nach q " + global.get_window_actors().length);
-//						this._updateCoverflow();
-//					}
-				}
 			} else if (keysym == Clutter.Right) {
 				this._next();
 			} else if (keysym == Clutter.Left) {
@@ -426,6 +413,25 @@ Switcher.prototype = {
 			(dir == Clutter.ScrollDirection.UP) ? this._next() : this._previous();
 			actor.set_reactive(true);
 			return true;
+		},
+		
+		_windowDestroyed: function(shellwm, actor) {
+			let window = actor.meta_window;
+			
+			for (i in this._windows) {
+				if (window == this._windows[i]) {
+					if (this._windows.length == 1) {
+						this.destroy();
+					} else {
+						this._windows.splice(i, 1);
+						this._previews[i].destroy();
+						this._previews.splice(i, 1);
+						this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : this._currentIndex;
+						this._updateCoverflow();
+						return;
+					}
+				}
+			}
 		},
 		
 		_activateSelected: function() {
