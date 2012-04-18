@@ -68,8 +68,8 @@ Switcher.prototype = {
 			this._tracker = Shell.WindowTracker.get_default();
 			this._shellwm =  global.window_manager;
 			
-			this._shellwm.connect('destroy', Lang.bind(this, this._destroyWindow));
-			this._shellwm.connect('map', Lang.bind(this, this._mapWindow));
+			this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
+			this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
 			
 			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true, reactive: true, });
@@ -382,24 +382,7 @@ Switcher.prototype = {
 			// Q -> Close window, update previews
 			else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
-//				if (this._windows.length == 1) {
-//					this.destroy();
-//				} else {
-//					this._windows.splice(this._currentIndex, 1);
-//					this._previews[this._currentIndex].destroy();
-//					this._previews.splice(this._currentIndex, 1);
-//					this._currentIndex = this._currentIndex % this._windows.length;
-//					this._updateCoverflow();
-//					// check if window was removed successfully
-//					if (global.get_window_actors().length > this._windows.length +
-//						this._windows_skipped + 1) {
-//						this.destroy();
-//					} else {
-//						// global.log("nach q " + global.get_window_actors().length);
-//						this._updateCoverflow();
-//					}
-				}
-			else if (keysym == Clutter.Right) {
+			} else if (keysym == Clutter.Right) {
 				this._next();
 			} else if (keysym == Clutter.Left) {
 				this._previous();
@@ -436,7 +419,7 @@ Switcher.prototype = {
 			return true;
 		},
 		
-		_destroyWindow: function(shellwm, actor) {
+		_windowDestroyed: function(shellwm, actor) {
 			let window = actor.meta_window;
 			
 			for (i in this._windows) {
@@ -453,10 +436,6 @@ Switcher.prototype = {
 					}
 				}
 			}
-		},
-		
-		_mapWindow: function(shellwm, actor) {
-			this.destroy();
 		},
 		
 		_activateSelected: function() {
