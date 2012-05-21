@@ -25,7 +25,7 @@ Manager.prototype = {
 		},
 
 		_activateSelectedWindow: function(win) {
-			Main.activateWindow(win);
+			Main.activateWindow(win, global.get_current_time());
 		},
 
 		_removeSelectedWindow: function(win) {
