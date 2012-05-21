@@ -69,8 +69,8 @@ Switcher.prototype = {
 			this._tracker = Shell.WindowTracker.get_default();
 			this._shellwm =  global.window_manager;
 			
-			this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
-			this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
+			this._dcid = this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
+			this._mcid = this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
 			
 			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true, reactive: true, });
@@ -321,8 +321,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
+						height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
 						rotation_angle_y: 60.0,
 						time: animation_time,
 						transition: transition_type,
@@ -337,8 +337,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
+						height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
 						rotation_angle_y: -60.0,
 						time: animation_time,
 						transition: transition_type,
@@ -532,7 +532,9 @@ Switcher.prototype = {
 				Main.popModal(this.actor);
 				this._haveModal = false;
 			}
-
+			
+			this._shellwm.disconnect(this._dcid);
+			this._shellwm.disconnect(this._mcid);
 			this._windows = null;
 			this._windowTitle = null;
 			this._icon = null;
