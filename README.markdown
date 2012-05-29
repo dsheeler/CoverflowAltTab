@@ -5,11 +5,12 @@ CoverflowAltTab is an Alt-Tab replacement available as an extension for [Gnome-S
 
 It let's you Alt-Tab through your windows in a cover-flow manner.
 
-Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [palatis](http://code.google.com/p/gnome-shell-extensions-coverflowalttab/), so all credits to the original author!
+Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [palatis](http://code.google.com/p/gnome-shell-extensions-coverflowalttab/), so all credits to him!
 
 
 
 ![Screenshot](http://www.dmo60.de/CoverflowAltTabScreenshotkleinneu.jpg)
+
 
 
 
@@ -18,7 +19,7 @@ Installation
 
 #### Gnome-Shell ####
 
-Make sure you are on branch Gnome-Shell (it is the default) to download the extension for Gnome-Shell.
+Make sure you are on the appropriate branch for your Gnome-Shell version (3.4 is the default, there is also one for 3.2) and download the extension.
 
   1. Copy the folder "CoverflowAltTab@dmo60.de" to `~/.local/share/gnome-shell/extensions/`.
 		
@@ -33,7 +34,8 @@ Switch to branch Cinnamon or head over to [Cinnamon-Spices](http://cinnamon-spic
 	
   2. Enable the extension in Cinnamon Settings. (Eventually you have to restart Cinnamon: Press Alt+F2, type 'r' and enter)
 	 
-	 
+
+
 
 Usage
 ------
@@ -54,10 +56,11 @@ You can also use the **arrow keys** or your **mouse wheel** to cycle through the
 
 
 
+
 Customization
 --------------
 
 You can change the background color and gradient by adjusting the corresponding values in the `stylesheet.css` file.
 
 For those who want, it's also possible to change the position of the window title box (top or bottom), the icon size and spacing and the vertical offset.
-To do so, open the `switcher.js` file within the CoverflowAltTab extensions directory and modify the corresponding lines (they are highlighted). 
+To do so, open the `switcher.js` file within the CoverflowAltTab extensions directory, modify the corresponding lines (they are highlighted) and restart Gnome-Shell/Cinnamon.
