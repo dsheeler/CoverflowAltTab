@@ -11,7 +11,7 @@ const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Shell = imports.gi.Cinnamon;
-//const Mainloop = imports.mainloop;
+const Mainloop = imports.mainloop;
 const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
@@ -21,7 +21,7 @@ const WINDOWPREVIEW_SCALE = 0.5;
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
 
-//const INITIAL_DELAY_TIMEOUT = 1000;
+const INITIAL_DELAY_TIMEOUT = 150;
 
 
 /*
@@ -68,12 +68,40 @@ Switcher.prototype = {
 			this._tracker = Shell.WindowTracker.get_default();
 			this._shellwm =  global.window_manager;
 			
-			this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
-			this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
+			this._dcid = this._shellwm.connect('destroy', Lang.bind(this, this._windowDestroyed));
+			this._mcid = this._shellwm.connect('map', Lang.bind(this, this._activateSelected));
 			
-			let monitor = Main.layoutManager.primaryMonitor;
 			this.actor = new St.Group({ visible: true, reactive: true, });
+			Main.uiGroup.add_actor(this.actor);
+			
+			if (!Main.pushModal(this.actor)) {
+				return false;
+			}
 
+			this._haveModal = true;
+			this._modifierMask = AltTab.primaryModifier(mask);
+
+			this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
+			this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
+			this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
+			
+			// There's a race condition; if the user released Alt before
+			// we got the grab, then we won't be notified. (See
+			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+			// details) So we check now. (Have to do this after updating
+			// selection.)
+			let [x, y, mods] = global.get_pointer();
+			if (!(mods & this._modifierMask)) {
+				this._activateSelected();
+			}
+			
+			this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT,
+                    Lang.bind(this, this.show));
+		},
+
+		show: function() {			
+			let monitor = Main.layoutManager.primaryMonitor;
+			
 			// background
 			this._background = new St.Group({
 				style_class: 'coverflow-switcher',
@@ -85,6 +113,7 @@ Switcher.prototype = {
 				width: monitor.width,
 				height: monitor.height
 			});
+			
 			// background gradient
 			this._background.add_actor(new St.Bin({
 				style_class: 'coverflow-switcher-gradient',
@@ -101,9 +130,9 @@ Switcher.prototype = {
 			let currentWorkspace = global.screen.get_active_workspace();
 			this._previewLayer = new St.Group({ visible: true, reactive: true });
 			this._previews = [];
-			for (i in windows) {
-				let metaWin = windows[i];
-				let compositor = windows[i].get_compositor_private();
+			for (i in this._windows) {
+				let metaWin = this._windows[i];
+				let compositor = this._windows[i].get_compositor_private();
 				if (compositor) {
 					let texture = compositor.get_texture();
 					let [width, height] = texture.get_size();
@@ -134,36 +163,6 @@ Switcher.prototype = {
 			}
 
 			this.actor.add_actor(this._previewLayer);
-			Main.uiGroup.add_actor(this.actor);
-			
-			if (!Main.pushModal(this.actor)) {
-				return false;
-			}
-
-			this._haveModal = true;
-			this._modifierMask = AltTab.primaryModifier(mask);
-
-			this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
-			this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
-			this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
-			
-			// There's a race condition; if the user released Alt before
-			// we got the grab, then we won't be notified. (See
-			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-			// details) So we check now. (Have to do this after updating
-			// selection.)
-			let [x, y, mods] = global.get_pointer();
-			if (!(mods & this._modifierMask)) {
-				this._activateSelected();
-			}
-			
-//			this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT,
-//                    Lang.bind(this, this.show));
-			
-			this.show();
-		},
-
-		show: function(shellwm, binding, mask, window, backwards) {
 			this.actor.show();
 
 			// hide all window actors
@@ -177,6 +176,8 @@ Switcher.prototype = {
 				time: 0.25,
 				transition: 'easeOutQuad',
 			});
+			
+			this._initialDelayTimeoutId = 0;
 			
 			this._next();
 		},
@@ -217,7 +218,7 @@ Switcher.prototype = {
 				loop = false;
 			}
 			// on a loop, we want a faster and linear animation
-			let animation_time = loop ? 0.05 : 0.25;
+			let animation_time = loop ? 0.0 : 0.25;
 			let transition_type = loop ? 'linear' : 'easeOutQuad';
 			
 			let monitor = Main.layoutManager.primaryMonitor;
@@ -289,7 +290,6 @@ Switcher.prototype = {
 				transition: transition_type,
 			});
 
-
 			// preview windows
 			for (i in this._previews) {
 				let preview = this._previews[i];
@@ -319,8 +319,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
+						height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
 						rotation_angle_y: 60.0,
 						time: animation_time,
 						transition: transition_type,
@@ -334,8 +334,8 @@ Switcher.prototype = {
 						opacity: 255,
 						x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
 						y: monitor.height / 2 - OFFSET,
-						width: preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10,
-						height: preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10,
+						width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
+						height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
 						rotation_angle_y: -60.0,
 						time: animation_time,
 						transition: transition_type,
@@ -370,43 +370,46 @@ Switcher.prototype = {
 
 			let backwards = event_state & Clutter.ModifierType.SHIFT_MASK;
 			let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
-						
+
 			// Esc -> close CoverFlow
 			if (keysym == Clutter.Escape) {
 				this.destroy();
-			}
-			// Q -> Close window, update previews
-			else if (keysym == Clutter.q || keysym == Clutter.Q) {
+			// Q -> Close window
+		    } else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
+			// Left/Right -> navigate through previews	
 			} else if (keysym == Clutter.Right) {
 				this._next();
 			} else if (keysym == Clutter.Left) {
 				this._previous();
+			// D -> Show desktop
 			} else if (keysym == Clutter.d || keysym == Clutter.D) {
 				this._showDesktop();
+			// default alt-tab
 			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
 					action == Meta.KeyBindingAction.SWITCH_WINDOWS ||
 					action == Meta.KeyBindingAction.SWITCH_PANELS) {
 				backwards ? this._previous() : this._next();
-			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
-					action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD) {
-				this._previous();
 			}
 
 			return true;
 		},
 
 		_keyReleaseEvent: function(actor, event) {
+			
 			let [x, y, mods] = global.get_pointer();
 			let state = mods & this._modifierMask;
 
 			if (state == 0) {
+				if (this._initialDelayTimeoutId != 0)
+					this._currentIndex = (this._currentIndex + 1) % this._windows.length;
 				this._activateSelected();
 			}
 
 			return true;
 		},
 		
+		// allow navigating by mouse-wheel scrolling
 		_scrollEvent: function(actor, event) {
 			actor.set_reactive(false);
 			let dir = event.get_scroll_direction();
@@ -464,56 +467,63 @@ Switcher.prototype = {
 		_onDestroy: function() {
 			let monitor = Main.layoutManager.primaryMonitor;
 			
-			// preview windows
-			let currentWorkspace = global.screen.get_active_workspace();
-			for (i in this._previews) {
-				let preview = this._previews[i];
-				let metaWin = this._windows[i];
-				let compositor = this._windows[i].get_compositor_private();
-				
-				let rotation_vertex_x = 0.0;
-				if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
-					rotation_vertex_x = preview.width / 2;
-				} else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
-					rotation_vertex_x = -preview.width / 2;
+			if (this._initialDelayTimeoutId == 0) {
+				// preview windows
+				let currentWorkspace = global.screen.get_active_workspace();
+				for (i in this._previews) {
+					let preview = this._previews[i];
+					let metaWin = this._windows[i];
+					let compositor = this._windows[i].get_compositor_private();
+					
+					let rotation_vertex_x = 0.0;
+					if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
+						rotation_vertex_x = preview.width / 2;
+					} else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
+						rotation_vertex_x = -preview.width / 2;
+					}
+					preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+					preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+					
+					Tweener.addTween(preview, {
+						opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
+								  || metaWin.is_on_all_workspaces()) ? 255 : 0,
+						x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
+						y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2,
+						width: (metaWin.minimized) ? 0 : compositor.width,
+						height: (metaWin.minimized) ? 0 : compositor.height,
+						rotation_angle_y: 0.0,
+						time: 0.25,
+						transition: 'easeOutQuad',
+					});
 				}
-				preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-				preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-				
-				Tweener.addTween(preview, {
-					opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
-							  || metaWin.is_on_all_workspaces()) ? 255 : 0,
-					x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
-					y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2,
-					width: (metaWin.minimized) ? 0 : compositor.width,
-					height: (metaWin.minimized) ? 0 : compositor.height,
-					rotation_angle_y: 0.0,
+	
+				// background
+				Tweener.removeTweens(this._background);
+				Tweener.addTween(this._background, {
+					opacity: 0,
 					time: 0.25,
 					transition: 'easeOutQuad',
+					onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
 				});
 			}
-
-			// background
-			Tweener.removeTweens(this._background);
-			Tweener.addTween(this._background, {
-				opacity: 0,
-				time: 0.25,
-				transition: 'easeOutQuad',
-				onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
-			});
 
 			if (this._haveModal) {
 				Main.popModal(this.actor);
 				this._haveModal = false;
 			}
-
+			
+			if (this._initialDelayTimeoutId != 0)
+				Mainloop.source_remove(this._initialDelayTimeoutId);
+			
+			this._shellwm.disconnect(this._dcid);
+			this._shellwm.disconnect(this._mcid);
 			this._windows = null;
 			this._windowTitle = null;
 			this._icon = null;
 			this._applicationIconBox = null;
 			this._previews = null;
 			this._previewLayer = null;
-//			this._initialDelayTimeoutId = null;
+			this._initialDelayTimeoutId = null;
 		},
 
 		destroy: function() {
