@@ -1,5 +1,3 @@
-/* -*0 mode: js2; js2-basic-offset: 4; indent-tabs-mode: nil -* */
-
 /* CoverflowAltTab::Switcher:
  *
  * The implementation of the switcher UI. Handles keyboard events.
@@ -366,8 +364,7 @@ Switcher.prototype = {
 		
 		_keyPressEvent: function(actor, event) {
 			let keysym = event.get_key_symbol();
-			let event_state = Shell.get_event_state(event);
-
+			let event_state = event.get_state();
 			let backwards = event_state & Clutter.ModifierType.SHIFT_MASK;
 			let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
 
@@ -396,7 +393,6 @@ Switcher.prototype = {
 		},
 
 		_keyReleaseEvent: function(actor, event) {
-			
 			let [x, y, mods] = global.get_pointer();
 			let state = mods & this._modifierMask;
 
@@ -429,7 +425,8 @@ Switcher.prototype = {
 						this._windows.splice(i, 1);
 						this._previews[i].destroy();
 						this._previews.splice(i, 1);
-						this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : this._currentIndex;
+						this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : 
+							this._currentIndex % this._windows.length;
 						this._updateCoverflow();
 						return;
 					}
@@ -475,6 +472,8 @@ Switcher.prototype = {
 					let metaWin = this._windows[i];
 					let compositor = this._windows[i].get_compositor_private();
 					
+					if (i != this._currentIndex)
+						preview.lower_bottom();
 					let rotation_vertex_x = 0.0;
 					if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
 						rotation_vertex_x = preview.width / 2;

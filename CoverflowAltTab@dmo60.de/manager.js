@@ -25,18 +25,19 @@ Manager.prototype = {
 		},
 
 		_activateSelectedWindow: function(win) {
-			Main.activateWindow(win);
+			Main.activateWindow(win, global.get_current_time());
 		},
 
 		_removeSelectedWindow: function(win) {
 			win.delete(global.get_current_time());
 		},
 
-		_startWindowSwitcher: function (shellwm, binding, mask, window, backwards) {
+		_startWindowSwitcher: function (display, screen, window, binding) {			
 			let windows = [];
 			let actions = {};
-			let currentWorkspace = global.screen.get_active_workspace();
+			let currentWorkspace = screen.get_active_workspace();
 			let currentIndex = 0;
+			let mask = binding.get_mask();
 
 			// construct a list with all windows
 			let windowActors = global.get_window_actors();
@@ -51,19 +52,19 @@ Manager.prototype = {
 				let t2 = win2.get_user_time();
 
 				return (t2 > t1) ? 1 : -1 ;
-			}
+				}
 			));
 
 			// switch between windows of all workspaces
-			if (binding == 'switch_panels') {
+			if (binding.get_name() == 'switch-panels') {
 				windows = windows.filter(
 						function(win) {
 							return !win.is_skip_taskbar();
 						}
 				);
 			// switch between windows of same application from all workspaces
-			} else if (binding == 'switch_group') {
-				let focused = global.display.focus_window;
+			} else if (binding.get_name() == 'switch-group') {
+				let focused = display.focus_window;
 				if (!focused)
 					focused = windows[0];
 
@@ -85,10 +86,10 @@ Manager.prototype = {
 				actions['activate_selected'] = this._activateSelectedWindow;
 				actions['remove_selected'] = this._removeSelectedWindow;
 				
-				if (!global.display.focus_window) {
+				if (!display.focus_window) {
 					currentIndex = -1;
 				}
-
+				
 				let switcher = new Switcher.Switcher(windows, actions, mask, currentIndex);
 			};
 		},
