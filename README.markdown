@@ -60,7 +60,5 @@ You can also use the **arrow keys** or your **mouse wheel** to cycle through the
 Customization
 --------------
 
-You can change the background color and gradient by adjusting the corresponding values in the `stylesheet.css` file.
-
-For those who want, it's also possible to change the position of the window title box (top or bottom), the icon size and spacing and the vertical offset.
-To do so, open the `switcher.js` file within the CoverflowAltTab extensions directory, modify the corresponding lines (they are highlighted) and restart Gnome-Shell/Cinnamon.
+For those who want, it is possible to set some preferences like animation time, panel visibility, background dim factor, window title position and window icon style.
+To do so, open the `switcher.js` file within the CoverflowAltTab extensions directory, modify the corresponding lines at the beginning of the script and restart Cinnamon.

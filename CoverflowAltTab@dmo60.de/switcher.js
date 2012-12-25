@@ -15,25 +15,30 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
+// set animation time (in ms)
 let animation_time = 0.25;
+
+// set to true to hide panel, false to show panel when Coverflow is active
 let hide_panel = true;
+
+// set background dim factor between 0.0(full dimming) and 1.0(no dimming)
 let dim_factor = 0.3;
+
+// set position of window title: 1 for top, 7 for bottom
 let position = 7;
+
+// set a vertical offset (in pixels): negative value moves everything down, positive up
 let offset = 0;
+
+// set icon style: "Classic" or "Overlay"
 let icon_style = "Classic";
 
 const WINDOWPREVIEW_SCALE = 0.5;
 const INITIAL_DELAY_TIMEOUT = 150;
 
-
-///*
-//* SET ICON SIZE AND SPACING BETWEEN ICON AND WINDOW TITLE HERE:
-//* --------------------------------------------------------
-//*/
-const ICON_SIZE = 64;  // default: 64
-const ICON_SIZE_BIG = 128;  // default: 128
-const ICON_TITLE_SPACING = 10;  // default: 10
-///* -------------------------------------------------------- */
+const ICON_SIZE = 64;
+const ICON_SIZE_BIG = 128;
+const ICON_TITLE_SPACING = 10;
 
 
 
