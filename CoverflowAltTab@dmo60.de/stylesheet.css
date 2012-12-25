@@ -1,13 +1,21 @@
+/* NOT USED ANYMORE
 .coverflow-switcher {
-	background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .coverflow-switcher-gradient {
-	background-gradient-start: rgba(0, 0, 0, 0.0);
-	background-gradient-end: rgba(0, 0, 0, 0.7);
-	background-gradient-direction: vertical;
+    background-gradient-start: rgba(255, 255, 255, 0.0);
+    background-gradient-end: rgba(255, 255, 255, 0.9);
+    background-gradient-direction: vertical;
 }
+*/
 
 .coverflow-window-title-label {
-	font-weight: bold;
+    font-weight: bold;
+}
+
+.coverflow-app-icon-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(128,128,128,0.40);
+    border-radius: 10px;
 }
