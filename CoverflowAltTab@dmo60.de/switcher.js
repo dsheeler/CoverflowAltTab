@@ -35,6 +35,7 @@ let icon_style = "Classic";
 
 const WINDOWPREVIEW_SCALE = 0.5;
 const INITIAL_DELAY_TIMEOUT = 150;
+const CHECK_DESTROYED_TIMEOUT = 100;
 
 const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
@@ -375,7 +376,8 @@ Switcher.prototype = {
 				// Q -> Close window
 			} else if (keysym == Clutter.q || keysym == Clutter.Q) {
 				this._actions['remove_selected'](this._windows[this._currentIndex]);
-				this._windowDestroyed(this._windows[this._currentIndex]);
+				this._checkDestroyedTimeoutId = Mainloop.timeout_add(CHECK_DESTROYED_TIMEOUT,
+						Lang.bind(this, this._checkDestroyed, this._windows[this._currentIndex]));
 				// Left/Right -> navigate through previews	
 			} else if (keysym == Clutter.Right) {
 				this._next();
@@ -419,6 +421,26 @@ Switcher.prototype = {
 		_windowDestroyed: function(shellwm, actor) {
 			let window = actor.meta_window;
 
+			for (i in this._windows) {
+				if (window == this._windows[i]) {
+					if (this._windows.length == 1) {
+						this.destroy();
+					} else {
+						this._windows.splice(i, 1);
+						this._previews[i].destroy();
+						this._previews.splice(i, 1);
+						this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : 
+							this._currentIndex % this._windows.length;
+						this._updateCoverflow();
+						return;
+					}
+				}
+			}
+		},
+		
+		_checkDestroyed: function(window) {
+			this._checkDestroyedTimeoutId = 0;
+			
 			for (i in this._windows) {
 				if (window == this._windows[i]) {
 					if (this._windows.length == 1) {
@@ -525,6 +547,8 @@ Switcher.prototype = {
 
 				if (this._initialDelayTimeoutId != 0)
 					Mainloop.source_remove(this._initialDelayTimeoutId);
+				if (this._checkDestroyedTimeoutId != 0)
+					Mainloop.source_remove(this._checkDestroyedTimeoutId);
 
 				this._shellwm.disconnect(this._dcid);
 				this._shellwm.disconnect(this._mcid);
