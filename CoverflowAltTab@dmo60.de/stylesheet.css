@@ -1,17 +1,8 @@
-/* NOT USED ANYMORE
-.coverflow-switcher {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.coverflow-switcher-gradient {
-    background-gradient-start: rgba(255, 255, 255, 0.0);
-    background-gradient-end: rgba(255, 255, 255, 0.9);
-    background-gradient-direction: vertical;
-}
-*/
-
 .coverflow-window-title-label {
     font-weight: bold;
+    font-size: 20pt;
+    font-family: sans-serif;
+    color: white;
 }
 
 .coverflow-app-icon-box {
