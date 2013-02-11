@@ -487,7 +487,7 @@ Switcher.prototype = {
 					let preview = this._previews[i];
 					let metaWin = this._windows[i];
 					let compositor = this._windows[i].get_compositor_private();
-
+					
 					if (i != this._currentIndex)
 						preview.lower_bottom();
 					let rotation_vertex_x = 0.0;
@@ -496,14 +496,14 @@ Switcher.prototype = {
 					} else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
 						rotation_vertex_x = -preview.width / 2;
 					}
-					preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+					preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
 					preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
 
 					Tweener.addTween(preview, {
 						opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace 
 								|| metaWin.is_on_all_workspaces()) ? 255 : 0,
-						x: (metaWin.minimized) ? 0 : compositor.x + compositor.width / 2,
-						y: (metaWin.minimized) ? 0 : compositor.y + compositor.height / 2,
+						x: (metaWin.minimized) ? 0 : compositor.x,
+						y: (metaWin.minimized) ? 0 : compositor.y,
 						width: (metaWin.minimized) ? 0 : compositor.width,
 						height: (metaWin.minimized) ? 0 : compositor.height,
 						rotation_angle_y: 0.0,
