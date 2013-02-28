@@ -9,5 +9,5 @@
     icon_title_spacing: 10,         // Horizontal offset (in pixels): negative value moves the title label to left, positive to right
     offset: 0,                      // Vertical offset (in pixels): negative value moves everything down, positive up
     hide_panel: true,               // Set to true to hide panel, false to show panel when Coverflow is active
-    switcher_style: 'Coverflow',    // "Coverflow" or "Windows7"
+    switcher_style: 'Coverflow',    // "Coverflow" or "Windows 7"
 }
