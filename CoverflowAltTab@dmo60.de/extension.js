@@ -18,9 +18,11 @@ const PACKAGE_VERSION = Config.PACKAGE_VERSION.split('.');
 for(let i=0; i<PACKAGE_VERSION; i++)
     PACKAGE_VERSION[i] = parseInt(PACKAGE_VERSION[i]);
 
-// fixme: shell version number ?
-const HAS_META_KEYBIND_API = !(PACKAGE_NAME == 'cinnamon' && PACKAGE_VERSION[0] <= 1 && PACKAGE_VERSION[1] <= 4)
-                          || !(PACKAGE_NAME == 'gnome-shell' && PACKAGE_VERSION[0] <= 0 && PACKAGE_VERSION[1] <= 0);
+let HAS_META_KEYBIND_API;
+if(PACKAGE_NAME == 'cinnamon')
+    HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 1 && PACKAGE_VERSION[1] <= 4);
+else // fixme: shell version number ?
+        HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 0 && PACKAGE_VERSION[1] <= 0);
 
 let manager = null;
 
