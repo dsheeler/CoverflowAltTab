@@ -1,5 +1,5 @@
 {
-	"cinnamon-version": ["1.4", "1.5", "1.6"],
+	"cinnamon-version": ["1.4.0", "1.5", "1.5.1", "1.5.2", "1.6", "1.7"],
 	"uuid": "CoverflowAltTab@dmo60.de",
 	"name": "Coverflow Alt-Tab",
 	"description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
