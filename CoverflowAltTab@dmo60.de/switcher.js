@@ -22,16 +22,16 @@ function Switcher() {
 }
 
 Switcher.prototype = {
-    _init: function(windows, tracker, actions, mask, currentIndex, settings) {
-        this._settings = settings;
+    _init: function(windows, mask, currentIndex, manager) {
+        this._manager = manager;
+        this._settings = manager.platform.getSettings();
         this._windows = windows;
         this._windowTitle = null;
         this._icon = null;
         this._modifierMask = null;
         this._currentIndex = currentIndex;
-        this._actions = actions;
         this._haveModal = false;
-        this._tracker = tracker;
+        this._tracker = manager.platform.getWindowTracker();
         this._windowManager = global.window_manager;
         this._lastTime = 0;
 
@@ -42,7 +42,8 @@ Switcher.prototype = {
         this._background.hide();
         global.overlay_group.add_actor(this._background);
 
-        this.actor = new St.Group({ visible: true, reactive: true, });
+        let widgetClass = manager.platform.getWidgetClass();
+        this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
         Main.uiGroup.add_actor(this.actor);
 
@@ -396,7 +397,7 @@ Switcher.prototype = {
             case Clutter.q:
             case Clutter.Q:
                 // Q -> Close window
-                this._actions['remove_selected'](this._windows[this._currentIndex]);
+                this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
                 this._checkDestroyedTimeoutId = Mainloop.timeout_add(CHECK_DESTROYED_TIMEOUT,
                         Lang.bind(this, this._checkDestroyed, this._windows[this._currentIndex]));
                 return true;
@@ -514,7 +515,7 @@ Switcher.prototype = {
     },
 
     _activateSelected: function() {
-        this._actions['activate_selected'](this._windows[this._currentIndex]);
+        this._manager.activateSelectedWindow(this._windows[this._currentIndex]);
         this.destroy();
     },
 
