@@ -42,6 +42,7 @@ Switcher.prototype = {
         this._background.hide();
         global.overlay_group.add_actor(this._background);
 
+        // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
         this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
@@ -146,7 +147,7 @@ Switcher.prototype = {
         let t = new Date().getTime();
         if(t - this._lastTime < 150)
             return false;
-        
+
         this._lastTime = t;
         return true;
     },
@@ -164,7 +165,7 @@ Switcher.prototype = {
             this._updateCoverflow("next");
             return;
         }
-        
+
         this.actor.set_reactive(false);
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = this._currentIndex - 1;
@@ -184,7 +185,7 @@ Switcher.prototype = {
             this._updateCoverflow("next");
             return;
         }
-        
+
         this.actor.set_reactive(false);
         if (this._currentIndex == 0) {
             this._currentIndex = 1;
@@ -195,7 +196,7 @@ Switcher.prototype = {
         }
         this.actor.set_reactive(true);
     },
-    
+
     updateActiveMonitor: function() {
         this._activeMonitor = null;
         try {
@@ -206,7 +207,7 @@ Switcher.prototype = {
         }
         if(!this._activeMonitor)
             this._activeMonitor = Main.layoutManager.primaryMonitor;
-        
+
         return this._activeMonitor;
     },
 
@@ -312,7 +313,7 @@ Switcher.prototype = {
 
         this._updateCoverflowPreviews(direction, loop, animation_time, transition_type, monitor);
     },
-    
+
     _updateCoverflowPreviews: function(direction, loop, animation_time, transition_type, monitor) {
         // preview windows
         for (let i in this._previews) {
@@ -493,10 +494,10 @@ Switcher.prototype = {
             }
         }
     },
-    
+
     _checkDestroyed: function(window) {
         this._checkDestroyedTimeoutId = 0;
-        
+
         for (i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length == 1) {
@@ -505,7 +506,7 @@ Switcher.prototype = {
                     this._windows.splice(i, 1);
                     this._previews[i].destroy();
                     this._previews.splice(i, 1);
-                    this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 : 
+                    this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
                         this._currentIndex % this._windows.length;
                     this._updateCoverflow();
                     return;
@@ -554,7 +555,7 @@ Switcher.prototype = {
                 } else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
                     rotation_vertex_x = -preview.width / 2;
                 }
-				preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
+                preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
                 preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
 
                 Tweener.addTween(preview, {
@@ -617,7 +618,7 @@ Switcher.prototype = {
         this._previews = null;
         this._initialDelayTimeoutId = null;
     },
-    
+
     getPanels: function() {
         let panels = [Main.panel];
         if(Main.panel2)

@@ -35,12 +35,12 @@ Manager.prototype = {
         this.platform = platform;
         this.keybinder = keybinder;
     },
-    
+
     enable: function() {
         this.platform.enable();
         this.keybinder.enable(Lang.bind(this, this._startWindowSwitcher));
     },
-    
+
     disable: function() {
         this.platform.disable();
         this.keybinder.disable();
@@ -54,7 +54,7 @@ Manager.prototype = {
         win.delete(global.get_current_time());
     },
 
-    _startWindowSwitcher: function(display, screen, window, binding) {			
+    _startWindowSwitcher: function(display, screen, window, binding) {
         let windows = [];
         let currentWorkspace = screen.get_active_workspace();
 
@@ -87,7 +87,7 @@ Manager.prototype = {
         if (windows.length) {
             let mask = binding.get_mask();
             let currentIndex = windows.indexOf(display.focus_window);
-            
+
             let switcher_class = this.platform.getSettings().switcher_class;
             let switcher = new switcher_class(windows, mask, currentIndex, this);
         }

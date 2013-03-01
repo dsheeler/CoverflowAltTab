@@ -9,7 +9,11 @@ const Clutter = imports.gi.Clutter;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 
-const ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+let ExtensionImports;
+if(Config.PACKAGE_NAME == 'cinnamon')
+    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+else
+    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 const BaseSwitcher = ExtensionImports.switcher;
 
 function Switcher() {
@@ -119,11 +123,11 @@ Switcher.prototype = {
         this._updateCoverflow("previous")
         this.actor.set_reactive(true);
     },
-    
+
     _updateCoverflowPreviews: function(direction, loop, animation_time, transition_type, monitor) {
         if(this._previews.length == 0)
             return;
-        
+
         if(this._previews.length == 1) {
             let preview = this._previews[0];
             Tweener.addTween(preview, {
@@ -137,7 +141,7 @@ Switcher.prototype = {
             });
             return;
         }
-        
+
         // preview windows
         for (let i in this._previews) {
             let preview = this._previews[i];
@@ -189,7 +193,7 @@ Switcher.prototype = {
     _onFadeBackwardsComplete: function(preview, distance, animation_time, transition_type) {
         preview.__looping = false;
         preview.raise_top();
-        
+
         preview.x = preview.target_x + 200;
         preview.y =  preview.target_y + 100;
         preview.width = preview.target_width;
@@ -208,7 +212,7 @@ Switcher.prototype = {
             onCompleteScope: this,
         });
     },
-                
+
     _onFadeForwardComplete: function(preview, distance, animation_time, transition_type) {
         preview.__looping = false;
         preview.lower_bottom();
@@ -227,7 +231,7 @@ Switcher.prototype = {
             onCompleteScope: this,
         });
     },
-    
+
     _onFinishMove: function(preview) {
         if(preview.__finalTween) {
             Tweener.addTween(preview, preview.__finalTween);
