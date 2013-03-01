@@ -21,8 +21,7 @@ if(PACKAGE_NAME == 'cinnamon') {
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 }
 else {
-    // fixme: shell version number ?
-    HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 0 && PACKAGE_VERSION[1] <= 0);
+    HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 3 && PACKAGE_VERSION[1] <= 2);
 
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
