@@ -16,6 +16,7 @@ const Pango = imports.gi.Pango;
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
+const TRANSITION_TYPE = 'easeOutQuad';
 
 function Switcher() {
     this._init.apply(this, arguments);
@@ -75,44 +76,12 @@ Switcher.prototype = {
     },
 
     show: function() {
-        let monitor = this.updateActiveMonitor();
+        let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
 
         // create previews
-        let currentWorkspace = global.screen.get_active_workspace();
-        this._previews = [];
-        for (i in this._windows) {
-            let metaWin = this._windows[i];
-            let compositor = this._windows[i].get_compositor_private();
-            if (compositor) {
-                let texture = compositor.get_texture();
-                let [width, height] = texture.get_size();
-
-                let scale = 1.0;
-                let previewWidth = monitor.width * this._settings.preview_scale;
-                let previewHeight = monitor.height * this._settings.preview_scale;
-                if (width > previewWidth || height > previewHeight)
-                    scale = Math.min(previewWidth / width, previewHeight / height);
-
-                let clone = new Clutter.Clone({
-                    opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-                    source: texture,
-                    reactive: true,
-                    anchor_gravity: Clutter.Gravity.CENTER,
-                    x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
-                    y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
-                });
-
-                clone.target_width = Math.round(width * scale);
-                clone.target_height = Math.round(height * scale);
-                clone.target_width_side = clone.target_width * 2/3;
-                clone.target_height_side = clone.target_height;
-
-                this._previews.push(clone);
-                this.actor.add_actor(clone);
-            }
-        }
+        this._createPreviews();
 
         // hide windows and show Coverflow actors
         global.window_group.hide();
@@ -127,7 +96,7 @@ Switcher.prototype = {
                 Tweener.addTween(panel.actor, {
                     opacity: 0,
                     time: this._settings.animation_time,
-                    transistion: 'easeOutQuad'
+                    transistion: TRANSITION_TYPE
                 });
             }, this);
         }
@@ -135,12 +104,28 @@ Switcher.prototype = {
         Tweener.addTween(this._background, {
             dim_factor: this._settings.dim_factor,
             time: this._settings.animation_time,
-            transition: 'easeOutQuad'
+            transition: TRANSITION_TYPE
         });
 
         this._initialDelayTimeoutId = 0;
 
         this._next();
+    },
+
+    _createPreviews: function() {
+        throw new Error("Abstract methot _createPreviews not implemented");
+    },
+
+    _updatePreviews: function() {
+        throw new Error("Abstract methot _updatePreviews not implemented");
+    },
+
+    _previewNext: function() {
+        throw new Error("Abstract methot _previewNext not implemented");
+    },
+
+    _previewPrevious: function() {
+        throw new Error("Abstract methot _previewPrevious not implemented");
     },
 
     _checkSwitchTime: function() {
@@ -152,52 +137,29 @@ Switcher.prototype = {
         return true;
     },
 
-    // If next() is called on the last window, we want to
-    // trigger a loop animation: calling previous() until we
-    // are back on the first window and accelerate animations.
-    // If there are only two windows, we don't need a loop, we
-    // can do a simple previous().
-    //
-    // @loop: indicating whether we're currently doing a loop
-    _next: function(loop) {
+    _next: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateCoverflow("next");
-            return;
-        }
-
-        this.actor.set_reactive(false);
-        if (this._currentIndex == this._windows.length - 1) {
-            this._currentIndex = this._currentIndex - 1;
-            this._updateCoverflow("previous", (this._currentIndex != 0 && this._windows.length > 2));
+            this._updateCoverflow(0);
         } else {
-            this._currentIndex = (this._currentIndex + 1) % this._windows.length;
-            this._updateCoverflow("next", (this._currentIndex == this._windows.length - 1) ? false : loop);
+            this.actor.set_reactive(false);
+            this._previewNext();
+            this.actor.set_reactive(true);
         }
-        this.actor.set_reactive(true);
     },
 
-    // The same here like in next(),
-    // but of course the other way around
-    _previous: function(loop) {
+    _previous: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateCoverflow("next");
-            return;
-        }
-
-        this.actor.set_reactive(false);
-        if (this._currentIndex == 0) {
-            this._currentIndex = 1;
-            this._updateCoverflow("next", (this._windows.length > 2));
+            this._updateCoverflow(0);
         } else {
-            this._currentIndex = this._currentIndex - 1;
-            this._updateCoverflow("previous", (this._currentIndex == 0) ? false : loop);
+            this.actor.set_reactive(false);
+            this._previewPrevious();
+            this.actor.set_reactive(true);
         }
-        this.actor.set_reactive(true);
     },
 
-    updateActiveMonitor: function() {
+    _updateActiveMonitor: function() {
         this._activeMonitor = null;
         try {
             let x, y, mask;
@@ -211,13 +173,8 @@ Switcher.prototype = {
         return this._activeMonitor;
     },
 
-    _updateCoverflow: function(direction, loop) {
-        if (loop == undefined)
-            loop = false;
-
-        // on a loop, we want a faster and linear animation
-        let animation_time = loop ? 0.0 : this._settings.animation_time;
-        let transition_type = loop ? 'linear' : 'easeOutQuad';
+    _updateCoverflow: function(direction) {
+        let animation_time = this._settings.animation_time;
 
         let monitor = this._activeMonitor;
 
@@ -236,7 +193,7 @@ Switcher.prototype = {
             Tweener.addTween(this._windowTitle, {
                 opacity: 0,
                 time: animation_time,
-                transition: transition_type,
+                transition: TRANSITION_TYPE,
                 onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._windowTitle),
             });
         }
@@ -258,9 +215,9 @@ Switcher.prototype = {
         this._windowTitle.add_style_class_name('coverflow-window-title-label');
         this.actor.add_actor(this._windowTitle);
         Tweener.addTween(this._windowTitle, {
-            opacity: loop ? 0 : 255,
+            opacity: 255,
             time: animation_time,
-            transition: transition_type,
+            transition: TRANSITION_TYPE,
         });
 
         // window icon
@@ -268,7 +225,7 @@ Switcher.prototype = {
             Tweener.addTween(this._applicationIconBox, {
                 opacity: 0,
                 time: animation_time,
-                transition: transition_type,
+                transition: TRANSITION_TYPE,
                 onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._applicationIconBox),
             });
         }
@@ -306,86 +263,12 @@ Switcher.prototype = {
         this._applicationIconBox.add_actor(this._icon);
         this.actor.add_actor(this._applicationIconBox);
         Tweener.addTween(this._applicationIconBox, {
-            opacity: loop ? 0 : 255,
+            opacity: 255,
             time: animation_time,
-            transition: transition_type,
+            transition: TRANSITION_TYPE,
         });
 
-        this._updateCoverflowPreviews(direction, loop, animation_time, transition_type, monitor);
-    },
-
-    _updateCoverflowPreviews: function(direction, loop, animation_time, transition_type, monitor) {
-        // preview windows
-        for (let i in this._previews) {
-            let preview = this._previews[i];
-
-            if (i == this._currentIndex) {
-                let rotation_vertex_x = (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) ? preview.width / 2 : -preview.width / 2;
-                preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-                preview.raise_top();
-                this._applicationIconBox.raise(preview);
-                Tweener.addTween(preview, {
-                    opacity: 255,
-                    x: (monitor.width) / 2,
-                    y: (monitor.height) / 2 - this._settings.offset,
-                    width: preview.target_width,
-                    height: preview.target_height,
-                    rotation_angle_y: 0.0,
-                    time: animation_time,
-                    transition: transition_type
-                });
-
-            } else if (i < this._currentIndex) {
-                preview.move_anchor_point_from_gravity(Clutter.Gravity.WEST);
-                preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
-                preview.raise_top();
-                Tweener.addTween(preview, {
-                    opacity: 255,
-                    x: monitor.width * 0.1 + 50 * (i - this._currentIndex),
-                    y: monitor.height / 2 - this._settings.offset,
-                    width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
-                    height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
-                    rotation_angle_y: 60.0,
-                    time: animation_time,
-                    transition: transition_type
-                });
-
-            } else if (i > this._currentIndex) {
-                preview.move_anchor_point_from_gravity(Clutter.Gravity.EAST);
-                preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
-                preview.lower_bottom();
-                Tweener.addTween(preview, {
-                    opacity: 255,
-                    x: monitor.width * 0.9 + 50 * (i - this._currentIndex),
-                    y: monitor.height / 2 - this._settings.offset,
-                    width: Math.max(preview.target_width_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
-                    height: Math.max(preview.target_height_side * (10 - Math.abs(i - this._currentIndex)) / 10, 0),
-                    rotation_angle_y: -60.0,
-                    time: animation_time,
-                    transition: transition_type,
-                    onCompleteParams: [loop, direction, i],
-                    onComplete: this._onUpdateComplete,
-                    onCompleteScope: this,
-                });
-            }
-        }
-    },
-
-    // Called by every window on the right side on animation completion,
-    // because if we do a loop, we want to know when a next() or previous()
-    // shift is finished
-    _onUpdateComplete: function(loop, direction, index) {
-        // if we don't want a loop or if this isn't the last window,
-        // do nothing
-        if (!loop || index != this._windows.length-1)
-            return;
-
-        // otherwise do the loop by calling next()/previous() again
-        if (direction == "next")
-            this._next(true);
-        else
-            this._previous(true);
+        this._updatePreviews(direction);
     },
 
     _keyPressEvent: function(actor, event) {
@@ -475,8 +358,15 @@ Switcher.prototype = {
     },
 
     _windowDestroyed: function(wm, actor) {
-        let window = actor.meta_window;
+		this._removeDestroyedWindow(actor.meta_window);
+    },
 
+    _checkDestroyed: function(window) {
+        this._checkDestroyedTimeoutId = 0;
+        this._removeDestroyedWindow(window);
+    },
+
+    _removeDestroyedWindow: function(window) {
         for (i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length == 1)
@@ -487,30 +377,10 @@ Switcher.prototype = {
                     this._previews.splice(i, 1);
                     this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
                     this._currentIndex % this._windows.length;
-                    this._updateCoverflow();
-
-                    return;
+                    this._updateCoverflow(0);
                 }
-            }
-        }
-    },
 
-    _checkDestroyed: function(window) {
-        this._checkDestroyedTimeoutId = 0;
-
-        for (i in this._windows) {
-            if (window == this._windows[i]) {
-                if (this._windows.length == 1) {
-                    this.destroy();
-                } else {
-                    this._windows.splice(i, 1);
-                    this._previews[i].destroy();
-                    this._previews.splice(i, 1);
-                    this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
-                        this._currentIndex % this._windows.length;
-                    this._updateCoverflow();
-                    return;
-                }
+                return;
             }
         }
     },
@@ -567,7 +437,7 @@ Switcher.prototype = {
                     height: (metaWin.minimized) ? 0 : compositor.height,
                     rotation_angle_y: 0.0,
                     time: this._settings.animation_time,
-                    transition: 'easeOutQuad',
+                    transition: TRANSITION_TYPE,
                 });
             }
 
@@ -583,7 +453,7 @@ Switcher.prototype = {
                     Tweener.addTween(panel.actor, {
                         opacity: 255,
                         time: this._settings.animation_time,
-                        transistion: 'easeOutQuad'}
+                        transistion: TRANSITION_TYPE}
                     );
                 }, this);
             }
@@ -594,7 +464,7 @@ Switcher.prototype = {
             Tweener.addTween(this._background, {
                 dim_factor: 1.0,
                 time: this._settings.animation_time,
-                transition: 'easeOutQuad',
+                transition: TRANSITION_TYPE,
                 onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
             });
         }

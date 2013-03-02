@@ -137,7 +137,7 @@ PlatformCinnamon.prototype = {
             icon_title_spacing: config.icon_title_spacing,
             offset: config.offset,
             hide_panel: config.hide_panel === true,
-            switcher_class: config.switcher_style == 'Windows 7' ? ExtensionImports.win7switcher.Switcher: ExtensionImports.switcher.Switcher
+            switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
         };
     },
 

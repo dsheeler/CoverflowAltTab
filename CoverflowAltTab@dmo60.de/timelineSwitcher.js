@@ -1,12 +1,12 @@
-/* CoverflowAltTab::Win7Switcher:
+/* CoverflowAltTab::TimelineSwitcher:
  *
- * Extends CoverflowAltTab::Switcher, making it look like Windows 7.
+ * Extends CoverflowAltTab::Switcher, switching tabs using a timeline
  */
 
 const Lang = imports.lang;
+const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
@@ -15,6 +15,8 @@ if(Config.PACKAGE_NAME == 'cinnamon')
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 const BaseSwitcher = ExtensionImports.switcher;
+
+const TRANSITION_TYPE = 'easeOutQuad';
 
 function Switcher() {
     this._init.apply(this, arguments);
@@ -27,12 +29,8 @@ Switcher.prototype = {
         BaseSwitcher.Switcher.prototype._init.apply(this, arguments);
     },
 
-    show: function() {
-        let monitor = this.updateActiveMonitor();
-        this.actor.set_position(monitor.x, monitor.y);
-        this.actor.set_size(monitor.width, monitor.height);
-
-        // create previews
+    _createPreviews: function() {
+        let monitor = this._activeMonitor;
         let currentWorkspace = global.screen.get_active_workspace();
         this._previews = [];
         for (i in this._windows) {
@@ -71,63 +69,25 @@ Switcher.prototype = {
                 clone.lower_bottom();
             }
         }
-
-        // hide windows and show Coverflow actors
-        global.window_group.hide();
-        this.actor.show();
-        this._background.show();
-
-        let panels = this.getPanels();
-        panels.forEach(function(panel) { panel.actor.set_reactive(false); });
-
-        if (this._settings.hide_panel) {
-            panels.forEach(function(panel) {
-                Tweener.addTween(panel.actor, {
-                    opacity: 0,
-                    time: this._settings.animation_time,
-                    transistion: 'easeOutQuad'
-                });
-            }, this);
-        }
-
-        Tweener.addTween(this._background, {
-            dim_factor: this._settings.dim_factor,
-            time: this._settings.animation_time,
-            transition: 'easeOutQuad'
-        });
-
-        this._initialDelayTimeoutId = 0;
-
-        this._next();
     },
 
-    // If next() is called on the last window, we want to
-    // trigger a loop animation: calling previous() until we
-    // are back on the first window and accelerate animations.
-    // If there are only two windows, we don't need a loop, we
-    // can do a simple previous().
-    //
-    // @loop: indicating whether we're currently doing a loop
-    _next: function(loop) {
-        this.actor.set_reactive(false);
+    _previewNext: function() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
-        this._updateCoverflow("next")
-        this.actor.set_reactive(true);
+        this._updateCoverflow(1)
     },
 
-    // The same here like in next(),
-    // but of course the other way around
-    _previous: function(loop) {
-        this.actor.set_reactive(false);
+    _previewPrevious: function() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
-        this._updateCoverflow("previous")
-        this.actor.set_reactive(true);
+        this._updateCoverflow(-1)
     },
 
-    _updateCoverflowPreviews: function(direction, loop, animation_time, transition_type, monitor) {
+    _updatePreviews: function(direction) {
         if(this._previews.length == 0)
             return;
 
+        let monitor = this._activeMonitor;
+        let animation_time = this._settings.animation_time;
+        
         if(this._previews.length == 1) {
             let preview = this._previews[0];
             Tweener.addTween(preview, {
@@ -137,7 +97,7 @@ Switcher.prototype = {
                 width: preview.target_width,
                 height: preview.target_height,
                 time: animation_time / 2,
-                transition: transition_type
+                transition: TRANSITION_TYPE
             });
             return;
         }
@@ -148,7 +108,7 @@ Switcher.prototype = {
             i = parseInt(i);
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
 
-            if (distance == this._previews.length - 1 && direction == "next") {
+            if (distance == this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
                 Tweener.addTween(preview, {
                     opacity: 0,
@@ -157,18 +117,18 @@ Switcher.prototype = {
                     width: preview.target_width,
                     height: preview.target_height,
                     time: animation_time / 2,
-                    transition: transition_type,
-                    onCompleteParams: [preview, distance, animation_time, transition_type],
+                    transition: TRANSITION_TYPE,
+                    onCompleteParams: [preview, distance, animation_time],
                     onComplete: this._onFadeForwardComplete,
                     onCompleteScope: this,
                 });
-            } else if (distance == 0 && direction == "previous") {
+            } else if (distance == 0 && direction < 0) {
                 preview.__looping = true;
                 Tweener.addTween(preview, {
                     opacity: 0,
                     time: animation_time / 2,
-                    transition: transition_type,
-                    onCompleteParams: [preview, distance, animation_time, transition_type],
+                    transition: TRANSITION_TYPE,
+                    onCompleteParams: [preview, distance, animation_time],
                     onComplete: this._onFadeBackwardsComplete,
                     onCompleteScope: this,
                 });
@@ -180,7 +140,7 @@ Switcher.prototype = {
                     width: Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0),
                     height: Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0),
                     time: animation_time,
-                    transition: transition_type,
+                    transition: TRANSITION_TYPE,
                 };
                 if(preview.__looping || preview.__finalTween)
                     preview.__finalTween = tweenparams;
@@ -190,7 +150,7 @@ Switcher.prototype = {
         }
     },
 
-    _onFadeBackwardsComplete: function(preview, distance, animation_time, transition_type) {
+    _onFadeBackwardsComplete: function(preview, distance, animation_time) {
         preview.__looping = false;
         preview.raise_top();
 
@@ -206,14 +166,14 @@ Switcher.prototype = {
             width: preview.target_width,
             height: preview.target_height,
             time: animation_time / 2,
-            transition: transition_type,
+            transition: TRANSITION_TYPE,
             onCompleteParams: [preview],
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
     },
 
-    _onFadeForwardComplete: function(preview, distance, animation_time, transition_type) {
+    _onFadeForwardComplete: function(preview, distance, animation_time) {
         preview.__looping = false;
         preview.lower_bottom();
 
@@ -225,7 +185,7 @@ Switcher.prototype = {
         Tweener.addTween(preview, {
             opacity: 255,
             time: animation_time / 2,
-            transition: transition_type,
+            transition: TRANSITION_TYPE,
             onCompleteParams: [preview],
             onComplete: this._onFinishMove,
             onCompleteScope: this,
