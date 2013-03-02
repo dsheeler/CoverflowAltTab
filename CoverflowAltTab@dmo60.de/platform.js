@@ -184,8 +184,12 @@ PlatformGnomeShell.prototype = {
         let keys = [
             "animation-time",
             "dim-factor",
+            "preview-scale",
             "position",
             "icon-style",
+            "icon-size",
+            "icon-size-big",
+            "icon-title-spacing",
             "offset",
             "hide-panel",
         ];
@@ -228,12 +232,12 @@ PlatformGnomeShell.prototype = {
             return {
                 animation_time: Math.max(settings.get_int("animation-time") / 1000, 0),
                 dim_factor: clamp(settings.get_int("dim-factor") / 10, 0, 1),
-                preview_scale: 0.5,
+                preview_scale: clamp(settings.get_int("preview-scale") / 10, 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
-                icon_size: 64,
-                icon_size_big: 128,
-                icon_title_spacing: 10,
+                icon_size: settings.get_int("icon-size"),
+                icon_size_big: settings.get_int("icon-size-big"),
+                icon_title_spacing: settings.get_int("icon-title-spacing"),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 switcher_class: ExtensionImports.switcher.Switcher

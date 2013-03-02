@@ -19,27 +19,17 @@ function init() {
 function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
-	let label = new Gtk.Label({label: "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n</b>"});
-	label.set_use_markup(true);
-	frame.add(label);
-
-	let panel_switch = buildSwitcher("hide-panel", "Hide panel during Coverflow");
-	frame.add(panel_switch);
-
-	let time_range = buildRange("animation-time", [100, 400, 10, 250], "Animation speed (smaller means faster)");
-	frame.add(time_range);
-
-	let dim_range = buildRange("dim-factor", [0, 10, 1, 3], "Background dim-factor (smaller means darker)");
-	frame.add(dim_range);
-
-	let pos_radio = buildRadio("position", ["Bottom", "Top"], "Window title box position");
-	frame.add(pos_radio);
-
-	let icon_radio = buildRadio("icon-style", ["Classic", "Overlay"], "Application icon style");
-	frame.add(icon_radio);
-
-	let offset_spin = buildSpin("offset", [-500, 500, 1, 10], "Vertical offset (positive value moves everything up, negative down)");
-	frame.add(offset_spin);
+	frame.add(buildSwitcher("hide-panel", "Hide panel during Coverflow"));
+	frame.add(buildRadio("switcher-style", ["Coverflow", "Windows 7"], "Switcher style"));
+	frame.add(buildRange("animation-time", [100, 400, 10, 250], "Animation speed (smaller means faster)"));
+	frame.add(buildRange("dim-factor", [0, 10, 1, 3], "Background dim-factor (smaller means darker)"));
+	frame.add(buildRange("preview-scale", [1, 10, 1, 5], "Scale the preview windows."));
+	frame.add(buildRadio("position", ["Bottom", "Top"], "Window title box position"));
+	frame.add(buildRadio("icon-style", ["Classic", "Overlay"], "Application icon style"));
+	frame.add(buildSpin("icon-size", [16, 256, 1, 64], "Size of the icon for the 'Classic' icon-style"));
+	frame.add(buildSpin("icon-size-big", [16, 256, 1, 128], "Size of the icon for the 'Overlay' icon-style"));
+	frame.add(buildSpin("offset", [-500, 500, 1, 10], "Vertical offset (positive value moves everything up, negative down)"));
+	frame.add(buildSpin("icon-title-spacing", [0, 500, 1, 10], "Horizontal offset between title and icon"));
 
 	frame.show_all();
 

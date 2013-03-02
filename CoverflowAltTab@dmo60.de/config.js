@@ -1,7 +1,7 @@
 {
     animation_time: 0.25,           // Animation time (in seconds)
     dim_factor: 0.4,                // Background dim factor between 0.0(full dimming) and 1.0(no dimming)
-    preview_scale: 0.5,             // Scale the window based on the monitor size between 0.0(0% monitor size) and 1.0(100% monitor size)
+    preview_scale: 0.5,             // Scale the preview windows based on the monitor size between 0.0(0% monitor size) and 1.0(100% monitor size)
     title_position: 'Bottom',       // "Top" or "Bottom"
     icon_style: 'Classic',          // "Classic" or "Overlay"
     icon_size: 64,                  // (Default 64)
