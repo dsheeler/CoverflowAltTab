@@ -101,7 +101,7 @@ PlatformCinnamon.prototype = {
     disable: function() {
         if(this._configMonitor) {
             this._configMonitor.disconnect(this._configConnection);
-            this._configMonitor.monitor.cancel();
+            this._configMonitor.cancel();
             this._configMonitor = null;
             this._configConnection = null;
         }
