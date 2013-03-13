@@ -202,19 +202,15 @@ Switcher.prototype = {
         }
 
         this._windowTitle = new St.Label({
-            style_class: 'modal-dialog',
+            style_class: 'switcher-list',
             text: this._windows[this._currentIndex].get_title(),
-            opacity: 0,
-            anchor_gravity: Clutter.Gravity.CENTER,
-            x: Math.round((monitor.width + label_offset) / 2),
-            y: Math.round(monitor.height * this._settings.title_position / 8 - this._settings.offset)
+            opacity: 0
         });
 
         // ellipsize if title is too long
         this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;");
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
-        this._windowTitle.add_style_class_name('run-dialog');
         this._windowTitle.add_style_class_name('coverflow-window-title-label');
         this.actor.add_actor(this._windowTitle);
         Tweener.addTween(this._windowTitle, {
@@ -222,6 +218,12 @@ Switcher.prototype = {
             time: animation_time,
             transition: TRANSITION_TYPE,
         });
+        
+        let cx = Math.round((monitor.width + label_offset) / 2);
+        let cy = Math.round(monitor.height * this._settings.title_position / 8 - this._settings.offset);
+        
+        this._windowTitle.x = cx - Math.round(this._windowTitle.get_width()/2);
+        this._windowTitle.y = cy - Math.round(this._windowTitle.get_height()/2);
 
         // window icon
         if (this._applicationIconBox) {
@@ -248,9 +250,8 @@ Switcher.prototype = {
             this._applicationIconBox = new St.Bin({
                 style_class: 'window-iconbox',
                 opacity: 0,
-                anchor_gravity: Clutter.Gravity.CENTER,
-                x: Math.round(this._windowTitle.x - (this._windowTitle.width + app_icon_size) / 2 - this._settings.icon_title_spacing),
-                y: this._windowTitle.y
+                x: Math.round(this._windowTitle.x - app_icon_size - this._settings.icon_title_spacing),
+                y: Math.round(cy - app_icon_size/2)
             });
         } else {
             this._applicationIconBox = new St.Bin({
@@ -258,8 +259,8 @@ Switcher.prototype = {
                 width: app_icon_size * 1.15,
                 height: app_icon_size * 1.15,
                 opacity: 0,
-                x: monitor.x + (monitor.width - app_icon_size) / 2,
-                y: monitor.y + (monitor.height - app_icon_size) / 2,
+                x: (monitor.width - app_icon_size) / 2,
+                y: (monitor.height - app_icon_size) / 2,
             });
         }
 
