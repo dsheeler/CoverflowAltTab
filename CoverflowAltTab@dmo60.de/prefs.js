@@ -23,13 +23,9 @@ function buildPrefsWidget() {
 	frame.add(buildRadio("switcher-style", ["Coverflow", "Timeline"], "Switcher style"));
 	frame.add(buildRange("animation-time", [100, 400, 10, 250], "Animation speed (smaller means faster)"));
 	frame.add(buildRange("dim-factor", [0, 10, 1, 3], "Background dim-factor (smaller means darker)"));
-	frame.add(buildRange("preview-scale", [1, 10, 1, 5], "Scale the preview windows."));
 	frame.add(buildRadio("position", ["Bottom", "Top"], "Window title box position"));
 	frame.add(buildRadio("icon-style", ["Classic", "Overlay"], "Application icon style"));
-	frame.add(buildSpin("icon-size", [16, 256, 1, 64], "Size of the icon for the 'Classic' icon-style"));
-	frame.add(buildSpin("icon-size-big", [16, 256, 1, 128], "Size of the icon for the 'Overlay' icon-style"));
 	frame.add(buildSpin("offset", [-500, 500, 1, 10], "Vertical offset (positive value moves everything up, negative down)"));
-	frame.add(buildSpin("icon-title-spacing", [0, 500, 1, 10], "Horizontal offset between title and icon"));
 
 	frame.show_all();
 

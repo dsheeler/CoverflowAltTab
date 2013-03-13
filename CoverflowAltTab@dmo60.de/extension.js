@@ -37,7 +37,15 @@ function init() {
 
 function enable() {
     if (!manager) {
-        let platform = PACKAGE_NAME == 'cinnamon' ? new Platform.PlatformCinnamon() : new Platform.PlatformGnomeShell();
+        let platform;
+        if(PACKAGE_NAME == 'cinnamon') {
+            if(PACKAGE_VERSION[0] <= 1 && PACKAGE_VERSION[1] <= 7 && PACKAGE_VERSION[2] <= 1)
+                platform = new Platform.PlatformCinnamon();
+            else
+                platform = new Platform.PlatformCinnamon18();
+        } else {
+            platform = new Platform.PlatformGnomeShell();
+        }
         let keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
         manager = new Manager.Manager(platform, keybinder);
     }

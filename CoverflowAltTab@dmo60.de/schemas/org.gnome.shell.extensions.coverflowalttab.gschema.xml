@@ -17,12 +17,6 @@
         <summary>Dim factor for background</summary>
         <description>Define dimming of the background. Smaller means darker. </description>
     </key>
-    <key type="i" name="preview-scale">
-        <range min="1" max="10"/>
-        <default>5</default>
-        <summary>Preview scale</summary>
-        <description>Scale the preview windows based on the monitor size between 0(0% monitor size) and 10(100% monitor size) </description>
-    </key>
     <key type="s" name="position">
         <choices>
             <choice value="Top"/>
@@ -36,23 +30,6 @@
         <default>0</default>
         <summary>Set a vertical offset</summary>
         <description>Set a vertical offset. Positive values move the whole Coverflow up, negative down.</description>
-    </key>
-    <key type="i" name="icon-size">
-        <range min="16" max="256"/>
-        <default>64</default>
-        <summary>Icon size Classic</summary>
-        <description>Set the icon size for the "Classic" icon-style</description>
-    </key>
-    <key type="i" name="icon-size-big">
-        <range min="16" max="256"/>
-        <default>128</default>
-        <summary>Icon size Overlay</summary>
-        <description>Set the icon size for the "Overlay" icon-style</description>
-    </key>
-    <key type="i" name="icon-title-spacing">
-        <default>10</default>
-        <summary>Icon title spacing</summary>
-        <description>Horizontal offset (in pixels): negative value moves the title label to left, positive to right</description>
     </key>
     <key type="s" name="icon-style">
         <choices>

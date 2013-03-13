@@ -19,6 +19,7 @@ const BaseSwitcher = ExtensionImports.switcher;
 const TRANSITION_TYPE = 'easeOutQuad';
 const SIDE_ANGLE = 60;
 const BLEND_OUT_ANGLE = 30;
+const PREVIEW_SCALE = 0.5;
 
 function appendParams(base, extra) {
     for (let key in extra) { base[key] = extra[key]; }
@@ -54,8 +55,8 @@ Switcher.prototype = {
                 let [width, height] = texture.get_size();
 
                 let scale = 1.0;
-                let previewWidth = monitor.width * this._settings.preview_scale;
-                let previewHeight = monitor.height * this._settings.preview_scale;
+                let previewWidth = monitor.width * PREVIEW_SCALE;
+                let previewHeight = monitor.height * PREVIEW_SCALE;
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 

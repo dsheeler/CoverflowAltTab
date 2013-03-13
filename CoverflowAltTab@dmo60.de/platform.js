@@ -56,12 +56,8 @@ AbstractPlatform.prototype = {
         return {
             animation_time: 0.25,
             dim_factor: 0.4,
-            preview_scale: 0.5,
             title_position: POSITION_BOTTOM,
             icon_style: 'Classic',
-            icon_size: 64,
-            icon_size_big: 128,
-            icon_title_spacing: 10,
             offset: 0,
 
             hide_panel: true,
@@ -129,12 +125,8 @@ PlatformCinnamon.prototype = {
         return {
             animation_time: Math.max(config.animation_time, 0),
             dim_factor: clamp(config.dim_factor, 0, 1),
-            preview_scale: clamp(config.dim_factor, 0, 1),
             title_position: (config.title_position == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
             icon_style: (config.icon_style == 'Overlay' ? 'Overlay' : 'Classic'),
-            icon_size: Math.max(config.icon_size, 0),
-            icon_size_big: Math.max(config.icon_size_big, 0),
-            icon_title_spacing: config.icon_title_spacing,
             offset: config.offset,
             hide_panel: config.hide_panel === true,
             switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
@@ -158,6 +150,62 @@ PlatformCinnamon.prototype = {
 
         return this.getDefaultSettings();
     }
+};
+
+function PlatformCinnamon18() {
+    this._init.apply(this, arguments);
+}
+
+PlatformCinnamon18.prototype = {
+    __proto__: AbstractPlatform.prototype,
+
+    _init: function() {
+        AbstractPlatform.prototype._init.apply(this, arguments);
+
+        this._settings = this.getDefaultSettings();
+        this._settings.updateSwitcherStyle = function() {
+            this.switcher_class = this.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher;
+        }
+        this._settings.updateTitlePosition = function() {
+            this.title_position =  (this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM);
+        }
+        
+        
+        let Settings = imports.ui.settings;
+        
+        // Init settings
+        let extSettings = new Settings.ExtensionSettings(this._settings, "CoverflowAltTab@dmo60.de");
+        function noop() {}
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "animation-time", "animation_time", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "dim-factor", "dim_factor", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "title-position", "titlePosition", this._settings.updateTitlePosition);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "icon-style", "icon_style", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "offset", "offset", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "hide-panel", "hide_panel", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
+        
+        this._settings.updateSwitcherStyle();
+        this._settings.updateTitlePosition();
+    },
+
+    enable: function() {
+    },
+
+    disable: function() {
+    },
+
+    getWidgetClass: function() {
+        return St.Group;
+    },
+
+    getWindowTracker: function() {
+        return imports.gi.Cinnamon.WindowTracker.get_default();
+    },
+
+    getSettings: function() {
+        return this._settings;
+    },
+
 };
 
 function PlatformGnomeShell() {
@@ -184,12 +232,8 @@ PlatformGnomeShell.prototype = {
         let keys = [
             "animation-time",
             "dim-factor",
-            "preview-scale",
             "position",
             "icon-style",
-            "icon-size",
-            "icon-size-big",
-            "icon-title-spacing",
             "offset",
             "hide-panel",
         ];
@@ -232,12 +276,8 @@ PlatformGnomeShell.prototype = {
             return {
                 animation_time: Math.max(settings.get_int("animation-time") / 1000, 0),
                 dim_factor: clamp(settings.get_int("dim-factor") / 10, 0, 1),
-                preview_scale: clamp(settings.get_int("preview-scale") / 10, 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
-                icon_size: settings.get_int("icon-size"),
-                icon_size_big: settings.get_int("icon-size-big"),
-                icon_title_spacing: settings.get_int("icon-title-spacing"),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 switcher_class: ExtensionImports.switcher.Switcher

@@ -17,6 +17,9 @@ const Pango = imports.gi.Pango;
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
 const TRANSITION_TYPE = 'easeOutQuad';
+const ICON_SIZE = 64;
+const ICON_SIZE_BIG = 128;
+const ICON_TITLE_SPACING = 10;
 
 function Switcher() {
     this._init.apply(this, arguments);
@@ -184,10 +187,10 @@ Switcher.prototype = {
         let app_icon_size;
         let label_offset;
         if (this._settings.icon_style == "Classic") {
-            app_icon_size = this._settings.icon_size;
-            label_offset = this._settings.icon_size + this._settings.icon_title_spacing;
+            app_icon_size = ICON_SIZE;
+            label_offset = ICON_SIZE + ICON_TITLE_SPACING;
         } else {
-            app_icon_size = this._settings.icon_size_big;
+            app_icon_size = ICON_SIZE_BIG;
             label_offset = 0;
         }
 
@@ -250,7 +253,7 @@ Switcher.prototype = {
             this._applicationIconBox = new St.Bin({
                 style_class: 'window-iconbox',
                 opacity: 0,
-                x: Math.round(this._windowTitle.x - app_icon_size - this._settings.icon_title_spacing),
+                x: Math.round(this._windowTitle.x - app_icon_size - ICON_TITLE_SPACING),
                 y: Math.round(cy - app_icon_size/2)
             });
         } else {
