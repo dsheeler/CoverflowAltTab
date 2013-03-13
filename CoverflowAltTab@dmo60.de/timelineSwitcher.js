@@ -65,7 +65,7 @@ Switcher.prototype = {
                 clone.target_y = Math.round(monitor.height * 0.5) - this._settings.offset;
 
                 this._previews.push(clone);
-                this.actor.add_actor(clone);
+                this.previewActor.add_actor(clone);
                 clone.lower_bottom();
             }
         }

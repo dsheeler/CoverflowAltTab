@@ -74,7 +74,7 @@ Switcher.prototype = {
                 clone.target_height_side = clone.target_height;
 
                 this._previews.push(clone);
-                this.actor.add_actor(clone);
+                this.previewActor.add_actor(clone);
             }
         }
     },

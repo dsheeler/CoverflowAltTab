@@ -47,6 +47,9 @@ Switcher.prototype = {
         let widgetClass = manager.platform.getWidgetClass();
         this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
+        this.previewActor = new widgetClass({ visible: true, reactive: true, });
+        this.actor.add_actor(this.previewActor);
+        
         Main.uiGroup.add_actor(this.actor);
 
         if (!Main.pushModal(this.actor)) {
