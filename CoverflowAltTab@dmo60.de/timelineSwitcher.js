@@ -73,12 +73,12 @@ Switcher.prototype = {
 
     _previewNext: function() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
-        this._updateCoverflow(1)
+        this._updateSwitcher(1)
     },
 
     _previewPrevious: function() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
-        this._updateCoverflow(-1)
+        this._updateSwitcher(-1)
     },
 
     _updatePreviews: function(direction) {

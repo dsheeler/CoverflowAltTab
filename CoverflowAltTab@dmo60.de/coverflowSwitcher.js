@@ -84,7 +84,7 @@ Switcher.prototype = {
             this._flipStack(Clutter.Gravity.WEST);
         } else {
             this._currentIndex = this._currentIndex + 1;
-            this._updateCoverflow(1);
+            this._updateSwitcher(1);
         }
     },
 
@@ -93,7 +93,7 @@ Switcher.prototype = {
             this._flipStack(Clutter.Gravity.EAST);
         } else {
             this._currentIndex = this._currentIndex - 1;
-            this._updateCoverflow(-1);
+            this._updateSwitcher(-1);
         }
     },
     

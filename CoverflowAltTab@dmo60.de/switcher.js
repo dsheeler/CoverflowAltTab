@@ -140,7 +140,7 @@ Switcher.prototype = {
     _next: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateCoverflow(0);
+            this._updateSwitcher(0);
         } else {
             this.actor.set_reactive(false);
             this._previewNext();
@@ -151,7 +151,7 @@ Switcher.prototype = {
     _previous: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateCoverflow(0);
+            this._updateSwitcher(0);
         } else {
             this.actor.set_reactive(false);
             this._previewPrevious();
@@ -173,7 +173,7 @@ Switcher.prototype = {
         return this._activeMonitor;
     },
 
-    _updateCoverflow: function(direction) {
+    _updateSwitcher: function(direction) {
         let animation_time = this._settings.animation_time;
 
         let monitor = this._activeMonitor;
@@ -377,7 +377,7 @@ Switcher.prototype = {
                     this._previews.splice(i, 1);
                     this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
                     this._currentIndex % this._windows.length;
-                    this._updateCoverflow(0);
+                    this._updateSwitcher(0);
                 }
 
                 return;
