@@ -82,6 +82,8 @@ Switcher.prototype = {
     },
 
     show: function() {
+        this._enableMonitorFix();
+        
         let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
@@ -477,6 +479,7 @@ Switcher.prototype = {
                 transition: TRANSITION_TYPE,
                 onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
             });
+            this._disableMonitorFix();
         }
 
         if (this._haveModal) {
@@ -508,5 +511,27 @@ Switcher.prototype = {
 
     destroy: function() {
         this._onDestroy();
+    },
+    
+    _enableMonitorFix: function() {
+        if(global.screen.get_n_monitors() < 2)
+            return;
+        
+        this._updateActiveMonitor();
+        this._monitorFix = true;
+        this._oldWidth = global.stage.width;
+        this._oldHeight = global.stage.height;
+        
+        let width = 2 * (this._activeMonitor.x + this._activeMonitor.width/2);
+        let height = 2 * (this._activeMonitor.y + this._activeMonitor.height/2);
+        
+        global.stage.set_size(width, height);
+    },
+    
+    _disableMonitorFix: function() {
+        if(this._monitorFix) {
+            global.stage.set_size(this._oldWidth, this._oldHeight);
+            this._monitorFix = false;
+        }
     }
 };

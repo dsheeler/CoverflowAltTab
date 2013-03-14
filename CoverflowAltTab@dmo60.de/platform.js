@@ -206,8 +206,7 @@ PlatformCinnamon18.prototype = {
 
     getSettings: function() {
         return this._settings;
-    },
-
+    }
 };
 
 function PlatformGnomeShell() {
