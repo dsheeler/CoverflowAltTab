@@ -217,10 +217,9 @@ Switcher.prototype = {
         });
 
         // ellipsize if title is too long
-        this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;");
+        this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;font-size: 14px;font-weight: bold; padding: 14px;");
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
-        this._windowTitle.add_style_class_name('coverflow-window-title-label');
         this.actor.add_actor(this._windowTitle);
         Tweener.addTween(this._windowTitle, {
             opacity: 255,
@@ -264,7 +263,7 @@ Switcher.prototype = {
             });
         } else {
             this._applicationIconBox = new St.Bin({
-                style_class: 'coverflow-app-icon-box',
+                style_class: 'window-iconbox',
                 width: app_icon_size * 1.15,
                 height: app_icon_size * 1.15,
                 opacity: 0,
