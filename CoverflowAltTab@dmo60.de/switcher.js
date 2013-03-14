@@ -169,11 +169,13 @@ Switcher.prototype = {
 
     _updateActiveMonitor: function() {
         this._activeMonitor = null;
-        try {
-            let x, y, mask;
-            [x, y, mask] = global.get_pointer();
-            this._activeMonitor = Main.layoutManager._chrome._findMonitorForRect(x, y, 0, 0);
-        } catch(e) {
+        if(!this._settings.enforce_primary_monitor) {
+            try {
+                let x, y, mask;
+                [x, y, mask] = global.get_pointer();
+                this._activeMonitor = Main.layoutManager._chrome._findMonitorForRect(x, y, 0, 0);
+            } catch(e) {
+            }
         }
         if(!this._activeMonitor)
             this._activeMonitor = Main.layoutManager.primaryMonitor;

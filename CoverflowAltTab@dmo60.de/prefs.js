@@ -20,6 +20,7 @@ function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
 	frame.add(buildSwitcher("hide-panel", "Hide panel during Coverflow"));
+	frame.add(buildSwitcher("enforce-primary-monitor", "Always show the switcher on the primary monitor"));
 	frame.add(buildRadio("switcher-style", ["Coverflow", "Timeline"], "Switcher style"));
 	frame.add(buildRange("animation-time", [100, 400, 10, 250], "Animation speed (smaller means faster)"));
 	frame.add(buildRange("dim-factor", [0, 10, 1, 3], "Background dim-factor (smaller means darker)"));

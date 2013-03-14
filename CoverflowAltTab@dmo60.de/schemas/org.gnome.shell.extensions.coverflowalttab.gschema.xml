@@ -6,6 +6,11 @@
         <summary>Hide the panel when showing coverflow</summary>
         <description>Whether to show or hide the panel when CoverflowAltTab is active.</description>
     </key>
+    <key type="b" name="enforce-primary-monitor">
+        <default>false</default>
+        <summary>Always show the switcher on the primary monitor</summary>
+        <description>Show the switcher on the primary monitor instead of detecting the active monitor.</description>
+    </key>
     <key type="i" name="animation-time">
         <default>250</default>
         <summary>The duration of coverflow animations in ms</summary>

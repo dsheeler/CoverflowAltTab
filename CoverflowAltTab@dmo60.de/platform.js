@@ -59,8 +59,8 @@ AbstractPlatform.prototype = {
             title_position: POSITION_BOTTOM,
             icon_style: 'Classic',
             offset: 0,
-
             hide_panel: true,
+            enforce_primary_monitor: true,
             switcher_class: ExtensionImports.switcher.Switcher
         };
     }
@@ -129,6 +129,7 @@ PlatformCinnamon.prototype = {
             icon_style: (config.icon_style == 'Overlay' ? 'Overlay' : 'Classic'),
             offset: config.offset,
             hide_panel: config.hide_panel === true,
+            enforce_primary_monitor: config.enforce_primary_monitor === true,
             switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
         };
     },
@@ -182,6 +183,7 @@ PlatformCinnamon18.prototype = {
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "icon-style", "icon_style", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "offset", "offset", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "hide-panel", "hide_panel", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "enforce-primary-monitor", "enforce_primary_monitor", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
         
         this._settings.updateSwitcherStyle();
@@ -236,6 +238,7 @@ PlatformGnomeShell.prototype = {
             "icon-style",
             "offset",
             "hide-panel",
+            "enforce-primary-monitor",
         ];
 
         this._connections = [];
@@ -280,6 +283,7 @@ PlatformGnomeShell.prototype = {
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
+                enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 switcher_class: ExtensionImports.switcher.Switcher
             };
         } catch(e) {

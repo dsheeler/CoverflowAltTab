@@ -62,5 +62,11 @@
     "default" : true,
     "description": "Hide Cinnamon panels",
     "tooltip": "Check to hide the panels, uncheck to show the panels when the switcher is active"
+ },
+ "enforce-primary-monitor": {
+    "type" : "checkbox",
+    "default" : false,
+    "description": "Always show the switcher on the primary monitor",
+    "tooltip": "Show the switcher on the primary monitor instead of detecting the active monitor"
  }
 }
