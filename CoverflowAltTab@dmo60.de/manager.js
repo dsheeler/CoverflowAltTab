@@ -8,89 +8,88 @@
 const Lang = imports.lang;
 const Main = imports.ui.main;
 
-const CoverflowAltTab = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+function sortWindowsByUserTime(win1, win2) {
+    let t1 = win1.get_user_time();
+    let t2 = win2.get_user_time();
+    return (t2 > t1) ? 1 : -1 ;
+}
 
-const Switcher = CoverflowAltTab.switcher;
+function matchSkipTaskbar(win) {
+    return !win.is_skip_taskbar();
+}
 
-/**
- * This class handles window events, so we can keep a stack of windows ordered
- * by the most recently focused window.
- */
-function Manager() {
-	this._init();
+function matchWmClass(win) {
+    return win.get_wm_class() == this && !win.is_skip_taskbar();
+}
+
+function matchWorkspace(win) {
+    return win.get_workspace() == this && !win.is_skip_taskbar();
+}
+
+function Manager(platform, keybinder) {
+    this._init(platform, keybinder);
 }
 
 Manager.prototype = {
-		_init: function() {;
-		},
+    _init: function(platform, keybinder) {
+        this.platform = platform;
+        this.keybinder = keybinder;
+    },
 
-		_activateSelectedWindow: function(win) {
-			Main.activateWindow(win, global.get_current_time());
-		},
+    enable: function() {
+        this.platform.enable();
+        this.keybinder.enable(Lang.bind(this, this._startWindowSwitcher));
+    },
 
-		_removeSelectedWindow: function(win) {
-			win.delete(global.get_current_time());
-		},
+    disable: function() {
+        this.platform.disable();
+        this.keybinder.disable();
+    },
 
-		_startWindowSwitcher: function (display, screen, window, binding) {			
-			let windows = [];
-			let actions = {};
-			let currentWorkspace = screen.get_active_workspace();
-			let currentIndex = 0;
-			let mask = binding.get_mask();
+    activateSelectedWindow: function(win) {
+        Main.activateWindow(win, global.get_current_time());
+    },
 
-			// construct a list with all windows
-			let windowActors = global.get_window_actors();
-			for (i in windowActors) {
-				windows.push(windowActors[i].get_meta_window());
-			}
-			windowActors = null;
-			// sort by user time
-			windows.sort(Lang.bind(this,
-					function(win1, win2) {
-				let t1 = win1.get_user_time();
-				let t2 = win2.get_user_time();
+    removeSelectedWindow: function(win) {
+        win.delete(global.get_current_time());
+    },
 
-				return (t2 > t1) ? 1 : -1 ;
-				}
-			));
+    _startWindowSwitcher: function(display, screen, window, binding) {
+        let windows = [];
+        let currentWorkspace = screen.get_active_workspace();
 
-			// switch between windows of all workspaces
-			if (binding.get_name() == 'switch-panels') {
-				windows = windows.filter(
-						function(win) {
-							return !win.is_skip_taskbar();
-						}
-				);
-			// switch between windows of same application from all workspaces
-			} else if (binding.get_name() == 'switch-group') {
-				let focused = display.focus_window;
-				if (!focused)
-					focused = windows[0];
+        // Construct a list with all windows
+        let windowActors = global.get_window_actors();
+        for (i in windowActors)
+            windows.push(windowActors[i].get_meta_window());
 
-				windows = windows.filter(
-						function(win) {
-							return win.get_wm_class() == focused.get_wm_class() && !win.is_skip_taskbar();
-						}
-				);
-			// switch between windows of current workspace
-			} else {
-				windows = windows.filter(
-						function(win) {
-							return win.get_workspace() == currentWorkspace && !win.is_skip_taskbar();
-						}
-				);
-			}
+        windowActors = null;
 
-			if (windows.length) {
-				actions['activate_selected'] = this._activateSelectedWindow;
-				actions['remove_selected'] = this._removeSelectedWindow;
-				
-				if (!display.focus_window) {
-					currentIndex = -1;
-				}
-				
-				let switcher = new Switcher.Switcher(windows, actions, mask, currentIndex);
-			};
-		},
+        switch(binding.get_name()) {
+            case 'switch-panels':
+                // Switch between windows of all workspaces
+                windows = windows.filter( matchSkipTaskbar );
+                break;
+            case 'switch-group':
+                // Switch between windows of same application from all workspaces
+                let focused = display.focus_window ? display.focus_window : windows[0];
+                windows = windows.filter( matchWmClass, focused.get_wm_class() );
+                break;
+            default:
+                // Switch between windows of current workspace
+                windows = windows.filter( matchWorkspace, currentWorkspace );
+                break;
+        }
+
+        // Sort by user time
+        windows.sort(sortWindowsByUserTime);
+
+        if (windows.length) {
+            let mask = binding.get_mask();
+            let currentIndex = windows.indexOf(display.focus_window);
+
+            let switcher_class = this.platform.getSettings().switcher_class;
+            let switcher = new switcher_class(windows, mask, currentIndex, this);
+        }
+    }
 };
