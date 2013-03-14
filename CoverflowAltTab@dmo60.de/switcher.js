@@ -146,23 +146,25 @@ Switcher.prototype = {
     _next: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateSwitcher(0);
+            this._updatePreviews(0);
         } else {
             this.actor.set_reactive(false);
             this._previewNext();
             this.actor.set_reactive(true);
         }
+        this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     },
 
     _previous: function() {
         if(this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updateSwitcher(0);
+            this._updatePreviews(0);
         } else {
             this.actor.set_reactive(false);
             this._previewPrevious();
             this.actor.set_reactive(true);
         }
+        this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     },
 
     _updateActiveMonitor: function() {
@@ -178,8 +180,8 @@ Switcher.prototype = {
 
         return this._activeMonitor;
     },
-
-    _updateSwitcher: function(direction) {
+    
+    _setCurrentWindowTitle: function(window) {
         let animation_time = this._settings.animation_time;
 
         let monitor = this._activeMonitor;
@@ -274,8 +276,6 @@ Switcher.prototype = {
             time: animation_time,
             transition: TRANSITION_TYPE,
         });
-
-        this._updatePreviews(direction);
     },
 
     _keyPressEvent: function(actor, event) {
@@ -384,7 +384,8 @@ Switcher.prototype = {
                     this._previews.splice(i, 1);
                     this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
                     this._currentIndex % this._windows.length;
-                    this._updateSwitcher(0);
+                    this._updatePreviews(0);
+                    this._setCurrentWindowTitle(this._windows[this._currentIndex]);
                 }
 
                 return;

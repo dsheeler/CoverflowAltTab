@@ -82,19 +82,21 @@ Switcher.prototype = {
 
     _previewNext: function() {
         if (this._currentIndex == this._windows.length - 1) {
+            this._currentIndex = 0;
             this._flipStack(Clutter.Gravity.WEST);
         } else {
             this._currentIndex = this._currentIndex + 1;
-            this._updateSwitcher(1);
+            this._updatePreviews(1);
         }
     },
 
     _previewPrevious: function() {
         if (this._currentIndex == 0) {
+            this._currentIndex = this._windows.length-1;
             this._flipStack(Clutter.Gravity.EAST);
         } else {
             this._currentIndex = this._currentIndex - 1;
-            this._updateSwitcher(-1);
+            this._updatePreviews(-1);
         }
     },
     
@@ -132,17 +134,11 @@ Switcher.prototype = {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
         
         if(gravity == Clutter.Gravity.WEST) {
-            if(index == 0)
-                this._currentIndex = 0;
-            
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
             angleEnd = -SIDE_ANGLE;
         } else {
-            if(index == 0)
-                this._currentIndex = this._windows.length-1;
-            
             xOffsetStart = -this._xOffsetLeft;
             xOffsetEnd = this._xOffsetLeft;
             angleStart = BLEND_OUT_ANGLE;
@@ -196,7 +192,6 @@ Switcher.prototype = {
         preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
         preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
         preview.raise_top();
-        this._applicationIconBox.raise(preview);
         let tweenParams = {
             opacity: 255,
             x: this._xOffsetCenter,
