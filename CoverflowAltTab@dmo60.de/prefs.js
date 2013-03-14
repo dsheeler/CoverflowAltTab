@@ -4,11 +4,16 @@
  */
 
 const Gtk = imports.gi.Gtk;
+const Config = imports.misc.config;
 
 const CoverflowAltTab = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = CoverflowAltTab.imports.lib;
 
 const SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
+
+const PACKAGE_VERSION = Config.PACKAGE_VERSION.split('.');
+for(let i=0; i<PACKAGE_VERSION; i++)
+    PACKAGE_VERSION[i] = parseInt(PACKAGE_VERSION[i]);
 
 let settings;
 
@@ -19,6 +24,11 @@ function init() {
 function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
+        if(PACKAGE_VERSION[0] <= 3 && PACKAGE_VERSION[1] <= 4) {
+            let label = new Gtk.Label({label: "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n</b>"});
+            label.set_use_markup(true);
+            frame.add(label);
+        }
 	frame.add(buildSwitcher("hide-panel", "Hide panel during Coverflow"));
 	frame.add(buildSwitcher("enforce-primary-monitor", "Always show the switcher on the primary monitor"));
 	frame.add(buildRadio("switcher-style", ["Coverflow", "Timeline"], "Switcher style"));
