@@ -283,7 +283,7 @@ PlatformGnomeShell.prototype = {
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
-                switcher_class: ExtensionImports.switcher.Switcher
+                switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
             };
         } catch(e) {
             global.log(e);
