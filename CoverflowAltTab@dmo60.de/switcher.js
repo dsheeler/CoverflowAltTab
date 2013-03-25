@@ -121,19 +121,19 @@ Switcher.prototype = {
     },
 
     _createPreviews: function() {
-        throw new Error("Abstract methot _createPreviews not implemented");
+        throw new Error("Abstract method _createPreviews not implemented");
     },
 
     _updatePreviews: function() {
-        throw new Error("Abstract methot _updatePreviews not implemented");
+        throw new Error("Abstract method _updatePreviews not implemented");
     },
 
     _previewNext: function() {
-        throw new Error("Abstract methot _previewNext not implemented");
+        throw new Error("Abstract method _previewNext not implemented");
     },
 
     _previewPrevious: function() {
-        throw new Error("Abstract methot _previewPrevious not implemented");
+        throw new Error("Abstract method _previewPrevious not implemented");
     },
 
     _checkSwitchTime: function() {
@@ -358,6 +358,8 @@ Switcher.prototype = {
 
     // allow navigating by mouse-wheel scrolling
     _scrollEvent: function(actor, event) {
+    	if(!this._checkSwitchTime())
+    		return true;
         actor.set_reactive(false);
         if (event.get_scroll_direction() == Clutter.ScrollDirection.UP)
             this._next();
