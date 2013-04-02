@@ -39,7 +39,9 @@ function enable() {
     if (!manager) {
         let platform;
         if(PACKAGE_NAME == 'cinnamon') {
-            if(PACKAGE_VERSION[0] <= 1 && PACKAGE_VERSION[1] <= 7 && PACKAGE_VERSION[2] <= 2)
+            if(    PACKAGE_VERSION[0] < 1
+               || (PACKAGE_VERSION[0] == 1 && PACKAGE_VERSION[1] < 7)
+               || (PACKAGE_VERSION[0] == 1 && PACKAGE_VERSION[1] == 7 && PACKAGE_VERSION[2] < 3))
                 platform = new Platform.PlatformCinnamon();
             else
                 platform = new Platform.PlatformCinnamon18();
