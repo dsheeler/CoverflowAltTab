@@ -38,6 +38,7 @@ KeybinderNewApi.prototype = {
     },
 
     enable: function(startAppSwitcherBind) {
+    	Meta.keybindings_set_custom_handler('switch-applications', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-windows', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-panels', startAppSwitcherBind);
@@ -46,6 +47,7 @@ KeybinderNewApi.prototype = {
     },
 
     disable: function() {
+    	Meta.keybindings_set_custom_handler('switch-applications', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
