@@ -42,6 +42,7 @@ KeybinderNewApi.prototype = {
         Meta.keybindings_set_custom_handler('switch-windows', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-panels', startAppSwitcherBind);
+        Meta.keybindings_set_custom_handler('switch-applications-backward', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-windows-backward', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group-backward', startAppSwitcherBind);
     },
@@ -51,6 +52,7 @@ KeybinderNewApi.prototype = {
         Meta.keybindings_set_custom_handler('switch-windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
+        Meta.keybindings_set_custom_handler('switch-applications-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-windows-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
     }
