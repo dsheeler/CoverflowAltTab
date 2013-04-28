@@ -9,19 +9,19 @@
 const Config = imports.misc.config;
 
 const PACKAGE_NAME = Config.PACKAGE_NAME;
-const PACKAGE_VERSION = Config.PACKAGE_VERSION.split('.');
-for(let i=0; i<PACKAGE_VERSION; i++)
-    PACKAGE_VERSION[i] = parseInt(PACKAGE_VERSION[i]);
+const PACKAGE_VERSION = Config.PACKAGE_VERSION;
+//for(let i=0; i<PACKAGE_VERSION; i++)
+//    PACKAGE_VERSION[i] = parseInt(PACKAGE_VERSION[i]);
 
 let ExtensionImports;
 
 let HAS_META_KEYBIND_API;
 if(PACKAGE_NAME == 'cinnamon') {
-    HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 1 && PACKAGE_VERSION[1] <= 4);
+    HAS_META_KEYBIND_API = !(PACKAGE_VERSION <= "1.4.0");
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 }
 else {
-    HAS_META_KEYBIND_API = !(PACKAGE_VERSION[0] <= 3 && PACKAGE_VERSION[1] <= 2);
+    HAS_META_KEYBIND_API = !(PACKAGE_VERSION <= "3.2.0");
 
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
@@ -39,9 +39,7 @@ function enable() {
     if (!manager) {
         let platform;
         if(PACKAGE_NAME == 'cinnamon') {
-            if(    PACKAGE_VERSION[0] < 1
-               || (PACKAGE_VERSION[0] == 1 && PACKAGE_VERSION[1] < 7)
-               || (PACKAGE_VERSION[0] == 1 && PACKAGE_VERSION[1] == 7 && PACKAGE_VERSION[2] < 3))
+            if(PACKAGE_VERSION <= "1.7.2")
                 platform = new Platform.PlatformCinnamon();
             else
                 platform = new Platform.PlatformCinnamon18();
