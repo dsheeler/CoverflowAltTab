@@ -41,8 +41,10 @@ Switcher.prototype = {
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
-
-        this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		if (Meta.BackgroundActor.new_for_screen)
+			this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		else
+			this._background = Meta.BackgroundActor.new();
         this._background.hide();
         global.overlay_group.add_actor(this._background);
 
@@ -61,22 +63,27 @@ Switcher.prototype = {
         }
 
         this._haveModal = true;
-        this._modifierMask = AltTab.primaryModifier(mask);
+        //this is needed for bug below, that has been fixed, 
+        //and this is not needed anymore for newer shell versions
+        if (AltTab.primaryModifier)
+			this._modifierMask = AltTab.primaryModifier(mask);
 
         this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
         this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
         this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
-
-        // There's a race condition; if the user released Alt before
-        // we got the grab, then we won't be notified. (See
-        // https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-        // details) So we check now. (Have to do this after updating
-        // selection.)
-        let [x, y, mods] = global.get_pointer();
-        if (!(mods & this._modifierMask)) {
-            this._activateSelected();
-            return;
-        }
+		
+		if (this._modifierMask){
+			// There's a race condition; if the user released Alt before
+			// we got the grab, then we won't be notified. (See
+			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+			// details) So we check now. (Have to do this after updating
+			// selection.)
+			let [x, y, mods] = global.get_pointer();
+			if (!(mods & this._modifierMask)) {
+				this._activateSelected();
+				return;
+			}
+		}
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     },
