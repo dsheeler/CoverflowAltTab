@@ -21,6 +21,18 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
+//to replace AltTab.primaryModifier, code has been reported here
+function primaryModifier(mask) {
+	if (mask == 0)
+		return 0;
+	let primary = 1;
+	while (mask>1) {
+		mask >>= 1;
+		primary <<= 1;
+	}
+	return primary;
+}
+
 function Switcher() {
     this._init.apply(this, arguments);
 }
@@ -41,8 +53,10 @@ Switcher.prototype = {
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
-
-        this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		if (Meta.BackgroundActor.new_for_screen)
+			this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		else
+			this._background = Meta.BackgroundActor.new();
         this._background.hide();
         global.overlay_group.add_actor(this._background);
 
@@ -61,22 +75,27 @@ Switcher.prototype = {
         }
 
         this._haveModal = true;
-        this._modifierMask = AltTab.primaryModifier(mask);
+        //this is needed for bug below, that has been fixed, 
+        //and this is not needed anymore for newer shell versions
+        if (AltTab.primaryModifier)
+			this._modifierMask = AltTab.primaryModifier(mask);
+		else
+			this._modifierMask = primaryModifier(mask);
 
         this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
         this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
         this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
-
-        // There's a race condition; if the user released Alt before
-        // we got the grab, then we won't be notified. (See
-        // https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-        // details) So we check now. (Have to do this after updating
-        // selection.)
+		
         let [x, y, mods] = global.get_pointer();
-        if (!(mods & this._modifierMask)) {
-            this._activateSelected();
-            return;
-        }
+		if (!(mods & this._modifierMask)){
+			// There's a race condition; if the user released Alt before
+			// we got the grab, then we won't be notified. (See
+			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+			// details) So we check now. (Have to do this after updating
+			// selection.)
+			this._activateSelected();
+			return;
+		}
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     },
@@ -140,7 +159,6 @@ Switcher.prototype = {
         let t = new Date().getTime();
         if(t - this._lastTime < 150)
             return false;
-
         this._lastTime = t;
         return true;
     },
@@ -316,11 +334,11 @@ Switcher.prototype = {
                 this._showDesktop();
                 return true;
         }
-
         // default alt-tab
         let event_state = event.get_state();
         let action = global.display.get_keybinding_action(event.get_key_code(), event_state);
         switch(action) {
+            case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
             case Meta.KeyBindingAction.SWITCH_PANELS:
@@ -332,6 +350,7 @@ Switcher.prototype = {
                         this._next();
                 }
                 return true;
+            case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_PANELS_BACKWARD:
