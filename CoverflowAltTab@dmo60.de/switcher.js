@@ -72,18 +72,18 @@ Switcher.prototype = {
         this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
         this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
 		
-		if (this._modifierMask){
+        let [x, y, mods] = global.get_pointer();
+		if (this._modifierMask && !(mods & this._modifierMask)){
 			// There's a race condition; if the user released Alt before
 			// we got the grab, then we won't be notified. (See
 			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
 			// details) So we check now. (Have to do this after updating
 			// selection.)
-			let [x, y, mods] = global.get_pointer();
-			if (!(mods & this._modifierMask)) {
-				this._activateSelected();
-				return;
-			}
+			this._activateSelected();
+			return;
 		}
+		else
+			this._modifierMask = mods;
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     },
