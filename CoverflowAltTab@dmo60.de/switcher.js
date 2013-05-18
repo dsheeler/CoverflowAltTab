@@ -21,6 +21,15 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
+const Config = imports.misc.config;
+const PACKAGE_VERSION = Config.PACKAGE_VERSION;
+
+let HAS_META_BG = true;
+if (PACKAGE_VERSION >= "3.8.0") {
+	const Background = imports.ui.background;
+	HAS_META_BG = false;
+}
+
 //to replace AltTab.primaryModifier, code has been reported here
 function primaryModifier(mask) {
 	if (mask == 0)
@@ -53,18 +62,27 @@ Switcher.prototype = {
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
-		if (Meta.BackgroundActor.new_for_screen)
+        
+        // handle background
+		if (HAS_META_BG) {
 			this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-		else
-			this._background = Meta.BackgroundActor.new();
-        this._background.hide();
-        global.overlay_group.add_actor(this._background);
-
+			this._background.hide();
+	        global.overlay_group.add_actor(this._background);
+		} else {
+	        this._backgroundGroup = new Meta.BackgroundGroup();
+	        global.overlay_group.add_child(this._backgroundGroup);
+	        this._backgroundGroup.hide();
+	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+	            new Background.BackgroundManager({ container: this._backgroundGroup,
+	                                               monitorIndex: i, });
+	        }
+		}
+		
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
         this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
-        this.previewActor = new widgetClass({ visible: true, reactive: true, });
+        this.previewActor = new widgetClass({ visible: true, reactive: true});
         this.actor.add_actor(this.previewActor);
         
         Main.uiGroup.add_actor(this.actor);
@@ -113,7 +131,6 @@ Switcher.prototype = {
         // hide windows and show Coverflow actors
         global.window_group.hide();
         this.actor.show();
-        this._background.show();
 
         let panels = this.getPanels();
         panels.forEach(function(panel) { panel.actor.set_reactive(false); });
@@ -123,17 +140,32 @@ Switcher.prototype = {
                 Tweener.addTween(panel.actor, {
                     opacity: 0,
                     time: this._settings.animation_time,
-                    transistion: TRANSITION_TYPE
+                    transition: TRANSITION_TYPE
                 });
             }, this);
         }
 
-        Tweener.addTween(this._background, {
-            dim_factor: this._settings.dim_factor,
-            time: this._settings.animation_time,
-            transition: TRANSITION_TYPE
-        });
+        if (HAS_META_BG) {
+        	this._background.show();
+	        Tweener.addTween(this._background, {
+	            dim_factor: this._settings.dim_factor,
+	            time: this._settings.animation_time,
+	            transition: TRANSITION_TYPE
+	        });
+        } else {
+        	this._backgroundGroup.show();
+        	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i]._delegate;
 
+                Tweener.addTween(background,
+                                 { brightness: this._settings.dim_factor,
+                                   time: this._settings.animation_time,
+                                   transition: 'easeOutQuad'
+                                 });
+            }
+        }
+        
         this._initialDelayTimeoutId = 0;
 
         this._next();
@@ -431,9 +463,12 @@ Switcher.prototype = {
     },
 
     _onHideBackgroundCompleted: function() {
-        global.overlay_group.remove_actor(this._background);
-        Main.uiGroup.remove_actor(this.actor);
-
+    	if (HAS_META_BG)
+    		global.overlay_group.remove_actor(this._background);
+    	else
+    		this._backgroundGroup.hide();
+    	Main.uiGroup.remove_actor(this.actor);
+    	
         // show all window actors
         global.window_group.show();
     },
@@ -485,20 +520,34 @@ Switcher.prototype = {
                     Tweener.addTween(panel.actor, {
                         opacity: 255,
                         time: this._settings.animation_time,
-                        transistion: TRANSITION_TYPE}
+                        transition: TRANSITION_TYPE}
                     );
                 }, this);
             }
             panels.forEach(function(panel) { panel.actor.set_reactive(true); });
 
             // background
-            Tweener.removeTweens(this._background);
-            Tweener.addTween(this._background, {
-                dim_factor: 1.0,
-                time: this._settings.animation_time,
-                transition: TRANSITION_TYPE,
-                onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
-            });
+            if (HAS_META_BG) {
+	            Tweener.removeTweens(this._background);
+	            Tweener.addTween(this._background, {
+	                dim_factor: 1.0,
+	                time: this._settings.animation_time,
+	                transition: TRANSITION_TYPE,
+	                onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
+	            });
+            } else {
+            	let backgrounds = this._backgroundGroup.get_children();
+                for (let i = 0; i < backgrounds.length; i++) {
+                    let background = backgrounds[i]._delegate;
+
+                    Tweener.addTween(background,
+                                     { brightness: 1.0,
+                                       time: this._settings.animation_time,
+                                       transition: 'easeOutQuad',
+                                       onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
+                                     });
+                }
+            }
             this._disableMonitorFix();
         }
 
