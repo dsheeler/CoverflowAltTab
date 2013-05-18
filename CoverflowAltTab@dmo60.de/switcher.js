@@ -415,11 +415,18 @@ Switcher.prototype = {
         
         switch (event.get_scroll_direction()) {
         	case Clutter.ScrollDirection.SMOOTH:
-        		let delta = event.get_scroll_delta();
-        		if (delta[1] == 1 || delta[0] == 1)
-        			this._next();
-        		else
-        			this._previous();
+        		let [dx, dy] = event.get_scroll_delta();
+        		if (Math.abs(dx) > Math.abs(dy)) {
+        			if (dx > 0)
+        				this._next();
+        			else
+        				this._previous();
+        		} else {
+        			if (dy > 0)
+        				this._next();
+        			else
+        				this._previous();
+        		}
                 return true;
                 
         	case Clutter.ScrollDirection.LEFT:
