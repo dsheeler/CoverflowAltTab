@@ -13,17 +13,13 @@ const PACKAGE_VERSION = Config.PACKAGE_VERSION;
 
 let ExtensionImports;
 
-let HAS_META_KEYBIND_API, HAS_NEW_GS_API = false;
+let HAS_META_KEYBIND_API;
 if(PACKAGE_NAME == 'cinnamon') {
     HAS_META_KEYBIND_API = !(PACKAGE_VERSION <= "1.4.0");
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 }
 else {
-	if (PACKAGE_VERSION >= "3.8.0") {
-		HAS_NEW_GS_API = true;
-    } else {
-		HAS_META_KEYBIND_API = !(PACKAGE_VERSION <= "3.2.0");
-    }
+	HAS_META_KEYBIND_API = true;
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
 
@@ -46,11 +42,13 @@ function enable() {
                 platform = new Platform.PlatformCinnamon18();
             keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
         } else {
-            platform = new Platform.PlatformGnomeShell();
-            if (HAS_NEW_GS_API)
+        	if(PACKAGE_VERSION >= "3.8.0") {
+        		platform = new Platform.PlatformGnomeShell38();
             	keybinder = new Keybinder.KeybinderNewGSApi();
-            else
-            	keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
+        	} else {
+        		platform = new Platform.PlatformGnomeShell();
+            	keybinder = new Keybinder.KeybinderNewApi();
+        	}
         }
         manager = new Manager.Manager(platform, keybinder);
     }
