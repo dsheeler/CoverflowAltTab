@@ -46,7 +46,6 @@ Switcher.prototype = {
         this._xOffsetCenter = monitor.width / 2;
         
         this._previews = [];
-        let i;
         for (let i in this._windows) {
             let metaWin = this._windows[i];
             let compositor = this._windows[i].get_compositor_private();
