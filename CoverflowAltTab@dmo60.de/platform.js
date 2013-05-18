@@ -9,6 +9,9 @@ const Lang = imports.lang;
 const St = imports.gi.St;
 const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
+const Main = imports.ui.main;
+const Meta = imports.gi.Meta;
+const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
 if(Config.PACKAGE_NAME == 'cinnamon')
@@ -63,6 +66,39 @@ AbstractPlatform.prototype = {
             enforce_primary_monitor: true,
             switcher_class: ExtensionImports.switcher.Switcher
         };
+    },
+    
+    getPrimaryModifier: function(mask) {
+    	return imports.ui.altTab.primaryModifier(mask);
+    },
+    
+    initBackground: function() {
+    	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		this._background.hide();
+        global.overlay_group.add_actor(this._background);
+    },
+    
+    dimBackground: function() {
+    	this._background.show();
+        Tweener.addTween(this._background, {
+            dim_factor: this._settings.dim_factor,
+            time: this._settings.animation_time,
+            transition: TRANSITION_TYPE
+        });
+    },
+    
+    undimBackground: function(onCompleteBind) {
+    	Tweener.removeTweens(this._background);
+        Tweener.addTween(this._background, {
+            dim_factor: 1.0,
+            time: this._settings.animation_time,
+            transition: TRANSITION_TYPE,
+            onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
+        });
+    },
+    
+    removeBackground: function() {
+    	global.overlay_group.remove_actor(this._background);
     }
 }
 
@@ -206,7 +242,12 @@ PlatformCinnamon18.prototype = {
 
     getSettings: function() {
         return this._settings;
+    },
+    
+    getPrimaryModifier: function(mask) {
+    	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
     }
+    
 };
 
 function PlatformGnomeShell() {
@@ -290,5 +331,69 @@ PlatformGnomeShell.prototype = {
         }
 
         return this.getDefaultSettings();
-    }
+    },
+};
+
+function PlatformGnomeShell38() {
+    this._init.apply(this, arguments);
+}
+
+PlatformGnomeShell38.prototype = {
+	    __proto__: PlatformGnomeShell.prototype,
+
+	    _init: function() {
+	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
+	    },
+	    
+	    getPrimaryModifier: function(mask) {
+	    	return imports.ui.switcherPopup.primaryModifier(mask);
+	    },
+	    
+	    initBackground: function() {
+	    	let Background = imports.ui.background;
+	    	
+	    	this._backgroundGroup = new Meta.BackgroundGroup();
+	        global.overlay_group.add_child(this._backgroundGroup);
+	        this._backgroundGroup.hide();
+	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+	            new Background.BackgroundManager({ container: this._backgroundGroup,
+	                                               monitorIndex: i, });
+	        }
+	    },
+	    
+	    dimBackground: function() {
+	    	let Background = imports.ui.background;
+	    	
+	    	this._backgroundGroup.show();
+        	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i]._delegate;
+
+                Tweener.addTween(background,
+                                 { brightness: this.getSettings().dim_factor,
+                                   time: this.getSettings().animation_time,
+                                   transition: 'easeOutQuad'
+                                 });
+            }
+	    },
+	    
+	    undimBackground: function(onCompleteBind) {
+	    	let Background = imports.ui.background;
+	    	
+	    	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i]._delegate;
+
+                Tweener.addTween(background,
+                                 { brightness: 1.0,
+                                   time: this.getSettings().animation_time,
+                                   transition: 'easeOutQuad',
+                                   onComplete: onCompleteBind,
+                                 });
+            }
+	    },
+	    
+	    removeBackground: function() {
+	    	global.overlay_group.remove_child(this._backgroundGroup);
+	    }
 };

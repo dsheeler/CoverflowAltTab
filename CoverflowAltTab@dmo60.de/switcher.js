@@ -9,7 +9,6 @@ const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
-const AltTab = imports.ui.altTab;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
@@ -21,26 +20,6 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
-const Config = imports.misc.config;
-const PACKAGE_VERSION = Config.PACKAGE_VERSION;
-
-let HAS_META_BG = true;
-if (PACKAGE_VERSION >= "3.8.0") {
-	const Background = imports.ui.background;
-	HAS_META_BG = false;
-}
-
-//to replace AltTab.primaryModifier, code has been reported here
-function primaryModifier(mask) {
-	if (mask == 0)
-		return 0;
-	let primary = 1;
-	while (mask>1) {
-		mask >>= 1;
-		primary <<= 1;
-	}
-	return primary;
-}
 
 function Switcher() {
     this._init.apply(this, arguments);
@@ -64,20 +43,7 @@ Switcher.prototype = {
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
         
-        // handle background
-		if (HAS_META_BG) {
-			this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-			this._background.hide();
-	        global.overlay_group.add_actor(this._background);
-		} else {
-	        this._backgroundGroup = new Meta.BackgroundGroup();
-	        global.overlay_group.add_child(this._backgroundGroup);
-	        this._backgroundGroup.hide();
-	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
-	            new Background.BackgroundManager({ container: this._backgroundGroup,
-	                                               monitorIndex: i, });
-	        }
-		}
+		manager.platform.initBackground();
 		
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -94,17 +60,13 @@ Switcher.prototype = {
         }
 
         this._haveModal = true;
-        //this is needed for bug below, that has been fixed, 
-        //and this is not needed anymore for newer shell versions
-        if (AltTab.primaryModifier)
-			this._modifierMask = AltTab.primaryModifier(mask);
-		else
-			this._modifierMask = primaryModifier(mask);
 
         this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
         this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
         this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
-		
+        
+        this._modifierMask = manager.platform.getPrimaryModifier(mask);
+        
         let [x, y, mods] = global.get_pointer();
 		if (!(mods & this._modifierMask)){
 			// There's a race condition; if the user released Alt before
@@ -146,26 +108,7 @@ Switcher.prototype = {
             }, this);
         }
 
-        if (HAS_META_BG) {
-        	this._background.show();
-	        Tweener.addTween(this._background, {
-	            dim_factor: this._settings.dim_factor,
-	            time: this._settings.animation_time,
-	            transition: TRANSITION_TYPE
-	        });
-        } else {
-        	this._backgroundGroup.show();
-        	let backgrounds = this._backgroundGroup.get_children();
-            for (let i = 0; i < backgrounds.length; i++) {
-                let background = backgrounds[i]._delegate;
-
-                Tweener.addTween(background,
-                                 { brightness: this._settings.dim_factor,
-                                   time: this._settings.animation_time,
-                                   transition: 'easeOutQuad'
-                                 });
-            }
-        }
+        this._manager.platform.dimBackground();
         
         this._initialDelayTimeoutId = 0;
 
@@ -486,10 +429,7 @@ Switcher.prototype = {
     },
 
     _onHideBackgroundCompleted: function() {
-    	if (HAS_META_BG)
-    		global.overlay_group.remove_actor(this._background);
-    	else
-    		this._backgroundGroup.hide();
+    	this._manager.platform.removeBackground();
     	Main.uiGroup.remove_actor(this.actor);
     	
         // show all window actors
@@ -549,28 +489,7 @@ Switcher.prototype = {
             }
             panels.forEach(function(panel) { panel.actor.set_reactive(true); });
 
-            // background
-            if (HAS_META_BG) {
-	            Tweener.removeTweens(this._background);
-	            Tweener.addTween(this._background, {
-	                dim_factor: 1.0,
-	                time: this._settings.animation_time,
-	                transition: TRANSITION_TYPE,
-	                onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
-	            });
-            } else {
-            	let backgrounds = this._backgroundGroup.get_children();
-                for (let i = 0; i < backgrounds.length; i++) {
-                    let background = backgrounds[i]._delegate;
-
-                    Tweener.addTween(background,
-                                     { brightness: 1.0,
-                                       time: this._settings.animation_time,
-                                       transition: 'easeOutQuad',
-                                       onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
-                                     });
-                }
-            }
+            this._manager.platform.undimBackground(Lang.bind(this, this._onHideBackgroundCompleted));
             this._disableMonitorFix();
         }
 
