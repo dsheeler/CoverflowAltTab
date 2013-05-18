@@ -59,6 +59,7 @@ Switcher.prototype = {
         this._tracker = manager.platform.getWindowTracker();
         this._windowManager = global.window_manager;
         this._lastTime = 0;
+        this._checkDestroyedTimeoutId = 0;
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
@@ -430,7 +431,7 @@ Switcher.prototype = {
     },
 
     _removeDestroyedWindow: function(window) {
-        for (i in this._windows) {
+        for (let i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length == 1)
                     this.destroy();
@@ -455,7 +456,7 @@ Switcher.prototype = {
     },
 
     _showDesktop: function() {
-        for (i in this._windows) {
+        for (let i in this._windows) {
             if (!this._windows[i].minimized)
                 this._windows[i].minimize();
         }
@@ -479,7 +480,7 @@ Switcher.prototype = {
         if (this._initialDelayTimeoutId == 0) {
             // preview windows
             let currentWorkspace = global.screen.get_active_workspace();
-            for (i in this._previews) {
+            for (let i in this._previews) {
                 let preview = this._previews[i];
                 let metaWin = this._windows[i];
                 let compositor = this._windows[i].get_compositor_private();

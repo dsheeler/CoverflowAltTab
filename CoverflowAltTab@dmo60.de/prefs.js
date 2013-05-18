@@ -87,7 +87,7 @@ function buildRadio(key, buttons, labeltext) {
 	hbox.pack_start(label, true, true, 0);
 
 	let radio = new Gtk.RadioButton();
-	for (i in buttons) {
+	for (let i in buttons) {
 		radio = new Gtk.RadioButton({group: radio, label: buttons[i]});
 		if (buttons[i] == settings.get_string(key)) {
 			radio.set_active(true);

@@ -60,7 +60,7 @@ Manager.prototype = {
 
         // Construct a list with all windows
         let windowActors = global.get_window_actors();
-        for (i in windowActors)
+        for (let i in windowActors)
             windows.push(windowActors[i].get_meta_window());
 
         windowActors = null;
