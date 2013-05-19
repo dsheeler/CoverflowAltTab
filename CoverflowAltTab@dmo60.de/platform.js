@@ -22,6 +22,7 @@ else
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
 const SHELL_SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
+const TRANSITION_TYPE = 'easeOutQuad';
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
@@ -93,7 +94,7 @@ AbstractPlatform.prototype = {
             dim_factor: 1.0,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE,
-            onComplete: Lang.bind(this, this._onHideBackgroundCompleted),
+            onComplete: onCompleteBind,
         });
     },
     
