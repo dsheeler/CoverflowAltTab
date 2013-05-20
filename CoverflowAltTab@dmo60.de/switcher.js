@@ -511,6 +511,7 @@ Switcher.prototype = {
         this._applicationIconBox = null;
         this._previews = null;
         this._initialDelayTimeoutId = null;
+        this._checkDestroyedTimeoutId = null;
     },
 
     getPanels: function() {

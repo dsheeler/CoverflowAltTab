@@ -175,7 +175,7 @@ PlatformCinnamon.prototype = {
         try {
             let file = Gio.file_new_for_path(this._configFile);
             if(file.query_exists(null)) {
-                [flag, data] = file.load_contents(null);
+                let [flag, data] = file.load_contents(null);
                 if(flag) {
                     let config = eval('(' + data + ')');
                     return this._convertConfigToSettings(config);
@@ -206,7 +206,7 @@ PlatformCinnamon18.prototype = {
         }
         this._settings.updateTitlePosition = function() {
             this.title_position =  (this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM);
-        }
+        };
         
         
         let Settings = imports.ui.settings;
