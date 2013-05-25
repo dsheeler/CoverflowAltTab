@@ -6,6 +6,9 @@
 const Gtk = imports.gi.Gtk;
 const Config = imports.misc.config;
 
+const Gettext = imports.gettext.domain('coverflow');
+const _ = Gettext.gettext;
+
 const CoverflowAltTab = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = CoverflowAltTab.imports.lib;
 
@@ -17,24 +20,25 @@ let settings;
 
 function init() {
 	settings = Lib.getSettings(SCHEMA);
+	Lib.initTranslations("coverflow");
 }
 
 function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
     if(PACKAGE_VERSION <= "3.4.0") {
-        let label = new Gtk.Label({label: "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n</b>"});
+        let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n</b>")});
         label.set_use_markup(true);
         frame.add(label);
     }
-	frame.add(buildSwitcher("hide-panel", "Hide panel during Coverflow"));
-	frame.add(buildSwitcher("enforce-primary-monitor", "Always show the switcher on the primary monitor"));
-	frame.add(buildRadio("switcher-style", ["Coverflow", "Timeline"], "Switcher style"));
-	frame.add(buildRange("animation-time", [100, 400, 10, 250], "Animation speed (smaller means faster)"));
-	frame.add(buildRange("dim-factor", [0, 10, 1, 3], "Background dim-factor (smaller means darker)"));
-	frame.add(buildRadio("position", ["Bottom", "Top"], "Window title box position"));
-	frame.add(buildRadio("icon-style", ["Classic", "Overlay"], "Application icon style"));
-	frame.add(buildSpin("offset", [-500, 500, 1, 10], "Vertical offset (positive value moves everything up, negative down)"));
+	frame.add(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
+	frame.add(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
+	frame.add(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
+	frame.add(buildRange("animation-time", [100, 400, 10, 250], _("Animation speed (smaller means faster)")));
+	frame.add(buildRange("dim-factor", [0, 10, 1, 3], _("Background dim-factor (smaller means darker)")));
+	frame.add(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
+	frame.add(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
+	frame.add(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
 
 	frame.show_all();
 
