@@ -68,5 +68,11 @@
     "default" : false,
     "description": "Always show the switcher on the primary monitor",
     "tooltip": "Show the switcher on the primary monitor instead of detecting the active monitor"
+ },
+ "elastic-mode": {
+    "type" : "checkbox",
+    "default" : false,
+    "description": "Elastic animations",
+    "tooltip": "Use elastic animation style when toggling switcher"
  }
 }

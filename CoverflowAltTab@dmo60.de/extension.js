@@ -42,7 +42,10 @@ function enable() {
                 platform = new Platform.PlatformCinnamon18();
             keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
         } else {
-        	if(PACKAGE_VERSION >= "3.8.0") {
+        	if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 10 && PACKAGE_VERSION >= "3.10.0") {
+        		platform = new Platform.PlatformGnomeShell310();
+            	keybinder = new Keybinder.KeybinderNewGSApi();
+        	} else if(PACKAGE_VERSION >= "3.8.0") {
         		platform = new Platform.PlatformGnomeShell38();
             	keybinder = new Keybinder.KeybinderNewGSApi();
         	} else {

@@ -16,7 +16,7 @@ else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 const BaseSwitcher = ExtensionImports.switcher;
 
-const TRANSITION_TYPE = 'easeOutQuad';
+let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
 const BLEND_OUT_ANGLE = 30;
 const PREVIEW_SCALE = 0.5;
@@ -34,6 +34,10 @@ Switcher.prototype = {
 
     _init: function() {
         BaseSwitcher.Switcher.prototype._init.apply(this, arguments);
+        if (this._settings.elastic_mode)
+        	TRANSITION_TYPE = 'easeOutBack';
+        else
+        	TRANSITION_TYPE = 'easeOutCubic';
     },
 
     _createPreviews: function() {
@@ -87,6 +91,7 @@ Switcher.prototype = {
             this._currentIndex = this._currentIndex + 1;
             this._updatePreviews(1);
         }
+        TRANSITION_TYPE = 'easeOutCubic';
     },
 
     _previewPrevious: function() {

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-17 15:19+0200\n"
+"POT-Creation-Date: 2013-11-08 17:40+0100\n"
 "PO-Revision-Date: 2013-05-17 15:31+0100\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
@@ -18,7 +18,31 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: prefs.js:48
+#: prefs.js:28 prefs.js:48
+msgid "Coverflow"
+msgstr "Bildfluss"
+
+#: prefs.js:29 prefs.js:48
+msgid "Timeline"
+msgstr "Zeitleiste"
+
+#: prefs.js:30 prefs.js:51
+msgid "Bottom"
+msgstr "Unten"
+
+#: prefs.js:31 prefs.js:51
+msgid "Top"
+msgstr "Oben"
+
+#: prefs.js:32 prefs.js:52
+msgid "Classic"
+msgstr "Klassisch"
+
+#: prefs.js:33 prefs.js:52
+msgid "Overlay"
+msgstr "Überlagern"
+
+#: prefs.js:42
 msgid ""
 "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
 "press Enter)\n"
@@ -28,59 +52,39 @@ msgstr ""
 "(Alt+F2 drücken, 'r' eingeben und Enter drücken)\n"
 "</b>"
 
-#: prefs.js:52
+#: prefs.js:46
 msgid "Hide panel during Coverflow"
 msgstr "Panel während des Umschaltens ausblenden"
 
-#: prefs.js:53
+#: prefs.js:47
 msgid "Always show the switcher on the primary monitor"
 msgstr "Den Umschalter auf dem primären Monitor immer anzeigen"
 
-#: prefs.js:54
-msgid "Coverflow"
-msgstr "Bildfluss"
-
-#: prefs.js:54
-msgid "Timeline"
-msgstr "Zeitleiste"
-
-#: prefs.js:54
+#: prefs.js:48
 msgid "Switcher style"
 msgstr "Umschaltstil"
 
-#: prefs.js:55
+#: prefs.js:49
 msgid "Animation speed (smaller means faster)"
 msgstr "Animationsgeschwindigkeit (kleiner bedeutet schneller)"
 
-#: prefs.js:56
+#: prefs.js:50
 msgid "Background dim-factor (smaller means darker)"
 msgstr "Hintergrundabblendfaktor (kleiner bedeutet dunkler)"
 
-#: prefs.js:57
-msgid "Bottom"
-msgstr "Unten"
-
-#: prefs.js:57
-msgid "Top"
-msgstr "Oben"
-
-#: prefs.js:57
+#: prefs.js:51
 msgid "Window title box position"
 msgstr "Anzeigeposition des Fenstertitels"
 
-#: prefs.js:58
-msgid "Classic"
-msgstr "Klassisch"
-
-#: prefs.js:58
-msgid "Overlay"
-msgstr "Überlagern"
-
-#: prefs.js:58
+#: prefs.js:52
 msgid "Application icon style"
 msgstr "Stil des Anwendungssymbols"
 
-#: prefs.js:59
+#: prefs.js:53
+msgid "Elastic animations"
+msgstr "Elastische Animationen"
+
+#: prefs.js:54
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
 "Vertikaler Offset (positive Werte bewegen alles nach oben, negative nach "

@@ -54,5 +54,10 @@
         <summary>Switcher style</summary>
         <description>The switcher display style.</description>
     </key>
+    <key type="b" name="elastic-mode">
+        <default>false</default>
+        <summary>Elastic in/out animations when toggling Coverflow</summary>
+        <description>Whether to show an elastic animation when Coverflow is toggled.</description>
+    </key>
   </schema>
 </schemalist>

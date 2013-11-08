@@ -15,7 +15,7 @@ const Pango = imports.gi.Pango;
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
-const TRANSITION_TYPE = 'easeOutQuad';
+let TRANSITION_TYPE = 'easeOutCubic';
 const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
@@ -437,6 +437,11 @@ Switcher.prototype = {
     },
 
     _onDestroy: function() {
+    	if (this._settings.elastic_mode)
+    		TRANSITION_TYPE = 'easeOutBack';
+    	else
+    		TRANSITION_TYPE = 'easeOutCubic';
+    	
         let monitor = this._activeMonitor;
 
         if (this._initialDelayTimeoutId == 0) {

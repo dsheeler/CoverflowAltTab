@@ -65,7 +65,8 @@ AbstractPlatform.prototype = {
             offset: 0,
             hide_panel: true,
             enforce_primary_monitor: true,
-            switcher_class: ExtensionImports.switcher.Switcher
+            switcher_class: ExtensionImports.switcher.Switcher,
+            elastic_mode: false,
         };
     },
     
@@ -167,6 +168,7 @@ PlatformCinnamon.prototype = {
             offset: config.offset,
             hide_panel: config.hide_panel === true,
             enforce_primary_monitor: config.enforce_primary_monitor === true,
+            elastic_mode: config.elastic_mode === true,
             switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
         };
     },
@@ -221,6 +223,7 @@ PlatformCinnamon18.prototype = {
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "offset", "offset", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "hide-panel", "hide_panel", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "enforce-primary-monitor", "enforce_primary_monitor", noop);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "elastic-mode", "elastic_mode", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
         
         this._settings.updateSwitcherStyle();
@@ -280,6 +283,7 @@ PlatformGnomeShell.prototype = {
             "offset",
             "hide-panel",
             "enforce-primary-monitor",
+            "elastic-mode",
         ];
 
         this._connections = [];
@@ -325,6 +329,7 @@ PlatformGnomeShell.prototype = {
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
+                elastic_mode: settings.get_boolean("elastic-mode"),
                 switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
             };
         } catch(e) {
@@ -373,7 +378,7 @@ PlatformGnomeShell38.prototype = {
                 Tweener.addTween(background,
                                  { brightness: this.getSettings().dim_factor,
                                    time: this.getSettings().animation_time,
-                                   transition: 'easeOutQuad'
+                                   transition: TRANSITION_TYPE
                                  });
             }
 	    },
@@ -388,7 +393,7 @@ PlatformGnomeShell38.prototype = {
                 Tweener.addTween(background,
                                  { brightness: 1.0,
                                    time: this.getSettings().animation_time,
-                                   transition: 'easeOutQuad',
+                                   transition: TRANSITION_TYPE,
                                    onComplete: onCompleteBind,
                                  });
             }
@@ -396,5 +401,70 @@ PlatformGnomeShell38.prototype = {
 	    
 	    removeBackground: function() {
 	    	global.overlay_group.remove_child(this._backgroundGroup);
+	    }
+};
+
+function PlatformGnomeShell310() {
+    this._init.apply(this, arguments);
+}
+
+PlatformGnomeShell310.prototype = {
+	    __proto__: PlatformGnomeShell.prototype,
+
+	    _init: function() {
+	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
+	    },
+	    
+	    getPrimaryModifier: function(mask) {
+	    	return imports.ui.switcherPopup.primaryModifier(mask);
+	    },
+	    
+	    initBackground: function() {
+	    	let Background = imports.ui.background;
+	    	
+	    	this._backgroundGroup = new Meta.BackgroundGroup();
+	        Main.uiGroup.add_child(this._backgroundGroup);
+	        this._backgroundGroup.lower_bottom();
+	        this._backgroundGroup.hide();
+	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+	            new Background.BackgroundManager({ container: this._backgroundGroup,
+	                                               monitorIndex: i, });
+	        }
+	    },
+	    
+	    dimBackground: function() {
+	    	let Background = imports.ui.background;
+	    	
+	    	this._backgroundGroup.show();
+        	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i]._delegate;
+
+                Tweener.addTween(background,
+                                 { brightness: this.getSettings().dim_factor,
+                                   time: this.getSettings().animation_time,
+                                   transition: TRANSITION_TYPE
+                                 });
+            }
+	    },
+	    
+	    undimBackground: function(onCompleteBind) {
+	    	let Background = imports.ui.background;
+	    	
+	    	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i]._delegate;
+
+                Tweener.addTween(background,
+                                 { brightness: 1.0,
+                                   time: this.getSettings().animation_time,
+                                   transition: TRANSITION_TYPE,
+                                   onComplete: onCompleteBind,
+                                 });
+            }
+	    },
+	    
+	    removeBackground: function() {
+	    	Main.uiGroup.remove_child(this._backgroundGroup);
 	    }
 };

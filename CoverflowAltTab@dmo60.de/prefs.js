@@ -23,6 +23,18 @@ function init() {
 	Lib.initTranslations("coverflow");
 }
 
+function getBaseString(translatedString) {
+	switch (translatedString) {
+	case _("Coverflow"): return "Coverflow";
+	case _("Timeline"): return "Timeline";
+	case _("Bottom"): return "Bottom";
+	case _("Top"): return "Top";
+	case _("Classic"): return "Classic";
+	case _("Overlay"): return "Overlay";
+	default: return translatedString;
+	}
+}
+
 function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
@@ -38,6 +50,7 @@ function buildPrefsWidget() {
 	frame.add(buildRange("dim-factor", [0, 10, 1, 3], _("Background dim-factor (smaller means darker)")));
 	frame.add(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
 	frame.add(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
+	frame.add(buildSwitcher("elastic-mode", _("Elastic animations")));
 	frame.add(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
 
 	frame.show_all();
@@ -93,13 +106,13 @@ function buildRadio(key, buttons, labeltext) {
 	let radio = new Gtk.RadioButton();
 	for (let i in buttons) {
 		radio = new Gtk.RadioButton({group: radio, label: buttons[i]});
-		if (buttons[i] == settings.get_string(key)) {
+		if (getBaseString(buttons[i]) == settings.get_string(key)) {
 			radio.set_active(true);
 		}
 
 		radio.connect('toggled', function(widget) {
 			if (widget.get_active()) {
-				settings.set_string(key, widget.get_label());
+				settings.set_string(key, getBaseString(widget.get_label()));
 			}
 		});
 
