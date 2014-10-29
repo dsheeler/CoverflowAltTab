@@ -439,7 +439,6 @@ PlatformGnomeShell310.prototype = {
         	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
-
                 Tweener.addTween(background,
                                  { brightness: this.getSettings().dim_factor,
                                    time: this.getSettings().animation_time,
@@ -454,7 +453,6 @@ PlatformGnomeShell310.prototype = {
 	    	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
-
                 Tweener.addTween(background,
                                  { brightness: 1.0,
                                    time: this.getSettings().animation_time,
@@ -468,3 +466,65 @@ PlatformGnomeShell310.prototype = {
 	    	Main.uiGroup.remove_child(this._backgroundGroup);
 	    }
 };
+
+
+
+function PlatformGnomeShell314() {
+    this._init.apply(this, arguments);
+}
+
+PlatformGnomeShell314.prototype = {
+	    __proto__: PlatformGnomeShell.prototype,
+
+	    _init: function() {
+	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
+	    },
+	    
+	    getPrimaryModifier: function(mask) {
+	    	return imports.ui.switcherPopup.primaryModifier(mask);
+	    },
+	    
+	    initBackground: function() {
+	    	let Background = imports.ui.background;
+	    	
+	    	this._backgroundGroup = new Meta.BackgroundGroup();
+	        Main.uiGroup.add_child(this._backgroundGroup);
+	        this._backgroundGroup.lower_bottom();
+	        this._backgroundGroup.hide();
+	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+	            new Background.BackgroundManager({ container: this._backgroundGroup,
+	                                               monitorIndex: i, });
+	        }
+	    },
+	    
+	    dimBackground: function() {	    	
+	    	this._backgroundGroup.show();
+        	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i];
+                Tweener.addTween(background,
+                                 { brightness: this.getSettings().dim_factor,
+                                   time: this.getSettings().animation_time,
+                                   transition: TRANSITION_TYPE
+                                 });
+            }
+	    },
+	    
+	    undimBackground: function(onCompleteBind) {	    	
+	    	let backgrounds = this._backgroundGroup.get_children();
+            for (let i = 0; i < backgrounds.length; i++) {
+                let background = backgrounds[i];
+                Tweener.addTween(background,
+                                 { brightness: 1.0,
+                                   time: this.getSettings().animation_time,
+                                   transition: TRANSITION_TYPE,
+                                   onComplete: onCompleteBind,
+                                 });
+            }
+	    },
+	    
+	    removeBackground: function() {
+	    	Main.uiGroup.remove_child(this._backgroundGroup);
+	    }
+};
+
