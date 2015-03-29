@@ -74,5 +74,11 @@
     "default" : false,
     "description": "Elastic animations",
     "tooltip": "Use elastic animation style when toggling switcher"
+ },
+ "current-workspace-only": {
+    "type" : "checkbox",
+    "default" : true,
+    "description": "Select from current workspace only",
+    "tooltip": "Check to select between windows from current workspace only"
  }
 }

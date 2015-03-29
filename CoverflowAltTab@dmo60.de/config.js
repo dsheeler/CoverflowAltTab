@@ -7,4 +7,5 @@
     hide_panel: true,               // Set to true to hide panel, false to show panel when Coverflow is active
     enforce_primary_monitor: false, // Show the switcher on the primary monitor instead of detecting the active monitor
     switcher_style: 'Coverflow',    // "Coverflow" or "Timeline"
+    current_workspace_only: true,   // Switch between windows from current workspace only
 }
