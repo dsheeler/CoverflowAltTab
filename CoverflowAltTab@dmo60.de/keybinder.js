@@ -72,24 +72,26 @@ KeybinderNewGSApi.prototype = {
         
     enable: function(startAppSwitcherBind) {
     	let Shell = imports.gi.Shell;
-    	Main.wm.setCustomKeybindingHandler('switch-applications', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-windows', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-group', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-panels', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-applications-backward', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-windows-backward', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-group-backward', Shell.KeyBindingMode.NORMAL, startAppSwitcherBind);
+        let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
+    	Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-panels', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
     },
 
     disable: function() {
     	let Shell = imports.gi.Shell;
-    	Main.wm.setCustomKeybindingHandler('switch-applications', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-    	Main.wm.setCustomKeybindingHandler('switch-windows', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startWindowSwitcher));
-        Main.wm.setCustomKeybindingHandler('switch-group', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Main.wm.setCustomKeybindingHandler('switch-panels', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
-        Main.wm.setCustomKeybindingHandler('switch-applications-backward', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Main.wm.setCustomKeybindingHandler('switch-windows-backward', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startWindowSwitcher));
-        Main.wm.setCustomKeybindingHandler('switch-group-backward', Shell.KeyBindingMode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
+        let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
+    	Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
+    	Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startWindowSwitcher));
+        Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
+        Main.wm.setCustomKeybindingHandler('switch-panels', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
+        Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
+        Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startWindowSwitcher));
+        Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startAppSwitcher));
     }
 };
 
