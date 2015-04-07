@@ -9,7 +9,7 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 
 
-![Screenshot](http://www.dmo60.de/CoverflowAltTabScreenshotkleinneu.jpg)
+![Screenshot](img/screenshot_small.png)
 
 
 
@@ -26,18 +26,18 @@ Easiest way to install the extension is via [extensions.gnome.org](https://exten
 If you want to install it manually (e.g. to test the latest, probably unstable code), download the zip file by clicking the zip button on the upper part of this page and extract it.
 
   1. Copy the folder "CoverflowAltTab@dmo60.de" to `~/.local/share/gnome-shell/extensions/`.
-		
+
   2. Use Gnome-Tweak-Tool or [extensions.gnome.org](https://extensions.gnome.org/local/) to enable the extension. (Eventually you have to restart Gnome-Shell: Press Alt+F2, type 'r' and enter)
-	
+
 
 #### Cinnamon ####
 
 Grab the zip file from [Cinnamon-Spices](http://cinnamon-spices.linuxmint.com/extensions/view/3) (recommended) or by clicking the zip button on the upper part of this page (this way, you will get the latest, maybe unstable code) and extract it.
 
   1. Copy the folder "CoverflowAltTab@dmo60.de" to `~/.local/share/cinnamon/extensions/`.
-	
+
   2. Enable the extension in Cinnamon Settings. (Eventually you have to restart Cinnamon: Press Alt+F2, type 'r' and enter)
-	 
+
 
 
 
@@ -49,14 +49,14 @@ This extension uses the following key bindings (you can change or disable them i
   - "Switch applications" (usually **Alt+Tab**): Cycle through all windows from the current workspace
   - "Switch windows of an application" (usually **Ctrl+Tab**): Cycle through all windows from the current application from all workspaces
   - "Switch system controls" (usually **Ctrl+Alt+Tab**): Cycle through all windows from all workspaces (who wants to cycle through system controls anyway?)
-    
+
 All of the shortcuts with **Shift** key pressed cycles backward.
 
   - Hit **Esc** to cancel.
   - Hit **q** to close highlighted window.
   - Hit **d** to hide all windows and show the desktop.
 
-You can also use the **arrow keys** or your **mouse wheel** to cycle through the windows. 
+You can also use the **arrow keys** or your **mouse wheel** to cycle through the windows.
 
 
 
