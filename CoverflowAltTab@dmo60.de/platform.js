@@ -70,17 +70,17 @@ AbstractPlatform.prototype = {
             current_workspace_only: true,
         };
     },
-    
+
     getPrimaryModifier: function(mask) {
     	return imports.ui.altTab.primaryModifier(mask);
     },
-    
+
     initBackground: function() {
     	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
 		this._background.hide();
         global.overlay_group.add_actor(this._background);
     },
-    
+
     dimBackground: function() {
     	this._background.show();
         Tweener.addTween(this._background, {
@@ -89,7 +89,7 @@ AbstractPlatform.prototype = {
             transition: TRANSITION_TYPE
         });
     },
-    
+
     undimBackground: function(onCompleteBind) {
     	Tweener.removeTweens(this._background);
         Tweener.addTween(this._background, {
@@ -99,7 +99,7 @@ AbstractPlatform.prototype = {
             onComplete: onCompleteBind,
         });
     },
-    
+
     removeBackground: function() {
     	global.overlay_group.remove_actor(this._background);
     }
@@ -211,10 +211,10 @@ PlatformCinnamon18.prototype = {
         this._settings.updateTitlePosition = function() {
             this.title_position =  (this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM);
         };
-        
-        
+
+
         let Settings = imports.ui.settings;
-        
+
         // Init settings
         let extSettings = new Settings.ExtensionSettings(this._settings, "CoverflowAltTab@dmo60.de");
         function noop() {}
@@ -228,7 +228,7 @@ PlatformCinnamon18.prototype = {
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "elastic-mode", "elastic_mode", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "current-workspace-only", "current_workspace_only", noop);
-        
+
         this._settings.updateSwitcherStyle();
         this._settings.updateTitlePosition();
     },
@@ -250,11 +250,11 @@ PlatformCinnamon18.prototype = {
     getSettings: function() {
         return this._settings;
     },
-    
+
     getPrimaryModifier: function(mask) {
     	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
     }
-    
+
 };
 
 function PlatformGnomeShell() {
@@ -355,14 +355,14 @@ PlatformGnomeShell38.prototype = {
 	    _init: function() {
 	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
 	    },
-	    
+
 	    getPrimaryModifier: function(mask) {
 	    	return imports.ui.switcherPopup.primaryModifier(mask);
 	    },
-	    
+
 	    initBackground: function() {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	this._backgroundGroup = new Meta.BackgroundGroup();
 	        global.overlay_group.add_child(this._backgroundGroup);
 	        this._backgroundGroup.hide();
@@ -371,10 +371,10 @@ PlatformGnomeShell38.prototype = {
 	                                               monitorIndex: i, });
 	        }
 	    },
-	    
+
 	    dimBackground: function() {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	this._backgroundGroup.show();
         	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
@@ -387,10 +387,10 @@ PlatformGnomeShell38.prototype = {
                                  });
             }
 	    },
-	    
+
 	    undimBackground: function(onCompleteBind) {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
@@ -403,7 +403,7 @@ PlatformGnomeShell38.prototype = {
                                  });
             }
 	    },
-	    
+
 	    removeBackground: function() {
 	    	global.overlay_group.remove_child(this._backgroundGroup);
 	    }
@@ -419,14 +419,14 @@ PlatformGnomeShell310.prototype = {
 	    _init: function() {
 	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
 	    },
-	    
+
 	    getPrimaryModifier: function(mask) {
 	    	return imports.ui.switcherPopup.primaryModifier(mask);
 	    },
-	    
+
 	    initBackground: function() {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	this._backgroundGroup = new Meta.BackgroundGroup();
 	        Main.uiGroup.add_child(this._backgroundGroup);
 	        this._backgroundGroup.lower_bottom();
@@ -436,10 +436,10 @@ PlatformGnomeShell310.prototype = {
 	                                               monitorIndex: i, });
 	        }
 	    },
-	    
+
 	    dimBackground: function() {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	this._backgroundGroup.show();
         	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
@@ -451,10 +451,10 @@ PlatformGnomeShell310.prototype = {
                                  });
             }
 	    },
-	    
+
 	    undimBackground: function(onCompleteBind) {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
@@ -466,7 +466,7 @@ PlatformGnomeShell310.prototype = {
                                  });
             }
 	    },
-	    
+
 	    removeBackground: function() {
 	    	Main.uiGroup.remove_child(this._backgroundGroup);
 	    }
@@ -484,52 +484,52 @@ PlatformGnomeShell314.prototype = {
 	    _init: function() {
 	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
 	    },
-	    
+
 	    getPrimaryModifier: function(mask) {
 	    	return imports.ui.switcherPopup.primaryModifier(mask);
 	    },
-	    
+
 	    initBackground: function() {
 	    	let Background = imports.ui.background;
-	    	
+
 	    	this._backgroundGroup = new Meta.BackgroundGroup();
-	        Main.uiGroup.add_child(this._backgroundGroup);
-	        this._backgroundGroup.lower_bottom();
-	        this._backgroundGroup.hide();
-	        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
-	            new Background.BackgroundManager({ container: this._backgroundGroup,
-	                                               monitorIndex: i, });
-	        }
+        Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
+        this._backgroundGroup.lower_bottom();
+        this._backgroundGroup.hide();
+        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+            new Background.BackgroundManager({ container: this._backgroundGroup,
+                                               monitorIndex: i,
+                                               vignette: true });
+        }
 	    },
-	    
-	    dimBackground: function() {	    	
+
+	    dimBackground: function() {
 	    	this._backgroundGroup.show();
-        	let backgrounds = this._backgroundGroup.get_children();
-            for (let i = 0; i < backgrounds.length; i++) {
-                let background = backgrounds[i];
-                Tweener.addTween(background,
-                                 { brightness: this.getSettings().dim_factor,
-                                   time: this.getSettings().animation_time,
-                                   transition: TRANSITION_TYPE
-                                 });
-            }
+        let backgrounds = this._backgroundGroup.get_children();
+        for (let i = 0; i < backgrounds.length; i++) {
+            Tweener.addTween(backgrounds[i],
+                             { brightness: 0.8,
+                               vignette_sharpness: 1 - this.getSettings().dim_factor,
+                               time: this.getSettings().animation_time,
+                               transition: TRANSITION_TYPE
+                             });
+        }
 	    },
-	    
-	    undimBackground: function(onCompleteBind) {	    	
-	    	let backgrounds = this._backgroundGroup.get_children();
-            for (let i = 0; i < backgrounds.length; i++) {
-                let background = backgrounds[i];
-                Tweener.addTween(background,
-                                 { brightness: 1.0,
-                                   time: this.getSettings().animation_time,
-                                   transition: TRANSITION_TYPE,
-                                   onComplete: onCompleteBind,
-                                 });
-            }
+
+	    undimBackground: function(onCompleteBind) {
+        let backgrounds = this._backgroundGroup.get_children();
+        for (let i = 0; i < backgrounds.length; i++) {
+            Tweener.addTween(backgrounds[i],
+                             { brightness: 1.0,
+                               vignette_sharpness: 0.0,
+                               time: this.getSettings().animation_time,
+                               transition: TRANSITION_TYPE,
+                               onComplete: onCompleteBind
+                             });
+        }
 	    },
-	    
+
 	    removeBackground: function() {
-	    	Main.uiGroup.remove_child(this._backgroundGroup);
+	    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
 	    }
 };
-
