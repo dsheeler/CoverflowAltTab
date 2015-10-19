@@ -67,6 +67,7 @@ AbstractPlatform.prototype = {
             enforce_primary_monitor: true,
             switcher_class: ExtensionImports.switcher.Switcher,
             elastic_mode: false,
+            current_workspace_only: true,
         };
     },
 
@@ -169,7 +170,8 @@ PlatformCinnamon.prototype = {
             hide_panel: config.hide_panel === true,
             enforce_primary_monitor: config.enforce_primary_monitor === true,
             elastic_mode: config.elastic_mode === true,
-            switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
+            switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher,
+            current_workspace_only: config.current_workspace_only === true
         };
     },
 
@@ -225,6 +227,7 @@ PlatformCinnamon18.prototype = {
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "enforce-primary-monitor", "enforce_primary_monitor", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "elastic-mode", "elastic_mode", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
+        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "current-workspace-only", "current_workspace_only", noop);
 
         this._settings.updateSwitcherStyle();
         this._settings.updateTitlePosition();
@@ -284,6 +287,7 @@ PlatformGnomeShell.prototype = {
             "hide-panel",
             "enforce-primary-monitor",
             "elastic-mode",
+            "current-workspace-only",
         ];
 
         this._connections = [];
@@ -330,7 +334,8 @@ PlatformGnomeShell.prototype = {
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 elastic_mode: settings.get_boolean("elastic-mode"),
-                switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher
+                switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher,
+                current_workspace_only: settings.get_boolean("current-workspace-only")
             };
         } catch(e) {
             global.log(e);

@@ -83,3 +83,7 @@ msgstr ""
 #: prefs.js:54
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
+
+#: prefs.js:55
+msgid "Show windows from current workspace only"
+msgstr ""

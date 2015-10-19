@@ -79,3 +79,7 @@ msgstr "Průžné animace"
 #: prefs.js:54
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr "Vertikální posun (kladná čísla posouvají výš, záporná níž)"
+
+#: prefs.js:55
+msgid "Show windows from current workspace only"
+msgstr "Show windows from current workspace only"
