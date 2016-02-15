@@ -122,7 +122,10 @@ Manager.prototype = {
         }
 
         // filter by windows existing on the active monitor
-        windows = windows.filter ( matchMonitor, this.getActiveMonitor() );
+        if(this.platform.getSettings().switch_per_monitor)
+        {
+            windows = windows.filter ( matchMonitor, this.getActiveMonitor() );
+        }
 
         // Sort by user time
         windows.sort(sortWindowsByUserTime);
