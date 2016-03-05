@@ -77,3 +77,13 @@ Click the preferences button on [extensions.gnome.org](https://extensions.gnome.
 Since Cinnamon 1.8, you can use 'Cinnamon-Settings'/'System-Settings' to change the extension preferences. Go to section 'Extensions', select Coverflow Alt-Tab and click the configure button.
 
 For older Cinnamon versions, you have to go the extension's installation directory and open the file `config.js`. There you can change all the preference values, just not as pretty as with a configuration dialog.
+
+
+Troubleshooting
+--------------
+
+#### I have to manually enable the extension every time I start my computer. ####
+
+Many GNU/Linux distributions, namely Debian and its derivatives, install some extensions by default. Among those it's very common to find the [AlternateTab](https://extensions.gnome.org/extension/15/alternatetab/) extension; unfortunately, both AlternateTab and CoverflowAltTab are alt-tab replacements, and so they conflict: AlternateTab is usually the winning one, and so CoverflowAltTab appears as enabled but does not work as expected.
+
+All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disable AlternateTab (or any other alt-tab replacement extension)! To do that, you might use the Gnome Tweak Tool (which is usually NOT installed by default) or visit https://extensions.gnome.org/local/. CoverflowAltTab might need to be disabled and reenabled after you disable the offending extension(s), but this time it'll continue working even after a reboot.
