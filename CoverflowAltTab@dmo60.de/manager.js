@@ -26,6 +26,10 @@ function matchWorkspace(win) {
     return win.get_workspace() == this && !win.is_skip_taskbar();
 }
 
+function matchOtherWorkspace(win) {
+    return win.get_workspace() != this && !win.is_skip_taskbar();
+}
+
 function Manager(platform, keybinder) {
     this._init(platform, keybinder);
 }
@@ -69,20 +73,36 @@ Manager.prototype = {
             case 'switch-panels':
                 // Switch between windows of all workspaces
                 windows = windows.filter( matchSkipTaskbar );
+                // Sort by user time
+                windows.sort(sortWindowsByUserTime);
                 break;
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];
                 windows = windows.filter( matchWmClass, focused.get_wm_class() );
+                // Sort by user time
+                windows.sort(sortWindowsByUserTime);
                 break;
             default:
-                // Switch between windows of current workspace
-                windows = windows.filter( matchWorkspace, currentWorkspace );
+            	if (this.platform.getSettings().current_workspace_only) {
+            		// Switch between windows of current workspace
+            		windows = windows.filter( matchWorkspace, currentWorkspace );
+                    // Sort by user time
+                    windows.sort(sortWindowsByUserTime);
+            	} else {
+                    // Switch between windows of all workspaces, prefer 
+            		// those from current workspace
+            		let wins1 = windows.filter( matchWorkspace, currentWorkspace );
+            		let wins2 = windows.filter( matchOtherWorkspace, currentWorkspace );
+                    // Sort by user time
+                    wins1.sort(sortWindowsByUserTime);
+                    wins2.sort(sortWindowsByUserTime);
+                    windows = wins1.concat(wins2);
+                    wins1 = [];
+                    wins2 = [];
+            	}
                 break;
         }
-
-        // Sort by user time
-        windows.sort(sortWindowsByUserTime);
 
         if (windows.length) {
             let mask = binding.get_mask();
