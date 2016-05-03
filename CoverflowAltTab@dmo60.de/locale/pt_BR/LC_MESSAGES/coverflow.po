@@ -88,3 +88,7 @@ msgstr "Animações elásticas"
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
 "Desvio vertical (valor positivo move tudo para cima, negativo para baixo)"
+
+#: prefs.js:55
+msgid "Show windows from current workspace only"
+msgstr "Mostrar janelas somente da área de trabalho atual"
