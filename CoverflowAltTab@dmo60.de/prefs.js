@@ -4,6 +4,7 @@
  */
 
 const Gtk = imports.gi.Gtk;
+const GObject = imports.gi.GObject;
 const Config = imports.misc.config;
 
 const Gettext = imports.gettext.domain('coverflow');
@@ -39,7 +40,8 @@ function buildPrefsWidget() {
 	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
 
     if(PACKAGE_VERSION <= "3.4.0") {
-        let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n</b>")});
+        let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! "+
+        "(Hit Alt+F2, type 'r' and press Enter)\n</b>")});
         label.set_use_markup(true);
         frame.add(label);
     }
@@ -52,6 +54,14 @@ function buildPrefsWidget() {
 	frame.add(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
 	frame.add(buildSwitcher("elastic-mode", _("Elastic animations")));
 	frame.add(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
+	let options = [{
+	    id: 'current', name: _("Current workspace only")
+	}, {
+	    id: 'all', name: _("All workspaces")
+	}, {
+	    id: 'all-currentfirst', name: _("All workspaces, current first")
+	}]
+	frame.add(buildComboBox("current-workspace-only", options, _("Show windows from current or all workspaces")));
 
 	frame.show_all();
 
@@ -143,3 +153,44 @@ function buildSpin(key, values, labeltext) {
 	return hbox;
 
 };
+
+function buildComboBox(key, values, labeltext) {
+
+    let hbox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL,
+                            margin_top: 5});
+
+    let setting_label = new Gtk.Label({label: labeltext,
+                                       xalign: 0 });
+
+    let model = new Gtk.ListStore();
+    model.set_column_types([GObject.TYPE_STRING, GObject.TYPE_STRING]);
+    let setting_enum = new Gtk.ComboBox({model: model});
+    setting_enum.get_style_context().add_class(Gtk.STYLE_CLASS_RAISED);
+    let renderer = new Gtk.CellRendererText();
+    setting_enum.pack_start(renderer, true);
+    setting_enum.add_attribute(renderer, 'text', 1);
+
+    for (let i=0; i<values.length; i++) {
+        let item = values[i];
+        let iter = model.append();
+        model.set(iter, [0, 1], [item.id, item.name]);
+        if (item.id == settings.get_string(key)) {
+            setting_enum.set_active_iter(iter);
+        }
+    }
+
+    setting_enum.connect('changed', function(entry) {
+        let [success, iter] = setting_enum.get_active_iter();
+        if (!success)
+            return;
+
+        let id = model.get_value(iter, 0)
+        settings.set_string(key, id);
+    });
+
+    hbox.pack_start(setting_label, true, true, 0);
+    hbox.add(setting_enum);
+
+    return hbox;
+
+}
