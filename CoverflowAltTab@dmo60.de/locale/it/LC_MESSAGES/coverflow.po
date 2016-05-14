@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-08 17:40+0100\n"
-"PO-Revision-Date: 2015-05-22 23:21+0100\n"
+"PO-Revision-Date: 2016-05-14 17:40+0200\n"
 "Last-Translator: Paolo Inaudi <p91paul@gmail.com>\n"
 "Language-Team: Italian <p91paul@gmail.com>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -91,6 +91,18 @@ msgstr ""
 "Spostamento verticale (valori positivi spostano verso l'alto, negativi verso "
 "il basso)"
 
-#: prefs.js:55
-msgid "Show windows from current workspace only"
-msgstr "Show windows from current workspace only"
+#: prefs.js:58
+msgid "Current workspace only"
+msgstr "Workspace corrente"
+
+#: prefs.js:60
+msgid "All workspaces"
+msgstr "Tutti i workspace"
+
+#: prefs.js:62
+msgid "All workspaces, current first"
+msgstr "Tutti i workspace, prima il corrente"
+
+#: prefs.js:64
+msgid "Show windows from current or all workspaces"
+msgstr "Mostra finestre del workspace corrente o di tutti"

@@ -84,13 +84,9 @@ Manager.prototype = {
                 windows.sort(sortWindowsByUserTime);
                 break;
             default:
-            	if (this.platform.getSettings().current_workspace_only) {
-            		// Switch between windows of current workspace
-            		windows = windows.filter( matchWorkspace, currentWorkspace );
-                    // Sort by user time
-                    windows.sort(sortWindowsByUserTime);
-            	} else {
-                    // Switch between windows of all workspaces, prefer 
+                let currentOnly = this.platform.getSettings().current_workspace_only;
+            	if ( currentOnly == 'all-currentfirst') {
+                    // Switch between windows of all workspaces, prefer
             		// those from current workspace
             		let wins1 = windows.filter( matchWorkspace, currentWorkspace );
             		let wins2 = windows.filter( matchOtherWorkspace, currentWorkspace );
@@ -100,6 +96,12 @@ Manager.prototype = {
                     windows = wins1.concat(wins2);
                     wins1 = [];
                     wins2 = [];
+            	} else {
+            	    let filter = currentOnly == 'current' ? matchWorkspace : matchSkipTaskbar;
+            		// Switch between windows of current workspace
+            		windows = windows.filter( filter, currentWorkspace );
+                    // Sort by user time
+                    windows.sort(sortWindowsByUserTime);
             	}
                 break;
         }

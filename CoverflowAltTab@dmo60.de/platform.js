@@ -67,7 +67,7 @@ AbstractPlatform.prototype = {
             enforce_primary_monitor: true,
             switcher_class: ExtensionImports.switcher.Switcher,
             elastic_mode: false,
-            current_workspace_only: true,
+            current_workspace_only: '1',
         };
     },
 
@@ -171,7 +171,7 @@ PlatformCinnamon.prototype = {
             enforce_primary_monitor: config.enforce_primary_monitor === true,
             elastic_mode: config.elastic_mode === true,
             switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher,
-            current_workspace_only: config.current_workspace_only === true
+            current_workspace_only: config.current_workspace_only
         };
     },
 
@@ -335,7 +335,7 @@ PlatformGnomeShell.prototype = {
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 elastic_mode: settings.get_boolean("elastic-mode"),
                 switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher,
-                current_workspace_only: settings.get_boolean("current-workspace-only")
+                current_workspace_only: settings.get_string("current-workspace-only")
             };
         } catch(e) {
             global.log(e);

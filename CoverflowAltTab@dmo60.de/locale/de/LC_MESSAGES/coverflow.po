@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-08 17:40+0100\n"
-"PO-Revision-Date: 2013-05-17 15:31+0100\n"
+"PO-Revision-Date: 2016-05-14 17:43+0200\n"
 "Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: prefs.js:28 prefs.js:48
@@ -90,6 +90,18 @@ msgstr ""
 "Vertikaler Offset (positive Werte bewegen alles nach oben, negative nach "
 "unten)"
 
-#: prefs.js:55
-msgid "Show windows from current workspace only"
+#: prefs.js:58
+msgid "Current workspace only"
+msgstr ""
+
+#: prefs.js:60
+msgid "All workspaces"
+msgstr ""
+
+#: prefs.js:62
+msgid "All workspaces, current first"
+msgstr ""
+
+#: prefs.js:64
+msgid "Show windows from current or all workspaces"
 msgstr "Nur Fenster des aktuellen Workspace anzeigen"
