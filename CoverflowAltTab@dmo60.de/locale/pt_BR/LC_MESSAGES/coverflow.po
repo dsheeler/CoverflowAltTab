@@ -89,18 +89,6 @@ msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
 "Desvio vertical (valor positivo move tudo para cima, negativo para baixo)"
 
-#: prefs.js:58
-msgid "Current workspace only"
-msgstr ""
-
-#: prefs.js:60
-msgid "All workspaces"
-msgstr ""
-
-#: prefs.js:62
-msgid "All workspaces, current first"
-msgstr ""
-
-#: prefs.js:64
-msgid "Show windows from current or all workspaces"
+#: prefs.js:55
+msgid "Show windows from current workspace only"
 msgstr "Mostrar janelas somente da área de trabalho atual"
