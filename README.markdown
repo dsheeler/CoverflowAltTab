@@ -87,3 +87,7 @@ Troubleshooting
 Many GNU/Linux distributions, namely Debian and its derivatives, install some extensions by default. Among those it's very common to find the [AlternateTab](https://extensions.gnome.org/extension/15/alternatetab/) extension; unfortunately, both AlternateTab and CoverflowAltTab are alt-tab replacements, and so they conflict: AlternateTab is usually the winning one, and so CoverflowAltTab appears as enabled but does not work as expected.
 
 All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disable AlternateTab (or any other alt-tab replacement extension)! To do that, you might use the Gnome Tweak Tool (which is usually NOT installed by default) or visit https://extensions.gnome.org/local/. CoverflowAltTab might need to be disabled and reenabled after you disable the offending extension(s), but this time it'll continue working even after a reboot.
+
+#### The extension does not work on Cinnamon, the screen stays blank when I alt-tab. ####
+
+For whatever reason, even if you just have one monitor, on Cinnamon you need to enable the "Always show the animation on the primary desktop" extension option. See bug [#61](https://github.com/dmo60/CoverflowAltTab/issues/61).
