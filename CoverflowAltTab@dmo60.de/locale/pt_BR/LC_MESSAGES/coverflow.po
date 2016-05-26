@@ -91,16 +91,16 @@ msgstr ""
 
 #: prefs.js:58
 msgid "Current workspace only"
-msgstr ""
+msgstr "Somente para área de trabalho atual"
 
 #: prefs.js:60
 msgid "All workspaces"
-msgstr ""
+msgstr "Todas as áreas de trabalho"
 
 #: prefs.js:62
 msgid "All workspaces, current first"
-msgstr ""
+msgstr "Todas as áreas de trabalho, com prioridade à atual"
 
 #: prefs.js:64
 msgid "Show windows from current or all workspaces"
-msgstr "Mostrar janelas somente da área de trabalho atual"
+msgstr "Mostrar janelas da área atual ou todas as áreas de trabalho"
