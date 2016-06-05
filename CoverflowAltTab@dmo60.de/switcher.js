@@ -108,6 +108,10 @@ Switcher.prototype = {
             }, this);
         }
 
+        // hide gnome-shell legacy tray
+        if(Main.legacyTray)
+            Main.legacyTray.actor.hide();
+
         this._manager.platform.dimBackground();
         
         this._initialDelayTimeoutId = 0;
@@ -494,6 +498,10 @@ Switcher.prototype = {
             }
             panels.forEach(function(panel) { panel.actor.set_reactive(true); });
 
+            // show gnome-shell legacy tray
+            if(Main.legacyTray)
+                Main.legacyTray.actor.show();
+
             this._manager.platform.undimBackground(Lang.bind(this, this._onHideBackgroundCompleted));
             this._disableMonitorFix();
         }
@@ -523,6 +531,9 @@ Switcher.prototype = {
         let panels = [Main.panel];
         if(Main.panel2)
             panels.push(Main.panel2);
+        // gnome-shell dash
+        if(Main.overview._dash)
+            panels.push(Main.overview._dash);
         return panels;
     },
 
