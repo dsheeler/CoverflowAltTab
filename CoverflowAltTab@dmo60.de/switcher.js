@@ -96,21 +96,27 @@ Switcher.prototype = {
         this.actor.show();
 
         let panels = this.getPanels();
-        panels.forEach(function(panel) { panel.actor.set_reactive(false); });
-
-        if (this._settings.hide_panel) {
-            panels.forEach(function(panel) {
-                Tweener.addTween(panel.actor, {
-                    opacity: 0,
-                    time: this._settings.animation_time,
-                    transition: TRANSITION_TYPE
-                });
-            }, this);
-        }
+        panels.forEach(function(panel) {
+            try {
+                panel.actor.set_reactive(false);
+                if (this._settings.hide_panel) {
+                    Tweener.addTween(panel.actor, {
+                        opacity: 0,
+                        time: this._settings.animation_time,
+                        transition: TRANSITION_TYPE
+                    });
+                }
+            } catch (e) {
+                //ignore fake panels
+            }
+        }, this);
 
         // hide gnome-shell legacy tray
-        if(Main.legacyTray)
+        try {
             Main.legacyTray.actor.hide();
+        } catch (e) {
+            //ignore missing legacy tray
+        }
 
         this._manager.platform.dimBackground();
         
@@ -486,21 +492,27 @@ Switcher.prototype = {
 
             // panels
             let panels = this.getPanels();
-            if (this._settings.hide_panel) {
-                panels.forEach(function(panel) {
-                    Tweener.removeTweens(panel.actor);
-                    Tweener.addTween(panel.actor, {
-                        opacity: 255,
-                        time: this._settings.animation_time,
-                        transition: TRANSITION_TYPE}
-                    );
-                }, this);
-            }
-            panels.forEach(function(panel) { panel.actor.set_reactive(true); });
-
+            panels.forEach(function(panel) {
+                try {
+                    panel.actor.set_reactive(true);
+                    if (this._settings.hide_panel) {
+                        Tweener.removeTweens(panel.actor);
+                        Tweener.addTween(panel.actor, {
+                            opacity: 255,
+                            time: this._settings.animation_time,
+                            transition: TRANSITION_TYPE}
+                        );
+                    }
+                } catch (e) {
+                    //ignore fake panels
+                }
+            }, this);
             // show gnome-shell legacy tray
-            if(Main.legacyTray)
+            try {
                 Main.legacyTray.actor.show();
+            } catch (e) {
+                //ignore missing legacy tray
+            }
 
             this._manager.platform.undimBackground(Lang.bind(this, this._onHideBackgroundCompleted));
             this._disableMonitorFix();
