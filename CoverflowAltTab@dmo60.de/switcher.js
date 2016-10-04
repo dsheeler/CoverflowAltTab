@@ -294,6 +294,7 @@ Switcher.prototype = {
 
             case Clutter.q:
             case Clutter.Q:
+            case Clutter.F4:
                 // Q -> Close window
                 this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
                 this._checkDestroyedTimeoutId = Mainloop.timeout_add(CHECK_DESTROYED_TIMEOUT,
