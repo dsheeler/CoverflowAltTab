@@ -12,7 +12,7 @@ CoverflowAltTab contributors (sorted randomly)
   * Timeline switcher
   * Many other improvements
 * [Victor Tseng (Palatis)](https://github.com/Palatis)
-  * Original developer of the extension with the Coverlow switcher
+  * Original developer of the extension with the Coverflow switcher
 * [Paolo Inaudi (p91paul)](https://github.com/p91paul)
   * Maintainer, small fixes
 * [Richard K](https://github.com/vltr)
