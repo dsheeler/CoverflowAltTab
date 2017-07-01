@@ -62,7 +62,7 @@ You can also use the **arrow keys** or your **mouse wheel** to cycle through the
 
 
 Customization
---------------
+-------------
 
 To change the keybindings, use your system keyboard settings! See above for the used keybindings and change them to your desire.
 
@@ -80,7 +80,7 @@ For older Cinnamon versions, you have to go the extension's installation directo
 
 
 Troubleshooting
---------------
+---------------
 
 #### I have to manually enable the extension every time I start my computer. ####
 
@@ -91,3 +91,11 @@ All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disabl
 #### The extension does not work on Cinnamon, the screen stays blank when I alt-tab. ####
 
 For whatever reason, even if you just have one monitor, on Cinnamon you need to enable the "Always show the animation on the primary desktop" extension option. See bug [#61](https://github.com/dmo60/CoverflowAltTab/issues/61).
+
+License
+-------
+
+CoverflowAltTab is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+See the [contributors list](CONTRIBUTORS.markdown)
+
