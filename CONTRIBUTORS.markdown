@@ -11,7 +11,7 @@ CoverflowAltTab contributors (sorted randomly)
   * Improvements for multi-monitor support
   * Timeline switcher
   * Many other improvements
-* [Victor Tseng (Palatis)]https://github.com/Palatis
+* [Victor Tseng (Palatis)](https://github.com/Palatis)
   * Original developer of the extension with the Coverlow switcher
 * [Paolo Inaudi (p91paul)](https://github.com/p91paul)
   * Maintainer, small fixes
