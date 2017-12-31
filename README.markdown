@@ -31,9 +31,9 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
 
 or execute commands at the terminal: 
 
-  - make install (With this command, the script installs this extension in the user directory)
+  - make all (With this command, the script installs this extension in the user directory)
 
-  - make install LOCALINSTALL=true (With this command, the script installs this extension in the /usr directory)
+  - make all LOCALINSTALL=true (With this command, the script installs this extension in the /usr directory)
 
 #### Cinnamon ####
 

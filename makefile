@@ -25,15 +25,32 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-TARGET_PATH := $(shell pwd)
 USERNAME := $(shell whoami)
 NORMAL_PATH := .local/share/gnome-shell/extensions/
 SUPER_PATH := /usr/share/gnome-shell/extensions/
+SRC_DIR := CoverflowAltTab@dmo60.de
+LOCALE_DIR=${SRC_DIR}/locale
 
-ifeq ($(LOCALINSTALL),true)
+SCHEMA_DIR=${SRC_DIR}/schemas
+SCHEMA_FILE=org.gnome.shell.extensions.coverflowalttab.gschema.xml
+
+all: translations schema install
+
+translations: ${LOCALES_FILE}
+	msgfmt "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.mo"
+
+ifneq ($(LOCALINSTALL),)
 install:
-	cp -r $(TARGET_PATH)/CoverflowAltTab@dmo60.de $(SUPER_PATH)
+	cp -r "${SRC_DIR}" $(SUPER_PATH)
 else
 install:
-	cp -r $(TARGET_PATH)/CoverflowAltTab@dmo60.de /home/$(USERNAME)/$(NORMAL_PATH)
+	cp -r "${SRC_DIR}" /home/$(USERNAME)/$(NORMAL_PATH)
 endif
+
+schema: ${SCHEMA_DIR}/${SCHEMA_FILE}
+	glib-compile-schemas "${SCHEMA_DIR}"
