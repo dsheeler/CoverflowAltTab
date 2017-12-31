@@ -29,6 +29,11 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
 
   2. Use Gnome-Tweak-Tool or [extensions.gnome.org](https://extensions.gnome.org/local/) to enable the extension. (Eventually you have to restart Gnome-Shell: Press Alt+F2, type 'r' and enter)
 
+or execute commands at the terminal: 
+
+  - make install (With this command, the script installs this extension in the user directory)
+
+  - make install LOCALINSTALL=true (With this command, the script installs this extension in the /usr directory)
 
 #### Cinnamon ####
 
