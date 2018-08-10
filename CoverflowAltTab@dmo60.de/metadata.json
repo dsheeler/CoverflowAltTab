@@ -28,7 +28,8 @@
         "3.22",
         "3.23",
         "3.24",
-        "3.26"
+        "3.26",
+        "3.28"
     ], 
     "dangerous": false, 
     "name": "Coverflow Alt-Tab", 
