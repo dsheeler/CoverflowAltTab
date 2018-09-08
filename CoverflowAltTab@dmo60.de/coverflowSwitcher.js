@@ -59,7 +59,7 @@ Switcher.prototype = {
 
     _createPreviews: function() {
         let monitor = this._activeMonitor;
-        let currentWorkspace = global.screen.get_active_workspace();
+        let currentWorkspace = global.workspace_manager.get_active_workspace();
         
         this._yOffset = monitor.height / 2 - this._settings.offset;
         this._xOffsetLeft = monitor.width * 0.1;
