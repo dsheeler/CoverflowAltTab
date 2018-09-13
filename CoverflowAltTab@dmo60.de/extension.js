@@ -59,7 +59,10 @@ function enable() {
                 platform = new Platform.PlatformCinnamon18();
             keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
         } else {
-            if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 21 && PACKAGE_VERSION >= "3.21.0") {
+            if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 30 && PACKAGE_VERSION >= "3.30.0") {
+                platform = new Platform.PlatformGnomeShell314();
+                keybinder = new Keybinder.Keybinder330Api();
+            } else if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 21 && PACKAGE_VERSION >= "3.21.0") {
                 platform = new Platform.PlatformGnomeShell314();
                 keybinder = new Keybinder.Keybinder322Api();
             } else if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 14 && PACKAGE_VERSION >= "3.14.0") {
