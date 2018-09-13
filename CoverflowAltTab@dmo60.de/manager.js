@@ -75,9 +75,9 @@ Manager.prototype = {
         win.delete(global.get_current_time());
     },
 
-    _startWindowSwitcher: function(display, screen, window, binding) {
+    _startWindowSwitcher: function(display, window, binding) {
         let windows = [];
-        let currentWorkspace = screen.get_active_workspace();
+        let currentWorkspace = global.workspace_manager.get_active_workspace();
 
         // Construct a list with all windows
         let windowActors = global.get_window_actors();
