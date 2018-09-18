@@ -59,16 +59,16 @@ Switcher.prototype = {
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
-        
+
 		manager.platform.initBackground();
-		
+
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
         this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
         this.previewActor = new widgetClass({ visible: true, reactive: true});
         this.actor.add_actor(this.previewActor);
-        
+
         Main.uiGroup.add_actor(this.actor);
 
         if (!Main.pushModal(this.actor)) {
@@ -81,9 +81,9 @@ Switcher.prototype = {
         this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
         this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
         this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
-        
+
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
-        
+
         let [x, y, mods] = global.get_pointer();
 		if (!(mods & this._modifierMask)){
 			// There's a race condition; if the user released Alt before
@@ -100,7 +100,7 @@ Switcher.prototype = {
 
     show: function() {
         this._enableMonitorFix();
-        
+
         let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
@@ -136,7 +136,7 @@ Switcher.prototype = {
         }
 
         this._manager.platform.dimBackground();
-        
+
         this._initialDelayTimeoutId = 0;
 
         this._next();
@@ -205,7 +205,7 @@ Switcher.prototype = {
 
         return this._activeMonitor;
     },
-    
+
     _setCurrentWindowTitle: function(window) {
         let animation_time = this._settings.animation_time;
 
@@ -247,10 +247,10 @@ Switcher.prototype = {
             time: animation_time,
             transition: TRANSITION_TYPE,
         });
-        
+
         let cx = Math.round((monitor.width + label_offset) / 2);
         let cy = Math.round(monitor.height * this._settings.title_position / 8 - this._settings.offset);
-        
+
         this._windowTitle.x = cx - Math.round(this._windowTitle.get_width()/2);
         this._windowTitle.y = cy - Math.round(this._windowTitle.get_height()/2);
 
@@ -383,7 +383,7 @@ Switcher.prototype = {
     _scrollEvent: function(actor, event) {
     	if(!this._checkSwitchTime())
     		return true;
-        
+
         switch (event.get_scroll_direction()) {
         	case Clutter.ScrollDirection.SMOOTH:
         		let [dx, dy] = event.get_scroll_delta();
@@ -399,18 +399,18 @@ Switcher.prototype = {
         				this._previous();
         		}
                 return true;
-                
+
         	case Clutter.ScrollDirection.LEFT:
         	case Clutter.ScrollDirection.UP:
                 this._previous();
                 return true;
-                
+
         	case Clutter.ScrollDirection.RIGHT:
         	case Clutter.ScrollDirection.DOWN:
                 this._next();
                 return true;
         }
-        
+
         return true;
     },
 
@@ -459,7 +459,7 @@ Switcher.prototype = {
     _onHideBackgroundCompleted: function() {
     	this._manager.platform.removeBackground();
     	Main.uiGroup.remove_actor(this.actor);
-    	
+
         // show all window actors
         global.window_group.show();
     },
@@ -469,12 +469,12 @@ Switcher.prototype = {
     		TRANSITION_TYPE = 'easeOutBack';
     	else
     		TRANSITION_TYPE = 'easeOutCubic';
-    	
+
         let monitor = this._activeMonitor;
 
         if (this._initialDelayTimeoutId == 0) {
             // preview windows
-            let currentWorkspace = global.screen.get_active_workspace();
+            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
             for (let i in this._previews) {
                 let preview = this._previews[i];
                 let metaWin = this._windows[i];
@@ -570,22 +570,22 @@ Switcher.prototype = {
     destroy: function() {
         this._onDestroy();
     },
-    
+
     _enableMonitorFix: function() {
-        if(global.screen.get_n_monitors() < 2)
+        if(this._manager.display.get_n_monitors() < 2)
             return;
-        
+
         this._updateActiveMonitor();
         this._monitorFix = true;
         this._oldWidth = global.stage.width;
         this._oldHeight = global.stage.height;
-        
+
         let width = 2 * (this._activeMonitor.x + this._activeMonitor.width/2);
         let height = 2 * (this._activeMonitor.y + this._activeMonitor.height/2);
-        
+
         global.stage.set_size(width, height);
     },
-    
+
     _disableMonitorFix: function() {
         if(this._monitorFix) {
             global.stage.set_size(this._oldWidth, this._oldHeight);

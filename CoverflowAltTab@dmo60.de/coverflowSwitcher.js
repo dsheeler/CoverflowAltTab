@@ -41,7 +41,7 @@ const PREVIEW_SCALE = 0.5;
 function appendParams(base, extra) {
     for (let key in extra) { base[key] = extra[key]; }
 }
-            
+
 function Switcher() {
     this._init.apply(this, arguments);
 }
@@ -59,13 +59,13 @@ Switcher.prototype = {
 
     _createPreviews: function() {
         let monitor = this._activeMonitor;
-        let currentWorkspace = global.screen.get_active_workspace();
-        
+        let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
+
         this._yOffset = monitor.height / 2 - this._settings.offset;
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
         this._xOffsetCenter = monitor.width / 2;
-        
+
         this._previews = [];
         for (let i in this._windows) {
             let metaWin = this._windows[i];
@@ -120,12 +120,12 @@ Switcher.prototype = {
             this._updatePreviews(-1);
         }
     },
-    
+
     _flipStack: function(gravity) {
         this._looping = true;
-        
+
         let xOffset, angle;
-        
+
         if(gravity == Clutter.Gravity.WEST) {
             xOffset = -this._xOffsetLeft;
             angle = BLEND_OUT_ANGLE;
@@ -133,9 +133,9 @@ Switcher.prototype = {
             xOffset = this._activeMonitor.width + this._xOffsetLeft;
             angle = -BLEND_OUT_ANGLE;
         }
-        
+
         let animation_time = this._settings.animation_time * 2/3;
-        
+
         for (let i in this._previews) {
             let preview = this._previews[i];
             preview._cfIsLast = (i == this._windows.length-1);
@@ -150,10 +150,10 @@ Switcher.prototype = {
             });
         }
     },
-    
+
     _onFlipIn: function(preview, index, gravity) {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
-        
+
         if(gravity == Clutter.Gravity.WEST) {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
@@ -165,9 +165,9 @@ Switcher.prototype = {
             angleStart = BLEND_OUT_ANGLE;
             angleEnd = SIDE_ANGLE;
         }
-        
+
         let animation_time = this._settings.animation_time * 2/3;
-        
+
         preview.rotation_angle_y = angleStart;
         preview.x = xOffsetStart + 50 * (index - this._currentIndex);
         let lastExtraParams = {
@@ -176,7 +176,7 @@ Switcher.prototype = {
             onCompleteScope: this
         };
         let oppositeGravity = (gravity == Clutter.Gravity.WEST) ? Clutter.Gravity.EAST : Clutter.Gravity.WEST;
-        
+
         if (index == this._currentIndex) {
             preview.raise_top();
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
@@ -186,20 +186,20 @@ Switcher.prototype = {
                 preview.raise_top();
             else
                 preview.lower_bottom();
-                
+
             let extraParams = {
                 opacity: 255,
                 rotation_angle_y: angleEnd,
                 time: animation_time,
                 transition: TRANSITION_TYPE
             };
-            
+
             if (preview._cfIsLast)
                 appendParams(extraParams, lastExtraParams);
             this._animatePreviewToSide(preview, index, oppositeGravity, xOffsetEnd, extraParams);
         }
     },
-    
+
     _onFlipComplete: function() {
         this._looping = false;
         if(this._requiresUpdate == true) {
@@ -207,7 +207,7 @@ Switcher.prototype = {
             this._updatePreviews();
         }
     },
-    
+
     _animatePreviewToMid: function(preview, oldGravity, animation_time, extraParams) {
         let rotation_vertex_x = (oldGravity == Clutter.Gravity.EAST) ? preview.width / 2 : -preview.width / 2;
         preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
@@ -223,13 +223,13 @@ Switcher.prototype = {
             time: animation_time,
             transition: TRANSITION_TYPE
         };
-        
+
         if(extraParams)
             appendParams(tweenParams, extraParams);
-        
+
         Tweener.addTween(preview, tweenParams);
     },
-    
+
     _animatePreviewToSide: function(preview, index, gravity, xOffset, extraParams) {
         preview.move_anchor_point_from_gravity(gravity);
         preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
@@ -240,9 +240,9 @@ Switcher.prototype = {
             width: Math.max(preview.target_width_side * (10 - Math.abs(index - this._currentIndex)) / 10, 0),
             height: Math.max(preview.target_height_side * (10 - Math.abs(index - this._currentIndex)) / 10, 0),
         };
-        
+
         appendParams(tweenParams, extraParams);
-        
+
         Tweener.addTween(preview, tweenParams);
     },
 
@@ -251,10 +251,10 @@ Switcher.prototype = {
             this._requiresUpdate = true;
             return;
         }
-        
+
         let monitor = this._activeMonitor;
         let animation_time = this._settings.animation_time;
-        
+
         // preview windows
         for (let i in this._previews) {
             let preview = this._previews[i];
