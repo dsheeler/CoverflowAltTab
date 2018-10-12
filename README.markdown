@@ -21,7 +21,7 @@ Thanks to Lusito, the master branch now supports both Gnome-Shell(>3.2) and Cinn
 
 #### Gnome-Shell ####
 
-Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome3 extension platform. Head over there and istall CoverflowAltTab with one click by toggling the switch on the site.
+Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome3 extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
 
 If you want to install it manually (e.g. to test the latest, probably unstable code), download the zip file by clicking the zip button on the upper part of this page and extract it.
 
