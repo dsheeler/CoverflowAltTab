@@ -55,12 +55,10 @@ Switcher.prototype = {
         	TRANSITION_TYPE = 'easeOutBack';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
-        this._requiresUpdate = false;
-        this.previews = [];
     },
 
     _createPreviews: function() {
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
         this._yOffset = monitor.height / 2 - this._settings.offset;
@@ -127,6 +125,7 @@ Switcher.prototype = {
         this._looping = true;
 
         let xOffset, angle;
+        this._updateActiveMonitor();
 
         if(gravity == Clutter.Gravity.WEST) {
             xOffset = -this._xOffsetLeft;
@@ -155,6 +154,7 @@ Switcher.prototype = {
 
     _onFlipIn: function(preview, index, gravity) {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
+        this._updateActiveMonitor();
 
         if(gravity == Clutter.Gravity.WEST) {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
@@ -254,7 +254,7 @@ Switcher.prototype = {
             return;
         }
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time;
 
         // preview windows

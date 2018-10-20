@@ -52,7 +52,7 @@ Switcher.prototype = {
     },
 
     _createPreviews: function() {
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
         this._previews = [];
         for (let i in this._windows) {
@@ -108,7 +108,7 @@ Switcher.prototype = {
         if(this._previews.length == 0)
             return;
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time;
 
         if(this._previews.length == 1) {

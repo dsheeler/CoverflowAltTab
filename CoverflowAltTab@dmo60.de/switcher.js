@@ -56,11 +56,13 @@ Switcher.prototype = {
         this._windowManager = global.window_manager;
         this._lastTime = 0;
         this._checkDestroyedTimeoutId = 0;
+        this._requiresUpdate = false;
+        this.previews = [];
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
 
-		manager.platform.initBackground();
+		    manager.platform.initBackground();
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -85,15 +87,15 @@ Switcher.prototype = {
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         let [x, y, mods] = global.get_pointer();
-		if (!(mods & this._modifierMask)){
-			// There's a race condition; if the user released Alt before
-			// we got the grab, then we won't be notified. (See
-			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-			// details) So we check now. (Have to do this after updating
-			// selection.)
-			this._activateSelected();
-			return;
-		}
+    		if (!(mods & this._modifierMask)){
+    			// There's a race condition; if the user released Alt before
+    			// we got the grab, then we won't be notified. (See
+    			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+    			// details) So we check now. (Have to do this after updating
+    			// selection.)
+    			this._activateSelected();
+    			return;
+    		}
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     },
