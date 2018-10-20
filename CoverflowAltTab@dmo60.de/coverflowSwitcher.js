@@ -55,6 +55,8 @@ Switcher.prototype = {
         	TRANSITION_TYPE = 'easeOutBack';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
+        this._requiresUpdate = false;
+        this.previews = [];
     },
 
     _createPreviews: function() {

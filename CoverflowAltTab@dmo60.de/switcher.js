@@ -130,7 +130,7 @@ Switcher.prototype = {
 
         // hide gnome-shell legacy tray
         try {
-            Main.legacyTray.actor.hide();
+            if (Main.legacyTray) Main.legacyTray.actor.hide();
         } catch (e) {
             //ignore missing legacy tray
         }
@@ -192,15 +192,9 @@ Switcher.prototype = {
 
     _updateActiveMonitor: function() {
         this._activeMonitor = null;
-        if(!this._settings.enforce_primary_monitor) {
-            try {
-                let x, y, mask;
-                [x, y, mask] = global.get_pointer();
-                this._activeMonitor = Main.layoutManager._chrome._findMonitorForRect(x, y, 0, 0);
-            } catch(e) {
-            }
-        }
-        if(!this._activeMonitor)
+        if(!this._settings.enforce_primary_monitor)
+            this._activeMonitor = Main.layoutManager.currentMonitor;
+        else
             this._activeMonitor = Main.layoutManager.primaryMonitor;
 
         return this._activeMonitor;
@@ -209,7 +203,7 @@ Switcher.prototype = {
     _setCurrentWindowTitle: function(window) {
         let animation_time = this._settings.animation_time;
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
 
         let app_icon_size;
         let label_offset;
@@ -470,7 +464,7 @@ Switcher.prototype = {
     	else
     		TRANSITION_TYPE = 'easeOutCubic';
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
 
         if (this._initialDelayTimeoutId == 0) {
             // preview windows
@@ -527,7 +521,7 @@ Switcher.prototype = {
             }, this);
             // show gnome-shell legacy tray
             try {
-                Main.legacyTray.actor.show();
+                if (Main.legacyTray) Main.legacyTray.actor.show();
             } catch (e) {
                 //ignore missing legacy tray
             }
