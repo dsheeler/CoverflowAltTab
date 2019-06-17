@@ -104,4 +104,4 @@ msgstr "Alle Arbeitsflächen, aktuelle zuerst"
 
 #: prefs.js:64
 msgid "Show windows from current or all workspaces"
-msgstr "Nur Fenster der aktuellen Arbeitsfläche anzeigen"
+msgstr "Zeige Fenster der aktuellen Arbeitsfläche oder aller Arbeitsflächen"
