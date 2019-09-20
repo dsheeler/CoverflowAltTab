@@ -60,7 +60,7 @@ Switcher.prototype = {
             let compositor = this._windows[i].get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
-                let [width, height] = texture.get_size();
+                let [_, width, height] = texture.get_preferred_size();
 
                 let scale = 1.0;
                 let previewWidth = monitor.width * PREVIEW_SCALE;
@@ -70,7 +70,7 @@ Switcher.prototype = {
 
                 let clone = new Clutter.Clone({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-                    source: texture,
+                    source: compositor,
                     reactive: true,
                     anchor_gravity: Clutter.Gravity.WEST,
                     rotation_angle_y: 12,
