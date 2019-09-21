@@ -64,7 +64,8 @@ Switcher.prototype = {
                 if (texture.get_size) {
                     [width, height] = texture.get_size()
                 } else {
-                    [_, width, height] = texture.get_preferred_size();
+                    let preferred_size_ok
+                    [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
 
                 let scale = 1.0;
