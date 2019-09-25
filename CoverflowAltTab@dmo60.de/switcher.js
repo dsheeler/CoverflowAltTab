@@ -117,9 +117,10 @@ Switcher.prototype = {
         let panels = this.getPanels();
         panels.forEach(function(panel) {
             try {
-                panel.actor.set_reactive(false);
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                panelActor.set_reactive(false);
                 if (this._settings.hide_panel) {
-                    Tweener.addTween(panel.actor, {
+                    Tweener.addTween(panelActor, {
                         opacity: 0,
                         time: this._settings.animation_time,
                         transition: TRANSITION_TYPE
@@ -508,10 +509,11 @@ Switcher.prototype = {
             let panels = this.getPanels();
             panels.forEach(function(panel) {
                 try {
-                    panel.actor.set_reactive(true);
+                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                    panelActor.set_reactive(true);
                     if (this._settings.hide_panel) {
-                        Tweener.removeTweens(panel.actor);
-                        Tweener.addTween(panel.actor, {
+                        Tweener.removeTweens(panelActor);
+                        Tweener.addTween(panelActor, {
                             opacity: 255,
                             time: this._settings.animation_time,
                             transition: TRANSITION_TYPE}
