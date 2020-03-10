@@ -511,7 +511,11 @@ PlatformGnomeShell314.prototype = {
 
 	    	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-        this._backgroundGroup.lower_bottom();
+	    	if (this._backgroundGroup.lower_bottom) {
+	    	        this._backgroundGroup.lower_bottom();
+                } else {
+	    	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+                }
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({ container: this._backgroundGroup,
