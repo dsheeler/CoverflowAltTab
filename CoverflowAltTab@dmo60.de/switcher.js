@@ -23,6 +23,7 @@
 const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
+const Config = imports.misc.config;
 const Graphene = imports.gi.Graphene;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
@@ -118,7 +119,7 @@ Switcher.prototype = {
         let panels = this.getPanels();
         panels.forEach(function(panel) {
             try {
-                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
                 if (this._settings.hide_panel) {
                     Tweener.addTween(panelActor, {
@@ -517,7 +518,7 @@ Switcher.prototype = {
             let panels = this.getPanels();
             panels.forEach(function(panel) {
                 try {
-                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                     panelActor.set_reactive(true);
                     if (this._settings.hide_panel) {
                         Tweener.removeTweens(panelActor);
@@ -578,6 +579,8 @@ Switcher.prototype = {
     },
 
     _enableMonitorFix: function() {
+        if(Config.PACKAGE_VERSION >= '3.36')
+            return;
         if(this._manager.display.get_n_monitors() < 2)
             return;
 
