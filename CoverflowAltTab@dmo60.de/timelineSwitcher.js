@@ -94,7 +94,11 @@ Switcher.prototype = {
 
                 this._previews.push(clone);
                 this.previewActor.add_actor(clone);
-                clone.lower_bottom();
+                if (clone.lower_bottom) {
+                        clone.lower_bottom();
+                } else {
+                        this.previewActor.set_child_below_sibling(clone, null);
+                }
             }
         }
     },
@@ -204,7 +208,11 @@ Switcher.prototype = {
 
     _onFadeForwardComplete: function(preview, distance, animation_time) {
         preview.__looping = false;
-        preview.lower_bottom();
+        if (preview.lower_bottom) {
+                preview.lower_bottom();
+        } else {
+                this.previewActor.set_child_below_sibling(preview, null);
+        }
 
         preview.x = preview.target_x - Math.sqrt(distance) * 150;
         preview.y = preview.target_y - Math.sqrt(distance) * 100;

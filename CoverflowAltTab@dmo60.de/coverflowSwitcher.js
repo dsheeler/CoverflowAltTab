@@ -24,6 +24,7 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
+const Graphene = imports.gi.Graphene;
 const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
@@ -186,14 +187,22 @@ Switcher.prototype = {
         let oppositeGravity = (gravity == Clutter.Gravity.WEST) ? Clutter.Gravity.EAST : Clutter.Gravity.WEST;
 
         if (index == this._currentIndex) {
-            preview.raise_top();
+        	if (preview.raise_top) {
+                	preview.raise_top();
+        	} else {
+                	this.previewActor.set_child_above_sibling(preview, null);
+        	}
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
             this._animatePreviewToMid(preview, oppositeGravity, animation_time, extraParams);
         } else {
             if(gravity == Clutter.Gravity.EAST)
                 preview.raise_top();
             else
-                preview.lower_bottom();
+                if (preview.lower_bottom) {
+                        preview.lower_bottom();
+                } else {
+                        this.previewActor.set_child_below_sibling(preview, null);
+                }
 
             let extraParams = {
                 opacity: 255,
@@ -219,8 +228,17 @@ Switcher.prototype = {
     _animatePreviewToMid: function(preview, oldGravity, animation_time, extraParams) {
         let rotation_vertex_x = (oldGravity == Clutter.Gravity.EAST) ? preview.width / 2 : -preview.width / 2;
         preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-        preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-        preview.raise_top();
+        if (Clutter.Vertex) {
+	        preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+	} else {
+	        preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+	}
+        if (preview.raise_top) {
+                preview.raise_top();
+        } else {
+                this.previewActor.set_child_above_sibling(preview, null);
+        }
+        
         let tweenParams = {
             opacity: 255,
             x: this._xOffsetCenter,
@@ -240,7 +258,11 @@ Switcher.prototype = {
 
     _animatePreviewToSide: function(preview, index, gravity, xOffset, extraParams) {
         preview.move_anchor_point_from_gravity(gravity);
-        preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
+        if (Clutter.Vertex) {
+	        preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
+	} else {
+	        preview.rotation_center_y = new Graphene.Point3D({ x: 0.0, y: 0.0, z: 0.0 });
+	}
 
         let tweenParams = {
             x: xOffset + 50 * (index - this._currentIndex),
@@ -270,7 +292,11 @@ Switcher.prototype = {
             if (i == this._currentIndex) {
                 this._animatePreviewToMid(preview, preview.get_anchor_point_gravity(), animation_time);
             } else if (i < this._currentIndex) {
-                preview.raise_top();
+        	if (preview.raise_top) {
+                	preview.raise_top();
+        	} else {
+                	this.previewActor.set_child_above_sibling(preview, null);
+        	}
                 this._animatePreviewToSide(preview, i, Clutter.Gravity.WEST, this._xOffsetLeft, {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
@@ -278,7 +304,11 @@ Switcher.prototype = {
                     transition: TRANSITION_TYPE
                 });
             } else if (i > this._currentIndex) {
-                preview.lower_bottom();
+                if (preview.lower_bottom) {
+                        preview.lower_bottom();
+                } else {
+                        this.previewActor.set_child_below_sibling(preview, null);
+                }
                 this._animatePreviewToSide(preview, i, Clutter.Gravity.EAST, this._xOffsetRight, {
                     opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,

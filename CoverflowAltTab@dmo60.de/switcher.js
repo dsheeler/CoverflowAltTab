@@ -23,6 +23,8 @@
 const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
+const Config = imports.misc.config;
+const Graphene = imports.gi.Graphene;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
@@ -117,7 +119,7 @@ Switcher.prototype = {
         let panels = this.getPanels();
         panels.forEach(function(panel) {
             try {
-                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
                 if (this._settings.hide_panel) {
                     Tweener.addTween(panelActor, {
@@ -267,7 +269,6 @@ Switcher.prototype = {
         if (!this._icon) {
             this._icon = new St.Icon({
                 icon_name: 'applications-other',
-                icon_type: St.IconType.FULLCOLOR,
                 icon_size: app_icon_size
             });
         }
@@ -478,7 +479,11 @@ Switcher.prototype = {
                 let compositor = this._windows[i].get_compositor_private();
 
                 if (i != this._currentIndex)
-                    preview.lower_bottom();
+                        if (preview.lower_bottom) {
+                                preview.lower_bottom();
+                        } else {
+                                this.previewActor.set_child_below_sibling(preview, null);
+                        }
                 let rotation_vertex_x = 0.0;
                 if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
                     rotation_vertex_x = preview.width / 2;
@@ -486,7 +491,11 @@ Switcher.prototype = {
                     rotation_vertex_x = -preview.width / 2;
                 }
                 preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
-                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+                if (Clutter.Vertex) {
+	                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+	        } else {
+	                preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
+	        }
 
                 Tweener.addTween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
@@ -509,7 +518,7 @@ Switcher.prototype = {
             let panels = this.getPanels();
             panels.forEach(function(panel) {
                 try {
-                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor
+                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                     panelActor.set_reactive(true);
                     if (this._settings.hide_panel) {
                         Tweener.removeTweens(panelActor);
@@ -570,6 +579,8 @@ Switcher.prototype = {
     },
 
     _enableMonitorFix: function() {
+        if(Config.PACKAGE_VERSION >= '3.36')
+            return;
         if(this._manager.display.get_n_monitors() < 2)
             return;
 
