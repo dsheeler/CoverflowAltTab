@@ -25,9 +25,8 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-USERNAME := $(shell whoami)
-NORMAL_PATH := .local/share/gnome-shell/extensions/
-SUPER_PATH := /usr/share/gnome-shell/extensions/
+NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
+SUPER_PATH := /usr/share/gnome-shell/extensions
 SRC_DIR := CoverflowAltTab@dmo60.de
 LOCALE_DIR=${SRC_DIR}/locale
 
@@ -45,12 +44,16 @@ translations: ${LOCALES_FILE}
 	msgfmt "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.mo"
 
 ifneq ($(LOCALINSTALL),)
-install:
-	cp -r "${SRC_DIR}" $(SUPER_PATH)
+INSTALL_PATH = $(SUPER_PATH)
 else
-install:
-	cp -r "${SRC_DIR}" /home/$(USERNAME)/$(NORMAL_PATH)
+INSTALL_PATH = $(NORMAL_PATH)
 endif
+
+install:
+	cp -r "$(SRC_DIR)" $(INSTALL_PATH)
+
+uninstall:
+	rm -rf $(INSTALL_PATH)/$(SRC_DIR)
 
 schema: ${SCHEMA_DIR}/${SCHEMA_FILE}
 	glib-compile-schemas "${SCHEMA_DIR}"
