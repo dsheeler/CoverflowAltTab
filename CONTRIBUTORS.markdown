@@ -35,3 +35,6 @@ CoverflowAltTab contributors (sorted randomly)
   * Add overlay icons to windows in animation
 * [John Garland](https://github.com/johnnyg)
   * Support for Gnome 3.4
+* [Daniel Sheeler](https://github.com/dsheeler)
+  * Keybindings for Gnome 3.36
+
