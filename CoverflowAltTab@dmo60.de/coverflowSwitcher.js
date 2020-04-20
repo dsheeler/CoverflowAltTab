@@ -24,8 +24,11 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Graphene = imports.gi.Graphene;
 const Tweener = imports.ui.tweener;
+
+let Graphene;
+if (Config.PACKAGE_VERSION >= '3.36')
+    Graphene = imports.gi.Graphene;
 
 let ExtensionImports;
 if(Config.PACKAGE_NAME == 'cinnamon')
