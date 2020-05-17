@@ -32,7 +32,7 @@ const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
 let Graphene;
-if (Config.PACKAGE_VERSION >= '3.36')
+if (!Clutter.Vertex)
     Graphene = imports.gi.Graphene;
 
 const INITIAL_DELAY_TIMEOUT = 150;

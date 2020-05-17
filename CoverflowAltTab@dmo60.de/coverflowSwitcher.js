@@ -27,7 +27,7 @@ const Clutter = imports.gi.Clutter;
 const Tweener = imports.ui.tweener;
 
 let Graphene;
-if (Config.PACKAGE_VERSION >= '3.36')
+if (!Clutter.Vertex)
     Graphene = imports.gi.Graphene;
 
 let ExtensionImports;
@@ -233,15 +233,15 @@ Switcher.prototype = {
         preview.move_anchor_point_from_gravity(Clutter.Gravity.CENTER);
         if (Clutter.Vertex) {
 	        preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-	} else {
+        } else {
 	        preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-	}
+        }
         if (preview.raise_top) {
                 preview.raise_top();
         } else {
                 this.previewActor.set_child_above_sibling(preview, null);
         }
-        
+
         let tweenParams = {
             opacity: 255,
             x: this._xOffsetCenter,
