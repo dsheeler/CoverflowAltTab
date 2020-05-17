@@ -24,13 +24,16 @@ const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
 const Config = imports.misc.config;
-const Graphene = imports.gi.Graphene;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
+
+let Graphene;
+if (Config.PACKAGE_VERSION >= '3.36')
+    Graphene = imports.gi.Graphene;
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
