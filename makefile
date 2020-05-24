@@ -29,11 +29,15 @@ NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
 SUPER_PATH := /usr/share/gnome-shell/extensions
 SRC_DIR := CoverflowAltTab@dmo60.de
 LOCALE_DIR=${SRC_DIR}/locale
+PROJECT_NAME := coverflow
 
 SCHEMA_DIR=${SRC_DIR}/schemas
 SCHEMA_FILE=org.gnome.shell.extensions.coverflowalttab.gschema.xml
 
 all: translations schema install
+
+${SRC_DIR}/${PROJECT_NAME}.pot:
+	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${PROJECT_NAME}
 
 translations: ${LOCALES_FILE}
 	msgfmt "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.mo"
@@ -42,6 +46,7 @@ translations: ${LOCALES_FILE}
 	msgfmt "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.mo"
 
 ifneq ($(LOCALINSTALL),)
 INSTALL_PATH = $(SUPER_PATH)
