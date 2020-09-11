@@ -36,6 +36,7 @@ if(Config.PACKAGE_NAME == 'cinnamon')
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 const BaseSwitcher = ExtensionImports.switcher;
+const Preview = ExtensionImports.preview.Preview;
 
 let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
@@ -90,7 +91,7 @@ Switcher.prototype = {
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let clone = new Clutter.Clone({
+                let clone = new Preview({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
