@@ -67,7 +67,7 @@ Switcher.prototype = {
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
 
-		    manager.platform.initBackground();
+	    manager.platform.initBackground();
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -92,15 +92,15 @@ Switcher.prototype = {
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         let [x, y, mods] = global.get_pointer();
-    		if (!(mods & this._modifierMask)){
-    			// There's a race condition; if the user released Alt before
-    			// we got the grab, then we won't be notified. (See
-    			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-    			// details) So we check now. (Have to do this after updating
-    			// selection.)
-    			this._activateSelected();
-    			return;
-    		}
+		if (!(mods & this._modifierMask)){
+			// There's a race condition; if the user released Alt before
+			// we got the grab, then we won't be notified. (See
+			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+			// details) So we check now. (Have to do this after updating
+			// selection.)
+			this._activateSelected();
+			return;
+		}
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     },
@@ -120,7 +120,7 @@ Switcher.prototype = {
         this.actor.show();
 
         let panels = this.getPanels();
-        panels.forEach(function(panel) {
+        panels.forEach(function (panel) {
             try {
                 let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
@@ -138,9 +138,10 @@ Switcher.prototype = {
 
         // hide gnome-shell legacy tray
         try {
-            if (Main.legacyTray) Main.legacyTray.actor.hide();
+            if (Main.legacyTray)
+                Main.legacyTray.actor.hide();
         } catch (e) {
-            //ignore missing legacy tray
+            // ignore missing legacy tray
         }
 
         this._manager.platform.dimBackground();
@@ -175,7 +176,7 @@ Switcher.prototype = {
     },
 
     _next: function() {
-        if(this._windows.length <= 1) {
+        if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
         } else {
@@ -492,12 +493,14 @@ Switcher.prototype = {
                 let metaWin = this._windows[i];
                 let compositor = this._windows[i].get_compositor_private();
 
-                if (i != this._currentIndex)
-                        if (preview.lower_bottom) {
-                                preview.lower_bottom();
-                        } else {
-                                this.previewActor.set_child_below_sibling(preview, null);
-                        }
+                if (i !== this._currentIndex) {
+                    if (preview.lower_bottom) {
+                        preview.lower_bottom();
+                    } else {
+                        this.previewActor.set_child_below_sibling(preview, null);
+                    }
+                }
+
                 let rotation_vertex_x = 0.0;
                 if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
                     rotation_vertex_x = preview.width / 2;
@@ -507,9 +510,9 @@ Switcher.prototype = {
                 preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
                 if (Clutter.Vertex) {
 	                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-	        } else {
+    	        } else {
 	                preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-	        }
+    	        }
 
                 Tweener.addTween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
@@ -593,9 +596,9 @@ Switcher.prototype = {
     },
 
     _enableMonitorFix: function() {
-        if(Config.PACKAGE_VERSION >= '3.36')
+        if (Config.PACKAGE_VERSION >= '3.36')
             return;
-        if(this._manager.display.get_n_monitors() < 2)
+        if (this._manager.display.get_n_monitors() < 2)
             return;
 
         this._updateActiveMonitor();
@@ -610,7 +613,7 @@ Switcher.prototype = {
     },
 
     _disableMonitorFix: function() {
-        if(this._monitorFix) {
+        if (this._monitorFix) {
             global.stage.set_size(this._oldWidth, this._oldHeight);
             this._monitorFix = false;
         }

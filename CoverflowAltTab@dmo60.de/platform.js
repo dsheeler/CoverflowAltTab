@@ -223,8 +223,10 @@ PlatformCinnamon18.prototype = {
 
         this._settings = this.getDefaultSettings();
         this._settings.updateSwitcherStyle = function() {
-            this.switcher_class = this.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher;
-        }
+            this.switcher_class = this.switcher_style === 'Timeline' ?
+                ExtensionImports.timelineSwitcher.Switcher :
+                ExtensionImports.coverflowSwitcher.Switcher;
+        };
         this._settings.updateTitlePosition = function() {
             this.title_position =  (this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM);
         };
@@ -351,10 +353,12 @@ PlatformGnomeShell.prototype = {
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 elastic_mode: settings.get_boolean("elastic-mode"),
-                switcher_class: settings.get_string("switcher-style") == 'Timeline' ? ExtensionImports.timelineSwitcher.Switcher: ExtensionImports.coverflowSwitcher.Switcher,
+                switcher_class: settings.get_string("switcher-style") === 'Timeline' ?
+                    ExtensionImports.timelineSwitcher.Switcher :
+                    ExtensionImports.coverflowSwitcher.Switcher,
                 current_workspace_only: settings.get_string("current-workspace-only")
             };
-        } catch(e) {
+        } catch (e) {
             global.log(e);
         }
 
