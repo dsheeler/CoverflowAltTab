@@ -292,7 +292,7 @@ PlatformGnomeShell.prototype = {
     enable: function() {
         this.disable();
 
-        if(this._gioSettings == null)
+        if (this._gioSettings == null)
             this._gioSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
 
         let keys = [
@@ -368,61 +368,65 @@ function PlatformGnomeShell314() {
 }
 
 PlatformGnomeShell314.prototype = {
-	    __proto__: PlatformGnomeShell.prototype,
+    __proto__: PlatformGnomeShell.prototype,
 
-	    _init: function() {
-	    	PlatformGnomeShell.prototype._init.apply(this, arguments);
-	    },
+    _init: function() {
+    	PlatformGnomeShell.prototype._init.apply(this, arguments);
+    },
 
-	    getPrimaryModifier: function(mask) {
-	    	return imports.ui.switcherPopup.primaryModifier(mask);
-	    },
+    getPrimaryModifier: function(mask) {
+    	return imports.ui.switcherPopup.primaryModifier(mask);
+    },
 
-	    initBackground: function() {
-	    	let Background = imports.ui.background;
+    initBackground: function() {
+    	let Background = imports.ui.background;
 
-	    	this._backgroundGroup = new Meta.BackgroundGroup();
+    	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-	    	if (this._backgroundGroup.lower_bottom) {
-	    	        this._backgroundGroup.lower_bottom();
-                } else {
-	    	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
-                }
+    	if (this._backgroundGroup.lower_bottom) {
+    	    this._backgroundGroup.lower_bottom();
+        } else {
+	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+        }
+
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
-            new Background.BackgroundManager({ container: this._backgroundGroup,
-                                               monitorIndex: i,
-                                               vignette: true });
+            new Background.BackgroundManager({
+                container: this._backgroundGroup,
+                monitorIndex: i,
+                vignette: true
+            });
         }
-	    },
+    },
 
-	    dimBackground: function() {
-	    	this._backgroundGroup.show();
+    dimBackground: function() {
+    	this._backgroundGroup.show();
+
         let backgrounds = this._backgroundGroup.get_children();
         for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i],
-                             { brightness: 0.8,
-                               vignette_sharpness: 1 - this.getSettings().dim_factor,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE
-                             });
+            Tweener.addTween(backgrounds[i], {
+                brightness: 0.8,
+                vignette_sharpness: 1 - this.getSettings().dim_factor,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE
+            });
         }
-	    },
+    },
 
-	    undimBackground: function(onCompleteBind) {
+    undimBackground: function(onCompleteBind) {
         let backgrounds = this._backgroundGroup.get_children();
         for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i],
-                             { brightness: 1.0,
-                               vignette_sharpness: 0.0,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE,
-                               onComplete: onCompleteBind
-                             });
+            Tweener.addTween(backgrounds[i], {
+                brightness: 1.0,
+                vignette_sharpness: 0.0,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE,
+                onComplete: onCompleteBind
+            });
         }
-	    },
+    },
 
-	    removeBackground: function() {
-	    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
-	    }
+    removeBackground: function() {
+    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
+    }
 };
