@@ -56,16 +56,19 @@ function enable() {
                 PACKAGE_VERSION >= "1.4.0" ? new Keybinder.KeybinderNewApi() :
                     new Keybinder.KeybinderOldApi();
         } else {
-            platform =
-                PACKAGE_VERSION >= "3.14.0" ? new Platform.PlatformGnomeShell314() :
-                PACKAGE_VERSION >= "3.10.0" ? new Platform.PlatformGnomeShell310() :
-                PACKAGE_VERSION >= "3.8.0" ? new Platform.PlatformGnomeShell38() :
-                    new Platform.PlatformGnomeShell();
-            keybinder =
-                PACKAGE_VERSION >= "3.30.0" ? new Keybinder.Keybinder330Api() :
-                PACKAGE_VERSION >= "3.22.0" ? new Keybinder.Keybinder322Api() :
-                PACKAGE_VERSION >= "3.8.0" ? new Keybinder.KeybinderNewGSApi() :
-                    new Keybinder.KeybinderNewApi();
+            /*
+             * As there are restricted Gnome versions the current extension support (that
+             * are specified in metadata.json file), only the API related to those supported
+             * versions must be used, not anything else. As a result, performing checks for
+             * keeping backward-compatiblity with old unsupported versions is a wrong
+             * decision.
+             *
+             * To support older versions of Gnome, first, add the version to the metadata
+             * file, then, if needed, include backward-compatible API here for each
+             * version.
+             */
+            platform = new Platform.PlatformGnomeShell314();
+            keybinder = new Keybinder.Keybinder330Api();
         }
         manager = new Manager.Manager(platform, keybinder);
     }
