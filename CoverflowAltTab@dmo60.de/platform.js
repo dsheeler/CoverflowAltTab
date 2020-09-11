@@ -31,7 +31,7 @@ const Meta = imports.gi.Meta;
 const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
-if(Config.PACKAGE_NAME == 'cinnamon')
+if (Config.PACKAGE_NAME === "cinnamon")
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;

@@ -54,9 +54,13 @@ function getBaseString(translatedString) {
 }
 
 function buildPrefsWidget() {
-	let frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10, spacing: 10});
+	let frame = new Gtk.Box({
+		orientation: Gtk.Orientation.VERTICAL,
+		border_width: 10,
+		spacing: 10
+	});
 
-    if(PACKAGE_VERSION <= "3.4.0") {
+    if (PACKAGE_VERSION <= "3.4.0") {
         let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! "+
         "(Hit Alt+F2, type 'r' and press Enter)\n</b>")});
         label.set_use_markup(true);

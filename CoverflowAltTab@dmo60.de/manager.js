@@ -28,7 +28,7 @@ const Main = imports.ui.main;
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
     let t2 = win2.get_user_time();
-    return (t2 > t1) ? 1 : -1 ;
+    return (t2 > t1) ? 1 : -1;
 }
 
 function matchSkipTaskbar(win) {
@@ -97,27 +97,29 @@ Manager.prototype = {
 
         windowActors = null;
 
-        switch(binding.get_name()) {
+        switch (binding.get_name()) {
             case 'switch-panels':
                 // Switch between windows of all workspaces
-                windows = windows.filter( matchSkipTaskbar );
+                windows = windows.filter(matchSkipTaskbar);
                 // Sort by user time
                 windows.sort(sortWindowsByUserTime);
                 break;
+
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];
-                windows = windows.filter( matchWmClass, focused.get_wm_class() );
+                windows = windows.filter(matchWmClass, focused.get_wm_class());
                 // Sort by user time
                 windows.sort(sortWindowsByUserTime);
                 break;
+
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
-            	if ( currentOnly == 'all-currentfirst') {
+            	if (currentOnly === 'all-currentfirst') {
                     // Switch between windows of all workspaces, prefer
             		// those from current workspace
-            		let wins1 = windows.filter( matchWorkspace, currentWorkspace );
-            		let wins2 = windows.filter( matchOtherWorkspace, currentWorkspace );
+            		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
+            		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
                     // Sort by user time
                     wins1.sort(sortWindowsByUserTime);
                     wins2.sort(sortWindowsByUserTime);
@@ -125,9 +127,10 @@ Manager.prototype = {
                     wins1 = [];
                     wins2 = [];
             	} else {
-            	    let filter = currentOnly == 'current' ? matchWorkspace : matchSkipTaskbar;
+            	    let filter = currentOnly === 'current' ? matchWorkspace :
+                        matchSkipTaskbar;
             		// Switch between windows of current workspace
-            		windows = windows.filter( filter, currentWorkspace );
+            		windows = windows.filter(filter, currentWorkspace);
                     // Sort by user time
                     windows.sort(sortWindowsByUserTime);
             	}
