@@ -39,8 +39,8 @@ else
 const BaseSwitcher = ExtensionImports.switcher;
 
 const Preview = ExtensionImports.preview.Preview;
-const Position = ExtensionImports.preview.Position;
-const Direction = ExtensionImports.preview.Direction;
+const Placement = ExtensionImports.preview.Placement;
+const Orientation = ExtensionImports.preview.Orientation;
 
 let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
@@ -99,7 +99,7 @@ Switcher.prototype = {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    anchor_gravity: Position.CENTER,
+                    anchor_gravity: Placement.CENTER,
                     x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
                     y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
                 });
@@ -118,7 +118,7 @@ Switcher.prototype = {
     _previewNext: function() {
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = 0;
-            this._flipStack(Direction.TO_LEFT);
+            this._flipStack(Orientation.TO_LEFT);
         } else {
             this._currentIndex = this._currentIndex + 1;
             this._updatePreviews(1);
@@ -129,7 +129,7 @@ Switcher.prototype = {
     _previewPrevious: function() {
         if (this._currentIndex == 0) {
             this._currentIndex = this._windows.length-1;
-            this._flipStack(Direction.TO_RIGHT);
+            this._flipStack(Orientation.TO_RIGHT);
         } else {
             this._currentIndex = this._currentIndex - 1;
             this._updatePreviews(-1);
@@ -142,7 +142,7 @@ Switcher.prototype = {
         let xOffset, angle;
         this._updateActiveMonitor();
 
-        if (gravity === Direction.TO_LEFT) {
+        if (gravity === Orientation.TO_LEFT) {
             xOffset = -this._xOffsetLeft;
             angle = BLEND_OUT_ANGLE;
         } else {
@@ -171,7 +171,7 @@ Switcher.prototype = {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
         this._updateActiveMonitor();
 
-        if(gravity == Direction.TO_LEFT) {
+        if(gravity == Orientation.TO_LEFT) {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
@@ -192,7 +192,7 @@ Switcher.prototype = {
             onComplete: this._onFlipComplete,
             onCompleteScope: this
         };
-        let oppositeGravity = (gravity == Direction.TO_LEFT) ? Direction.TO_RIGHT : Direction.TO_LEFT;
+        let oppositeGravity = (gravity == Orientation.TO_LEFT) ? Orientation.TO_RIGHT : Orientation.TO_LEFT;
 
         if (index == this._currentIndex) {
         	if (preview.raise_top) {
@@ -203,7 +203,7 @@ Switcher.prototype = {
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
             this._animatePreviewToMid(preview, oppositeGravity, animation_time, extraParams);
         } else {
-            if(gravity == Direction.TO_RIGHT)
+            if(gravity == Orientation.TO_RIGHT)
                 preview.raise_top();
             else
                 if (preview.lower_bottom) {
@@ -234,8 +234,8 @@ Switcher.prototype = {
     },
 
     _animatePreviewToMid: function(preview, oldGravity, animation_time, extraParams) {
-        let rotation_vertex_x = (oldGravity == Position.RIGHT) ? preview.width / 2 : -preview.width / 2;
-        preview.move_anchor_point_from_gravity(Position.CENTER);
+        let rotation_vertex_x = (oldGravity == Placement.RIGHT) ? preview.width / 2 : -preview.width / 2;
+        preview.move_anchor_point_from_gravity(Placement.CENTER);
         if (Clutter.Vertex) {
 	        preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
         } else {
@@ -305,7 +305,7 @@ Switcher.prototype = {
         	} else {
                 	this.previewActor.set_child_above_sibling(preview, null);
         	}
-                this._animatePreviewToSide(preview, i, Position.LEFT, this._xOffsetLeft, {
+                this._animatePreviewToSide(preview, i, Placement.LEFT, this._xOffsetLeft, {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
@@ -317,7 +317,7 @@ Switcher.prototype = {
                 } else {
                         this.previewActor.set_child_below_sibling(preview, null);
                 }
-                this._animatePreviewToSide(preview, i, Position.RIGHT, this._xOffsetRight, {
+                this._animatePreviewToSide(preview, i, Placement.RIGHT, this._xOffsetRight, {
                     opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,

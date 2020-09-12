@@ -41,7 +41,7 @@ if (Config.PACKAGE_NAME === "cinnamon")
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-const Position = ExtensionImports.preview.Position;
+const Placement = ExtensionImports.preview.Placement;
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
@@ -510,9 +510,9 @@ Switcher.prototype = {
                 }
 
                 let rotation_vertex_x = 0.0;
-                if (preview.get_anchor_point_gravity() == Position.RIGHT) {
+                if (preview.get_anchor_point_gravity() == Placement.RIGHT) {
                     rotation_vertex_x = preview.width / 2;
-                } else if (preview.get_anchor_point_gravity() == Position.LEFT) {
+                } else if (preview.get_anchor_point_gravity() == Placement.LEFT) {
                     rotation_vertex_x = -preview.width / 2;
                 }
                 preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
