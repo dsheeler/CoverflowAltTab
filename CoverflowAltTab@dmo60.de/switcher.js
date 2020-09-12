@@ -493,7 +493,7 @@ Switcher.prototype = {
                 let metaWin = this._windows[i];
                 let compositor = this._windows[i].get_compositor_private();
 
-                if (i !== this._currentIndex) {
+                if (i != this._currentIndex) {
                     if (preview.lower_bottom) {
                         preview.lower_bottom();
                     } else {
