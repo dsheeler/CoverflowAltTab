@@ -62,7 +62,7 @@ Switcher.prototype = {
         this._lastTime = 0;
         this._checkDestroyedTimeoutId = 0;
         this._requiresUpdate = false;
-        this.previews = [];
+        this._previews = [];
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
@@ -169,7 +169,7 @@ Switcher.prototype = {
 
     _checkSwitchTime: function() {
         let t = new Date().getTime();
-        if(t - this._lastTime < 150)
+        if (t - this._lastTime < 150)
             return false;
         this._lastTime = t;
         return true;
@@ -188,7 +188,7 @@ Switcher.prototype = {
     },
 
     _previous: function() {
-        if(this._windows.length <= 1) {
+        if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
         } else {
@@ -201,7 +201,7 @@ Switcher.prototype = {
 
     _updateActiveMonitor: function() {
         this._activeMonitor = null;
-        if(!this._settings.enforce_primary_monitor)
+        if (!this._settings.enforce_primary_monitor)
             this._activeMonitor = Main.layoutManager.currentMonitor;
         else
             this._activeMonitor = Main.layoutManager.primaryMonitor;
@@ -339,7 +339,7 @@ Switcher.prototype = {
             case Clutter.Left:
             case Clutter.Up:
                 // Left/Up -> navigate to previous preview
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._previous();
                 return true;
 
