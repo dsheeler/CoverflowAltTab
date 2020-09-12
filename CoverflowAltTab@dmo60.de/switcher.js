@@ -35,6 +35,14 @@ let Graphene;
 if (!Clutter.Vertex)
     Graphene = imports.gi.Graphene;
 
+let ExtensionImports;
+if (Config.PACKAGE_NAME === "cinnamon")
+    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+else
+    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+
+const Position = ExtensionImports.preview.Position;
+
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
 let TRANSITION_TYPE = 'easeOutCubic';
@@ -502,9 +510,9 @@ Switcher.prototype = {
                 }
 
                 let rotation_vertex_x = 0.0;
-                if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
+                if (preview.get_anchor_point_gravity() == Position.RIGHT) {
                     rotation_vertex_x = preview.width / 2;
-                } else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
+                } else if (preview.get_anchor_point_gravity() == Position.LEFT) {
                     rotation_vertex_x = -preview.width / 2;
                 }
                 preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());

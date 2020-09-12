@@ -19,10 +19,22 @@ const Clutter = imports.gi.Clutter;
 const GObject = imports.gi.GObject;
 
 
+class Position {}
+Position.RIGHT = 3;
+Position.LEFT = 7;
+Position.CENTER = 9;
+
+class Direction {}
+Direction.TO_RIGHT = 3; // Left to Right
+Direction.TO_LEFT = 7; // Right to Left
+
+
 var Preview = GObject.registerClass({
     GTypeName: "Preview"
-}, class Preview extends Clutter.Clone {
-    _init(...args) {
+}, class Preview extends Clutter.Clone
+{
+    _init(...args)
+    {
         super._init(...args);
     }
 });
