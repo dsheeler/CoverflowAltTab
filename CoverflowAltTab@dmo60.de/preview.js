@@ -24,9 +24,9 @@ Placement.RIGHT = 3;
 Placement.LEFT = 7;
 Placement.CENTER = 9;
 
-class Orientation {}
-Orientation.TO_RIGHT = 3;
-Orientation.TO_LEFT = 7;
+class Direction {}
+Direction.TO_RIGHT = 3;
+Direction.TO_LEFT = 7;
 
 
 var Preview = GObject.registerClass({
