@@ -19,11 +19,6 @@ const Clutter = imports.gi.Clutter;
 const GObject = imports.gi.GObject;
 
 
-class Placement {}
-Placement.RIGHT = 3;
-Placement.LEFT = 7;
-Placement.CENTER = 9;
-
 class Direction {}
 Direction.TO_RIGHT = 3;
 Direction.TO_LEFT = 7;
@@ -60,15 +55,5 @@ var Preview = GObject.registerClass({
             // Don't throw anything here, it may cause unstabilities
             logError("No method found for making preview the bottom layer");
         }
-    }
-
-    set_placement(placement)
-    {
-        this.placement = placement;
-    }
-
-    get_placement()
-    {
-        return this.placement;
     }
 });

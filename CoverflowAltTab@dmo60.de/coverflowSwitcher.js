@@ -35,7 +35,6 @@ else
 const BaseSwitcher = ExtensionImports.switcher;
 
 const Preview = ExtensionImports.preview.Preview;
-const Placement = ExtensionImports.preview.Placement;
 const Direction = ExtensionImports.preview.Direction;
 
 let TRANSITION_TYPE;
@@ -69,7 +68,7 @@ Switcher.prototype = {
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
         // TODO: Change these
-        this._yOffset = monitor.height / 4 - this._settings.offset;
+        this._yOffset = monitor.height / 4 + this._settings.offset;
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
         this._xOffsetCenter = monitor.width / 4;
@@ -84,6 +83,7 @@ Switcher.prototype = {
                 if (texture.get_size) {
                     [width, height] = texture.get_size();
                 } else {
+                    // TODO: Check this OK!
                     let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
@@ -99,17 +99,17 @@ Switcher.prototype = {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    // TODO: Fix these, minimized behaviour is different
-                    x: (!(metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
-                    y: (!(metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
+
+                    x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
+                        compositor.x) - monitor.x,
+                    y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
+                        compositor.y) - monitor.y,
                 });
 
                 preview.target_width = Math.round(width * scale);
                 preview.target_height = Math.round(height * scale);
                 preview.target_width_side = preview.target_width * 2/3;
                 preview.target_height_side = preview.target_height;
-
-                preview.set_placement(Placement.CENTER);
 
                 this._previews.push(preview);
                 this.previewActor.add_actor(preview);
@@ -157,7 +157,7 @@ Switcher.prototype = {
         for (let i in this._previews) {
             let preview = this._previews[i];
             preview._cfIsLast = (i == this._windows.length - 1);
-            this._animatePreviewToSide(preview, i, direction, xOffset, {
+            this._animatePreviewToSide(preview, i, xOffset, {
                 opacity: 0,
                 rotation_angle_y: angle,
                 time: animation_time,
@@ -194,12 +194,11 @@ Switcher.prototype = {
             onComplete: this._onFlipComplete,
             onCompleteScope: this
         };
-        let oppositeDirection = (direction === Direction.TO_LEFT) ? Direction.TO_RIGHT : Direction.TO_LEFT;
 
         if (index == this._currentIndex) {
         	preview.make_top_layer(this.previewActor);
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
-            this._animatePreviewToMid(preview, oppositeDirection, animation_time, extraParams);
+            this._animatePreviewToMid(preview, animation_time, extraParams);
         } else {
             if (direction === Direction.TO_RIGHT) {
                 preview.make_top_layer(this.previewActor);
@@ -216,20 +215,20 @@ Switcher.prototype = {
 
             if (preview._cfIsLast)
                 appendParams(extraParams, lastExtraParams);
-            this._animatePreviewToSide(preview, index, oppositeDirection, xOffsetEnd, extraParams);
+            this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
         }
     },
 
     _onFlipComplete: function() {
         this._looping = false;
-        if(this._requiresUpdate == true) {
+        if (this._requiresUpdate === true) {
             this._requiresUpdate = false;
             this._updatePreviews();
         }
     },
 
     // TODO: Remove unused direction variable
-    _animatePreviewToMid: function(preview, direction, animation_time, extraParams) {
+    _animatePreviewToMid: function(preview, animation_time, extraParams) {
         preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
@@ -249,15 +248,7 @@ Switcher.prototype = {
         Tweener.addTween(preview, tweenParams);
     },
 
-    _animatePreviewToSide: function(preview, index, direction, xOffset, extraParams) {
-        // TODO: Remove these if not necessary
-        preview.set_placement(direction);
-        if (direction === Direction.TO_RIGHT) {
-            preview.set_pivot_point(1, 0.5);
-        } else if (direction === Direction.TO_LEFT) {
-            preview.set_pivot_point(0, 0.5);
-        }
-
+    _animatePreviewToSide: function(preview, index, xOffset, extraParams) {
         let tweenParams = {
             x: xOffset + 50 * (index - this._currentIndex),
             y: this._yOffset,
@@ -284,10 +275,10 @@ Switcher.prototype = {
             let preview = this._previews[i];
 
             if (i == this._currentIndex) {
-                this._animatePreviewToMid(preview, preview.get_placement(), animation_time);
+                this._animatePreviewToMid(preview, animation_time);
             } else if (i < this._currentIndex) {
             	preview.make_top_layer(this.previewActor);
-                this._animatePreviewToSide(preview, i, Placement.LEFT, this._xOffsetLeft, {
+                this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
@@ -295,7 +286,7 @@ Switcher.prototype = {
                 });
             } else if (i > this._currentIndex) {
                 preview.make_bottom_layer(this.previewActor);
-                this._animatePreviewToSide(preview, i, Placement.RIGHT, this._xOffsetRight, {
+                this._animatePreviewToSide(preview, i, this._xOffsetRight, {
                     opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,
