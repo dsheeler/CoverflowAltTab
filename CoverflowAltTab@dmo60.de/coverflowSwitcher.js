@@ -70,10 +70,11 @@ Switcher.prototype = {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
-        this._yOffset = monitor.height / 2 - this._settings.offset;
+        // TODO: Change these
+        this._yOffset = monitor.height / 4 - this._settings.offset;
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
-        this._xOffsetCenter = monitor.width / 2;
+        this._xOffsetCenter = monitor.width / 4;
 
         this._previews = [];
         for (let i in this._windows) {
@@ -95,22 +96,25 @@ Switcher.prototype = {
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let clone = new Preview({
+                // TODO: Make them as set_* functions
+                let preview = new Preview({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    anchor_gravity: Placement.CENTER,
-                    x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
-                    y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
+                    // TODO: Fix these
+                    x: (!(metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
+                    y: (!(metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
                 });
 
-                clone.target_width = Math.round(width * scale);
-                clone.target_height = Math.round(height * scale);
-                clone.target_width_side = clone.target_width * 2/3;
-                clone.target_height_side = clone.target_height;
+                preview.target_width = Math.round(width * scale);
+                preview.target_height = Math.round(height * scale);
+                preview.target_width_side = preview.target_width * 2/3;
+                preview.target_height_side = preview.target_height;
 
-                this._previews.push(clone);
-                this.previewActor.add_actor(clone);
+                preview.set_placement(Placement.CENTER);
+
+                this._previews.push(preview);
+                this.previewActor.add_actor(preview);
             }
         }
     },
@@ -128,7 +132,7 @@ Switcher.prototype = {
 
     _previewPrevious: function() {
         if (this._currentIndex == 0) {
-            this._currentIndex = this._windows.length-1;
+            this._currentIndex = this._windows.length - 1;
             this._flipStack(Orientation.TO_RIGHT);
         } else {
             this._currentIndex = this._currentIndex - 1;
@@ -234,13 +238,6 @@ Switcher.prototype = {
     },
 
     _animatePreviewToMid: function(preview, oldGravity, animation_time, extraParams) {
-        let rotation_vertex_x = (oldGravity == Placement.RIGHT) ? preview.width / 2 : -preview.width / 2;
-        preview.move_anchor_point_from_gravity(Placement.CENTER);
-        if (Clutter.Vertex) {
-	        preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-        } else {
-	        preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-        }
         if (preview.raise_top) {
                 preview.raise_top();
         } else {
@@ -265,12 +262,12 @@ Switcher.prototype = {
     },
 
     _animatePreviewToSide: function(preview, index, gravity, xOffset, extraParams) {
-        preview.move_anchor_point_from_gravity(gravity);
-        if (Clutter.Vertex) {
-	        preview.rotation_center_y = new Clutter.Vertex({ x: 0.0, y: 0.0, z: 0.0 });
-	} else {
-	        preview.rotation_center_y = new Graphene.Point3D({ x: 0.0, y: 0.0, z: 0.0 });
-	}
+        preview.set_placement(gravity);
+        if (gravity === Placement.RIGHT) {
+            preview.set_pivot_point(1, 0.5);
+        } else if (gravity === Placement.LEFT) {
+            preview.set_pivot_point(0, 0.5);
+        }
 
         let tweenParams = {
             x: xOffset + 50 * (index - this._currentIndex),
@@ -285,7 +282,7 @@ Switcher.prototype = {
     },
 
     _updatePreviews: function() {
-        if(this._looping) {
+        if (this._looping) {
             this._requiresUpdate = true;
             return;
         }
@@ -298,7 +295,7 @@ Switcher.prototype = {
             let preview = this._previews[i];
 
             if (i == this._currentIndex) {
-                this._animatePreviewToMid(preview, preview.get_anchor_point_gravity(), animation_time);
+                this._animatePreviewToMid(preview, preview.get_placement(), animation_time);
             } else if (i < this._currentIndex) {
         	if (preview.raise_top) {
                 	preview.raise_top();

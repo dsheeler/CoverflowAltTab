@@ -37,4 +37,14 @@ var Preview = GObject.registerClass({
     {
         super._init(...args);
     }
+
+    set_placement(placement)
+    {
+        this.placement = placement;
+    }
+
+    get_placement()
+    {
+        return this.placement;
+    }
 });

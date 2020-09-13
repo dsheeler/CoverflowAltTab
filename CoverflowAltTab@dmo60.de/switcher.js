@@ -501,6 +501,7 @@ Switcher.prototype = {
                 let metaWin = this._windows[i];
                 let compositor = this._windows[i].get_compositor_private();
 
+                // Move all non-activated windows behind the activated one
                 if (i != this._currentIndex) {
                     if (preview.lower_bottom) {
                         preview.lower_bottom();
@@ -508,19 +509,6 @@ Switcher.prototype = {
                         this.previewActor.set_child_below_sibling(preview, null);
                     }
                 }
-
-                let rotation_vertex_x = 0.0;
-                if (preview.get_anchor_point_gravity() == Placement.RIGHT) {
-                    rotation_vertex_x = preview.width / 2;
-                } else if (preview.get_anchor_point_gravity() == Placement.LEFT) {
-                    rotation_vertex_x = -preview.width / 2;
-                }
-                preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
-                if (Clutter.Vertex) {
-	                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-    	        } else {
-	                preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
-    	        }
 
                 Tweener.addTween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
