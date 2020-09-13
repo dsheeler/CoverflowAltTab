@@ -31,10 +31,6 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
-let Graphene;
-if (!Clutter.Vertex)
-    Graphene = imports.gi.Graphene;
-
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon")
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];

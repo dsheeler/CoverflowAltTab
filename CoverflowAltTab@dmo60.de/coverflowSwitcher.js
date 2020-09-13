@@ -26,10 +26,6 @@ const Config = imports.misc.config;
 const Clutter = imports.gi.Clutter;
 const Tweener = imports.ui.tweener;
 
-let Graphene;
-if (!Clutter.Vertex)
-    Graphene = imports.gi.Graphene;
-
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon")
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
@@ -48,7 +44,9 @@ const BLEND_OUT_ANGLE = 30;
 const PREVIEW_SCALE = 0.5;
 
 function appendParams(base, extra) {
-    for (let key in extra) { base[key] = extra[key]; }
+    for (let key in extra) {
+        base[key] = extra[key];
+    }
 }
 
 function Switcher() {
@@ -82,11 +80,11 @@ Switcher.prototype = {
             let compositor = this._windows[i].get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
-                let width, height
+                let width, height;
                 if (texture.get_size) {
-                    [width, height] = texture.get_size()
+                    [width, height] = texture.get_size();
                 } else {
-                    let preferred_size_ok
+                    let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
 
@@ -207,14 +205,15 @@ Switcher.prototype = {
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
             this._animatePreviewToMid(preview, oppositeGravity, animation_time, extraParams);
         } else {
-            if(gravity == Orientation.TO_RIGHT)
+            if(gravity == Orientation.TO_RIGHT) {
                 preview.raise_top();
-            else
+            } else {
                 if (preview.lower_bottom) {
-                        preview.lower_bottom();
+                    preview.lower_bottom();
                 } else {
-                        this.previewActor.set_child_below_sibling(preview, null);
+                    this.previewActor.set_child_below_sibling(preview, null);
                 }
+            }
 
             let extraParams = {
                 opacity: 255,
@@ -239,9 +238,9 @@ Switcher.prototype = {
 
     _animatePreviewToMid: function(preview, oldGravity, animation_time, extraParams) {
         if (preview.raise_top) {
-                preview.raise_top();
+            preview.raise_top();
         } else {
-                this.previewActor.set_child_above_sibling(preview, null);
+            this.previewActor.set_child_above_sibling(preview, null);
         }
 
         let tweenParams = {
@@ -310,9 +309,9 @@ Switcher.prototype = {
                 });
             } else if (i > this._currentIndex) {
                 if (preview.lower_bottom) {
-                        preview.lower_bottom();
+                    preview.lower_bottom();
                 } else {
-                        this.previewActor.set_child_below_sibling(preview, null);
+                    this.previewActor.set_child_below_sibling(preview, null);
                 }
                 this._animatePreviewToSide(preview, i, Placement.RIGHT, this._xOffsetRight, {
                     opacity: 255,
