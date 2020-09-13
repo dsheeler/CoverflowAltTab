@@ -31,14 +31,6 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon")
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-else
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const Placement = ExtensionImports.preview.Placement;
-
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
 let TRANSITION_TYPE = 'easeOutCubic';
@@ -136,7 +128,7 @@ Switcher.prototype = {
                     });
                 }
             } catch (e) {
-                //ignore fake panels
+                // ignore fake panels
             }
         }, this);
 

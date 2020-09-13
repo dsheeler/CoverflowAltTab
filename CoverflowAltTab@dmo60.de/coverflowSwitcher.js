@@ -99,7 +99,7 @@ Switcher.prototype = {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    // TODO: Fix these
+                    // TODO: Fix these, minimized behaviour is different
                     x: (!(metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
                     y: (!(metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
                 });
@@ -197,26 +197,14 @@ Switcher.prototype = {
         let oppositeDirection = (direction === Direction.TO_LEFT) ? Direction.TO_RIGHT : Direction.TO_LEFT;
 
         if (index == this._currentIndex) {
-        	if (preview.raise_top) {
-                	preview.raise_top();
-        	} else {
-                	this.previewActor.set_child_above_sibling(preview, null);
-        	}
+        	preview.make_top_layer(this.previewActor);
             let extraParams = preview._cfIsLast ? lastExtraParams : null;
             this._animatePreviewToMid(preview, oppositeDirection, animation_time, extraParams);
         } else {
             if (direction === Direction.TO_RIGHT) {
-                if (preview.raise_top) {
-                    preview.raise_top();
-                } else {
-                    this.previewActor.set_child_above_sibling(preview, null);
-                }
+                preview.make_top_layer(this.previewActor);
             } else {
-                if (preview.lower_bottom) {
-                    preview.lower_bottom();
-                } else {
-                    this.previewActor.set_child_below_sibling(preview, null);
-                }
+                preview.make_bottom_layer(this.previewActor);
             }
 
             let extraParams = {
@@ -242,11 +230,7 @@ Switcher.prototype = {
 
     // TODO: Remove unused direction variable
     _animatePreviewToMid: function(preview, direction, animation_time, extraParams) {
-        if (preview.raise_top) {
-            preview.raise_top();
-        } else {
-            this.previewActor.set_child_above_sibling(preview, null);
-        }
+        preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
             opacity: 255,
@@ -302,12 +286,7 @@ Switcher.prototype = {
             if (i == this._currentIndex) {
                 this._animatePreviewToMid(preview, preview.get_placement(), animation_time);
             } else if (i < this._currentIndex) {
-            	if (preview.raise_top) {
-                	preview.raise_top();
-            	} else {
-                	this.previewActor.set_child_above_sibling(preview, null);
-            	}
-
+            	preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, Placement.LEFT, this._xOffsetLeft, {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
@@ -315,12 +294,7 @@ Switcher.prototype = {
                     transition: TRANSITION_TYPE
                 });
             } else if (i > this._currentIndex) {
-                if (preview.lower_bottom) {
-                    preview.lower_bottom();
-                } else {
-                    this.previewActor.set_child_below_sibling(preview, null);
-                }
-
+                preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, Placement.RIGHT, this._xOffsetRight, {
                     opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,

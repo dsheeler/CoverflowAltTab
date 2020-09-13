@@ -38,6 +38,30 @@ var Preview = GObject.registerClass({
         super._init(...args);
     }
 
+    make_top_layer(parent)
+    {
+        if (this.raise_top) {
+            this.raise_top()
+        } else if (parent.set_child_above_sibling) {
+            parent.set_child_above_sibling(this, null);
+        } else {
+            // Don't throw anything here, it may cause unstabilities
+            logError("No method found for making preview the top layer");
+        }
+    }
+
+    make_bottom_layer(parent)
+    {
+        if (this.lower_bottom) {
+            this.lower_bottom()
+        } else if (parent.set_child_below_sibling) {
+            parent.set_child_below_sibling(this, null);
+        } else {
+            // Don't throw anything here, it may cause unstabilities
+            logError("No method found for making preview the bottom layer");
+        }
+    }
+
     set_placement(placement)
     {
         this.placement = placement;
