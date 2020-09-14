@@ -36,6 +36,10 @@ if (Config.PACKAGE_NAME === "cinnamon")
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
+const {
+    __ABSTRACT_FUNCTION__,
+} = ExtensionImports.lib;
+
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
 const SHELL_SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
@@ -47,32 +51,13 @@ function clamp(value, min, max) {
 
 class AbstractPlatform
 {
-    constructor() {}
+    enable() { __ABSTRACT_FUNCTION__(this) }
+    disable() { __ABSTRACT_FUNCTION__(this) }
 
-    enable()
-    {
-        throw new Error("Abstract method enable not implemented");
-    }
+    getWidgetClass() { __ABSTRACT_FUNCTION__(this) }
+    getWindowTracker() { __ABSTRACT_FUNCTION__(this) }
 
-    disable()
-    {
-        throw new Error("Abstract method disable not implemented");
-    }
-
-    getWidgetClass()
-    {
-        throw new Error("Abstract method getWidgetClass not implemented");
-    }
-
-    getWindowTracker()
-    {
-        throw new Error("Abstract method getWindowTracker not implemented");
-    }
-
-    getSettings()
-    {
-        throw new Error("Abstract method getSettings not implemented");
-    }
+    getSettings() { __ABSTRACT_FUNCTION__(this) }
 
     getDefaultSettings()
     {
@@ -259,13 +244,9 @@ class PlatformCinnamon18 extends AbstractPlatform
         this._settings.updateTitlePosition();
     }
 
-    enable()
-    {
-    }
-
-    disable()
-    {
-    }
+    // Prevent from throwing exceptions on calling these methods
+    enable() {}
+    disable() {}
 
     getWidgetClass()
     {
@@ -384,11 +365,6 @@ class PlatformGnomeShell extends AbstractPlatform
 
 class PlatformGnomeShell314 extends PlatformGnomeShell
 {
-    constructor(...args)
-    {
-    	super(...args);
-    }
-
     getPrimaryModifier(mask)
     {
     	return imports.ui.switcherPopup.primaryModifier(mask);

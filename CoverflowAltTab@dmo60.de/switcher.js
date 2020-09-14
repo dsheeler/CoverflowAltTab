@@ -38,6 +38,16 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
+let ExtensionImports;
+if (Config.PACKAGE_NAME === "cinnamon")
+    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+else
+    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+
+const {
+    __ABSTRACT_FUNCTION__,
+} = ExtensionImports.lib;
+
 
 class Switcher
 {
@@ -99,7 +109,8 @@ class Switcher
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     }
 
-    show() {
+    show()
+    {
         this._enableMonitorFix();
 
         let monitor = this._updateActiveMonitor();
@@ -145,25 +156,11 @@ class Switcher
         this._next();
     }
 
-    _createPreviews()
-    {
-        throw new Error("Abstract method _createPreviews not implemented");
-    }
+    _createPreviews() { __ABSTRACT_FUNCTION__(this) }
+    _updatePreviews() { __ABSTRACT_FUNCTION__(this) }
 
-    _updatePreviews()
-    {
-        throw new Error("Abstract method _updatePreviews not implemented");
-    }
-
-    _previewNext()
-    {
-        throw new Error("Abstract method _previewNext not implemented");
-    }
-
-    _previewPrevious()
-    {
-        throw new Error("Abstract method _previewPrevious not implemented");
-    }
+    _previewNext() { __ABSTRACT_FUNCTION__(this) }
+    _previewPrevious() { __ABSTRACT_FUNCTION__(this) }
 
     _checkSwitchTime()
     {

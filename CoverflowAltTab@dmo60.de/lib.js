@@ -90,3 +90,18 @@ function getSettings(schema) {
 
 	return new Gio.Settings({ settings_schema: schemaObj });
 }
+
+/**
+ * Make a method psuedo-abstract.
+ *
+ * @param {Object} callerClass The current class instance, i.e. this.
+ * @return {void}
+ */
+function __ABSTRACT_FUNCTION__(callerClass)
+{
+	throw new Error(
+		"Abstract method " +
+		callerClass.constructor.name + "." + __ABSTRACT__.caller.name + "()" +
+		" not implemented"
+	);
+}

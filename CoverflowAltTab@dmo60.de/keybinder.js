@@ -25,30 +25,27 @@
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
+const Config = imports.misc.config;
+
+let ExtensionImports;
+if (Config.PACKAGE_NAME === "cinnamon")
+    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+else
+    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+
+const {
+    __ABSTRACT_FUNCTION__,
+} = ExtensionImports.lib;
+
 
 class AbstractKeybinder
 {
-    constructor() {}
-
-    enable()
-    {
-        throw new Error("Abstract method enable not implemented");
-    }
-
-    disable()
-    {
-        throw new Error("Abstract method disable not implemented");
-    }
+    enable() { __ABSTRACT_FUNCTION__(this) }
+    disable() { __ABSTRACT_FUNCTION__(this) }
 }
-
 
 class Keybinder330Api extends AbstractKeybinder
 {
-    constructor()
-    {
-        super();
-    }
-
     enable(startAppSwitcherBind)
     {
         let Shell = imports.gi.Shell;
@@ -76,14 +73,8 @@ class Keybinder330Api extends AbstractKeybinder
     }
 }
 
-
 class KeybinderNewApi extends AbstractKeybinder
 {
-    constructor()
-    {
-        super();
-    }
-
     enable(startAppSwitcherBind)
     {
         Meta.keybindings_set_custom_handler('switch-applications', startAppSwitcherBind);
@@ -105,15 +96,10 @@ class KeybinderNewApi extends AbstractKeybinder
         Meta.keybindings_set_custom_handler('switch-windows-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
     }
-};
+}
 
 class KeybinderOldApi extends AbstractKeybinder
 {
-    constructor()
-    {
-        super();
-    }
-
     enable(startAppSwitcherBind)
     {
         let wrapperBind = Lang.bind(this, function(wm, binding, mask, window, backwards) {
