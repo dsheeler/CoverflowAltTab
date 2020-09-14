@@ -26,36 +26,31 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 
-function AbstractKeybinder() {
-    this._init();
-}
+class AbstractKeybinder
+{
+    constructor() {}
 
-AbstractKeybinder.prototype = {
-    _init: function() {
-    },
-
-    enable: function() {
+    enable()
+    {
         throw new Error("Abstract method enable not implemented");
-    },
+    }
 
-    disable: function() {
+    disable()
+    {
         throw new Error("Abstract method disable not implemented");
     }
-};
-
-
-function Keybinder330Api() {
-    this._init();
 }
 
-Keybinder330Api.prototype = {
-    __proto__: AbstractKeybinder.prototype,
 
-    _init: function() {
-        AbstractKeybinder.prototype._init.call(this);
-    },
+class Keybinder330Api extends AbstractKeybinder
+{
+    constructor()
+    {
+        super();
+    }
 
-    enable: function(startAppSwitcherBind) {
+    enable(startAppSwitcherBind)
+    {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, startAppSwitcherBind);
@@ -65,9 +60,10 @@ Keybinder330Api.prototype = {
         Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
-    },
+    }
 
-    disable: function() {
+    disable()
+    {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
@@ -78,21 +74,18 @@ Keybinder330Api.prototype = {
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
     }
-};
-
-
-function KeybinderNewApi() {
-    this._init();
 }
 
-KeybinderNewApi.prototype = {
-    __proto__: AbstractKeybinder.prototype,
 
-    _init: function() {
-        AbstractKeybinder.prototype._init.call(this);
-    },
+class KeybinderNewApi extends AbstractKeybinder
+{
+    constructor()
+    {
+        super();
+    }
 
-    enable: function(startAppSwitcherBind) {
+    enable(startAppSwitcherBind)
+    {
         Meta.keybindings_set_custom_handler('switch-applications', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-windows', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group', startAppSwitcherBind);
@@ -100,9 +93,10 @@ KeybinderNewApi.prototype = {
         Meta.keybindings_set_custom_handler('switch-applications-backward', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-windows-backward', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group-backward', startAppSwitcherBind);
-    },
+    }
 
-    disable: function() {
+    disable()
+    {
         Meta.keybindings_set_custom_handler('switch-applications', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
@@ -113,19 +107,15 @@ KeybinderNewApi.prototype = {
     }
 };
 
+class KeybinderOldApi extends AbstractKeybinder
+{
+    constructor()
+    {
+        super();
+    }
 
-function KeybinderOldApi() {
-    this._init();
-}
-
-KeybinderOldApi.prototype = {
-    __proto__: AbstractKeybinder.prototype,
-
-    _init: function() {
-        AbstractKeybinder.prototype._init.call(this);
-    },
-
-    enable: function(startAppSwitcherBind) {
+    enable(startAppSwitcherBind)
+    {
         let wrapperBind = Lang.bind(this, function(wm, binding, mask, window, backwards) {
             let bindingWrapper = {
                 get_mask: function() { return mask; },
@@ -138,13 +128,14 @@ KeybinderOldApi.prototype = {
         Main.wm.setKeybindingHandler('switch_panels', wrapperBind);
         Main.wm.setKeybindingHandler('switch_windows_backward', wrapperBind);
         Main.wm.setKeybindingHandler('switch_group_backward', wrapperBind);
-    },
+    }
 
-    disable: function() {
+    disable()
+    {
         Main.wm.setKeybindingHandler('switch_windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Main.wm.setKeybindingHandler('switch_group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Main.wm.setKeybindingHandler('switch_panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
         Main.wm.setKeybindingHandler('switch_windows_backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Main.wm.setKeybindingHandler('switch_group_backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
     }
-};
+}

@@ -27,31 +27,31 @@ const Clutter = imports.gi.Clutter;
 const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
-if(Config.PACKAGE_NAME == 'cinnamon')
+if (Config.PACKAGE_NAME === "cinnamon")
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-const BaseSwitcher = ExtensionImports.switcher;
+
+const BaseSwitcher = ExtensionImports.switcher.Switcher;
 
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
-function Switcher() {
-    this._init.apply(this, arguments);
-}
 
-Switcher.prototype = {
-    __proto__: BaseSwitcher.Switcher.prototype,
+class TimelineSwitcher extends BaseSwitcher
+{
+    constructor(...args)
+    {
+        super(...args);
 
-    _init: function() {
-        BaseSwitcher.Switcher.prototype._init.apply(this, arguments);
         if (this._settings.elastic_mode)
         	TRANSITION_TYPE = 'easeOutBack';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _createPreviews: function() {
+    _createPreviews()
+    {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
         this._previews = [];
@@ -101,20 +101,23 @@ Switcher.prototype = {
                 }
             }
         }
-    },
+    }
 
-    _previewNext: function() {
+    _previewNext()
+    {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
         this._updatePreviews(1);
         TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _previewPrevious: function() {
+    _previewPrevious()
+    {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
         this._updatePreviews(-1);
-    },
+    }
 
-    _updatePreviews: function(direction) {
+    _updatePreviews(direction)
+    {
         if(this._previews.length == 0)
             return;
 
@@ -181,9 +184,10 @@ Switcher.prototype = {
                     Tweener.addTween(preview, tweenparams);
             }
         }
-    },
+    }
 
-    _onFadeBackwardsComplete: function(preview, distance, animation_time) {
+    _onFadeBackwardsComplete(preview, distance, animation_time)
+    {
         preview.__looping = false;
         preview.raise_top();
 
@@ -204,9 +208,10 @@ Switcher.prototype = {
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
-    },
+    }
 
-    _onFadeForwardComplete: function(preview, distance, animation_time) {
+    _onFadeForwardComplete(preview, distance, animation_time)
+    {
         preview.__looping = false;
         if (preview.lower_bottom) {
                 preview.lower_bottom();
@@ -227,13 +232,13 @@ Switcher.prototype = {
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
-    },
+    }
 
-    _onFinishMove: function(preview) {
+    _onFinishMove(preview)
+    {
         if(preview.__finalTween) {
             Tweener.addTween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
     }
-
 };

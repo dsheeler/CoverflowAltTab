@@ -32,8 +32,7 @@ if (Config.PACKAGE_NAME === "cinnamon")
 else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-const BaseSwitcher = ExtensionImports.switcher;
-
+const BaseSwitcher = ExtensionImports.switcher.Switcher;
 const Preview = ExtensionImports.preview.Preview;
 const Direction = ExtensionImports.preview.Direction;
 
@@ -48,22 +47,20 @@ function appendParams(base, extra) {
     }
 }
 
-function Switcher() {
-    this._init.apply(this, arguments);
-}
+class CoverflowSwitcher extends BaseSwitcher
+{
+    constructor(...args)
+    {
+        super(...args);
 
-Switcher.prototype = {
-    __proto__: BaseSwitcher.Switcher.prototype,
-
-    _init: function() {
-        BaseSwitcher.Switcher.prototype._init.apply(this, arguments);
         if (this._settings.elastic_mode)
         	TRANSITION_TYPE = 'easeOutBack';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _createPreviews: function() {
+    _createPreviews()
+    {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
@@ -115,9 +112,10 @@ Switcher.prototype = {
                 this.previewActor.add_actor(preview);
             }
         }
-    },
+    }
 
-    _previewNext: function() {
+    _previewNext()
+    {
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = 0;
             this._flipStack(Direction.TO_LEFT);
@@ -126,9 +124,10 @@ Switcher.prototype = {
             this._updatePreviews(1);
         }
         TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _previewPrevious: function() {
+    _previewPrevious()
+    {
         if (this._currentIndex == 0) {
             this._currentIndex = this._windows.length - 1;
             this._flipStack(Direction.TO_RIGHT);
@@ -136,9 +135,10 @@ Switcher.prototype = {
             this._currentIndex = this._currentIndex - 1;
             this._updatePreviews(-1);
         }
-    },
+    }
 
-    _flipStack: function(direction) {
+    _flipStack(direction)
+    {
         this._looping = true;
 
         let xOffset, angle;
@@ -167,9 +167,10 @@ Switcher.prototype = {
                 onCompleteParams: [preview, i, direction],
             });
         }
-    },
+    }
 
-    _onFlipIn: function(preview, index, direction) {
+    _onFlipIn(preview, index, direction)
+    {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
         this._updateActiveMonitor();
 
@@ -217,18 +218,20 @@ Switcher.prototype = {
                 appendParams(extraParams, lastExtraParams);
             this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
         }
-    },
+    }
 
-    _onFlipComplete: function() {
+    _onFlipComplete()
+    {
         this._looping = false;
         if (this._requiresUpdate === true) {
             this._requiresUpdate = false;
             this._updatePreviews();
         }
-    },
+    }
 
     // TODO: Remove unused direction variable
-    _animatePreviewToMid: function(preview, animation_time, extraParams) {
+    _animatePreviewToMid(preview, animation_time, extraParams)
+    {
         preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
@@ -246,9 +249,10 @@ Switcher.prototype = {
             appendParams(tweenParams, extraParams);
 
         Tweener.addTween(preview, tweenParams);
-    },
+    }
 
-    _animatePreviewToSide: function(preview, index, xOffset, extraParams) {
+    _animatePreviewToSide(preview, index, xOffset, extraParams)
+    {
         let tweenParams = {
             x: xOffset + 50 * (index - this._currentIndex),
             y: this._yOffset,
@@ -259,9 +263,10 @@ Switcher.prototype = {
         appendParams(tweenParams, extraParams);
 
         Tweener.addTween(preview, tweenParams);
-    },
+    }
 
-    _updatePreviews: function() {
+    _updatePreviews()
+    {
         if (this._looping) {
             this._requiresUpdate = true;
             return;
@@ -294,5 +299,5 @@ Switcher.prototype = {
                 });
             }
         }
-    },
+    }
 };

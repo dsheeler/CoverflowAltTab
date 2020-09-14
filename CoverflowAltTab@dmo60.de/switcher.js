@@ -39,12 +39,10 @@ const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
 
-function Switcher() {
-    this._init.apply(this, arguments);
-}
-
-Switcher.prototype = {
-    _init: function(windows, mask, currentIndex, manager) {
+class Switcher
+{
+    constructor(windows, mask, currentIndex, manager)
+    {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -99,9 +97,9 @@ Switcher.prototype = {
 		}
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
-    },
+    }
 
-    show: function() {
+    show() {
         this._enableMonitorFix();
 
         let monitor = this._updateActiveMonitor();
@@ -145,33 +143,39 @@ Switcher.prototype = {
         this._initialDelayTimeoutId = 0;
 
         this._next();
-    },
+    }
 
-    _createPreviews: function() {
+    _createPreviews()
+    {
         throw new Error("Abstract method _createPreviews not implemented");
-    },
+    }
 
-    _updatePreviews: function() {
+    _updatePreviews()
+    {
         throw new Error("Abstract method _updatePreviews not implemented");
-    },
+    }
 
-    _previewNext: function() {
+    _previewNext()
+    {
         throw new Error("Abstract method _previewNext not implemented");
-    },
+    }
 
-    _previewPrevious: function() {
+    _previewPrevious()
+    {
         throw new Error("Abstract method _previewPrevious not implemented");
-    },
+    }
 
-    _checkSwitchTime: function() {
+    _checkSwitchTime()
+    {
         let t = new Date().getTime();
         if (t - this._lastTime < 150)
             return false;
         this._lastTime = t;
         return true;
-    },
+    }
 
-    _next: function() {
+    _next()
+    {
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -181,9 +185,10 @@ Switcher.prototype = {
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
-    },
+    }
 
-    _previous: function() {
+    _previous()
+    {
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -193,9 +198,10 @@ Switcher.prototype = {
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
-    },
+    }
 
-    _updateActiveMonitor: function() {
+    _updateActiveMonitor()
+    {
         this._activeMonitor = null;
         if (!this._settings.enforce_primary_monitor)
             this._activeMonitor = Main.layoutManager.currentMonitor;
@@ -203,9 +209,10 @@ Switcher.prototype = {
             this._activeMonitor = Main.layoutManager.primaryMonitor;
 
         return this._activeMonitor;
-    },
+    }
 
-    _setCurrentWindowTitle: function(window) {
+    _setCurrentWindowTitle(window)
+    {
         let animation_time = this._settings.animation_time;
 
         let monitor = this._updateActiveMonitor();
@@ -298,9 +305,10 @@ Switcher.prototype = {
             time: animation_time,
             transition: TRANSITION_TYPE,
         });
-    },
+    }
 
-    _keyPressEvent: function(actor, event) {
+    _keyPressEvent(actor, event)
+    {
         switch(event.get_key_symbol()) {
 
             case Clutter.KEY_Escape:
@@ -373,9 +381,10 @@ Switcher.prototype = {
         }
 
         return true;
-    },
+    }
 
-    _keyReleaseEvent: function(actor, event) {
+    _keyReleaseEvent(actor, event)
+    {
         let [x, y, mods] = global.get_pointer();
         let state = mods & this._modifierMask;
 
@@ -386,10 +395,11 @@ Switcher.prototype = {
         }
 
         return true;
-    },
+    }
 
     // allow navigating by mouse-wheel scrolling
-    _scrollEvent: function(actor, event) {
+    _scrollEvent(actor, event)
+    {
     	if(!this._checkSwitchTime())
     		return true;
 
@@ -421,18 +431,21 @@ Switcher.prototype = {
         }
 
         return true;
-    },
+    }
 
-    _windowDestroyed: function(wm, actor) {
+    _windowDestroyed(wm, actor)
+    {
 		this._removeDestroyedWindow(actor.meta_window);
-    },
+    }
 
-    _checkDestroyed: function(window) {
+    _checkDestroyed(window)
+    {
         this._checkDestroyedTimeoutId = 0;
         this._removeDestroyedWindow(window);
-    },
+    }
 
-    _removeDestroyedWindow: function(window) {
+    _removeDestroyedWindow(window)
+    {
         for (let i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length == 1)
@@ -450,30 +463,34 @@ Switcher.prototype = {
                 return;
             }
         }
-    },
+    }
 
-    _activateSelected: function() {
+    _activateSelected()
+    {
         this._manager.activateSelectedWindow(this._windows[this._currentIndex]);
         this.destroy();
-    },
+    }
 
-    _showDesktop: function() {
+    _showDesktop()
+    {
         for (let i in this._windows) {
             if (!this._windows[i].minimized)
                 this._windows[i].minimize();
         }
         this.destroy();
-    },
+    }
 
-    _onHideBackgroundCompleted: function() {
+    _onHideBackgroundCompleted()
+    {
     	this._manager.platform.removeBackground();
     	Main.uiGroup.remove_actor(this.actor);
 
         // show all window actors
         global.window_group.show();
-    },
+    }
 
-    _onDestroy: function() {
+    _onDestroy()
+    {
     	if (this._settings.elastic_mode)
     		TRANSITION_TYPE = 'easeOutBack';
     	else
@@ -563,9 +580,10 @@ Switcher.prototype = {
         this._previews = null;
         this._initialDelayTimeoutId = null;
         this._checkDestroyedTimeoutId = null;
-    },
+    }
 
-    getPanels: function() {
+    getPanels()
+    {
         let panels = [Main.panel];
         if(Main.panel2)
             panels.push(Main.panel2);
@@ -573,13 +591,15 @@ Switcher.prototype = {
         if(Main.overview._dash)
             panels.push(Main.overview._dash);
         return panels;
-    },
+    }
 
-    destroy: function() {
+    destroy()
+    {
         this._onDestroy();
-    },
+    }
 
-    _enableMonitorFix: function() {
+    _enableMonitorFix()
+    {
         if (Config.PACKAGE_VERSION >= '3.36')
             return;
         if (this._manager.display.get_n_monitors() < 2)
@@ -594,9 +614,10 @@ Switcher.prototype = {
         let height = 2 * (this._activeMonitor.y + this._activeMonitor.height/2);
 
         global.stage.set_size(width, height);
-    },
+    }
 
-    _disableMonitorFix: function() {
+    _disableMonitorFix()
+    {
         if (this._monitorFix) {
             global.stage.set_size(this._oldWidth, this._oldHeight);
             this._monitorFix = false;
