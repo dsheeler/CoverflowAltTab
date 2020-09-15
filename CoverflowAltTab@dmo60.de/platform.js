@@ -28,7 +28,11 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
-const Tweener = imports.ui.tweener;
+
+let Tweener = null;
+if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
+    Tweener = imports.ui.tweener;
+}
 
 let ExtensionImports;
 if(Config.PACKAGE_NAME == 'cinnamon')
@@ -100,7 +104,7 @@ AbstractPlatform.prototype = {
 
     dimBackground: function() {
     	this._background.show();
-        Tweener.addTween(this._background, {
+        this.tween(this._background, {
             dim_factor: this._settings.dim_factor,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE
@@ -108,8 +112,8 @@ AbstractPlatform.prototype = {
     },
 
     undimBackground: function(onCompleteBind) {
-    	Tweener.removeTweens(this._background);
-        Tweener.addTween(this._background, {
+    	this.removeTweens(this._background);
+        this.tween(this._background, {
             dim_factor: 1.0,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE,
@@ -119,6 +123,14 @@ AbstractPlatform.prototype = {
 
     removeBackground: function() {
     	global.overlay_group.remove_actor(this._background);
+    },
+
+    tween: function(actor, params) {
+        throw new Error("Abstract method tween not implemented");
+    },
+
+    removeTweens: function(actor) {
+        throw new Error("Abstract method removeTweens not implemented");
     }
 }
 
@@ -208,6 +220,14 @@ PlatformCinnamon.prototype = {
         }
 
         return this.getDefaultSettings();
+    },
+
+    tween: function(actor, params) {
+        Tweener.addTween(actor, params);
+    },
+
+    removeTweens: function(actor) {
+        Tweener.removeTweens(actor);
     }
 };
 
@@ -270,6 +290,14 @@ PlatformCinnamon18.prototype = {
 
     getPrimaryModifier: function(mask) {
     	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
+    },
+
+    tween: function(actor, params) {
+        Tweener.addTween(actor, params);
+    },
+
+    removeTweens: function(actor) {
+        Tweener.removeTweens(actor);
     }
 
 };
@@ -360,6 +388,22 @@ PlatformGnomeShell.prototype = {
 
         return this.getDefaultSettings();
     },
+
+    tween: function(actor, params) {
+        if (Tweener) {
+            return Tweener.addTween(actor, params);
+        }
+
+        actor.ease(params);
+    },
+
+    removeTweens: function(actor) {
+        if (Tweener) {
+            return Tweener.removeTweens(actor);
+        }
+
+        actor.remove_all_transitions();
+    }
 };
 
 function PlatformGnomeShell38() {
@@ -397,7 +441,7 @@ PlatformGnomeShell38.prototype = {
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
 
-                Tweener.addTween(background,
+                this.tween(background,
                                  { brightness: this.getSettings().dim_factor,
                                    time: this.getSettings().animation_time,
                                    transition: TRANSITION_TYPE
@@ -412,7 +456,7 @@ PlatformGnomeShell38.prototype = {
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
 
-                Tweener.addTween(background,
+                this.tween(background,
                                  { brightness: 1.0,
                                    time: this.getSettings().animation_time,
                                    transition: TRANSITION_TYPE,
@@ -461,7 +505,7 @@ PlatformGnomeShell310.prototype = {
         	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
-                Tweener.addTween(background,
+                this.tween(background,
                                  { brightness: this.getSettings().dim_factor,
                                    time: this.getSettings().animation_time,
                                    transition: TRANSITION_TYPE
@@ -475,7 +519,7 @@ PlatformGnomeShell310.prototype = {
 	    	let backgrounds = this._backgroundGroup.get_children();
             for (let i = 0; i < backgrounds.length; i++) {
                 let background = backgrounds[i]._delegate;
-                Tweener.addTween(background,
+                this.tween(background,
                                  { brightness: 1.0,
                                    time: this.getSettings().animation_time,
                                    transition: TRANSITION_TYPE,
@@ -528,7 +572,7 @@ PlatformGnomeShell314.prototype = {
 	    	this._backgroundGroup.show();
         let backgrounds = this._backgroundGroup.get_children();
         for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i],
+            this.tween(backgrounds[i],
                              { brightness: 0.8,
                                vignette_sharpness: 1 - this.getSettings().dim_factor,
                                time: this.getSettings().animation_time,
@@ -540,7 +584,7 @@ PlatformGnomeShell314.prototype = {
 	    undimBackground: function(onCompleteBind) {
         let backgrounds = this._backgroundGroup.get_children();
         for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i],
+            this.tween(backgrounds[i],
                              { brightness: 1.0,
                                vignette_sharpness: 0.0,
                                time: this.getSettings().animation_time,

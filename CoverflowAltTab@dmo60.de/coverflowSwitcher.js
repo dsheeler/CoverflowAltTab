@@ -24,7 +24,6 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Tweener = imports.ui.tweener;
 
 let Graphene;
 if (!Clutter.Vertex)
@@ -256,7 +255,7 @@ Switcher.prototype = {
         if(extraParams)
             appendParams(tweenParams, extraParams);
 
-        Tweener.addTween(preview, tweenParams);
+        this._manager.platform.tween(preview, tweenParams);
     },
 
     _animatePreviewToSide: function(preview, index, gravity, xOffset, extraParams) {
@@ -276,7 +275,7 @@ Switcher.prototype = {
 
         appendParams(tweenParams, extraParams);
 
-        Tweener.addTween(preview, tweenParams);
+        this._manager.platform.tween(preview, tweenParams);
     },
 
     _updatePreviews: function() {

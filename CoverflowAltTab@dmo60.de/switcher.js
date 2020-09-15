@@ -28,7 +28,6 @@ const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
-const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
 let Graphene;
@@ -125,7 +124,7 @@ Switcher.prototype = {
                 let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
                 if (this._settings.hide_panel) {
-                    Tweener.addTween(panelActor, {
+                    this._manager.platform.tween(panelActor, {
                         opacity: 0,
                         time: this._settings.animation_time,
                         transition: TRANSITION_TYPE
@@ -225,7 +224,7 @@ Switcher.prototype = {
 
         // window title label
         if (this._windowTitle) {
-            Tweener.addTween(this._windowTitle, {
+            this._manager.platform.tween(this._windowTitle, {
                 opacity: 0,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
@@ -244,7 +243,7 @@ Switcher.prototype = {
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
         this.actor.add_actor(this._windowTitle);
-        Tweener.addTween(this._windowTitle, {
+        this._manager.platform.tween(this._windowTitle, {
             opacity: 255,
             time: animation_time,
             transition: TRANSITION_TYPE,
@@ -258,7 +257,7 @@ Switcher.prototype = {
 
         // window icon
         if (this._applicationIconBox) {
-            Tweener.addTween(this._applicationIconBox, {
+            this._manager.platform.tween(this._applicationIconBox, {
                 opacity: 0,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
@@ -296,7 +295,7 @@ Switcher.prototype = {
 
         this._applicationIconBox.add_actor(this._icon);
         this.actor.add_actor(this._applicationIconBox);
-        Tweener.addTween(this._applicationIconBox, {
+        this._manager.platform.tween(this._applicationIconBox, {
             opacity: 255,
             time: animation_time,
             transition: TRANSITION_TYPE,
@@ -511,7 +510,7 @@ Switcher.prototype = {
 	                preview.rotation_center_y = new Graphene.Point3D({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
 	        }
 
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
                         || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     x: ((metaWin.minimized) ? 0 : compositor.x) - monitor.x,
@@ -535,8 +534,8 @@ Switcher.prototype = {
                     let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                     panelActor.set_reactive(true);
                     if (this._settings.hide_panel) {
-                        Tweener.removeTweens(panelActor);
-                        Tweener.addTween(panelActor, {
+                        this._manager.platform.removeTweens(panelActor);
+                        this._manager.platform.tween(panelActor, {
                             opacity: 255,
                             time: this._settings.animation_time,
                             transition: TRANSITION_TYPE}
