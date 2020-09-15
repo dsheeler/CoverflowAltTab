@@ -28,6 +28,7 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
+const Clutter = imports.gi.Clutter;
 
 let Tweener = null;
 if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
@@ -389,15 +390,32 @@ PlatformGnomeShell.prototype = {
         return this.getDefaultSettings();
     },
 
-    tween: function(actor, params) {
+    tween: function (actor, params) {
         if (Tweener) {
             return Tweener.addTween(actor, params);
         }
 
+        if (params.transition == "easeOutCubic") {
+            params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+        } else {
+            params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+        }
+
+        if (params.onComplete) {
+            if (params.onCompleteParams && params.onCompleteScope) {
+                params.onComplete = params.onComplete.bind(params.onCompleteScope, ...params.onCompleteParams);
+            } else if (params.onCompleteParams) {
+                params.onComplete = params.onComplete.bind(null, params.onCompleteParams);
+            } else if (params.onCompleteScope) {
+                params.onComplete = params.onComplete.bind(params.onCompleteScope);
+            }
+        }
+
+        params.duration = params.time * 1000;
         actor.ease(params);
     },
 
-    removeTweens: function(actor) {
+    removeTweens: function (actor) {
         if (Tweener) {
             return Tweener.removeTweens(actor);
         }
