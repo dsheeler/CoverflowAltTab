@@ -24,7 +24,6 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon") {
@@ -45,20 +44,17 @@ const {
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
-class TimelineSwitcher extends BaseSwitcher
-{
-    constructor(...args)
-    {
+class TimelineSwitcher extends BaseSwitcher {
+    constructor(...args) {
         super(...args);
 
         if (this._settings.elastic_mode)
-        	TRANSITION_TYPE = 'easeOutBack';
+            TRANSITION_TYPE = 'easeOutBack';
         else
-        	TRANSITION_TYPE = 'easeOutCubic';
+            TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _createPreviews()
-    {
+    _createPreviews() {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
@@ -73,7 +69,7 @@ class TimelineSwitcher extends BaseSwitcher
                 let texture = compositor.get_texture();
                 let width, height;
                 if (texture.get_size) {
-                    [width, height] = texture.get_size()
+                    [width, height] = texture.get_size();
                 } else {
                     let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
@@ -100,7 +96,7 @@ class TimelineSwitcher extends BaseSwitcher
 
                 preview.target_width = Math.round(width * scale);
                 preview.target_height = Math.round(height * scale);
-                preview.target_width_side = preview.target_width * 2/3;
+                preview.target_width_side = preview.target_width * 2 / 3;
                 preview.target_height_side = preview.target_height;
 
                 preview.target_x = findUpperLeftFromCenter(preview.target_width,
@@ -118,21 +114,18 @@ class TimelineSwitcher extends BaseSwitcher
         }
     }
 
-    _previewNext()
-    {
+    _previewNext() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
         this._updatePreviews(1);
         TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _previewPrevious()
-    {
+    _previewPrevious() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
         this._updatePreviews(-1);
     }
 
-    _updatePreviews(direction)
-    {
+    _updatePreviews(direction) {
         if (this._previews.length == 0)
             return;
 
@@ -141,7 +134,7 @@ class TimelineSwitcher extends BaseSwitcher
 
         if (this._previews.length == 1) {
             let preview = this._previews[0];
-            Tweener.addTween(preview, {
+            this._manager.platform.tween(preview, {
                 opacity: 255,
                 x: preview.target_x,
                 y: preview.target_y,
@@ -159,7 +152,7 @@ class TimelineSwitcher extends BaseSwitcher
 
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     x: preview.target_x + 200,
                     y: preview.target_y + 100,
@@ -173,7 +166,7 @@ class TimelineSwitcher extends BaseSwitcher
                 });
             } else if (distance === 0 && direction < 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
@@ -194,22 +187,21 @@ class TimelineSwitcher extends BaseSwitcher
                 if (preview.__looping || preview.__finalTween)
                     preview.__finalTween = tweenparams;
                 else
-                    Tweener.addTween(preview, tweenparams);
+                    this._manager.platform.tween(preview, tweenparams);
             }
         }
     }
 
-    _onFadeBackwardsComplete(preview, distance, animation_time)
-    {
+    _onFadeBackwardsComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_top_layer(this.previewActor);
 
         preview.x = preview.target_x + 200;
-        preview.y =  preview.target_y + 100;
+        preview.y = preview.target_y + 100;
         preview.width = preview.target_width;
         preview.height = preview.target_height;
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             x: preview.target_x,
             y: preview.target_y,
@@ -223,8 +215,7 @@ class TimelineSwitcher extends BaseSwitcher
         });
     }
 
-    _onFadeForwardComplete(preview, distance, animation_time)
-    {
+    _onFadeForwardComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_bottom_layer(this.previewActor);
 
@@ -233,7 +224,7 @@ class TimelineSwitcher extends BaseSwitcher
         preview.width = Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0);
         preview.height = Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0);
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
@@ -243,10 +234,9 @@ class TimelineSwitcher extends BaseSwitcher
         });
     }
 
-    _onFinishMove(preview)
-    {
+    _onFinishMove(preview) {
         if (preview.__finalTween) {
-            Tweener.addTween(preview, preview.__finalTween);
+            this._manager.platform.tween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
     }

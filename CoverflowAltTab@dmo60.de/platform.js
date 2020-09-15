@@ -28,7 +28,11 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
-const Tweener = imports.ui.tweener;
+
+let Tweener = null;
+if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
+    Tweener = imports.ui.tweener;
+}
 
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon") {
@@ -37,11 +41,11 @@ if (Config.PACKAGE_NAME === "cinnamon") {
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
 
-const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
+const { __ABSTRACT_METHOD__ } = ExtensionImports.lib;
 
-const {Switcher} = ExtensionImports.switcher;
-const {CoverflowSwitcher} = ExtensionImports.coverflowSwitcher;
-const {TimelineSwitcher} = ExtensionImports.timelineSwitcher;
+const { Switcher } = ExtensionImports.switcher;
+const { CoverflowSwitcher } = ExtensionImports.coverflowSwitcher;
+const { TimelineSwitcher } = ExtensionImports.timelineSwitcher;
 
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
@@ -52,18 +56,16 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
-class AbstractPlatform
-{
-    enable() { __ABSTRACT_METHOD__(this, this.enable) }
-    disable() { __ABSTRACT_METHOD__(this, this.disable) }
+class AbstractPlatform {
+    enable() { __ABSTRACT_METHOD__(this, this.enable); }
+    disable() { __ABSTRACT_METHOD__(this, this.disable); }
 
-    getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass) }
-    getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker) }
+    getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass); }
+    getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker); }
 
-    getSettings() { __ABSTRACT_METHOD__(this, this.getSettings) }
+    getSettings() { __ABSTRACT_METHOD__(this, this.getSettings); }
 
-    getDefaultSettings()
-    {
+    getDefaultSettings() {
         return {
             animation_time: 0.25,
             dim_factor: 0.4,
@@ -78,32 +80,28 @@ class AbstractPlatform
         };
     }
 
-    getPrimaryModifier(mask)
-    {
-    	return imports.ui.altTab.primaryModifier(mask);
+    getPrimaryModifier(mask) {
+        return imports.ui.altTab.primaryModifier(mask);
     }
 
-    initBackground()
-    {
+    initBackground() {
         this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-	    this._background.hide();
+        this._background.hide();
         global.overlay_group.add_actor(this._background);
     }
 
-    dimBackground()
-    {
+    dimBackground() {
         this._background.show();
-        Tweener.addTween(this._background, {
+        this.tween(this._background, {
             dim_factor: this._settings.dim_factor,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE
         });
     }
 
-    undimBackground(onCompleteBind)
-    {
-    	Tweener.removeTweens(this._background);
-        Tweener.addTween(this._background, {
+    undimBackground(onCompleteBind) {
+        this.removeTweens(this._background);
+        this.tween(this._background, {
             dim_factor: 1.0,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE,
@@ -111,16 +109,16 @@ class AbstractPlatform
         });
     }
 
-    removeBackground()
-    {
-    	global.overlay_group.remove_actor(this._background);
+    removeBackground() {
+        global.overlay_group.remove_actor(this._background);
     }
+
+    tween(actor, params) { __ABSTRACT_METHOD__(this, this.tween); }
+    removeTweens(actor) { __ABSTRACT_METHOD__(this, this.removeTweens); }
 }
 
-class PlatformCinnamon extends AbstractPlatform
-{
-    constructor(...args)
-    {
+class PlatformCinnamon extends AbstractPlatform {
+    constructor(...args) {
         super(...args);
 
         this._settings = null;
@@ -132,8 +130,7 @@ class PlatformCinnamon extends AbstractPlatform
         this._configFile = ExtensionDir + '/config.js';
     }
 
-    enable()
-    {
+    enable() {
         this.disable();
 
         // watch for file changes
@@ -142,8 +139,7 @@ class PlatformCinnamon extends AbstractPlatform
         this._configConnection = this._configMonitor.connect('changed', Lang.bind(this, this._onConfigUpdate));
     }
 
-    disable()
-    {
+    disable() {
         if (this._configMonitor) {
             this._configMonitor.disconnect(this._configConnection);
             this._configMonitor.cancel();
@@ -152,31 +148,26 @@ class PlatformCinnamon extends AbstractPlatform
         }
     }
 
-    getWidgetClass()
-    {
+    getWidgetClass() {
         return St.Group;
     }
 
-    getWindowTracker()
-    {
+    getWindowTracker() {
         return imports.gi.Cinnamon.WindowTracker.get_default();
     }
 
-    getSettings()
-    {
+    getSettings() {
         if (!this._settings) {
             this._settings = this._loadSettings();
         }
         return this._settings;
     }
 
-    _onConfigUpdate()
-    {
+    _onConfigUpdate() {
         this._settings = null;
     }
 
-    _convertConfigToSettings(config)
-    {
+    _convertConfigToSettings(config) {
         return {
             animation_time: Math.max(config.animation_time, 0),
             dim_factor: clamp(config.dim_factor, 0, 1),
@@ -192,8 +183,7 @@ class PlatformCinnamon extends AbstractPlatform
         };
     }
 
-    _loadSettings()
-    {
+    _loadSettings() {
         try {
             let file = Gio.file_new_for_path(this._configFile);
             if (file.query_exists(null)) {
@@ -204,18 +194,24 @@ class PlatformCinnamon extends AbstractPlatform
                 }
             }
             global.log("Could not load file: " + this._configFile);
-        } catch(e) {
+        } catch (e) {
             global.log(e);
         }
 
         return this.getDefaultSettings();
     }
+
+    tween(actor, params) {
+        Tweener.addTween(actor, params);
+    }
+
+    removeTweens(actor) {
+        Tweener.removeTweens(actor);
+    }
 };
 
-class PlatformCinnamon18 extends AbstractPlatform
-{
-    constructor(...args)
-    {
+class PlatformCinnamon18 extends AbstractPlatform {
+    constructor(...args) {
         super(...args);
 
         this._settings = this.getDefaultSettings();
@@ -232,7 +228,7 @@ class PlatformCinnamon18 extends AbstractPlatform
 
         // Init settings
         let extSettings = new Settings.ExtensionSettings(this._settings, "CoverflowAltTab@dmo60.de");
-        function noop() {}
+        function noop() { }
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "animation-time", "animation_time", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "dim-factor", "dim_factor", noop);
         extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "title-position", "titlePosition", this._settings.updateTitlePosition);
@@ -249,35 +245,37 @@ class PlatformCinnamon18 extends AbstractPlatform
     }
 
     // Prevent from throwing exceptions on calling these methods
-    enable() {}
-    disable() {}
+    enable() { }
+    disable() { }
 
-    getWidgetClass()
-    {
+    getWidgetClass() {
         return St.Group;
     }
 
-    getWindowTracker()
-    {
+    getWindowTracker() {
         return imports.gi.Cinnamon.WindowTracker.get_default();
     }
 
-    getSettings()
-    {
+    getSettings() {
         return this._settings;
     }
 
-    getPrimaryModifier(mask)
-    {
-    	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
+    getPrimaryModifier(mask) {
+        return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
+    }
+
+    tween(actor, params) {
+        Tweener.addTween(actor, params);
+    }
+
+    removeTweens(actor) {
+        Tweener.removeTweens(actor);
     }
 };
 
 
-class PlatformGnomeShell extends AbstractPlatform
-{
-    constructor(...args)
-    {
+class PlatformGnomeShell extends AbstractPlatform {
+    constructor(...args) {
         super(...args);
 
         this._settings = null;
@@ -285,8 +283,7 @@ class PlatformGnomeShell extends AbstractPlatform
         this._gioSettings = null;
     }
 
-    enable()
-    {
+    enable() {
         this.disable();
 
         if (this._gioSettings == null)
@@ -313,8 +310,7 @@ class PlatformGnomeShell extends AbstractPlatform
         this._settings = this._loadSettings();
     }
 
-    disable()
-    {
+    disable() {
         if (this._connections) {
             for (let connection of this._connections) {
                 this._gioSettings.disconnect(connection);
@@ -324,31 +320,26 @@ class PlatformGnomeShell extends AbstractPlatform
         this._settings = null;
     }
 
-    getWidgetClass()
-    {
+    getWidgetClass() {
         return St.Widget;
     }
 
-    getWindowTracker()
-    {
+    getWindowTracker() {
         return imports.gi.Shell.WindowTracker.get_default();
     }
 
-    getSettings()
-    {
+    getSettings() {
         if (!this._settings) {
             this._settings = this._loadSettings();
         }
         return this._settings;
     }
 
-    _onSettingsChaned()
-    {
+    _onSettingsChaned() {
         this._settings = null;
     }
 
-    _loadSettings()
-    {
+    _loadSettings() {
         try {
             let settings = this._gioSettings;
             return {
@@ -370,25 +361,38 @@ class PlatformGnomeShell extends AbstractPlatform
 
         return this.getDefaultSettings();
     }
-}
 
-class PlatformGnomeShell314 extends PlatformGnomeShell
-{
-    getPrimaryModifier(mask)
-    {
+    tween(actor, params) {
+        if (Tweener) {
+            return Tweener.addTween(actor, params);
+        }
+
+        actor.ease(params);
+    }
+
+    removeTweens(actor) {
+        if (Tweener) {
+            return Tweener.removeTweens(actor);
+        }
+
+        actor.remove_all_transitions();
+    }
+};
+
+class PlatformGnomeShell314 extends PlatformGnomeShell {
+    getPrimaryModifier(mask) {
         return imports.ui.switcherPopup.primaryModifier(mask);
     }
 
-    initBackground()
-    {
+    initBackground() {
         let Background = imports.ui.background;
 
         this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
         if (this._backgroundGroup.lower_bottom) {
-    	    this._backgroundGroup.lower_bottom();
+            this._backgroundGroup.lower_bottom();
         } else {
-	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+            Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
         }
 
         this._backgroundGroup.hide();
@@ -401,13 +405,12 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
         }
     }
 
-    dimBackground()
-    {
+    dimBackground() {
         this._backgroundGroup.show();
 
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
-            Tweener.addTween(background, {
+            this.tween(background, {
                 brightness: 0.8,
                 vignette_sharpness: 1 - this.getSettings().dim_factor,
                 time: this.getSettings().animation_time,
@@ -416,11 +419,10 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
         }
     }
 
-    undimBackground(onCompleteBind)
-    {
+    undimBackground(onCompleteBind) {
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
-            Tweener.addTween(background, {
+            this.tween(background, {
                 brightness: 1.0,
                 vignette_sharpness: 0.0,
                 time: this.getSettings().animation_time,
@@ -430,8 +432,7 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
         }
     }
 
-    removeBackground()
-    {
-    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
+    removeBackground() {
+        Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
     }
 }
