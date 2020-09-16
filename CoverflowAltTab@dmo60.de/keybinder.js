@@ -34,14 +34,14 @@ else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const {
-    __ABSTRACT_FUNCTION__,
+    __ABSTRACT_METHOD__,
 } = ExtensionImports.lib;
 
 
 class AbstractKeybinder
 {
-    enable() { __ABSTRACT_FUNCTION__(this) }
-    disable() { __ABSTRACT_FUNCTION__(this) }
+    enable() { __ABSTRACT_METHOD__(this, this.enable) }
+    disable() { __ABSTRACT_METHOD__(this, this.disable) }
 }
 
 class Keybinder330Api extends AbstractKeybinder

@@ -94,14 +94,15 @@ function getSettings(schema) {
 /**
  * Make a method psuedo-abstract.
  *
- * @param {Object} callerClass The current class instance, i.e. this.
+ * @param {Object} object The current class instance, i.e. this.
+ * @param {Object} method The method object, e.g. this.enable.
  * @return {void}
  */
-function __ABSTRACT_FUNCTION__(callerClass)
+function __ABSTRACT_METHOD__(object, method)
 {
 	throw new Error(
 		"Abstract method " +
-		callerClass.constructor.name + "." + __ABSTRACT__.caller.name + "()" +
+		object.constructor.name + "." + method.name + "()" +
 		" not implemented"
 	);
 }

@@ -37,7 +37,7 @@ else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const {
-    __ABSTRACT_FUNCTION__,
+    __ABSTRACT_METHOD__,
 } = ExtensionImports.lib;
 
 const POSITION_TOP = 1;
@@ -51,13 +51,13 @@ function clamp(value, min, max) {
 
 class AbstractPlatform
 {
-    enable() { __ABSTRACT_FUNCTION__(this) }
-    disable() { __ABSTRACT_FUNCTION__(this) }
+    enable() { __ABSTRACT_METHOD__(this, this.enable) }
+    disable() { __ABSTRACT_METHOD__(this, this.disable) }
 
-    getWidgetClass() { __ABSTRACT_FUNCTION__(this) }
-    getWindowTracker() { __ABSTRACT_FUNCTION__(this) }
+    getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass) }
+    getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker) }
 
-    getSettings() { __ABSTRACT_FUNCTION__(this) }
+    getSettings() { __ABSTRACT_METHOD__(this, this.getSettings) }
 
     getDefaultSettings()
     {

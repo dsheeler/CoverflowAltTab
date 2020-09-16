@@ -45,7 +45,7 @@ else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const {
-    __ABSTRACT_FUNCTION__,
+    __ABSTRACT_METHOD__,
 } = ExtensionImports.lib;
 
 
@@ -156,11 +156,11 @@ class Switcher
         this._next();
     }
 
-    _createPreviews() { __ABSTRACT_FUNCTION__(this) }
-    _updatePreviews() { __ABSTRACT_FUNCTION__(this) }
+    _createPreviews() { __ABSTRACT_METHOD__(this, this._createPreviews) }
+    _updatePreviews() { __ABSTRACT_METHOD__(this, this._updatePreviews) }
 
-    _previewNext() { __ABSTRACT_FUNCTION__(this) }
-    _previewPrevious() { __ABSTRACT_FUNCTION__(this) }
+    _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
+    _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
     _checkSwitchTime()
     {
