@@ -34,6 +34,7 @@ else
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 const Preview = ExtensionImports.preview.Preview;
+const Placement = ExtensionImports.preview.Placement;
 const Direction = ExtensionImports.preview.Direction;
 const findUpperLeftFromCenter = ExtensionImports.preview.findUpperLeftFromCenter;
 
@@ -116,7 +117,7 @@ class CoverflowSwitcher extends BaseSwitcher
                 preview.target_height_side = preview.target_height;
 
                 preview.compositor = compositor;
-                preview.set_pivot_point(0.5, 0.5);
+                preview.set_pivot_point_placement(Placement.CENTER);
 
                 preview.center_position = {
                     x: findUpperLeftFromCenter(preview.target_width, 0,
@@ -272,6 +273,12 @@ class CoverflowSwitcher extends BaseSwitcher
 
     _animatePreviewToSide(preview, direction, index, xOffset, extraParams)
     {
+        if (index < this._currentIndex) {
+            preview.set_pivot_point_placement(Placement.LEFT);
+        } else if (index > this._currentIndex) {
+            preview.set_pivot_point_placement(Placement.RIGHT);
+        }
+
         let tweenParams = {
             x: preview.center_position.x,
             y: preview.center_position.y,
