@@ -84,8 +84,11 @@ class TimelineSwitcher extends BaseSwitcher
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
                     rotation_angle_y: 12,
-                    x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
-                    y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
+
+                    x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
+                        compositor.x) - monitor.x,
+                    y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
+                        compositor.y) - monitor.y,
                 });
 
                 preview.target_width = Math.round(width * scale);
