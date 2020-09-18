@@ -113,10 +113,7 @@ class CoverflowSwitcher extends BaseSwitcher
 
                 preview.target_width = Math.round(width * scale);
                 preview.target_height = Math.round(height * scale);
-                preview.target_width_side = preview.target_width * 2/3;
-                preview.target_height_side = preview.target_height;
 
-                preview.compositor = compositor;
                 preview.set_pivot_point_placement(Placement.CENTER);
 
                 preview.center_position = {
@@ -139,7 +136,7 @@ class CoverflowSwitcher extends BaseSwitcher
             this._flipStack(Direction.TO_LEFT);
         } else {
             this._currentIndex = this._currentIndex + 1;
-            this._updatePreviews(Direction.TO_LEFT);
+            this._updatePreviews();
         }
         TRANSITION_TYPE = 'easeOutCubic';
     }
@@ -151,7 +148,7 @@ class CoverflowSwitcher extends BaseSwitcher
             this._flipStack(Direction.TO_RIGHT);
         } else {
             this._currentIndex = this._currentIndex - 1;
-            this._updatePreviews(Direction.TO_RIGHT);
+            this._updatePreviews();
         }
     }
 
@@ -251,7 +248,7 @@ class CoverflowSwitcher extends BaseSwitcher
         this._looping = false;
         if (this._requiresUpdate === true) {
             this._requiresUpdate = false;
-            this._updatePreviews(direction);
+            this._updatePreviews();
         }
     }
 
@@ -313,7 +310,7 @@ class CoverflowSwitcher extends BaseSwitcher
         Tweener.addTween(preview, tweenParams);
     }
 
-    _updatePreviews(direction)
+    _updatePreviews()
     {
         if (this._looping) {
             this._requiresUpdate = true;
