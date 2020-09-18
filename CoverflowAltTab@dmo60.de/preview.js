@@ -33,6 +33,13 @@ var Preview = GObject.registerClass({
         super._init(...args);
     }
 
+    /**
+     * Make the preview above all other children layers in the given parent.
+     *
+     * @param {Object} parent The preview parent. If is not its real parent,then the
+     * behaviour is undefined.
+     * @return {void}
+     */
     make_top_layer(parent)
     {
         if (this.raise_top) {
@@ -45,6 +52,13 @@ var Preview = GObject.registerClass({
         }
     }
 
+    /**
+     * Make the preview below all other children layers in the given parent.
+     *
+     * @param {Object} parent The preview parent. If is not its real parent,then the
+     * behaviour is undefined.
+     * @return {void}
+     */
     make_bottom_layer(parent)
     {
         if (this.lower_bottom) {
@@ -57,3 +71,8 @@ var Preview = GObject.registerClass({
         }
     }
 });
+
+function findUpperLeftFromCenter(sideSize, angle, position)
+{
+    return position - sideSize / 2;
+}

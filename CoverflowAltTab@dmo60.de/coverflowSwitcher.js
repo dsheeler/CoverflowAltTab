@@ -35,6 +35,7 @@ else
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 const Preview = ExtensionImports.preview.Preview;
 const Direction = ExtensionImports.preview.Direction;
+const findUpperLeftFromCenter = ExtensionImports.preview.findUpperLeftFromCenter;
 
 let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
@@ -61,16 +62,21 @@ class CoverflowSwitcher extends BaseSwitcher
 
     _createPreviews()
     {
+        // TODO: Shouldn't monitor be set once per coverflow state?
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
+        this._previewsCenterPosition = {
+            x: monitor.width / 2,
+            y: monitor.height / 2 + this._settings.offset
+        };
+
         // TODO: Change these
-        this._yOffset = monitor.height / 4 + this._settings.offset;
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
-        this._xOffsetCenter = monitor.width / 4;
 
         this._previews = [];
+
         for (let i in this._windows) {
             let metaWin = this._windows[i];
             let compositor = this._windows[i].get_compositor_private();
@@ -101,12 +107,23 @@ class CoverflowSwitcher extends BaseSwitcher
                         compositor.x) - monitor.x,
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
+                    translation_x: 0
                 });
 
                 preview.target_width = Math.round(width * scale);
                 preview.target_height = Math.round(height * scale);
                 preview.target_width_side = preview.target_width * 2/3;
                 preview.target_height_side = preview.target_height;
+
+                preview.compositor = compositor;
+                preview.set_pivot_point(0.0, 0.0);
+
+                preview.center_position = {
+                    x: findUpperLeftFromCenter(preview.target_width, 0,
+                        this._previewsCenterPosition.x),
+                    y: findUpperLeftFromCenter(preview.target_height, 0,
+                        this._previewsCenterPosition.y)
+                };
 
                 this._previews.push(preview);
                 this.previewActor.add_actor(preview);
@@ -121,7 +138,7 @@ class CoverflowSwitcher extends BaseSwitcher
             this._flipStack(Direction.TO_LEFT);
         } else {
             this._currentIndex = this._currentIndex + 1;
-            this._updatePreviews(1);
+            this._updatePreviews(Direction.TO_LEFT);
         }
         TRANSITION_TYPE = 'easeOutCubic';
     }
@@ -133,7 +150,7 @@ class CoverflowSwitcher extends BaseSwitcher
             this._flipStack(Direction.TO_RIGHT);
         } else {
             this._currentIndex = this._currentIndex - 1;
-            this._updatePreviews(-1);
+            this._updatePreviews(Direction.TO_RIGHT);
         }
     }
 
@@ -157,9 +174,8 @@ class CoverflowSwitcher extends BaseSwitcher
         for (let i in this._previews) {
             let preview = this._previews[i];
             preview._cfIsLast = (i == this._windows.length - 1);
-            this._animatePreviewToSide(preview, i, xOffset, {
+            this._animatePreviewToSide(preview, direction, i, xOffset, {
                 opacity: 0,
-                rotation_angle_y: angle,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
                 onComplete: this._onFlipIn,
@@ -188,10 +204,8 @@ class CoverflowSwitcher extends BaseSwitcher
 
         let animation_time = this._settings.animation_time * 2/3;
 
-        preview.rotation_angle_y = angleStart;
-        preview.x = xOffsetStart + 50 * (index - this._currentIndex);
         let lastExtraParams = {
-            onCompleteParams: [],
+            onCompleteParams: [direction],
             onComplete: this._onFlipComplete,
             onCompleteScope: this
         };
@@ -209,38 +223,39 @@ class CoverflowSwitcher extends BaseSwitcher
 
             let extraParams = {
                 opacity: 255,
-                rotation_angle_y: angleEnd,
                 time: animation_time,
                 transition: TRANSITION_TYPE
             };
 
             if (preview._cfIsLast)
                 appendParams(extraParams, lastExtraParams);
-            this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
+
+            this._animatePreviewToSide(preview, direction, index, xOffsetEnd, extraParams);
         }
     }
 
-    _onFlipComplete()
+    _onFlipComplete(direction)
     {
         this._looping = false;
         if (this._requiresUpdate === true) {
             this._requiresUpdate = false;
-            this._updatePreviews();
+            this._updatePreviews(direction);
         }
     }
 
     // TODO: Remove unused direction variable
+    // TODO: Move this and the other counterpart a method of Preview
     _animatePreviewToMid(preview, animation_time, extraParams)
     {
         preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
             opacity: 255,
-            x: this._xOffsetCenter,
-            y: this._yOffset,
+            translation_x: 0,
+            x: preview.center_position.x,
+            y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
-            rotation_angle_y: 0.0,
             time: animation_time,
             transition: TRANSITION_TYPE
         };
@@ -251,21 +266,29 @@ class CoverflowSwitcher extends BaseSwitcher
         Tweener.addTween(preview, tweenParams);
     }
 
-    _animatePreviewToSide(preview, index, xOffset, extraParams)
+    _animatePreviewToSide(preview, direction, index, xOffset, extraParams)
     {
         let tweenParams = {
-            x: xOffset + 50 * (index - this._currentIndex),
-            y: this._yOffset,
-            width: Math.max(preview.target_width_side * (10 - Math.abs(index - this._currentIndex)) / 10, 0),
-            height: Math.max(preview.target_height_side * (10 - Math.abs(index - this._currentIndex)) / 10, 0),
+            x: preview.center_position.x,
+            y: preview.center_position.y,
+            width: preview.target_width,
+            height: preview.target_height,
         };
+
+        if (index < this._currentIndex) {
+            tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
+                - preview.target_width / 2) + 50 * (index - this._currentIndex);
+        } else if (index > this._currentIndex) {
+            tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
+                + preview.target_width / 2) + 50 * (index - this._currentIndex);
+        }
 
         appendParams(tweenParams, extraParams);
 
         Tweener.addTween(preview, tweenParams);
     }
 
-    _updatePreviews()
+    _updatePreviews(direction)
     {
         if (this._looping) {
             this._requiresUpdate = true;
@@ -283,17 +306,15 @@ class CoverflowSwitcher extends BaseSwitcher
                 this._animatePreviewToMid(preview, animation_time);
             } else if (i < this._currentIndex) {
             	preview.make_top_layer(this.previewActor);
-                this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
+                this._animatePreviewToSide(preview, direction, i, this._xOffsetLeft, {
                     opacity: 255,
-                    rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
                     transition: TRANSITION_TYPE
                 });
             } else if (i > this._currentIndex) {
                 preview.make_bottom_layer(this.previewActor);
-                this._animatePreviewToSide(preview, i, this._xOffsetRight, {
+                this._animatePreviewToSide(preview, direction, i, this._xOffsetRight, {
                     opacity: 255,
-                    rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,
                     transition: TRANSITION_TYPE
                 });

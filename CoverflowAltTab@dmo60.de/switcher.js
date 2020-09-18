@@ -519,6 +519,7 @@ class Switcher
                     y: ((metaWin.minimized) ? 0 : compositor.y) - monitor.y,
                     width: (metaWin.minimized) ? 0 : compositor.width,
                     height: (metaWin.minimized) ? 0 : compositor.height,
+                    translation_x: 0,
                     rotation_angle_y: 0.0,
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
