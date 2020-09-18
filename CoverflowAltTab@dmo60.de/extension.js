@@ -23,10 +23,10 @@
  * Create the correct manager and enable/disable it.
  */
 
-const Config = imports.misc.config;
-
-const PACKAGE_NAME = Config.PACKAGE_NAME;
-const PACKAGE_VERSION = Config.PACKAGE_VERSION;
+const {
+    PACKAGE_NAME,
+    PACKAGE_VERSION,
+} = imports.misc.config;
 
 let ExtensionImports;
 if (PACKAGE_NAME === "cinnamon") {
@@ -72,6 +72,7 @@ function enable() {
         }
         manager = new Manager.Manager(platform, keybinder);
     }
+
     manager.enable();
 }
 

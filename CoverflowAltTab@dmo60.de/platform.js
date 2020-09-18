@@ -37,9 +37,11 @@ if (Config.PACKAGE_NAME === "cinnamon") {
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
 
-const {
-    __ABSTRACT_METHOD__,
-} = ExtensionImports.lib;
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
+
+const {Switcher} = ExtensionImports.switcher;
+const {CoverflowSwitcher} = ExtensionImports.coverflowSwitcher;
+const {TimelineSwitcher} = ExtensionImports.timelineSwitcher;
 
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
@@ -70,7 +72,7 @@ class AbstractPlatform
             offset: 0,
             hide_panel: true,
             enforce_primary_monitor: true,
-            switcher_class: ExtensionImports.switcher.Switcher,
+            switcher_class: Switcher,
             elastic_mode: false,
             current_workspace_only: '1',
         };
@@ -83,14 +85,14 @@ class AbstractPlatform
 
     initBackground()
     {
-    	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-		this._background.hide();
+        this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+	    this._background.hide();
         global.overlay_group.add_actor(this._background);
     }
 
     dimBackground()
     {
-    	this._background.show();
+        this._background.show();
         Tweener.addTween(this._background, {
             dim_factor: this._settings.dim_factor,
             time: this._settings.animation_time,
@@ -162,8 +164,9 @@ class PlatformCinnamon extends AbstractPlatform
 
     getSettings()
     {
-        if (!this._settings)
+        if (!this._settings) {
             this._settings = this._loadSettings();
+        }
         return this._settings;
     }
 
@@ -183,7 +186,8 @@ class PlatformCinnamon extends AbstractPlatform
             hide_panel: config.hide_panel === true,
             enforce_primary_monitor: config.enforce_primary_monitor === true,
             elastic_mode: config.elastic_mode === true,
-            switcher_class: config.switcher_style == 'Timeline' ? ExtensionImports.timelineSwitcher.TimelineSwitcher: ExtensionImports.coverflowSwitcher.CoverflowSwitcher,
+            switcher_class: config.switcher_style == 'Timeline' ? TimelineSwitcher :
+                CoverflowSwitcher,
             current_workspace_only: config.current_workspace_only
         };
     }
@@ -215,13 +219,12 @@ class PlatformCinnamon18 extends AbstractPlatform
         super(...args);
 
         this._settings = this.getDefaultSettings();
-        this._settings.updateSwitcherStyle = function() {
-            this.switcher_class = this.switcher_style === 'Timeline' ?
-                ExtensionImports.timelineSwitcher.TimelineSwitcher :
-                ExtensionImports.coverflowSwitcher.CoverflowSwitcher;
+        this._settings.updateSwitcherStyle = () => {
+            this.switcher_class = this.switcher_style == 'Timeline' ? TimelineSwitcher :
+                CoverflowSwitcher;
         };
-        this._settings.updateTitlePosition = function() {
-            this.title_position = (this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM);
+        this._settings.updateTitlePosition = () => {
+            this.title_position = this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM;
         };
 
 
@@ -328,8 +331,9 @@ class PlatformGnomeShell extends AbstractPlatform
 
     getSettings()
     {
-        if (!this._settings)
+        if (!this._settings) {
             this._settings = this._loadSettings();
+        }
         return this._settings;
     }
 
@@ -351,9 +355,8 @@ class PlatformGnomeShell extends AbstractPlatform
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 elastic_mode: settings.get_boolean("elastic-mode"),
-                switcher_class: settings.get_string("switcher-style") === 'Timeline' ?
-                    ExtensionImports.timelineSwitcher.TimelineSwitcher :
-                    ExtensionImports.coverflowSwitcher.CoverflowSwitcher,
+                switcher_class: settings.get_string("switcher-style") === 'Timeline'
+                    ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only")
             };
         } catch (e) {
@@ -368,16 +371,16 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
 {
     getPrimaryModifier(mask)
     {
-    	return imports.ui.switcherPopup.primaryModifier(mask);
+        return imports.ui.switcherPopup.primaryModifier(mask);
     }
 
     initBackground()
     {
-    	let Background = imports.ui.background;
+        let Background = imports.ui.background;
 
-    	this._backgroundGroup = new Meta.BackgroundGroup();
+        this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-    	if (this._backgroundGroup.lower_bottom) {
+        if (this._backgroundGroup.lower_bottom) {
     	    this._backgroundGroup.lower_bottom();
         } else {
 	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
@@ -395,7 +398,7 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
 
     dimBackground()
     {
-    	this._backgroundGroup.show();
+        this._backgroundGroup.show();
 
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {

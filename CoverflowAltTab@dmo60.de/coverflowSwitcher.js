@@ -275,9 +275,7 @@ class CoverflowSwitcher extends BaseSwitcher
             transition: TRANSITION_TYPE,
         };
 
-        if (extraParams)
-            appendParams(tweenParams, extraParams);
-
+        appendParams(tweenParams, extraParams);
         Tweener.addTween(preview, tweenParams);
     }
 
@@ -310,7 +308,6 @@ class CoverflowSwitcher extends BaseSwitcher
         }
 
         appendParams(tweenParams, extraParams);
-
         Tweener.addTween(preview, tweenParams);
     }
 
@@ -329,7 +326,7 @@ class CoverflowSwitcher extends BaseSwitcher
             if (i === this._currentIndex) {
                 this._animatePreviewToMid(preview, animation_time);
             } else if (i < this._currentIndex) {
-            	preview.make_top_layer(this.previewActor);
+                preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
