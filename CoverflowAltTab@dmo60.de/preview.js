@@ -15,8 +15,10 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
+const {
+    Clutter,
+    GObject,
+} = imports.gi;
 
 
 class Direction {}

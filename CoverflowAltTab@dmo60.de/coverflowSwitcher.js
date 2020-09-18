@@ -116,7 +116,7 @@ class CoverflowSwitcher extends BaseSwitcher
                 preview.target_height_side = preview.target_height;
 
                 preview.compositor = compositor;
-                preview.set_pivot_point(0.0, 0.0);
+                preview.set_pivot_point(0.5, 0.5);
 
                 preview.center_position = {
                     x: findUpperLeftFromCenter(preview.target_width, 0,
@@ -176,6 +176,7 @@ class CoverflowSwitcher extends BaseSwitcher
             preview._cfIsLast = (i == this._windows.length - 1);
             this._animatePreviewToSide(preview, direction, i, xOffset, {
                 opacity: 0,
+                rotation_angle_y: angle,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
                 onComplete: this._onFlipIn,
@@ -204,6 +205,7 @@ class CoverflowSwitcher extends BaseSwitcher
 
         let animation_time = this._settings.animation_time * 2/3;
 
+        preview.rotation_angle_y = angleStart;
         let lastExtraParams = {
             onCompleteParams: [direction],
             onComplete: this._onFlipComplete,
@@ -223,6 +225,7 @@ class CoverflowSwitcher extends BaseSwitcher
 
             let extraParams = {
                 opacity: 255,
+                rotation_angle_y: angleEnd,
                 time: animation_time,
                 transition: TRANSITION_TYPE
             };
@@ -256,6 +259,7 @@ class CoverflowSwitcher extends BaseSwitcher
             y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
+            rotation_angle_y: 0.0,
             time: animation_time,
             transition: TRANSITION_TYPE
         };
@@ -308,6 +312,7 @@ class CoverflowSwitcher extends BaseSwitcher
             	preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, direction, i, this._xOffsetLeft, {
                     opacity: 255,
+                    rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
                     transition: TRANSITION_TYPE
                 });
@@ -315,6 +320,7 @@ class CoverflowSwitcher extends BaseSwitcher
                 preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, direction, i, this._xOffsetRight, {
                     opacity: 255,
+                    rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,
                     transition: TRANSITION_TYPE
                 });
