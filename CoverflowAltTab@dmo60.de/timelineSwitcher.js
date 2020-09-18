@@ -34,6 +34,11 @@ else
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 
+const {
+    Preview,
+    Placement
+} = ExtensionImports.preview;
+
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
@@ -74,31 +79,29 @@ class TimelineSwitcher extends BaseSwitcher
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let clone = new Clutter.Clone({
+                let preview = new Preview({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    anchor_gravity: Clutter.Gravity.WEST,
                     rotation_angle_y: 12,
                     x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
                     y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
                 });
 
-                clone.target_width = Math.round(width * scale);
-                clone.target_height = Math.round(height * scale);
-                clone.target_width_side = clone.target_width * 2/3;
-                clone.target_height_side = clone.target_height;
+                preview.target_width = Math.round(width * scale);
+                preview.target_height = Math.round(height * scale);
+                preview.target_width_side = preview.target_width * 2/3;
+                preview.target_height_side = preview.target_height;
 
-                clone.target_x = Math.round(monitor.width * 0.3);
-                clone.target_y = Math.round(monitor.height * 0.5) - this._settings.offset;
+                preview.target_x = Math.round(monitor.width * 0.3);
+                preview.target_y = Math.round(monitor.height * 0.5) - this._settings.offset;
 
-                this._previews.push(clone);
-                this.previewActor.add_actor(clone);
-                if (clone.lower_bottom) {
-                        clone.lower_bottom();
-                } else {
-                        this.previewActor.set_child_below_sibling(clone, null);
-                }
+                preview.set_pivot_point_placement(Placement.LEFT);
+
+                this._previews.push(preview);
+                this.previewActor.add_actor(preview);
+
+                preview.make_bottom_layer(this.previewActor);
             }
         }
     }
@@ -189,7 +192,7 @@ class TimelineSwitcher extends BaseSwitcher
     _onFadeBackwardsComplete(preview, distance, animation_time)
     {
         preview.__looping = false;
-        preview.raise_top();
+        preview.make_top_layer(this.previewActor);
 
         preview.x = preview.target_x + 200;
         preview.y =  preview.target_y + 100;
@@ -213,11 +216,7 @@ class TimelineSwitcher extends BaseSwitcher
     _onFadeForwardComplete(preview, distance, animation_time)
     {
         preview.__looping = false;
-        if (preview.lower_bottom) {
-                preview.lower_bottom();
-        } else {
-                this.previewActor.set_child_below_sibling(preview, null);
-        }
+        preview.make_bottom_layer(this.previewActor);
 
         preview.x = preview.target_x - Math.sqrt(distance) * 150;
         preview.y = preview.target_y - Math.sqrt(distance) * 100;

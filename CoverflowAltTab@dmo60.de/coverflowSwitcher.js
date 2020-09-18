@@ -33,6 +33,7 @@ else
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
+
 const Preview = ExtensionImports.preview.Preview;
 const Placement = ExtensionImports.preview.Placement;
 const Direction = ExtensionImports.preview.Direction;

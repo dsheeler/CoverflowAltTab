@@ -505,11 +505,7 @@ class Switcher
 
                 // Move all non-activated windows behind the activated one
                 if (i != this._currentIndex) {
-                    if (preview.lower_bottom) {
-                        preview.lower_bottom();
-                    } else {
-                        this.previewActor.set_child_below_sibling(preview, null);
-                    }
+                    preview.make_bottom_layer(this.previewActor);
                 }
 
                 Tweener.addTween(preview, {
