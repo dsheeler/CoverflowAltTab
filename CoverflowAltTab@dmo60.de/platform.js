@@ -306,14 +306,19 @@ class PlatformGnomeShell extends AbstractPlatform
 
         this._connections = [];
         let bind = Lang.bind(this, this._onSettingsChaned);
-        keys.forEach(function(key) { this._connections.push(this._gioSettings.connect('changed::' + key, bind)); }, this);
+        for (let key of keys) {
+            this._connections.push(this._gioSettings.connect('changed::' + key, bind));
+        }
+
         this._settings = this._loadSettings();
     }
 
     disable()
     {
         if (this._connections) {
-            this._connections.forEach(function(connection) { this._gioSettings.disconnect(connection); }, this);
+            for (let connection of this._connections) {
+                this._gioSettings.disconnect(connection);
+            }
             this._connections = null;
         }
         this._settings = null;

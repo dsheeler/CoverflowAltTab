@@ -72,7 +72,7 @@ class Switcher
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
 
-	    manager.platform.initBackground();
+        manager.platform.initBackground();
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -126,7 +126,7 @@ class Switcher
         this.actor.show();
 
         let panels = this.getPanels();
-        panels.forEach(function (panel) {
+        for (let panel of panels) {
             try {
                 let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
@@ -140,12 +140,13 @@ class Switcher
             } catch (e) {
                 // ignore fake panels
             }
-        }, this);
+        }
 
         // hide gnome-shell legacy tray
         try {
-            if (Main.legacyTray)
+            if (Main.legacyTray) {
                 Main.legacyTray.actor.hide();
+            }
         } catch (e) {
             // ignore missing legacy tray
         }
@@ -616,8 +617,8 @@ class Switcher
         this._oldWidth = global.stage.width;
         this._oldHeight = global.stage.height;
 
-        let width = 2 * (this._activeMonitor.x + this._activeMonitor.width/2);
-        let height = 2 * (this._activeMonitor.y + this._activeMonitor.height/2);
+        let width = 2 * (this._activeMonitor.x + this._activeMonitor.width / 2);
+        let height = 2 * (this._activeMonitor.y + this._activeMonitor.height / 2);
 
         global.stage.set_size(width, height);
     }
