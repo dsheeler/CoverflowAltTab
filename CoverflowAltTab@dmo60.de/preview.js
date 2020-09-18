@@ -151,7 +151,7 @@ var Preview = GObject.registerClass({
     }
 });
 
-function findUpperLeftFromCenter(sideSize, angle, position)
+function findUpperLeftFromCenter(sideSize, position)
 {
     return position - sideSize / 2;
 }

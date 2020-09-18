@@ -118,9 +118,9 @@ class CoverflowSwitcher extends BaseSwitcher
                 preview.set_pivot_point_placement(Placement.CENTER);
 
                 preview.center_position = {
-                    x: findUpperLeftFromCenter(preview.target_width, 0,
+                    x: findUpperLeftFromCenter(preview.target_width,
                         this._previewsCenterPosition.x),
-                    y: findUpperLeftFromCenter(preview.target_height, 0,
+                    y: findUpperLeftFromCenter(preview.target_height,
                         this._previewsCenterPosition.y)
                 };
 

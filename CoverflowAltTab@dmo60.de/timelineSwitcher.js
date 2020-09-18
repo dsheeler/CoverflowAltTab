@@ -101,9 +101,9 @@ class TimelineSwitcher extends BaseSwitcher
                 preview.target_width_side = preview.target_width * 2/3;
                 preview.target_height_side = preview.target_height;
 
-                preview.target_x = findUpperLeftFromCenter(preview.target_width, 0,
+                preview.target_x = findUpperLeftFromCenter(preview.target_width,
                     this._previewsCenterPosition.x);
-                preview.target_y = findUpperLeftFromCenter(preview.target_height, 0,
+                preview.target_y = findUpperLeftFromCenter(preview.target_height,
                     this._previewsCenterPosition.y);
 
                 preview.set_pivot_point_placement(Placement.LEFT);
