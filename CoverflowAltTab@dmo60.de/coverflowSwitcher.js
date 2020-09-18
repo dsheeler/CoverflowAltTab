@@ -109,7 +109,11 @@ class CoverflowSwitcher extends BaseSwitcher
                         compositor.x) - monitor.x,
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
-                    translation_x: 0
+
+                    translation_x: 0,
+                    scale_x: 1,
+                    scale_y: 1,
+                    rotation_angle_y: 0,
                 });
 
                 preview.target_width = Math.round(width * scale);
@@ -260,16 +264,19 @@ class CoverflowSwitcher extends BaseSwitcher
 
         let tweenParams = {
             opacity: 255,
-            translation_x: 0,
+
             x: preview.center_position.x,
             y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
-            rotation_angle_y: 0.0,
-            time: animation_time,
-            transition: TRANSITION_TYPE,
+
+            translation_x: 0,
             scale_x: 1,
             scale_y: 1,
+            rotation_angle_y: 0.0,
+
+            time: animation_time,
+            transition: TRANSITION_TYPE,
         };
 
         if (extraParams)
@@ -293,6 +300,7 @@ class CoverflowSwitcher extends BaseSwitcher
             y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
+
             scale_x: 0.4 - 0.07 * Math.abs(index - this._currentIndex),
             scale_y: 1 - 0.07 * Math.abs(index - this._currentIndex)
         };

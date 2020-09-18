@@ -37,6 +37,7 @@ const BaseSwitcher = ExtensionImports.switcher.Switcher;
 const {
     Preview,
     Placement,
+    Direction,
     findUpperLeftFromCenter
 } = ExtensionImports.preview;
 
@@ -88,12 +89,13 @@ class TimelineSwitcher extends BaseSwitcher
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    rotation_angle_y: 12,
 
                     x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
                         compositor.x) - monitor.x,
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
+
+                    rotation_angle_y: 12,
                 });
 
                 preview.target_width = Math.round(width * scale);
