@@ -135,9 +135,9 @@ function buildRadio(key, buttons, labeltext) {
 	hbox.pack_start(label, true, true, 0);
 
 	let radio = new Gtk.RadioButton();
-	for (let i in buttons) {
-		radio = new Gtk.RadioButton({group: radio, label: buttons[i]});
-		if (getBaseString(buttons[i]) == settings.get_string(key)) {
+	for (let button of buttons) {
+		radio = new Gtk.RadioButton({group: radio, label: button});
+		if (getBaseString(button) == settings.get_string(key)) {
 			radio.set_active(true);
 		}
 
@@ -191,8 +191,7 @@ function buildComboBox(key, values, labeltext) {
     setting_enum.pack_start(renderer, true);
     setting_enum.add_attribute(renderer, 'text', 1);
 
-    for (let i=0; i<values.length; i++) {
-        let item = values[i];
+    for (let item of values) {
         let iter = model.append();
         model.set(iter, [0, 1], [item.id, item.name]);
         if (item.id == settings.get_string(key)) {

@@ -78,9 +78,8 @@ class CoverflowSwitcher extends BaseSwitcher
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
 
-        for (let i in this._windows) {
-            let metaWin = this._windows[i];
-            let compositor = this._windows[i].get_compositor_private();
+        for (let metaWin of this._windows) {
+            let compositor = metaWin.get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
                 let width, height;
@@ -98,7 +97,6 @@ class CoverflowSwitcher extends BaseSwitcher
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                // TODO: Make them as set_* functions
                 let preview = new Preview({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
@@ -173,9 +171,8 @@ class CoverflowSwitcher extends BaseSwitcher
 
         let animation_time = this._settings.animation_time * 2/3;
 
-        for (let i in this._previews) {
-            let preview = this._previews[i];
-            preview._cfIsLast = (i == this._windows.length - 1);
+        for (let [i, preview] of this._previews.entries()) {
+            preview._cfIsLast = (i === this._windows.length - 1);
             this._animatePreviewToSide(preview, i, xOffset, {
                 opacity: 0,
                 rotation_angle_y: angle,
@@ -324,14 +321,12 @@ class CoverflowSwitcher extends BaseSwitcher
             return;
         }
 
-        let monitor = this._updateActiveMonitor();
+        this._updateActiveMonitor();
         let animation_time = this._settings.animation_time;
 
         // preview windows
-        for (let i in this._previews) {
-            let preview = this._previews[i];
-
-            if (i == this._currentIndex) {
+        for (let [i, preview] of this._previews.entries()) {
+            if (i === this._currentIndex) {
                 this._animatePreviewToMid(preview, animation_time);
             } else if (i < this._currentIndex) {
             	preview.make_top_layer(this.previewActor);
@@ -341,7 +336,7 @@ class CoverflowSwitcher extends BaseSwitcher
                     time: animation_time,
                     transition: TRANSITION_TYPE
                 });
-            } else if (i > this._currentIndex) {
+            } else /* i > this._currentIndex */ {
                 preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetRight, {
                     opacity: 255,

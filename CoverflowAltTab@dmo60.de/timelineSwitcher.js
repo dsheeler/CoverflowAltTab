@@ -67,9 +67,8 @@ class TimelineSwitcher extends BaseSwitcher
             y: monitor.height / 2 + this._settings.offset
         };
 
-        for (let i in this._windows) {
-            let metaWin = this._windows[i];
-            let compositor = this._windows[i].get_compositor_private();
+        for (let metaWin of this._windows) {
+            let compositor = metaWin.get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
                 let width, height;
@@ -155,12 +154,10 @@ class TimelineSwitcher extends BaseSwitcher
         }
 
         // preview windows
-        for (let i in this._previews) {
-            let preview = this._previews[i];
-            i = parseInt(i);
+        for (let [i, preview] of this._previews.entries()) {
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
 
-            if (distance == this._previews.length - 1 && direction > 0) {
+            if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
                 Tweener.addTween(preview, {
                     opacity: 0,
@@ -174,7 +171,7 @@ class TimelineSwitcher extends BaseSwitcher
                     onComplete: this._onFadeForwardComplete,
                     onCompleteScope: this,
                 });
-            } else if (distance == 0 && direction < 0) {
+            } else if (distance === 0 && direction < 0) {
                 preview.__looping = true;
                 Tweener.addTween(preview, {
                     opacity: 0,

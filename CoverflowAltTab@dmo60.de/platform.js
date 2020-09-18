@@ -398,8 +398,8 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
     	this._backgroundGroup.show();
 
         let backgrounds = this._backgroundGroup.get_children();
-        for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i], {
+        for (let background of backgrounds) {
+            Tweener.addTween(background, {
                 brightness: 0.8,
                 vignette_sharpness: 1 - this.getSettings().dim_factor,
                 time: this.getSettings().animation_time,
@@ -411,8 +411,8 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
     undimBackground(onCompleteBind)
     {
         let backgrounds = this._backgroundGroup.get_children();
-        for (let i = 0; i < backgrounds.length; i++) {
-            Tweener.addTween(backgrounds[i], {
+        for (let background of backgrounds) {
+            Tweener.addTween(background, {
                 brightness: 1.0,
                 vignette_sharpness: 0.0,
                 time: this.getSettings().animation_time,

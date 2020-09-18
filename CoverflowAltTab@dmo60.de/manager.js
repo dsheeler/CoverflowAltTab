@@ -94,9 +94,11 @@ class Manager
 
         // Construct a list with all windows
         let windowActors = global.get_window_actors();
-        for (let i in windowActors)
-            if (typeof windowActors[i].get_meta_window === 'function')
-                windows.push(windowActors[i].get_meta_window());
+        for (let windowActor of windowActors) {
+            if (typeof windowActor.get_meta_window === "function") {
+                windows.push(windowActor.get_meta_window());
+            }
+        }
 
         windowActors = null;
 
