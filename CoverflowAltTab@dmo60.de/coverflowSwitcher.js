@@ -264,6 +264,7 @@ class CoverflowSwitcher extends BaseSwitcher
             time: animation_time,
             transition: TRANSITION_TYPE,
             scale_x: 1,
+            scale_y: 1,
         };
 
         if (extraParams)
@@ -285,7 +286,8 @@ class CoverflowSwitcher extends BaseSwitcher
             y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
-            scale_x: 0.5,
+            scale_x: 0.4 - 0.07 * Math.abs(index - this._currentIndex),
+            scale_y: 1 - 0.07 * Math.abs(index - this._currentIndex)
         };
 
         if (index < this._currentIndex) {

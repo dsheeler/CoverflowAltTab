@@ -521,6 +521,7 @@ class Switcher
                     height: (metaWin.minimized) ? 0 : compositor.height,
                     translation_x: 0,
                     scale_x: 1,
+                    scale_y: 1,
                     rotation_angle_y: 0.0,
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
