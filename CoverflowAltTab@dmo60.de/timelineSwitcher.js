@@ -36,12 +36,12 @@ const BaseSwitcher = ExtensionImports.switcher.Switcher;
 
 const {
     Preview,
-    Placement
+    Placement,
+    findUpperLeftFromCenter
 } = ExtensionImports.preview;
 
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
-
 
 class TimelineSwitcher extends BaseSwitcher
 {
@@ -59,7 +59,12 @@ class TimelineSwitcher extends BaseSwitcher
     {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-        this._previews = [];
+
+        this._previewsCenterPosition = {
+            x: monitor.width / 2,
+            y: monitor.height / 2 + this._settings.offset
+        };
+
         for (let i in this._windows) {
             let metaWin = this._windows[i];
             let compositor = this._windows[i].get_compositor_private();
@@ -96,8 +101,10 @@ class TimelineSwitcher extends BaseSwitcher
                 preview.target_width_side = preview.target_width * 2/3;
                 preview.target_height_side = preview.target_height;
 
-                preview.target_x = Math.round(monitor.width * 0.3);
-                preview.target_y = Math.round(monitor.height * 0.5) - this._settings.offset;
+                preview.target_x = findUpperLeftFromCenter(preview.target_width, 0,
+                    this._previewsCenterPosition.x);
+                preview.target_y = findUpperLeftFromCenter(preview.target_height, 0,
+                    this._previewsCenterPosition.y);
 
                 preview.set_pivot_point_placement(Placement.LEFT);
 
