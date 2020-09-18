@@ -331,7 +331,7 @@ class Switcher
             case Clutter.Right:
             case Clutter.Down:
                 // Right/Down -> navigate to next preview
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._next();
                 return true;
 
@@ -360,9 +360,9 @@ class Switcher
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
             case Meta.KeyBindingAction.SWITCH_PANELS:
-                if(this._checkSwitchTime()) {
+                if (this._checkSwitchTime()) {
                     // shift -> backwards
-                    if(event_state & Clutter.ModifierType.SHIFT_MASK)
+                    if (event_state & Clutter.ModifierType.SHIFT_MASK)
                         this._previous();
                     else
                         this._next();
@@ -372,7 +372,7 @@ class Switcher
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_PANELS_BACKWARD:
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._previous();
                 return true;
         }
@@ -397,7 +397,7 @@ class Switcher
     // allow navigating by mouse-wheel scrolling
     _scrollEvent(actor, event)
     {
-    	if(!this._checkSwitchTime())
+    	if (!this._checkSwitchTime())
     		return true;
 
         switch (event.get_scroll_direction()) {
@@ -585,10 +585,10 @@ class Switcher
     getPanels()
     {
         let panels = [Main.panel];
-        if(Main.panel2)
+        if (Main.panel2)
             panels.push(Main.panel2);
         // gnome-shell dash
-        if(Main.overview._dash)
+        if (Main.overview._dash)
             panels.push(Main.overview._dash);
         return panels;
     }

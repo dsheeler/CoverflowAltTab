@@ -141,7 +141,7 @@ class PlatformCinnamon extends AbstractPlatform
 
     disable()
     {
-        if(this._configMonitor) {
+        if (this._configMonitor) {
             this._configMonitor.disconnect(this._configConnection);
             this._configMonitor.cancel();
             this._configMonitor = null;
@@ -191,9 +191,9 @@ class PlatformCinnamon extends AbstractPlatform
     {
         try {
             let file = Gio.file_new_for_path(this._configFile);
-            if(file.query_exists(null)) {
+            if (file.query_exists(null)) {
                 let [flag, data] = file.load_contents(null);
-                if(flag) {
+                if (flag) {
                     let config = eval('(' + data + ')');
                     return this._convertConfigToSettings(config);
                 }
@@ -308,7 +308,7 @@ class PlatformGnomeShell extends AbstractPlatform
 
     disable()
     {
-        if(this._connections) {
+        if (this._connections) {
             this._connections.forEach(function(connection) { this._gioSettings.disconnect(connection); }, this);
             this._connections = null;
         }
@@ -327,7 +327,7 @@ class PlatformGnomeShell extends AbstractPlatform
 
     getSettings()
     {
-        if(!this._settings)
+        if (!this._settings)
             this._settings = this._loadSettings();
         return this._settings;
     }

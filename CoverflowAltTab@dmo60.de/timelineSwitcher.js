@@ -118,13 +118,13 @@ class TimelineSwitcher extends BaseSwitcher
 
     _updatePreviews(direction)
     {
-        if(this._previews.length == 0)
+        if (this._previews.length == 0)
             return;
 
         let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time;
 
-        if(this._previews.length == 1) {
+        if (this._previews.length == 1) {
             let preview = this._previews[0];
             Tweener.addTween(preview, {
                 opacity: 255,
@@ -178,7 +178,7 @@ class TimelineSwitcher extends BaseSwitcher
                     time: animation_time,
                     transition: TRANSITION_TYPE,
                 };
-                if(preview.__looping || preview.__finalTween)
+                if (preview.__looping || preview.__finalTween)
                     preview.__finalTween = tweenparams;
                 else
                     Tweener.addTween(preview, tweenparams);
@@ -236,7 +236,7 @@ class TimelineSwitcher extends BaseSwitcher
 
     _onFinishMove(preview)
     {
-        if(preview.__finalTween) {
+        if (preview.__finalTween) {
             Tweener.addTween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
