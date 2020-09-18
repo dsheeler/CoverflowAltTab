@@ -39,10 +39,11 @@ const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
 let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon")
+if (Config.PACKAGE_NAME === "cinnamon") {
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-else
+} else {
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+}
 
 const {
     __ABSTRACT_METHOD__,

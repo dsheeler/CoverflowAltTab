@@ -27,8 +27,8 @@ const Config = imports.misc.config;
 const Gettext = imports.gettext.domain('coverflow');
 const _ = Gettext.gettext;
 
-const CoverflowAltTab = imports.misc.extensionUtils.getCurrentExtension();
-const Lib = CoverflowAltTab.imports.lib;
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+const Lib = ExtensionImports.lib;
 
 const SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
 
