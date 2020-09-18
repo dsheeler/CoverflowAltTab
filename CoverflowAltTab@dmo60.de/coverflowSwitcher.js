@@ -34,10 +34,12 @@ else
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 
-const Preview = ExtensionImports.preview.Preview;
-const Placement = ExtensionImports.preview.Placement;
-const Direction = ExtensionImports.preview.Direction;
-const findUpperLeftFromCenter = ExtensionImports.preview.findUpperLeftFromCenter;
+const {
+    Preview,
+    Placement,
+    Direction,
+    findUpperLeftFromCenter,
+} = ExtensionImports.preview;
 
 let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
@@ -76,8 +78,6 @@ class CoverflowSwitcher extends BaseSwitcher
         // TODO: Change these
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
-
-        this._previews = [];
 
         for (let i in this._windows) {
             let metaWin = this._windows[i];
@@ -254,7 +254,6 @@ class CoverflowSwitcher extends BaseSwitcher
     }
 
     // TODO: Remove unused direction variable
-    // TODO: Move this and the other counterpart a method of Preview
     _animatePreviewToMid(preview, animation_time, extraParams = [])
     {
         preview.make_top_layer(this.previewActor);
