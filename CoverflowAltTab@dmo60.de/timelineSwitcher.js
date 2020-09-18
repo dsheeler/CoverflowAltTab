@@ -72,11 +72,11 @@ class TimelineSwitcher extends BaseSwitcher
             let compositor = this._windows[i].get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
-                let width, height
+                let width, height;
                 if (texture.get_size) {
                     [width, height] = texture.get_size()
                 } else {
-                    let preferred_size_ok
+                    let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
 

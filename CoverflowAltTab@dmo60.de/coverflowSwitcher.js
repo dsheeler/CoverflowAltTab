@@ -75,8 +75,6 @@ class CoverflowSwitcher extends BaseSwitcher
             x: monitor.width / 2,
             y: monitor.height / 2 + this._settings.offset
         };
-
-        // TODO: Change these
         this._xOffsetLeft = monitor.width * 0.1;
         this._xOffsetRight = monitor.width - this._xOffsetLeft;
 
