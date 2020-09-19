@@ -28,6 +28,7 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
+const Clutter = imports.gi.Clutter;
 
 let Tweener = null;
 if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
@@ -367,6 +368,29 @@ class PlatformGnomeShell extends AbstractPlatform {
             return Tweener.addTween(actor, params);
         }
 
+        switch (params.transition) {
+            case "easeOutBack":
+                params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
+                break;
+            case "easeOutCubic":
+                params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+                break;
+            case "easeOutQuad":
+                params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+                break;
+        }
+
+        if (params.onComplete) {
+            if (params.onCompleteParams && params.onCompleteScope) {
+                params.onComplete = params.onComplete.bind(params.onCompleteScope, ...params.onCompleteParams);
+            } else if (params.onCompleteParams) {
+                params.onComplete = params.onComplete.bind(null, params.onCompleteParams);
+            } else if (params.onCompleteScope) {
+                params.onComplete = params.onComplete.bind(params.onCompleteScope);
+            }
+        }
+
+        params.duration = params.time * 1000;
         actor.ease(params);
     }
 
