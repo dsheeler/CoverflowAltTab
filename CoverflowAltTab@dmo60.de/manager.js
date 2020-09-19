@@ -47,10 +47,8 @@ function matchOtherWorkspace(win) {
     return win.get_workspace() != this && !win.is_skip_taskbar();
 }
 
-class Manager
-{
-    constructor(platform, keybinder)
-    {
+class Manager {
+    constructor(platform, keybinder) {
         this.platform = platform;
         this.keybinder = keybinder;
 
@@ -65,30 +63,25 @@ class Manager
             this.display = global.screen;
     }
 
-    enable()
-    {
+    enable() {
         this.platform.enable();
         this.keybinder.enable(Lang.bind(this, this._startWindowSwitcher));
     }
 
-    disable()
-    {
+    disable() {
         this.platform.disable();
         this.keybinder.disable();
     }
 
-    activateSelectedWindow(win)
-    {
+    activateSelectedWindow(win) {
         Main.activateWindow(win, global.get_current_time());
     }
 
-    removeSelectedWindow(win)
-    {
+    removeSelectedWindow(win) {
         win.delete(global.get_current_time());
     }
 
-    _startWindowSwitcher(display, window, binding)
-    {
+    _startWindowSwitcher(display, window, binding) {
         let windows = [];
         let currentWorkspace = this.workspace_manager.get_active_workspace();
 

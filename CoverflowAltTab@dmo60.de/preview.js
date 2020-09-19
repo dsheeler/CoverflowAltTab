@@ -43,10 +43,8 @@ Placement.CENTER = 9;
 
 var Preview = GObject.registerClass({
     GTypeName: "Preview"
-}, class Preview extends Clutter.Clone
-{
-    _init(...args)
-    {
+}, class Preview extends Clutter.Clone {
+    _init(...args) {
         super._init(...args);
     }
 
@@ -57,8 +55,7 @@ var Preview = GObject.registerClass({
      * behaviour is undefined.
      * @return {void}
      */
-    make_top_layer(parent)
-    {
+    make_top_layer(parent) {
         if (this.raise_top) {
             this.raise_top()
         } else if (parent.set_child_above_sibling) {
@@ -76,8 +73,7 @@ var Preview = GObject.registerClass({
      * behaviour is undefined.
      * @return {void}
      */
-    make_bottom_layer(parent)
-    {
+    make_bottom_layer(parent) {
         if (this.lower_bottom) {
             this.lower_bottom()
         } else if (parent.set_child_below_sibling) {
@@ -94,8 +90,7 @@ var Preview = GObject.registerClass({
      * @param {Placement} placement
      * @return {void}
      */
-    set_pivot_point_placement(placement)
-    {
+    set_pivot_point_placement(placement) {
         let xFraction = 0,
             yFraction = 0;
 
@@ -151,7 +146,6 @@ var Preview = GObject.registerClass({
     }
 });
 
-function findUpperLeftFromCenter(sideSize, position)
-{
+function findUpperLeftFromCenter(sideSize, position) {
     return position - sideSize / 2;
 }

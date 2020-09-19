@@ -44,10 +44,8 @@ const {
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
-class TimelineSwitcher extends BaseSwitcher
-{
-    constructor(...args)
-    {
+class TimelineSwitcher extends BaseSwitcher {
+    constructor(...args) {
         super(...args);
 
         if (this._settings.elastic_mode)
@@ -56,8 +54,7 @@ class TimelineSwitcher extends BaseSwitcher
         	TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _createPreviews()
-    {
+    _createPreviews() {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
@@ -117,21 +114,18 @@ class TimelineSwitcher extends BaseSwitcher
         }
     }
 
-    _previewNext()
-    {
+    _previewNext() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
         this._updatePreviews(1);
         TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _previewPrevious()
-    {
+    _previewPrevious() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
         this._updatePreviews(-1);
     }
 
-    _updatePreviews(direction)
-    {
+    _updatePreviews(direction) {
         if (this._previews.length == 0)
             return;
 
@@ -198,8 +192,7 @@ class TimelineSwitcher extends BaseSwitcher
         }
     }
 
-    _onFadeBackwardsComplete(preview, distance, animation_time)
-    {
+    _onFadeBackwardsComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_top_layer(this.previewActor);
 
@@ -222,8 +215,7 @@ class TimelineSwitcher extends BaseSwitcher
         });
     }
 
-    _onFadeForwardComplete(preview, distance, animation_time)
-    {
+    _onFadeForwardComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_bottom_layer(this.previewActor);
 
@@ -242,8 +234,7 @@ class TimelineSwitcher extends BaseSwitcher
         });
     }
 
-    _onFinishMove(preview)
-    {
+    _onFinishMove(preview) {
         if (preview.__finalTween) {
             this._manager.platform.tween(preview, preview.__finalTween);
             preview.__finalTween = null;

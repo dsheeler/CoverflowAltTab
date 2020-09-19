@@ -98,8 +98,7 @@ function getSettings(schema) {
  * @param {Object} method The method object, e.g. this.enable.
  * @return {void}
  */
-function __ABSTRACT_METHOD__(object, method)
-{
+function __ABSTRACT_METHOD__(object, method) {
 	throw new Error(
 		"Abstract method " +
 		object.constructor.name + "." + method.name + "()" +

@@ -49,10 +49,8 @@ const {
 } = ExtensionImports.lib;
 
 
-class Switcher
-{
-    constructor(windows, mask, currentIndex, manager)
-    {
+class Switcher {
+    constructor(windows, mask, currentIndex, manager) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -109,8 +107,7 @@ class Switcher
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     }
 
-    show()
-    {
+    show() {
         this._enableMonitorFix();
 
         let monitor = this._updateActiveMonitor();
@@ -163,8 +160,7 @@ class Switcher
     _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
     _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
-    _checkSwitchTime()
-    {
+    _checkSwitchTime() {
         let t = new Date().getTime();
         if (t - this._lastTime < 150)
             return false;
@@ -172,8 +168,7 @@ class Switcher
         return true;
     }
 
-    _next()
-    {
+    _next() {
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -185,8 +180,7 @@ class Switcher
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     }
 
-    _previous()
-    {
+    _previous() {
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -198,8 +192,7 @@ class Switcher
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     }
 
-    _updateActiveMonitor()
-    {
+    _updateActiveMonitor() {
         this._activeMonitor = null;
         if (!this._settings.enforce_primary_monitor)
             this._activeMonitor = Main.layoutManager.currentMonitor;
@@ -209,8 +202,7 @@ class Switcher
         return this._activeMonitor;
     }
 
-    _setCurrentWindowTitle(window)
-    {
+    _setCurrentWindowTitle(window) {
         let animation_time = this._settings.animation_time;
 
         let monitor = this._updateActiveMonitor();
@@ -305,8 +297,7 @@ class Switcher
         });
     }
 
-    _keyPressEvent(actor, event)
-    {
+    _keyPressEvent(actor, event) {
         switch(event.get_key_symbol()) {
 
             case Clutter.KEY_Escape:
@@ -383,8 +374,7 @@ class Switcher
         return true;
     }
 
-    _keyReleaseEvent(actor, event)
-    {
+    _keyReleaseEvent(actor, event) {
         let [x, y, mods] = global.get_pointer();
         let state = mods & this._modifierMask;
 
@@ -398,8 +388,7 @@ class Switcher
     }
 
     // allow navigating by mouse-wheel scrolling
-    _scrollEvent(actor, event)
-    {
+    _scrollEvent(actor, event) {
     	if (!this._checkSwitchTime())
     		return true;
 
@@ -433,19 +422,16 @@ class Switcher
         return true;
     }
 
-    _windowDestroyed(wm, actor)
-    {
+    _windowDestroyed(wm, actor) {
 		this._removeDestroyedWindow(actor.meta_window);
     }
 
-    _checkDestroyed(window)
-    {
+    _checkDestroyed(window) {
         this._checkDestroyedTimeoutId = 0;
         this._removeDestroyedWindow(window);
     }
 
-    _removeDestroyedWindow(window)
-    {
+    _removeDestroyedWindow(window) {
         for (let i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length === 1)
@@ -465,14 +451,12 @@ class Switcher
         }
     }
 
-    _activateSelected()
-    {
+    _activateSelected() {
         this._manager.activateSelectedWindow(this._windows[this._currentIndex]);
         this.destroy();
     }
 
-    _showDesktop()
-    {
+    _showDesktop() {
         for (let window of this._windows) {
             if (!window.minimized) {
                 window.minimize();
@@ -481,8 +465,7 @@ class Switcher
         this.destroy();
     }
 
-    _onHideBackgroundCompleted()
-    {
+    _onHideBackgroundCompleted() {
     	this._manager.platform.removeBackground();
     	Main.uiGroup.remove_actor(this.actor);
 
@@ -490,8 +473,7 @@ class Switcher
         global.window_group.show();
     }
 
-    _onDestroy()
-    {
+    _onDestroy() {
     	if (this._settings.elastic_mode)
     		TRANSITION_TYPE = 'easeOutBack';
     	else
@@ -588,8 +570,7 @@ class Switcher
         this._checkDestroyedTimeoutId = null;
     }
 
-    getPanels()
-    {
+    getPanels() {
         let panels = [Main.panel];
         if (Main.panel2)
             panels.push(Main.panel2);
@@ -599,13 +580,11 @@ class Switcher
         return panels;
     }
 
-    destroy()
-    {
+    destroy() {
         this._onDestroy();
     }
 
-    _enableMonitorFix()
-    {
+    _enableMonitorFix() {
         if (Config.PACKAGE_VERSION >= '3.36')
             return;
         if (this._manager.display.get_n_monitors() < 2)
@@ -622,8 +601,7 @@ class Switcher
         global.stage.set_size(width, height);
     }
 
-    _disableMonitorFix()
-    {
+    _disableMonitorFix() {
         if (this._monitorFix) {
             global.stage.set_size(this._oldWidth, this._oldHeight);
             this._monitorFix = false;

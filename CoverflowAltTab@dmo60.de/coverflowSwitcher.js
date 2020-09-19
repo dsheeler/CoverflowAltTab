@@ -53,10 +53,8 @@ function appendParams(base, extra) {
 
 }
 
-class CoverflowSwitcher extends BaseSwitcher
-{
-    constructor(...args)
-    {
+class CoverflowSwitcher extends BaseSwitcher {
+    constructor(...args) {
         super(...args);
 
         if (this._settings.elastic_mode)
@@ -65,8 +63,7 @@ class CoverflowSwitcher extends BaseSwitcher
         	TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _createPreviews()
-    {
+    _createPreviews() {
         // TODO: Shouldn't monitor be set once per coverflow state?
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
@@ -130,8 +127,7 @@ class CoverflowSwitcher extends BaseSwitcher
         }
     }
 
-    _previewNext()
-    {
+    _previewNext() {
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = 0;
             this._flipStack(Direction.TO_LEFT);
@@ -142,8 +138,7 @@ class CoverflowSwitcher extends BaseSwitcher
         TRANSITION_TYPE = 'easeOutCubic';
     }
 
-    _previewPrevious()
-    {
+    _previewPrevious() {
         if (this._currentIndex == 0) {
             this._currentIndex = this._windows.length-1;
             this._flipStack(Direction.TO_RIGHT);
@@ -153,8 +148,7 @@ class CoverflowSwitcher extends BaseSwitcher
         }
     }
 
-    _flipStack(direction)
-    {
+    _flipStack(direction) {
         this._looping = true;
 
         let xOffset, angle;
@@ -184,8 +178,7 @@ class CoverflowSwitcher extends BaseSwitcher
         }
     }
 
-    _onFlipIn(preview, index, direction)
-    {
+    _onFlipIn(preview, index, direction) {
         let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
         this._updateActiveMonitor();
 
@@ -241,8 +234,7 @@ class CoverflowSwitcher extends BaseSwitcher
         }
     }
 
-    _onFlipComplete(direction)
-    {
+    _onFlipComplete(direction) {
         this._looping = false;
         if (this._requiresUpdate === true) {
             this._requiresUpdate = false;
@@ -250,8 +242,7 @@ class CoverflowSwitcher extends BaseSwitcher
         }
         }
     // TODO: Remove unused direction variable
-    _animatePreviewToMid(preview, animation_time, extraParams = [])
-    {
+    _animatePreviewToMid(preview, animation_time, extraParams = []) {
         preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
@@ -273,8 +264,7 @@ class CoverflowSwitcher extends BaseSwitcher
         this._manager.platform.tween(preview, tweenParams);
     }
 
-    _animatePreviewToSide(preview, index, xOffset, extraParams, toChangePivotPoint = true)
-    {
+    _animatePreviewToSide(preview, index, xOffset, extraParams, toChangePivotPoint = true) {
         if (toChangePivotPoint) {
             if (index < this._currentIndex) {
                 preview.set_pivot_point_placement(Placement.LEFT);
@@ -305,8 +295,7 @@ class CoverflowSwitcher extends BaseSwitcher
         this._manager.platform.tween(preview, tweenParams);
     }
 
-    _updatePreviews()
-    {
+    _updatePreviews() {
         if(this._looping) {
             this._requiresUpdate = true;
             return;

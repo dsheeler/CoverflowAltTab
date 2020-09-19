@@ -39,16 +39,13 @@ const {
 } = ExtensionImports.lib;
 
 
-class AbstractKeybinder
-{
+class AbstractKeybinder {
     enable() { __ABSTRACT_METHOD__(this, this.enable) }
     disable() { __ABSTRACT_METHOD__(this, this.disable) }
 }
 
-class Keybinder330Api extends AbstractKeybinder
-{
-    enable(startAppSwitcherBind)
-    {
+class Keybinder330Api extends AbstractKeybinder {
+    enable(startAppSwitcherBind) {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, startAppSwitcherBind);
@@ -60,8 +57,7 @@ class Keybinder330Api extends AbstractKeybinder
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
     }
 
-    disable()
-    {
+    disable() {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
@@ -74,10 +70,8 @@ class Keybinder330Api extends AbstractKeybinder
     }
 }
 
-class KeybinderNewApi extends AbstractKeybinder
-{
-    enable(startAppSwitcherBind)
-    {
+class KeybinderNewApi extends AbstractKeybinder {
+    enable(startAppSwitcherBind) {
         Meta.keybindings_set_custom_handler('switch-applications', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-windows', startAppSwitcherBind);
         Meta.keybindings_set_custom_handler('switch-group', startAppSwitcherBind);
@@ -87,8 +81,7 @@ class KeybinderNewApi extends AbstractKeybinder
         Meta.keybindings_set_custom_handler('switch-group-backward', startAppSwitcherBind);
     }
 
-    disable()
-    {
+    disable() {
         Meta.keybindings_set_custom_handler('switch-applications', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Meta.keybindings_set_custom_handler('switch-group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
@@ -99,10 +92,8 @@ class KeybinderNewApi extends AbstractKeybinder
     }
 }
 
-class KeybinderOldApi extends AbstractKeybinder
-{
-    enable(startAppSwitcherBind)
-    {
+class KeybinderOldApi extends AbstractKeybinder {
+    enable(startAppSwitcherBind) {
         let wrapperBind = Lang.bind(this, function(wm, binding, mask, window, backwards) {
             let bindingWrapper = {
                 get_mask: function() { return mask; },
@@ -117,8 +108,7 @@ class KeybinderOldApi extends AbstractKeybinder
         Main.wm.setKeybindingHandler('switch_group_backward', wrapperBind);
     }
 
-    disable()
-    {
+    disable() {
         Main.wm.setKeybindingHandler('switch_windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Main.wm.setKeybindingHandler('switch_group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
         Main.wm.setKeybindingHandler('switch_panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
