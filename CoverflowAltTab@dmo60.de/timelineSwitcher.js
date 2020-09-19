@@ -24,7 +24,6 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon") {
@@ -141,7 +140,7 @@ class TimelineSwitcher extends BaseSwitcher
 
         if (this._previews.length == 1) {
             let preview = this._previews[0];
-            Tweener.addTween(preview, {
+            this._manager.platform.tween(preview, {
                 opacity: 255,
                 x: preview.target_x,
                 y: preview.target_y,
@@ -159,7 +158,7 @@ class TimelineSwitcher extends BaseSwitcher
 
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     x: preview.target_x + 200,
                     y: preview.target_y + 100,
@@ -173,7 +172,7 @@ class TimelineSwitcher extends BaseSwitcher
                 });
             } else if (distance === 0 && direction < 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
@@ -194,7 +193,7 @@ class TimelineSwitcher extends BaseSwitcher
                 if (preview.__looping || preview.__finalTween)
                     preview.__finalTween = tweenparams;
                 else
-                    Tweener.addTween(preview, tweenparams);
+                    this._manager.platform.tween(preview, tweenparams);
             }
         }
     }
@@ -209,7 +208,7 @@ class TimelineSwitcher extends BaseSwitcher
         preview.width = preview.target_width;
         preview.height = preview.target_height;
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             x: preview.target_x,
             y: preview.target_y,
@@ -233,7 +232,7 @@ class TimelineSwitcher extends BaseSwitcher
         preview.width = Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0);
         preview.height = Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0);
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
@@ -246,7 +245,7 @@ class TimelineSwitcher extends BaseSwitcher
     _onFinishMove(preview)
     {
         if (preview.__finalTween) {
-            Tweener.addTween(preview, preview.__finalTween);
+            this._manager.platform.tween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
     }

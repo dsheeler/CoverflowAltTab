@@ -28,7 +28,12 @@ const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
-const Tweener = imports.ui.tweener;
+const Clutter = imports.gi.Clutter;
+
+let Tweener = null;
+if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
+    Tweener = imports.ui.tweener;
+}
 
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon") {
@@ -85,15 +90,15 @@ class AbstractPlatform
 
     initBackground()
     {
-        this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-	    this._background.hide();
+    	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+		this._background.hide();
         global.overlay_group.add_actor(this._background);
     }
 
     dimBackground()
     {
-        this._background.show();
-        Tweener.addTween(this._background, {
+    	this._background.show();
+        this.tween(this._background, {
             dim_factor: this._settings.dim_factor,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE
@@ -102,8 +107,8 @@ class AbstractPlatform
 
     undimBackground(onCompleteBind)
     {
-    	Tweener.removeTweens(this._background);
-        Tweener.addTween(this._background, {
+    	this.removeTweens(this._background);
+        this.tween(this._background, {
             dim_factor: 1.0,
             time: this._settings.animation_time,
             transition: TRANSITION_TYPE,
@@ -114,6 +119,14 @@ class AbstractPlatform
     removeBackground()
     {
     	global.overlay_group.remove_actor(this._background);
+    }
+
+    tween(actor, params) {
+        throw new Error("Abstract method tween not implemented");
+    }
+
+    removeTweens(actor) {
+        throw new Error("Abstract method removeTweens not implemented");
     }
 }
 
@@ -144,7 +157,7 @@ class PlatformCinnamon extends AbstractPlatform
 
     disable()
     {
-        if (this._configMonitor) {
+        if(this._configMonitor) {
             this._configMonitor.disconnect(this._configConnection);
             this._configMonitor.cancel();
             this._configMonitor = null;
@@ -196,9 +209,9 @@ class PlatformCinnamon extends AbstractPlatform
     {
         try {
             let file = Gio.file_new_for_path(this._configFile);
-            if (file.query_exists(null)) {
+            if(file.query_exists(null)) {
                 let [flag, data] = file.load_contents(null);
-                if (flag) {
+                if(flag) {
                     let config = eval('(' + data + ')');
                     return this._convertConfigToSettings(config);
                 }
@@ -209,6 +222,14 @@ class PlatformCinnamon extends AbstractPlatform
         }
 
         return this.getDefaultSettings();
+    },
+
+    tween(actor, params) {
+        Tweener.addTween(actor, params);
+    }
+
+    removeTweens(actor) {
+        Tweener.removeTweens(actor);
     }
 };
 
@@ -271,6 +292,15 @@ class PlatformCinnamon18 extends AbstractPlatform
     {
     	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
     }
+
+    tween: function(actor, params) {
+        Tweener.addTween(actor, params);
+    }
+
+    removeTweens: function(actor) {
+        Tweener.removeTweens(actor);
+    }
+
 };
 
 
@@ -289,7 +319,7 @@ class PlatformGnomeShell extends AbstractPlatform
     {
         this.disable();
 
-        if (this._gioSettings == null)
+        if(this._gioSettings == null)
             this._gioSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
 
         let keys = [
@@ -309,13 +339,12 @@ class PlatformGnomeShell extends AbstractPlatform
         for (let key of keys) {
             this._connections.push(this._gioSettings.connect('changed::' + key, bind));
         }
-
         this._settings = this._loadSettings();
     }
 
     disable()
     {
-        if (this._connections) {
+        if(this._connections) {
             for (let connection of this._connections) {
                 this._gioSettings.disconnect(connection);
             }
@@ -364,38 +393,38 @@ class PlatformGnomeShell extends AbstractPlatform
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only")
             };
-        } catch (e) {
+        } catch(e) {
             global.log(e);
         }
 
         return this.getDefaultSettings();
-    }
 }
+
+	        }
 
 class PlatformGnomeShell314 extends PlatformGnomeShell
 {
     getPrimaryModifier(mask)
     {
-        return imports.ui.switcherPopup.primaryModifier(mask);
-    }
+	    	return imports.ui.switcherPopup.primaryModifier(mask);
+	        }
 
     initBackground()
     {
-        let Background = imports.ui.background;
+	    	let Background = imports.ui.background;
 
-        this._backgroundGroup = new Meta.BackgroundGroup();
+	    	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-        if (this._backgroundGroup.lower_bottom) {
-    	    this._backgroundGroup.lower_bottom();
-        } else {
-	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
-        }
-
+	    	if (this._backgroundGroup.lower_bottom) {
+	    	        this._backgroundGroup.lower_bottom();
+                } else {
+	    	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+                }
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
                 container: this._backgroundGroup,
-                monitorIndex: i,
+                                               monitorIndex: i,
                 vignette: true
             });
         }
@@ -403,16 +432,15 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
 
     dimBackground()
     {
-        this._backgroundGroup.show();
-
+	    	this._backgroundGroup.show();
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
-            Tweener.addTween(background, {
-                brightness: 0.8,
-                vignette_sharpness: 1 - this.getSettings().dim_factor,
-                time: this.getSettings().animation_time,
-                transition: TRANSITION_TYPE
-            });
+            this.tween(backgrounds[i],
+                             { brightness: 0.8,
+                               vignette_sharpness: 1 - this.getSettings().dim_factor,
+                               time: this.getSettings().animation_time,
+                               transition: TRANSITION_TYPE
+                             });
         }
     }
 
@@ -420,18 +448,18 @@ class PlatformGnomeShell314 extends PlatformGnomeShell
     {
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
-            Tweener.addTween(background, {
-                brightness: 1.0,
-                vignette_sharpness: 0.0,
-                time: this.getSettings().animation_time,
-                transition: TRANSITION_TYPE,
-                onComplete: onCompleteBind
-            });
+            this.tween(backgrounds[i],
+                             { brightness: 1.0,
+                               vignette_sharpness: 0.0,
+                               time: this.getSettings().animation_time,
+                               transition: TRANSITION_TYPE,
+                               onComplete: onCompleteBind
+                             });
         }
     }
 
     removeBackground()
     {
-    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
-    }
+	    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
+	    }
 }

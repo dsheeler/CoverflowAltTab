@@ -24,7 +24,6 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
 if (Config.PACKAGE_NAME === "cinnamon") {
@@ -50,7 +49,8 @@ const PREVIEW_SCALE = 0.5;
 function appendParams(base, extra) {
     for (let key in extra) {
         base[key] = extra[key];
-    }
+}
+
 }
 
 class CoverflowSwitcher extends BaseSwitcher
@@ -101,7 +101,6 @@ class CoverflowSwitcher extends BaseSwitcher
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-
                     x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
                         compositor.x) - monitor.x,
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
@@ -146,7 +145,7 @@ class CoverflowSwitcher extends BaseSwitcher
     _previewPrevious()
     {
         if (this._currentIndex == 0) {
-            this._currentIndex = this._windows.length - 1;
+            this._currentIndex = this._windows.length-1;
             this._flipStack(Direction.TO_RIGHT);
         } else {
             this._currentIndex = this._currentIndex - 1;
@@ -212,7 +211,6 @@ class CoverflowSwitcher extends BaseSwitcher
                 + preview.target_width / 2) + 50 * (index - this._currentIndex);
         }
         preview.rotation_angle_y = angleStart;
-
         let lastExtraParams = {
             onCompleteParams: [direction],
             onComplete: this._onFlipComplete,
@@ -226,9 +224,9 @@ class CoverflowSwitcher extends BaseSwitcher
         } else {
             if (direction === Direction.TO_RIGHT) {
                 preview.make_top_layer(this.previewActor);
-            } else {
+                } else {
                 preview.make_bottom_layer(this.previewActor);
-            }
+                }
 
             let extraParams = {
                 opacity: 255,
@@ -239,7 +237,6 @@ class CoverflowSwitcher extends BaseSwitcher
 
             if (preview._cfIsLast)
                 appendParams(extraParams, lastExtraParams);
-
             this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
         }
     }
@@ -251,8 +248,7 @@ class CoverflowSwitcher extends BaseSwitcher
             this._requiresUpdate = false;
             this._updatePreviews();
         }
-    }
-
+        }
     // TODO: Remove unused direction variable
     _animatePreviewToMid(preview, animation_time, extraParams = [])
     {
@@ -260,23 +256,21 @@ class CoverflowSwitcher extends BaseSwitcher
 
         let tweenParams = {
             opacity: 255,
-
             x: preview.center_position.x,
             y: preview.center_position.y,
             width: preview.target_width,
             height: preview.target_height,
-
             translation_x: 0,
             scale_x: 1,
             scale_y: 1,
             rotation_angle_y: 0.0,
-
             time: animation_time,
             transition: TRANSITION_TYPE,
         };
 
-        appendParams(tweenParams, extraParams);
-        Tweener.addTween(preview, tweenParams);
+            appendParams(tweenParams, extraParams);
+
+        this._manager.platform.tween(preview, tweenParams);
     }
 
     _animatePreviewToSide(preview, index, xOffset, extraParams, toChangePivotPoint = true)
@@ -287,7 +281,7 @@ class CoverflowSwitcher extends BaseSwitcher
             } else if (index > this._currentIndex) {
                 preview.set_pivot_point_placement(Placement.RIGHT);
             }
-        }
+	}
 
         let tweenParams = {
             x: preview.center_position.x,
@@ -306,14 +300,14 @@ class CoverflowSwitcher extends BaseSwitcher
             tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
                 + preview.target_width / 2) + 50 * (index - this._currentIndex);
         }
-
         appendParams(tweenParams, extraParams);
-        Tweener.addTween(preview, tweenParams);
+
+        this._manager.platform.tween(preview, tweenParams);
     }
 
     _updatePreviews()
     {
-        if (this._looping) {
+        if(this._looping) {
             this._requiresUpdate = true;
             return;
         }
