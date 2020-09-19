@@ -23,20 +23,15 @@
  * Create the correct manager and enable/disable it.
  */
 
-const Config = imports.misc.config;
-
-const PACKAGE_NAME = Config.PACKAGE_NAME;
-const PACKAGE_VERSION = Config.PACKAGE_VERSION;
+const {
+    PACKAGE_NAME,
+    PACKAGE_VERSION,
+} = imports.misc.config;
 
 let ExtensionImports;
-
-let HAS_META_KEYBIND_API;
-if(PACKAGE_NAME == 'cinnamon') {
-    HAS_META_KEYBIND_API = !(PACKAGE_VERSION <= "1.4.0");
+if (PACKAGE_NAME === "cinnamon") {
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-}
-else {
-    HAS_META_KEYBIND_API = true;
+} else {
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 }
 
@@ -52,35 +47,32 @@ function init() {
 function enable() {
     if (!manager) {
         let platform, keybinder;
-        if(PACKAGE_NAME == 'cinnamon') {
-            if(PACKAGE_VERSION <= "1.7.2")
-                platform = new Platform.PlatformCinnamon();
-            else
-                platform = new Platform.PlatformCinnamon18();
-            keybinder = HAS_META_KEYBIND_API ? new Keybinder.KeybinderNewApi() : new Keybinder.KeybinderOldApi();
+
+        if (PACKAGE_NAME === "cinnamon") {
+            platform =
+                PACKAGE_VERSION >= "1.8.0" ? new Platform.PlatformCinnamon18() :
+                    new Platform.PlatformCinnamon();
+            keybinder =
+                PACKAGE_VERSION >= "1.4.0" ? new Keybinder.KeybinderNewApi() :
+                    new Keybinder.KeybinderOldApi();
         } else {
-            if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 30 && PACKAGE_VERSION >= "3.30.0") {
-                platform = new Platform.PlatformGnomeShell314();
-                keybinder = new Keybinder.Keybinder330Api();
-            } else if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 21 && PACKAGE_VERSION >= "3.21.0") {
-                platform = new Platform.PlatformGnomeShell314();
-                keybinder = new Keybinder.Keybinder322Api();
-            } else if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 14 && PACKAGE_VERSION >= "3.14.0") {
-                platform = new Platform.PlatformGnomeShell314();
-                keybinder = new Keybinder.KeybinderNewGSApi();
-            } else if(parseInt(PACKAGE_VERSION.split(".")[1]) >= 10 && PACKAGE_VERSION >= "3.10.0") {
-                platform = new Platform.PlatformGnomeShell310();
-                keybinder = new Keybinder.KeybinderNewGSApi();
-            } else if(PACKAGE_VERSION >= "3.8.0") {
-                platform = new Platform.PlatformGnomeShell38();
-                keybinder = new Keybinder.KeybinderNewGSApi();
-            } else {
-                platform = new Platform.PlatformGnomeShell();
-                keybinder = new Keybinder.KeybinderNewApi();
-            }
+            /*
+             * As there are restricted Gnome versions the current extension support (that
+             * are specified in metadata.json file), only the API related to those supported
+             * versions must be used, not anything else. As a result, performing checks for
+             * keeping backward-compatiblity with old unsupported versions is a wrong
+             * decision.
+             *
+             * To support older versions of Gnome, first, add the version to the metadata
+             * file, then, if needed, include backward-compatible API here for each
+             * version.
+             */
+            platform = new Platform.PlatformGnomeShell314();
+            keybinder = new Keybinder.Keybinder330Api();
         }
         manager = new Manager.Manager(platform, keybinder);
     }
+
     manager.enable();
 }
 

@@ -24,47 +24,54 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-const Tweener = imports.ui.tweener;
 
 let ExtensionImports;
-if(Config.PACKAGE_NAME == 'cinnamon')
+if (Config.PACKAGE_NAME === "cinnamon") {
     ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-else
+} else {
     ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-const BaseSwitcher = ExtensionImports.switcher;
+}
+
+const BaseSwitcher = ExtensionImports.switcher.Switcher;
+
+const {
+    Preview,
+    Placement,
+    Direction,
+    findUpperLeftFromCenter
+} = ExtensionImports.preview;
 
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
-function Switcher() {
-    this._init.apply(this, arguments);
-}
+class TimelineSwitcher extends BaseSwitcher {
+    constructor(...args) {
+        super(...args);
 
-Switcher.prototype = {
-    __proto__: BaseSwitcher.Switcher.prototype,
-
-    _init: function() {
-        BaseSwitcher.Switcher.prototype._init.apply(this, arguments);
         if (this._settings.elastic_mode)
         	TRANSITION_TYPE = 'easeOutBack';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _createPreviews: function() {
+    _createPreviews() {
         let monitor = this._updateActiveMonitor();
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-        this._previews = [];
-        for (let i in this._windows) {
-            let metaWin = this._windows[i];
-            let compositor = this._windows[i].get_compositor_private();
+
+        this._previewsCenterPosition = {
+            x: monitor.width / 2,
+            y: monitor.height / 2 + this._settings.offset
+        };
+
+        for (let metaWin of this._windows) {
+            let compositor = metaWin.get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
-                let width, height
+                let width, height;
                 if (texture.get_size) {
                     [width, height] = texture.get_size()
                 } else {
-                    let preferred_size_ok
+                    let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
 
@@ -74,56 +81,60 @@ Switcher.prototype = {
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let clone = new Clutter.Clone({
+                let preview = new Preview({
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    anchor_gravity: Clutter.Gravity.WEST,
+
+                    x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
+                        compositor.x) - monitor.x,
+                    y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
+                        compositor.y) - monitor.y,
+
                     rotation_angle_y: 12,
-                    x: ((metaWin.minimized) ? 0 : compositor.x + compositor.width / 2) - monitor.x,
-                    y: ((metaWin.minimized) ? 0 : compositor.y + compositor.height / 2) - monitor.y
                 });
 
-                clone.target_width = Math.round(width * scale);
-                clone.target_height = Math.round(height * scale);
-                clone.target_width_side = clone.target_width * 2/3;
-                clone.target_height_side = clone.target_height;
+                preview.target_width = Math.round(width * scale);
+                preview.target_height = Math.round(height * scale);
+                preview.target_width_side = preview.target_width * 2/3;
+                preview.target_height_side = preview.target_height;
 
-                clone.target_x = Math.round(monitor.width * 0.3);
-                clone.target_y = Math.round(monitor.height * 0.5) - this._settings.offset;
+                preview.target_x = findUpperLeftFromCenter(preview.target_width,
+                    this._previewsCenterPosition.x);
+                preview.target_y = findUpperLeftFromCenter(preview.target_height,
+                    this._previewsCenterPosition.y);
 
-                this._previews.push(clone);
-                this.previewActor.add_actor(clone);
-                if (clone.lower_bottom) {
-                        clone.lower_bottom();
-                } else {
-                        this.previewActor.set_child_below_sibling(clone, null);
-                }
+                preview.set_pivot_point_placement(Placement.LEFT);
+
+                this._previews.push(preview);
+                this.previewActor.add_actor(preview);
+
+                preview.make_bottom_layer(this.previewActor);
             }
         }
-    },
+    }
 
-    _previewNext: function() {
+    _previewNext() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
         this._updatePreviews(1);
         TRANSITION_TYPE = 'easeOutCubic';
-    },
+    }
 
-    _previewPrevious: function() {
+    _previewPrevious() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
         this._updatePreviews(-1);
-    },
+    }
 
-    _updatePreviews: function(direction) {
-        if(this._previews.length == 0)
+    _updatePreviews(direction) {
+        if (this._previews.length == 0)
             return;
 
         let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time;
 
-        if(this._previews.length == 1) {
+        if (this._previews.length == 1) {
             let preview = this._previews[0];
-            Tweener.addTween(preview, {
+            this._manager.platform.tween(preview, {
                 opacity: 255,
                 x: preview.target_x,
                 y: preview.target_y,
@@ -136,14 +147,12 @@ Switcher.prototype = {
         }
 
         // preview windows
-        for (let i in this._previews) {
-            let preview = this._previews[i];
-            i = parseInt(i);
+        for (let [i, preview] of this._previews.entries()) {
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
 
-            if (distance == this._previews.length - 1 && direction > 0) {
+            if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     x: preview.target_x + 200,
                     y: preview.target_y + 100,
@@ -155,9 +164,9 @@ Switcher.prototype = {
                     onComplete: this._onFadeForwardComplete,
                     onCompleteScope: this,
                 });
-            } else if (distance == 0 && direction < 0) {
+            } else if (distance === 0 && direction < 0) {
                 preview.__looping = true;
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: 0,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
@@ -175,24 +184,24 @@ Switcher.prototype = {
                     time: animation_time,
                     transition: TRANSITION_TYPE,
                 };
-                if(preview.__looping || preview.__finalTween)
+                if (preview.__looping || preview.__finalTween)
                     preview.__finalTween = tweenparams;
                 else
-                    Tweener.addTween(preview, tweenparams);
+                    this._manager.platform.tween(preview, tweenparams);
             }
         }
-    },
+    }
 
-    _onFadeBackwardsComplete: function(preview, distance, animation_time) {
+    _onFadeBackwardsComplete(preview, distance, animation_time) {
         preview.__looping = false;
-        preview.raise_top();
+        preview.make_top_layer(this.previewActor);
 
         preview.x = preview.target_x + 200;
         preview.y =  preview.target_y + 100;
         preview.width = preview.target_width;
         preview.height = preview.target_height;
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             x: preview.target_x,
             y: preview.target_y,
@@ -204,22 +213,18 @@ Switcher.prototype = {
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
-    },
+    }
 
-    _onFadeForwardComplete: function(preview, distance, animation_time) {
+    _onFadeForwardComplete(preview, distance, animation_time) {
         preview.__looping = false;
-        if (preview.lower_bottom) {
-                preview.lower_bottom();
-        } else {
-                this.previewActor.set_child_below_sibling(preview, null);
-        }
+        preview.make_bottom_layer(this.previewActor);
 
         preview.x = preview.target_x - Math.sqrt(distance) * 150;
         preview.y = preview.target_y - Math.sqrt(distance) * 100;
         preview.width = Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0);
         preview.height = Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0);
 
-        Tweener.addTween(preview, {
+        this._manager.platform.tween(preview, {
             opacity: 255,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
@@ -227,13 +232,12 @@ Switcher.prototype = {
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
-    },
+    }
 
-    _onFinishMove: function(preview) {
-        if(preview.__finalTween) {
-            Tweener.addTween(preview, preview.__finalTween);
+    _onFinishMove(preview) {
+        if (preview.__finalTween) {
+            this._manager.platform.tween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
     }
-
 };
