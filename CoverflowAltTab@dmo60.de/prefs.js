@@ -56,7 +56,10 @@ function getBaseString(translatedString) {
 function buildPrefsWidget() {
 	let frame = new Gtk.Box({
 		orientation: Gtk.Orientation.VERTICAL,
-		border_width: 10,
+		'margin-top': 20,
+		'margin-bottom': 20,
+		'margin-start': 20,
+		'margin-end': 20,
 		spacing: 10
 	});
 
@@ -64,17 +67,17 @@ function buildPrefsWidget() {
         let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! "+
         "(Hit Alt+F2, type 'r' and press Enter)\n</b>")});
         label.set_use_markup(true);
-        frame.add(label);
+        frame.append(label);
     }
-	frame.add(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
-	frame.add(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
-	frame.add(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
-	frame.add(buildRange("animation-time", [100, 400, 10, 250], _("Animation speed (smaller means faster)")));
-	frame.add(buildRange("dim-factor", [0, 10, 1, 3], _("Background dim-factor (smaller means darker)")));
-	frame.add(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
-	frame.add(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
-	frame.add(buildSwitcher("elastic-mode", _("Elastic animations")));
-	frame.add(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
+	frame.append(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
+	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
+	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
+	frame.append(buildRange("animation-time", [100, 400, 10, 250], _("Animation speed (smaller means faster)")));
+	frame.append(buildRange("dim-factor", [0, 10, 1, 3], _("Background dim-factor (smaller means darker)")));
+	frame.append(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
+	frame.append(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
+	frame.append(buildSwitcher("elastic-mode", _("Elastic animations")));
+	frame.append(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
 	let options = [{
 	    id: 'current', name: _("Current workspace only")
 	}, {
@@ -82,9 +85,7 @@ function buildPrefsWidget() {
 	}, {
 	    id: 'all-currentfirst', name: _("All workspaces, current first")
 	}]
-	frame.add(buildComboBox("current-workspace-only", options, _("Show windows from current or all workspaces")));
-
-	frame.show_all();
+	frame.append(buildComboBox("current-workspace-only", options, _("Show windows from current or all workspaces")));
 
 	return frame;
 }
@@ -100,8 +101,10 @@ function buildSwitcher(key, labeltext, tooltip) {
 		settings.set_boolean(key, widget.active);
 	});
 
-	hbox.pack_start(label, true, true, 0);
-	hbox.add(switcher);
+	label.expand = true;
+
+	hbox.append(label);
+	hbox.append(switcher);
 
 	return hbox;
 }
@@ -112,7 +115,7 @@ function buildRange(key, values, labeltext, tooltip) {
 
 	let label = new Gtk.Label({label: labeltext, xalign: 0 });
 
-	let range = Gtk.HScale.new_with_range(min, max, step);
+	let range = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, min, max, step);
 	range.set_value(settings.get_int(key));
 	range.set_draw_value(false);
 	range.add_mark(defv, Gtk.PositionType.BOTTOM, null);
@@ -122,8 +125,8 @@ function buildRange(key, values, labeltext, tooltip) {
 		settings.set_int(key, slider.get_value());
 	});
 
-	hbox.pack_start(label, true, true, 0);
-	hbox.add(range);
+	hbox.append(label);
+	hbox.append(range);
 
 	return hbox;
 };
@@ -132,11 +135,12 @@ function buildRadio(key, buttons, labeltext) {
 	let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 10 });
 
 	let label = new Gtk.Label({label: labeltext, xalign: 0 });
-	hbox.pack_start(label, true, true, 0);
+	hbox.append(label)
 
-	let radio = new Gtk.RadioButton();
+	let radio = new Gtk.ToggleButton();
+
 	for (let button of buttons) {
-		radio = new Gtk.RadioButton({group: radio, label: button});
+		radio = new Gtk.ToggleButton({group: radio, label: button});
 		if (getBaseString(button) == settings.get_string(key)) {
 			radio.set_active(true);
 		}
@@ -147,7 +151,7 @@ function buildRadio(key, buttons, labeltext) {
 			}
 		});
 
-		hbox.add(radio);
+		hbox.append(radio);
 	};
 
 	return hbox;
@@ -168,8 +172,8 @@ function buildSpin(key, values, labeltext) {
 		settings.set_int(key, widget.get_value());
 	});
 
-	hbox.pack_start(label, true, true, 0);
-	hbox.add(spin);
+	hbox.append(label);
+	hbox.append(spin);
 
 	return hbox;
 
@@ -182,34 +186,28 @@ function buildComboBox(key, values, labeltext) {
 
     let setting_label = new Gtk.Label({label: labeltext,
                                        xalign: 0 });
+	
+	let setting_enum = new Gtk.ComboBoxText({
+		tooltip_text: labeltext
+	});
 
-    let model = new Gtk.ListStore();
-    model.set_column_types([GObject.TYPE_STRING, GObject.TYPE_STRING]);
-    let setting_enum = new Gtk.ComboBox({model: model});
-    setting_enum.get_style_context().add_class(Gtk.STYLE_CLASS_RAISED);
-    let renderer = new Gtk.CellRendererText();
-    setting_enum.pack_start(renderer, true);
-    setting_enum.add_attribute(renderer, 'text', 1);
+	for (let i=0; i<values.length; i++) {
+		let item = values[i];
+		setting_enum.append(item.id, item.name);
 
-    for (let item of values) {
-        let iter = model.append();
-        model.set(iter, [0, 1], [item.id, item.name]);
-        if (item.id == settings.get_string(key)) {
-            setting_enum.set_active_iter(iter);
-        }
-    }
+		if (item.id == settings.get_string(key)) {
+			setting_enum.set_active_id(item.id);
+		}
+	}
 
     setting_enum.connect('changed', function(entry) {
-        let [success, iter] = setting_enum.get_active_iter();
-        if (!success)
-            return;
-
-        let id = model.get_value(iter, 0)
+        let id = setting_enum.get_active_id();
+		
         settings.set_string(key, id);
     });
 
-    hbox.pack_start(setting_label, true, true, 0);
-    hbox.add(setting_enum);
+	hbox.append(setting_label);
+    hbox.append(setting_enum);
 
     return hbox;
 
