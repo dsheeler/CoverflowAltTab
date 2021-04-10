@@ -15,9 +15,10 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* CoverflowAltTab
+/*
+ * CoverflowAltTab
  *
- * Preferences dialog for gnome-shell-extensions-prefs tool
+ * Preferences dialog for "gnome-extensions prefs" tool
  */
 
 const Gtk = imports.gi.Gtk;
@@ -121,7 +122,7 @@ function buildRange(key, values, labeltext, tooltip) {
 	hbox.append(range);
 
 	return hbox;
-};
+}
 
 function buildRadio(key, buttons, labeltext) {
 	let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 10 });
@@ -168,22 +169,25 @@ function buildSpin(key, values, labeltext) {
 	hbox.append(spin);
 
 	return hbox;
-
-};
+}
 
 function buildComboBox(key, values, labeltext) {
 
-    let hbox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL,
-                            margin_top: 5});
+    let hbox = new Gtk.Box({
+		orientation: Gtk.Orientation.HORIZONTAL,
+        margin_top: 5
+	});
 
-    let setting_label = new Gtk.Label({label: labeltext,
-                                       xalign: 0 });
+    let setting_label = new Gtk.Label({
+		label: labeltext,
+        xalign: 0
+	});
 
 	let setting_enum = new Gtk.ComboBoxText({
 		tooltip_text: labeltext
 	});
 
-	for (let i=0; i<values.length; i++) {
+	for (let i = 0; i < values.length; i++) {
 		let item = values[i];
 		setting_enum.append(item.id, item.name);
 
@@ -202,5 +206,4 @@ function buildComboBox(key, values, labeltext) {
     hbox.append(setting_enum);
 
     return hbox;
-
 }
