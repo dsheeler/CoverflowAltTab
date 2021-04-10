@@ -8,7 +8,7 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 ## Installation
 
-Thanks to Lusito, the master branch now supports both Gnome-Shell(>3.2) and Cinnamon. For Gnome-Shell version 3.2 there is a separate branch, but it is not further maintained.
+Thanks to Lusito, the master branch now supports both Gnome-Shell (>3.2).
 
 #### Gnome-Shell
 
