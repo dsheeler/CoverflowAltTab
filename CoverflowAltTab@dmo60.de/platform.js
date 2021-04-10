@@ -17,9 +17,10 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* CoverflowAltTab::Platform
+/*
+ * CoverflowAltTab::Platform
  *
- * These are helper classes to handle gnome-shell / cinnamon differences.
+ * Originally, created to be helper classes to handle Gnome Shell and Cinnamon differences.
  */
 
 const Lang = imports.lang;
@@ -30,7 +31,7 @@ const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Clutter = imports.gi.Clutter;
 
-const ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 

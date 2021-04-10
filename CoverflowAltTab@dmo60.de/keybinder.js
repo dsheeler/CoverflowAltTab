@@ -19,7 +19,7 @@
 
 /* CoverflowAltTab::Keybinder
  *
- * These are helper classes to handle the different keybinding apis.
+ * Originally, created to be helper classes to handle the different keybinding APIs.
  */
 
 const Lang = imports.lang;
@@ -27,17 +27,9 @@ const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Config = imports.misc.config;
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-const {
-    __ABSTRACT_METHOD__,
-} = ExtensionImports.lib;
-
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 class AbstractKeybinder {
     enable() { __ABSTRACT_METHOD__(this, this.enable) }
