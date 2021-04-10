@@ -32,8 +32,6 @@ const Lib = ExtensionImports.lib;
 
 const SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
 
-const PACKAGE_VERSION = Config.PACKAGE_VERSION;
-
 let settings;
 
 function init() {
@@ -43,13 +41,13 @@ function init() {
 
 function getBaseString(translatedString) {
 	switch (translatedString) {
-	case _("Coverflow"): return "Coverflow";
-	case _("Timeline"): return "Timeline";
-	case _("Bottom"): return "Bottom";
-	case _("Top"): return "Top";
-	case _("Classic"): return "Classic";
-	case _("Overlay"): return "Overlay";
-	default: return translatedString;
+		case _("Coverflow"): return "Coverflow";
+		case _("Timeline"): return "Timeline";
+		case _("Bottom"): return "Bottom";
+		case _("Top"): return "Top";
+		case _("Classic"): return "Classic";
+		case _("Overlay"): return "Overlay";
+		default: return translatedString;
 	}
 }
 
@@ -63,12 +61,6 @@ function buildPrefsWidget() {
 		spacing: 10
 	});
 
-    if (PACKAGE_VERSION <= "3.4.0") {
-        let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! "+
-        "(Hit Alt+F2, type 'r' and press Enter)\n</b>")});
-        label.set_use_markup(true);
-        frame.append(label);
-    }
 	frame.append(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
 	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
 	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
@@ -186,7 +178,7 @@ function buildComboBox(key, values, labeltext) {
 
     let setting_label = new Gtk.Label({label: labeltext,
                                        xalign: 0 });
-	
+
 	let setting_enum = new Gtk.ComboBoxText({
 		tooltip_text: labeltext
 	});
@@ -202,7 +194,7 @@ function buildComboBox(key, values, labeltext) {
 
     setting_enum.connect('changed', function(entry) {
         let id = setting_enum.get_active_id();
-		
+
         settings.set_string(key, id);
     });
 
