@@ -23,11 +23,6 @@
  * Create the correct manager and enable/disable it.
  */
 
-const {
-    PACKAGE_NAME,
-    PACKAGE_VERSION,
-} = imports.misc.config;
-
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const Manager = ExtensionImports.manager;
@@ -53,7 +48,7 @@ function enable() {
          * version.
          */
         manager = new Manager.Manager(
-            new Platform.PlatformGnomeShell314(),
+            new Platform.PlatformGnomeShell(),
             new Keybinder.Keybinder330Api()
         );
     }

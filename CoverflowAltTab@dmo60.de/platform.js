@@ -31,16 +31,11 @@ const Meta = imports.gi.Meta;
 const Clutter = imports.gi.Clutter;
 
 let Tweener = null;
-if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
+if (Config.PACKAGE_VERSION <= "3.37") {
     Tweener = imports.ui.tweener;
 }
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
@@ -63,8 +58,12 @@ class AbstractPlatform {
 
     getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass) }
     getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker) }
+    getPrimaryModifier(mask) { __ABSTRACT_METHOD__(this, this.getPrimaryModifier) }
 
     getSettings() { __ABSTRACT_METHOD__(this, this.getSettings) }
+
+    tween(actor, params) { __ABSTRACT_METHOD__(this, this.tween) }
+    removeTweens(actor) { __ABSTRACT_METHOD__(this, this.removeTweens) }
 
     getDefaultSettings() {
         return {
@@ -79,10 +78,6 @@ class AbstractPlatform {
             elastic_mode: false,
             current_workspace_only: '1',
         };
-    }
-
-    getPrimaryModifier(mask) {
-    	return imports.ui.altTab.primaryModifier(mask);
     }
 
     initBackground() {
@@ -113,14 +108,6 @@ class AbstractPlatform {
     removeBackground() {
     	global.overlay_group.remove_actor(this._background);
     }
-
-    tween(actor, params) {
-        throw new Error("Abstract method tween not implemented");
-    }
-
-    removeTweens(actor) {
-        throw new Error("Abstract method removeTweens not implemented");
-    }
 }
 
 class PlatformGnomeShell extends AbstractPlatform {
@@ -135,7 +122,7 @@ class PlatformGnomeShell extends AbstractPlatform {
     enable() {
         this.disable();
 
-        if(this._gioSettings == null)
+        if (this._gioSettings == null)
             this._gioSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
 
         let keys = [
@@ -159,7 +146,7 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     disable() {
-        if(this._connections) {
+        if (this._connections) {
             for (let connection of this._connections) {
                 this._gioSettings.disconnect(connection);
             }
@@ -174,6 +161,10 @@ class PlatformGnomeShell extends AbstractPlatform {
 
     getWindowTracker() {
         return imports.gi.Shell.WindowTracker.get_default();
+    }
+
+    getPrimaryModifier(mask) {
+        return imports.ui.switcherPopup.primaryModifier(mask);
     }
 
     getSettings() {
@@ -203,7 +194,7 @@ class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only")
             };
-        } catch(e) {
+        } catch (e) {
             global.log(e);
         }
 
@@ -243,43 +234,37 @@ class PlatformGnomeShell extends AbstractPlatform {
         actor.remove_all_transitions();
     }
 
-}
-
-class PlatformGnomeShell314 extends PlatformGnomeShell {
-    getPrimaryModifier(mask) {
-	    	return imports.ui.switcherPopup.primaryModifier(mask);
-	        }
-
     initBackground() {
-	    	let Background = imports.ui.background;
+    	let Background = imports.ui.background;
 
-	    	this._backgroundGroup = new Meta.BackgroundGroup();
+    	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-	    	if (this._backgroundGroup.lower_bottom) {
-	    	        this._backgroundGroup.lower_bottom();
-                } else {
-	    	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
-                }
+    	if (this._backgroundGroup.lower_bottom) {
+	        this._backgroundGroup.lower_bottom();
+        } else {
+	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+        }
+
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
                 container: this._backgroundGroup,
-                                               monitorIndex: i,
+                monitorIndex: i,
                 vignette: true
             });
         }
     }
 
     dimBackground() {
-	    	this._backgroundGroup.show();
+    	this._backgroundGroup.show();
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
             this.tween(background, {
-                               brightness: 0.8,
-                               vignette_sharpness: 1 - this.getSettings().dim_factor,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE
-                             });
+                brightness: 0.8,
+                vignette_sharpness: 1 - this.getSettings().dim_factor,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE
+            });
         }
     }
 
@@ -287,16 +272,16 @@ class PlatformGnomeShell314 extends PlatformGnomeShell {
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
             this.tween(background, {
-                               brightness: 1.0,
-                               vignette_sharpness: 0.0,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE,
-                               onComplete: onCompleteBind
-                             });
+                brightness: 1.0,
+                vignette_sharpness: 0.0,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE,
+                onComplete: onCompleteBind
+            });
         }
     }
 
     removeBackground() {
-	    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
+        Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
 	}
 }
