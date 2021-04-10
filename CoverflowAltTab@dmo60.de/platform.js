@@ -30,11 +30,6 @@ const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Clutter = imports.gi.Clutter;
 
-let Tweener = null;
-if (Config.PACKAGE_VERSION <= "3.37") {
-    Tweener = imports.ui.tweener;
-}
-
 const ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
@@ -202,10 +197,6 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     tween(actor, params) {
-        if (Tweener) {
-            return Tweener.addTween(actor, params);
-        }
-
         if (params.transition == "easeOutCubic") {
             params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
         } else {
@@ -227,10 +218,6 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeTweens(actor) {
-        if (Tweener) {
-            return Tweener.removeTweens(actor);
-        }
-
         actor.remove_all_transitions();
     }
 
