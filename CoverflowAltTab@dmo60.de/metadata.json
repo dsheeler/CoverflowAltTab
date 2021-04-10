@@ -16,8 +16,7 @@
 	    "3.2"
     ],
     "shell-version": [
-    	"3.36",
-        "3.38"
+        "40"
     ],
     "dangerous": false,
     "name": "Coverflow Alt-Tab",
