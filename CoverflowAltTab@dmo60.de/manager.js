@@ -47,24 +47,6 @@ function matchOtherWorkspace(win) {
     return win.get_workspace() != this && !win.is_skip_taskbar();
 }
 
-function matchMonitor(win ) {
-    let compositor = win.get_compositor_private();
-    let activeMonitor = this;
-
-    let a = compositor;
-    let b = activeMonitor;
-
-    // aabb collision
-    if (a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.height + a.y > b.y) {
-        return true;
-    }
-
-    return false;
-}
-
 class Manager {
     constructor(platform, keybinder) {
         this.platform = platform;
@@ -127,30 +109,31 @@ class Manager {
 
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
-            	if (currentOnly === 'all-currentfirst') {
-                    // Switch between windows of all workspaces, prefer
-            		// those from current workspace
-            		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
-            		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
-                    // Sort by user time
-                    wins1.sort(sortWindowsByUserTime);
-                    wins2.sort(sortWindowsByUserTime);
-                    windows = wins1.concat(wins2);
-                    wins1 = [];
-                    wins2 = [];
-            	} else {
-            	    let filter = currentOnly === 'current' ? matchWorkspace :
-                        matchSkipTaskbar;
-            		// Switch between windows of current workspace
-            		windows = windows.filter(filter, currentWorkspace);
-            	}
+              	if (currentOnly === 'all-currentfirst') {
+                      // Switch between windows of all workspaces, prefer
+              		// those from current workspace
+              		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
+              		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
+                      // Sort by user time
+                      wins1.sort(sortWindowsByUserTime);
+                      wins2.sort(sortWindowsByUserTime);
+                      windows = wins1.concat(wins2);
+                      wins1 = [];
+                      wins2 = [];
+              	} else {
+              	    let filter = currentOnly === 'current' ? matchWorkspace :
+                          matchSkipTaskbar;
+                		// Switch between windows of current workspace
+                		windows = windows.filter(filter, currentWorkspace);
+              	}
                 break;
         }
 
         // filter by windows existing on the active monitor
         if(this.platform.getSettings().switch_per_monitor)
         {
-            windows = windows.filter ( matchMonitor, this.getActiveMonitor() );
+            windows = windows.filter ( (win) =>
+              win.get_monitor() == Main.layoutManager.currentMonitor.index );
         }
 
         // Sort by user time
@@ -163,26 +146,5 @@ class Manager {
             let switcher_class = this.platform.getSettings().switcher_class;
             let switcher = new switcher_class(windows, mask, currentIndex, this);
         }
-    }
-
-    getActiveMonitor() {
-        let x, y, mask;
-        [x, y, mask] = global.get_pointer();
-        try {
-            for (let currentMonitor of Main.layoutManager.monitors) {
-                var minX = currentMonitor.x;
-                var minY = currentMonitor.y;
-                var maxX = minX + currentMonitor.width;
-                var maxY = minY + currentMonitor.height;
-
-                if(x >= minX && x < maxX && y >= minY && y < maxY) {
-                    return currentMonitor;
-                }
-            }
-        } catch(e) {
-            global.log("caught: " + e);
-        }
-
-        return Main.layoutManager.primaryMonitor;
     }
 }
