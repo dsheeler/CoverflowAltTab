@@ -268,6 +268,8 @@ class Switcher {
             this._applicationIconBox = new St.Bin({
                 style_class: 'window-iconbox',
                 opacity: 0,
+                width: app_icon_size,
+                height: app_icon_size,
                 x: Math.round(this._windowTitle.x - app_icon_size - ICON_TITLE_SPACING),
                 y: Math.round(cy - app_icon_size/2)
             });
