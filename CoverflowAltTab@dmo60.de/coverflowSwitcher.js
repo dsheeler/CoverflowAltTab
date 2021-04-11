@@ -46,7 +46,7 @@ function appendParams(base, extra) {
     }
 }
 
-class CoverflowSwitcher extends BaseSwitcher {
+var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
 

@@ -26,11 +26,11 @@ const {
  * Clutter.Gravity.
  */
 
-class Direction {}
+var Direction = class Direction {}
 Direction.TO_RIGHT = 3;
 Direction.TO_LEFT = 7;
 
-class Placement {}
+var Placement = class Placement {}
 Placement.TOP = 1;
 Placement.TOP_RIGHT = 2;
 Placement.RIGHT = 3;

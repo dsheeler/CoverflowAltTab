@@ -38,7 +38,7 @@ const {
 let TRANSITION_TYPE;
 const PREVIEW_SCALE = 0.5;
 
-class TimelineSwitcher extends BaseSwitcher {
+var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
 

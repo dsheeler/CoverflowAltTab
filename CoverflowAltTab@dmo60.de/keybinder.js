@@ -36,7 +36,7 @@ class AbstractKeybinder {
     disable() { __ABSTRACT_METHOD__(this, this.disable) }
 }
 
-class Keybinder330Api extends AbstractKeybinder {
+var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     enable(startAppSwitcherBind) {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;

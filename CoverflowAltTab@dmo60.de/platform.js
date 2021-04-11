@@ -107,7 +107,7 @@ class AbstractPlatform {
     }
 }
 
-class PlatformGnomeShell extends AbstractPlatform {
+var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     constructor(...args) {
         super(...args);
 

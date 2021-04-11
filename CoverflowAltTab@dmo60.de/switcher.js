@@ -41,8 +41,7 @@ const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().impor
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
-
-class Switcher {
+var Switcher = class Switcher {
     constructor(windows, mask, currentIndex, manager) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
@@ -561,4 +560,4 @@ class Switcher {
     destroy() {
         this._onDestroy();
     }
-};
+}
