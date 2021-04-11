@@ -136,7 +136,7 @@ class PlatformGnomeShell extends AbstractPlatform {
         ];
 
         this._connections = [];
-        let bind = Lang.bind(this, this._onSettingsChaned);
+        let bind = Lang.bind(this, this._onSettingsChanged);
         for (let key of keys) {
             this._connections.push(this._gioSettings.connect('changed::' + key, bind));
         }
@@ -172,7 +172,7 @@ class PlatformGnomeShell extends AbstractPlatform {
         return this._settings;
     }
 
-    _onSettingsChaned() {
+    _onSettingsChanged() {
         this._settings = null;
     }
 
