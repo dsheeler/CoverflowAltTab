@@ -87,7 +87,7 @@ msgstr "Elastische Animationen"
 #: prefs.js:54
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
-"Vertikaler Offset (positive Werte bewegen alles nach oben, negative nach "
+"Vertikaler Versatz (positive Werte bewegen alles nach oben, negative Werte nach "
 "unten)"
 
 #: prefs.js:58
