@@ -87,15 +87,15 @@ class Switcher {
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         let [x, y, mods] = global.get_pointer();
-		if (!(mods & this._modifierMask)){
-			// There's a race condition; if the user released Alt before
-			// we got the grab, then we won't be notified. (See
-			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-			// details) So we check now. (Have to do this after updating
-			// selection.)
-			this._activateSelected();
-			return;
-		}
+        if (!(mods & this._modifierMask)){
+    			// There's a race condition; if the user released Alt before
+    			// we got the grab, then we won't be notified. (See
+    			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+    			// details) So we check now. (Have to do this after updating
+    			// selection.)
+    			this._activateSelected();
+    			return;
+        }
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
     }

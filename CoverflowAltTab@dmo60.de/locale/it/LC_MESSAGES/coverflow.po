@@ -106,3 +106,7 @@ msgstr "Tutti i workspace, prima il corrente"
 #: prefs.js:64
 msgid "Show windows from current or all workspaces"
 msgstr "Mostra finestre del workspace corrente o di tutti"
+
+#: prefs.js:82
+msgid "Only switch between windows on current monitor"
+msgstr "Mostra solo finestre del monitor corrente"

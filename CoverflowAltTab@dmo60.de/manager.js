@@ -99,41 +99,45 @@ class Manager {
             case 'switch-panels':
                 // Switch between windows of all workspaces
                 windows = windows.filter(matchSkipTaskbar);
-                // Sort by user time
-                windows.sort(sortWindowsByUserTime);
                 break;
 
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];
                 windows = windows.filter(matchWmClass, focused.get_wm_class());
-                // Sort by user time
-                windows.sort(sortWindowsByUserTime);
                 break;
 
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
-            	if (currentOnly === 'all-currentfirst') {
-                    // Switch between windows of all workspaces, prefer
-            		// those from current workspace
-            		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
-            		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
-                    // Sort by user time
-                    wins1.sort(sortWindowsByUserTime);
-                    wins2.sort(sortWindowsByUserTime);
-                    windows = wins1.concat(wins2);
-                    wins1 = [];
-                    wins2 = [];
-            	} else {
-            	    let filter = currentOnly === 'current' ? matchWorkspace :
-                        matchSkipTaskbar;
-            		// Switch between windows of current workspace
-            		windows = windows.filter(filter, currentWorkspace);
-                    // Sort by user time
-                    windows.sort(sortWindowsByUserTime);
-            	}
+              	if (currentOnly === 'all-currentfirst') {
+                      // Switch between windows of all workspaces, prefer
+              		// those from current workspace
+              		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
+              		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
+                      // Sort by user time
+                      wins1.sort(sortWindowsByUserTime);
+                      wins2.sort(sortWindowsByUserTime);
+                      windows = wins1.concat(wins2);
+                      wins1 = [];
+                      wins2 = [];
+              	} else {
+              	    let filter = currentOnly === 'current' ? matchWorkspace :
+                          matchSkipTaskbar;
+                		// Switch between windows of current workspace
+                		windows = windows.filter(filter, currentWorkspace);
+              	}
                 break;
         }
+
+        // filter by windows existing on the active monitor
+        if(this.platform.getSettings().switch_per_monitor)
+        {
+            windows = windows.filter ( (win) =>
+              win.get_monitor() == Main.layoutManager.currentMonitor.index );
+        }
+
+        // Sort by user time
+        windows.sort(sortWindowsByUserTime);
 
         if (windows.length) {
             let mask = binding.get_mask();

@@ -73,6 +73,7 @@ class AbstractPlatform {
             switcher_class: Switcher,
             elastic_mode: false,
             current_workspace_only: '1',
+            switch_per_monitor: false,
         };
     }
 
@@ -131,10 +132,11 @@ class PlatformGnomeShell extends AbstractPlatform {
             "enforce-primary-monitor",
             "elastic-mode",
             "current-workspace-only",
+            "switch-per-monitor",
         ];
 
         this._connections = [];
-        let bind = Lang.bind(this, this._onSettingsChaned);
+        let bind = Lang.bind(this, this._onSettingsChanged);
         for (let key of keys) {
             this._connections.push(this._gioSettings.connect('changed::' + key, bind));
         }
@@ -170,7 +172,7 @@ class PlatformGnomeShell extends AbstractPlatform {
         return this._settings;
     }
 
-    _onSettingsChaned() {
+    _onSettingsChanged() {
         this._settings = null;
     }
 
@@ -188,7 +190,8 @@ class PlatformGnomeShell extends AbstractPlatform {
                 elastic_mode: settings.get_boolean("elastic-mode"),
                 switcher_class: settings.get_string("switcher-style") === 'Timeline'
                     ? TimelineSwitcher : CoverflowSwitcher,
-                current_workspace_only: settings.get_string("current-workspace-only")
+                current_workspace_only: settings.get_string("current-workspace-only"),
+                switch_per_monitor: settings.get_boolean("switch-per-monitor"),
             };
         } catch (e) {
             global.log(e);
