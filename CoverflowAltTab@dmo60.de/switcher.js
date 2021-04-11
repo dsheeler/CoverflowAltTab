@@ -153,8 +153,11 @@ class Switcher {
 
     _checkSwitchTime() {
         let t = new Date().getTime();
-        if (t - this._lastTime < 150)
-            return false;
+        // remove this check because of #96
+        // in theory we could remove this whole method but it's better
+        // to wait a while to check nothing bad happens because of that
+        // if (t - this._lastTime < 150)
+        //     return false;
         this._lastTime = t;
         return true;
     }
