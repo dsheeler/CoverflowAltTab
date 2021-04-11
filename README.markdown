@@ -8,17 +8,15 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 ## Installation
 
-Thanks to Lusito, the master branch now supports both Gnome-Shell (>3.2).
-
 #### Gnome-Shell
 
-Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome3 extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
+Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
 
 If you want to install it manually (e.g. to test the latest, probably unstable code), download the zip file by clicking the zip button on the upper part of this page and extract it.
 
   1. Copy the folder "CoverflowAltTab@dmo60.de" to `~/.local/share/gnome-shell/extensions/`.
 
-  2. Use Gnome Tweak Tool or [extensions.gnome.org](https://extensions.gnome.org/local/) to enable the extension. (Eventually you have to restart Gnome-Shell: Press Alt+F2, type 'r' and enter)
+  2. Use the Extensions tool or [extensions.gnome.org](https://extensions.gnome.org/local/) to enable the extension.
 
 or execute commands at the terminal:
 
@@ -54,7 +52,13 @@ Recently we have added a second Animation style you can use instead of the Cover
 
 #### Gnome-Shell
 
-Click the preferences button on [extensions.gnome.org](https://extensions.gnome.org/local/), or run `gnome-extensions prefs CoverflowAltTab@dmo60.de` inside a terminal. This will show you a preference dialog where you can change the settings to your needs.
+To access preferences you can:
+
+  - Open the Extensions tool. You should find it in your system menu
+  - Click the preferences button on [extensions.gnome.org](https://extensions.gnome.org/local/)
+  - run `gnome-extensions prefs CoverflowAltTab@dmo60.de` inside a terminal
+
+This will show you a preference dialog where you can change the settings to your needs.
 
 ## Troubleshooting
 
@@ -62,7 +66,7 @@ Click the preferences button on [extensions.gnome.org](https://extensions.gnome.
 
 Many GNU/Linux distributions, namely Debian and its derivatives, install some extensions by default. Among those it's very common to find the [AlternateTab](https://extensions.gnome.org/extension/15/alternatetab/) extension; unfortunately, both AlternateTab and CoverflowAltTab are alt-tab replacements, and so they conflict: AlternateTab is usually the winning one, and so CoverflowAltTab appears as enabled but does not work as expected.
 
-All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disable AlternateTab (or any other alt-tab replacement extension)! To do that, you might use the Gnome Tweak Tool (which is usually NOT installed by default) or visit https://extensions.gnome.org/local/. CoverflowAltTab might need to be disabled and re-enabled after you disable the offending extension(s), but this time it'll continue working even after a reboot.
+All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disable AlternateTab (or any other alt-tab replacement extension)! To do that, you might use the Extensions tool or visit https://extensions.gnome.org/local/. CoverflowAltTab might need to be disabled and re-enabled after you disable the offending extension(s), but this time it'll continue working even after a reboot.
 
 ## License
 
