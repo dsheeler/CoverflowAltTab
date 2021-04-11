@@ -59,6 +59,16 @@
         <summary>Elastic in/out animations when toggling Coverflow</summary>
         <description>Whether to show an elastic animation when Coverflow is toggled.</description>
     </key>
+    <key type="s" name="current-workspace-only">
+        <choices>
+            <choice value="current"/>
+            <choice value="all"/>
+            <choice value="all-currentfirst"/>
+        </choices>
+        <default>'current'</default>
+        <summary>Show windows from current workspace only</summary>
+        <description>Whether to show all windows or windows from current workspace only.</description>
+    </key>
     <key type="b" name="switch-per-monitor">
         <default>false</default>
         <summary>Per monitor window switch</summary>

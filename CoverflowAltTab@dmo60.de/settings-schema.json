@@ -75,6 +75,17 @@
     "description": "Elastic animations",
     "tooltip": "Use elastic animation style when toggling switcher"
  },
+ "current-workspace-only": {
+    "type" : "combobox",
+    "default" : "current",
+    "options" : {
+         "Current workspace only" : "current",
+         "All workspaces" : "all",
+         "All workspaces, current first" : "all-currentfirst"
+    },
+    "description": "Show windows from current or all workspaces",
+    "tooltip": "Whether to show windows from current workspace only or all workspaces"
+ },
  "switch-per-monitor": {
     "type" : "checkbox",
     "default" : false,

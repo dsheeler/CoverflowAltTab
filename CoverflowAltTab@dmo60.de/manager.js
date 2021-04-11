@@ -1,5 +1,22 @@
 /* -*- mode: js2; js2-basic-offset: 4; indent-tabs-mode: nil -*- */
 
+/*
+    This file is part of CoverflowAltTab.
+
+    CoverflowAltTab is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CoverflowAltTab is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 /* CoverflowAltTab::Manager
  *
  * This class is a helper class to start the actual switcher.
@@ -11,7 +28,7 @@ const Main = imports.ui.main;
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
     let t2 = win2.get_user_time();
-    return (t2 > t1) ? 1 : -1 ;
+    return (t2 > t1) ? 1 : -1;
 }
 
 function matchSkipTaskbar(win) {
@@ -24,6 +41,10 @@ function matchWmClass(win) {
 
 function matchWorkspace(win) {
     return win.get_workspace() == this && !win.is_skip_taskbar();
+}
+
+function matchOtherWorkspace(win) {
+    return win.get_workspace() != this && !win.is_skip_taskbar();
 }
 
 function matchMonitor(win ) {
@@ -44,80 +65,85 @@ function matchMonitor(win ) {
     return false;
 }
 
-function Manager(platform, keybinder) {
-    this._init(platform, keybinder);
-}
-
-Manager.prototype = {
-    _init: function(platform, keybinder) {
+class Manager {
+    constructor(platform, keybinder) {
         this.platform = platform;
         this.keybinder = keybinder;
-    },
 
-    enable: function() {
+        if (global.workspace_manager && global.workspace_manager.get_active_workspace)
+            this.workspace_manager = global.workspace_manager;
+        else
+            this.workspace_manager = global.screen;
+
+        if (global.display && global.display.get_n_monitors)
+            this.display = global.display;
+        else
+            this.display = global.screen;
+    }
+
+    enable() {
         this.platform.enable();
         this.keybinder.enable(Lang.bind(this, this._startWindowSwitcher));
-    },
+    }
 
-    disable: function() {
+    disable() {
         this.platform.disable();
         this.keybinder.disable();
-    },
+    }
 
-    activateSelectedWindow: function(win) {
+    activateSelectedWindow(win) {
         Main.activateWindow(win, global.get_current_time());
-    },
+    }
 
-    removeSelectedWindow: function(win) {
+    removeSelectedWindow(win) {
         win.delete(global.get_current_time());
-    },
+    }
 
-    getActiveMonitor: function() {
-        let x, y, mask;
-        [x, y, mask] = global.get_pointer();
-        try {
-            for each (var currentMonitor in Main.layoutManager.monitors){
-                var minX = currentMonitor.x;
-                var minY = currentMonitor.y;
-                var maxX = minX + currentMonitor.width;
-                var maxY = minY + currentMonitor.height;
-
-                if(x >= minX && x < maxX && y >= minY && y < maxY) {
-                    return currentMonitor;
-                }
-            }
-        } catch(e) {
-            global.log("caught: " + e);
-        }
-
-        return Main.layoutManager.primaryMonitor;
-    },
-
-    _startWindowSwitcher: function(display, screen, window, binding) {
-
+    _startWindowSwitcher(display, window, binding) {
         let windows = [];
-        let currentWorkspace = screen.get_active_workspace();
+        let currentWorkspace = this.workspace_manager.get_active_workspace();
 
         // Construct a list with all windows
         let windowActors = global.get_window_actors();
-        for (let i in windowActors)
-            windows.push(windowActors[i].get_meta_window());
+        for (let windowActor of windowActors) {
+            if (typeof windowActor.get_meta_window === "function") {
+                windows.push(windowActor.get_meta_window());
+            }
+        }
 
         windowActors = null;
 
-        switch(binding.get_name()) {
+        switch (binding.get_name()) {
             case 'switch-panels':
                 // Switch between windows of all workspaces
-                windows = windows.filter( matchSkipTaskbar );
+                windows = windows.filter(matchSkipTaskbar);
                 break;
+
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];
-                windows = windows.filter( matchWmClass, focused.get_wm_class() );
+                windows = windows.filter(matchWmClass, focused.get_wm_class());
                 break;
+
             default:
-                // Switch between windows of current workspace
-                windows = windows.filter( matchWorkspace, currentWorkspace );
+                let currentOnly = this.platform.getSettings().current_workspace_only;
+            	if (currentOnly === 'all-currentfirst') {
+                    // Switch between windows of all workspaces, prefer
+            		// those from current workspace
+            		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
+            		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
+                    // Sort by user time
+                    wins1.sort(sortWindowsByUserTime);
+                    wins2.sort(sortWindowsByUserTime);
+                    windows = wins1.concat(wins2);
+                    wins1 = [];
+                    wins2 = [];
+            	} else {
+            	    let filter = currentOnly === 'current' ? matchWorkspace :
+                        matchSkipTaskbar;
+            		// Switch between windows of current workspace
+            		windows = windows.filter(filter, currentWorkspace);
+            	}
                 break;
         }
 
@@ -138,4 +164,25 @@ Manager.prototype = {
             let switcher = new switcher_class(windows, mask, currentIndex, this);
         }
     }
-};
+
+    getActiveMonitor() {
+        let x, y, mask;
+        [x, y, mask] = global.get_pointer();
+        try {
+            for (let currentMonitor of Main.layoutManager.monitors) {
+                var minX = currentMonitor.x;
+                var minY = currentMonitor.y;
+                var maxX = minX + currentMonitor.width;
+                var maxY = minY + currentMonitor.height;
+
+                if(x >= minX && x < maxX && y >= minY && y < maxY) {
+                    return currentMonitor;
+                }
+            }
+        } catch(e) {
+            global.log("caught: " + e);
+        }
+
+        return Main.layoutManager.primaryMonitor;
+    }
+}

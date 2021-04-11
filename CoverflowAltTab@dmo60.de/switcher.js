@@ -1,3 +1,20 @@
+/*
+    This file is part of CoverflowAltTab.
+
+    CoverflowAltTab is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    CoverflowAltTab is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 /* CoverflowAltTab::Switcher:
  *
  * The implementation of the switcher UI. Handles keyboard events.
@@ -6,11 +23,11 @@
 const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
+const Config = imports.misc.config;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
-const Tweener = imports.ui.tweener;
 const Pango = imports.gi.Pango;
 
 const INITIAL_DELAY_TIMEOUT = 150;
@@ -20,13 +37,13 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-function Switcher() {
-    this._init.apply(this, arguments);
-}
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
-Switcher.prototype = {
-    _init: function(windows, mask, currentIndex, manager) {
+
+class Switcher {
+    constructor(windows, mask, currentIndex, manager) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -39,11 +56,13 @@ Switcher.prototype = {
         this._windowManager = global.window_manager;
         this._lastTime = 0;
         this._checkDestroyedTimeoutId = 0;
+        this._requiresUpdate = false;
+        this._previews = [];
 
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
 
-		manager.platform.initBackground();
+        manager.platform.initBackground();
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -68,22 +87,20 @@ Switcher.prototype = {
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         let [x, y, mods] = global.get_pointer();
-		if (!(mods & this._modifierMask)){
-			// There's a race condition; if the user released Alt before
-			// we got the grab, then we won't be notified. (See
-			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-			// details) So we check now. (Have to do this after updating
-			// selection.)
-			this._activateSelected();
-			return;
-		}
+        if (!(mods & this._modifierMask)){
+    			// There's a race condition; if the user released Alt before
+    			// we got the grab, then we won't be notified. (See
+    			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+    			// details) So we check now. (Have to do this after updating
+    			// selection.)
+    			this._activateSelected();
+    			return;
+        }
 
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
-    },
+    }
 
-    show: function() {
-        this._enableMonitorFix();
-
+    show() {
         let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
@@ -96,16 +113,29 @@ Switcher.prototype = {
         this.actor.show();
 
         let panels = this.getPanels();
-        panels.forEach(function(panel) { panel.actor.set_reactive(false); });
+        for (let panel of panels) {
+            try {
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                panelActor.set_reactive(false);
+                if (this._settings.hide_panel) {
+                    this._manager.platform.tween(panelActor, {
+                        opacity: 0,
+                        time: this._settings.animation_time,
+                        transition: TRANSITION_TYPE
+                    });
+                }
+            } catch (e) {
+                // ignore fake panels
+            }
+        }
 
-        if (this._settings.hide_panel) {
-            panels.forEach(function(panel) {
-                Tweener.addTween(panel.actor, {
-                    opacity: 0,
-                    time: this._settings.animation_time,
-                    transition: TRANSITION_TYPE
-                });
-            }, this);
+        // hide gnome-shell legacy tray
+        try {
+            if (Main.legacyTray) {
+                Main.legacyTray.actor.hide();
+            }
+        } catch (e) {
+            // ignore missing legacy tray
         }
 
         this._manager.platform.dimBackground();
@@ -113,34 +143,24 @@ Switcher.prototype = {
         this._initialDelayTimeoutId = 0;
 
         this._next();
-    },
+    }
 
-    _createPreviews: function() {
-        throw new Error("Abstract method _createPreviews not implemented");
-    },
+    _createPreviews() { __ABSTRACT_METHOD__(this, this._createPreviews) }
+    _updatePreviews() { __ABSTRACT_METHOD__(this, this._updatePreviews) }
 
-    _updatePreviews: function() {
-        throw new Error("Abstract method _updatePreviews not implemented");
-    },
+    _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
+    _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
-    _previewNext: function() {
-        throw new Error("Abstract method _previewNext not implemented");
-    },
-
-    _previewPrevious: function() {
-        throw new Error("Abstract method _previewPrevious not implemented");
-    },
-
-    _checkSwitchTime: function() {
+    _checkSwitchTime() {
         let t = new Date().getTime();
-        if(t - this._lastTime < 150)
+        if (t - this._lastTime < 150)
             return false;
         this._lastTime = t;
         return true;
-    },
+    }
 
-    _next: function() {
-        if(this._windows.length <= 1) {
+    _next() {
+        if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
         } else {
@@ -149,10 +169,10 @@ Switcher.prototype = {
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
-    },
+    }
 
-    _previous: function() {
-        if(this._windows.length <= 1) {
+    _previous() {
+        if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
         } else {
@@ -161,17 +181,22 @@ Switcher.prototype = {
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
-    },
+    }
 
-    _updateActiveMonitor: function() {
-        this._activeMonitor = this._manager.getActiveMonitor();
+    _updateActiveMonitor() {
+        this._activeMonitor = null;
+        if (!this._settings.enforce_primary_monitor)
+            this._activeMonitor = Main.layoutManager.currentMonitor;
+        else
+            this._activeMonitor = Main.layoutManager.primaryMonitor;
+
         return this._activeMonitor;
-    },
+    }
 
-    _setCurrentWindowTitle: function(window) {
+    _setCurrentWindowTitle(window) {
         let animation_time = this._settings.animation_time;
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
 
         let app_icon_size;
         let label_offset;
@@ -185,7 +210,7 @@ Switcher.prototype = {
 
         // window title label
         if (this._windowTitle) {
-            Tweener.addTween(this._windowTitle, {
+            this._manager.platform.tween(this._windowTitle, {
                 opacity: 0,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
@@ -204,7 +229,7 @@ Switcher.prototype = {
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
         this.actor.add_actor(this._windowTitle);
-        Tweener.addTween(this._windowTitle, {
+        this._manager.platform.tween(this._windowTitle, {
             opacity: 255,
             time: animation_time,
             transition: TRANSITION_TYPE,
@@ -218,7 +243,7 @@ Switcher.prototype = {
 
         // window icon
         if (this._applicationIconBox) {
-            Tweener.addTween(this._applicationIconBox, {
+            this._manager.platform.tween(this._applicationIconBox, {
                 opacity: 0,
                 time: animation_time,
                 transition: TRANSITION_TYPE,
@@ -232,7 +257,6 @@ Switcher.prototype = {
         if (!this._icon) {
             this._icon = new St.Icon({
                 icon_name: 'applications-other',
-                icon_type: St.IconType.FULLCOLOR,
                 icon_size: app_icon_size
             });
         }
@@ -257,42 +281,56 @@ Switcher.prototype = {
 
         this._applicationIconBox.add_actor(this._icon);
         this.actor.add_actor(this._applicationIconBox);
-        Tweener.addTween(this._applicationIconBox, {
+        this._manager.platform.tween(this._applicationIconBox, {
             opacity: 255,
             time: animation_time,
             transition: TRANSITION_TYPE,
         });
-    },
+    }
 
-    _keyPressEvent: function(actor, event) {
+    _keyPressEvent(actor, event) {
         switch(event.get_key_symbol()) {
+
+            case Clutter.KEY_Escape:
             case Clutter.Escape:
                 // Esc -> close CoverFlow
                 this.destroy();
                 return true;
 
+            case Clutter.KEY_q:
+            case Clutter.KEY_Q:
+            case Clutter.KEY_F4:
             case Clutter.q:
             case Clutter.Q:
+            case Clutter.F4:
                 // Q -> Close window
                 this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
-                this._checkDestroyedTimeoutId = Mainloop.timeout_add(CHECK_DESTROYED_TIMEOUT,
-                        Lang.bind(this, this._checkDestroyed, this._windows[this._currentIndex]));
+                this._checkDestroyedTimeoutId = Mainloop.timeout_add(
+                    CHECK_DESTROYED_TIMEOUT,
+                    Lang.bind(this, this._checkDestroyed, this._windows[this._currentIndex])
+                );
                 return true;
 
+            case Clutter.KEY_Right:
+            case Clutter.KEY_Down:
             case Clutter.Right:
             case Clutter.Down:
                 // Right/Down -> navigate to next preview
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._next();
                 return true;
 
+            case Clutter.KEY_Left:
+            case Clutter.KEY_Up:
             case Clutter.Left:
             case Clutter.Up:
                 // Left/Up -> navigate to previous preview
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._previous();
                 return true;
 
+            case Clutter.KEY_d:
+            case Clutter.KEY_D:
             case Clutter.d:
             case Clutter.D:
                 // D -> Show desktop
@@ -307,9 +345,9 @@ Switcher.prototype = {
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
             case Meta.KeyBindingAction.SWITCH_PANELS:
-                if(this._checkSwitchTime()) {
+                if (this._checkSwitchTime()) {
                     // shift -> backwards
-                    if(event_state & Clutter.ModifierType.SHIFT_MASK)
+                    if (event_state & Clutter.ModifierType.SHIFT_MASK)
                         this._previous();
                     else
                         this._next();
@@ -319,30 +357,30 @@ Switcher.prototype = {
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_PANELS_BACKWARD:
-                if(this._checkSwitchTime())
+                if (this._checkSwitchTime())
                     this._previous();
                 return true;
         }
 
         return true;
-    },
+    }
 
-    _keyReleaseEvent: function(actor, event) {
+    _keyReleaseEvent(actor, event) {
         let [x, y, mods] = global.get_pointer();
         let state = mods & this._modifierMask;
 
         if (state == 0) {
-            if (this._initialDelayTimeoutId != 0)
+            if (this._initialDelayTimeoutId !== 0)
                 this._currentIndex = (this._currentIndex + 1) % this._windows.length;
             this._activateSelected();
         }
 
         return true;
-    },
+    }
 
     // allow navigating by mouse-wheel scrolling
-    _scrollEvent: function(actor, event) {
-    	if(!this._checkSwitchTime())
+    _scrollEvent(actor, event) {
+    	if (!this._checkSwitchTime())
     		return true;
 
         switch (event.get_scroll_direction()) {
@@ -373,28 +411,28 @@ Switcher.prototype = {
         }
 
         return true;
-    },
+    }
 
-    _windowDestroyed: function(wm, actor) {
+    _windowDestroyed(wm, actor) {
 		this._removeDestroyedWindow(actor.meta_window);
-    },
+    }
 
-    _checkDestroyed: function(window) {
+    _checkDestroyed(window) {
         this._checkDestroyedTimeoutId = 0;
         this._removeDestroyedWindow(window);
-    },
+    }
 
-    _removeDestroyedWindow: function(window) {
+    _removeDestroyedWindow(window) {
         for (let i in this._windows) {
             if (window == this._windows[i]) {
-                if (this._windows.length == 1)
+                if (this._windows.length === 1)
                     this.destroy();
                 else {
                     this._windows.splice(i, 1);
                     this._previews[i].destroy();
                     this._previews.splice(i, 1);
                     this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
-                    this._currentIndex % this._windows.length;
+                        this._currentIndex % this._windows.length;
                     this._updatePreviews(0);
                     this._setCurrentWindowTitle(this._windows[this._currentIndex]);
                 }
@@ -402,64 +440,64 @@ Switcher.prototype = {
                 return;
             }
         }
-    },
+    }
 
-    _activateSelected: function() {
+    _activateSelected() {
         this._manager.activateSelectedWindow(this._windows[this._currentIndex]);
         this.destroy();
-    },
+    }
 
-    _showDesktop: function() {
-        for (let i in this._windows) {
-            if (!this._windows[i].minimized)
-                this._windows[i].minimize();
+    _showDesktop() {
+        for (let window of this._windows) {
+            if (!window.minimized) {
+                window.minimize();
+            }
         }
         this.destroy();
-    },
+    }
 
-    _onHideBackgroundCompleted: function() {
+    _onHideBackgroundCompleted() {
     	this._manager.platform.removeBackground();
     	Main.uiGroup.remove_actor(this.actor);
 
         // show all window actors
         global.window_group.show();
-    },
+    }
 
-    _onDestroy: function() {
+    _onDestroy() {
     	if (this._settings.elastic_mode)
     		TRANSITION_TYPE = 'easeOutBack';
     	else
     		TRANSITION_TYPE = 'easeOutCubic';
 
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
 
-        if (this._initialDelayTimeoutId == 0) {
+        if (this._initialDelayTimeoutId === 0) {
             // preview windows
-            let currentWorkspace = global.screen.get_active_workspace();
-            for (let i in this._previews) {
-                let preview = this._previews[i];
-                let metaWin = this._windows[i];
-                let compositor = this._windows[i].get_compositor_private();
+            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
+            for (let [i, preview] of this._previews.entries()) {
+                let metaWin = this._windows[i],
+                    compositor = metaWin.get_compositor_private();
 
-                if (i != this._currentIndex)
-                    preview.lower_bottom();
-                let rotation_vertex_x = 0.0;
-                if (preview.get_anchor_point_gravity() == Clutter.Gravity.EAST) {
-                    rotation_vertex_x = preview.width / 2;
-                } else if (preview.get_anchor_point_gravity() == Clutter.Gravity.WEST) {
-                    rotation_vertex_x = -preview.width / 2;
+                // Move all non-activated windows behind the activated one
+                if (i !== this._currentIndex) {
+                    preview.make_bottom_layer(this.previewActor);
                 }
-                preview.move_anchor_point_from_gravity(compositor.get_anchor_point_gravity());
-                preview.rotation_center_y = new Clutter.Vertex({ x: rotation_vertex_x, y: 0.0, z: 0.0 });
 
-                Tweener.addTween(preview, {
+                this._manager.platform.tween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
                         || metaWin.is_on_all_workspaces()) ? 255 : 0,
+
                     x: ((metaWin.minimized) ? 0 : compositor.x) - monitor.x,
                     y: ((metaWin.minimized) ? 0 : compositor.y) - monitor.y,
                     width: (metaWin.minimized) ? 0 : compositor.width,
                     height: (metaWin.minimized) ? 0 : compositor.height,
+
+                    translation_x: 0,
+                    scale_x: 1,
+                    scale_y: 1,
                     rotation_angle_y: 0.0,
+
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
                 });
@@ -471,20 +509,34 @@ Switcher.prototype = {
 
             // panels
             let panels = this.getPanels();
-            if (this._settings.hide_panel) {
-                panels.forEach(function(panel) {
-                    Tweener.removeTweens(panel.actor);
-                    Tweener.addTween(panel.actor, {
-                        opacity: 255,
-                        time: this._settings.animation_time,
-                        transition: TRANSITION_TYPE}
-                    );
-                }, this);
+            for (let panel of panels){
+                try {
+                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                    panelActor.set_reactive(true);
+                    if (this._settings.hide_panel) {
+                        this._manager.platform.removeTweens(panelActor);
+                        this._manager.platform.tween(panelActor, {
+                            opacity: 255,
+                            time: this._settings.animation_time,
+                            transition: TRANSITION_TYPE}
+                        );
+                    }
+                } catch (e) {
+                    //ignore fake panels
+                }
             }
-            panels.forEach(function(panel) { panel.actor.set_reactive(true); });
+            // show gnome-shell legacy tray
+            try {
+                if (Main.legacyTray) {
+                    Main.legacyTray.actor.show();
+                }
+            } catch (e) {
+                //ignore missing legacy tray
+            }
 
-            this._manager.platform.undimBackground(Lang.bind(this, this._onHideBackgroundCompleted));
-            this._disableMonitorFix();
+            this._manager.platform.undimBackground(
+                Lang.bind(this, this._onHideBackgroundCompleted)
+            );
         }
 
         if (this._haveModal) {
@@ -492,10 +544,12 @@ Switcher.prototype = {
             this._haveModal = false;
         }
 
-        if (this._initialDelayTimeoutId != 0)
+        if (this._initialDelayTimeoutId !== 0) {
             Mainloop.source_remove(this._initialDelayTimeoutId);
-        if (this._checkDestroyedTimeoutId != 0)
+        }
+        if (this._checkDestroyedTimeoutId !== 0) {
             Mainloop.source_remove(this._checkDestroyedTimeoutId);
+        }
 
         this._windowManager.disconnect(this._dcid);
         this._windowManager.disconnect(this._mcid);
@@ -506,39 +560,19 @@ Switcher.prototype = {
         this._previews = null;
         this._initialDelayTimeoutId = null;
         this._checkDestroyedTimeoutId = null;
-    },
+    }
 
-    getPanels: function() {
+    getPanels() {
         let panels = [Main.panel];
-        if(Main.panel2)
+        if (Main.panel2)
             panels.push(Main.panel2);
+        // gnome-shell dash
+        if (Main.overview._dash)
+            panels.push(Main.overview._dash);
         return panels;
-    },
+    }
 
-    destroy: function() {
+    destroy() {
         this._onDestroy();
-    },
-
-    _enableMonitorFix: function() {
-        if(global.screen.get_n_monitors() < 2)
-            return;
-
-        // TODO: figure wtf they're trying to do here
-        // this._updateActiveMonitor();
-        // this._monitorFix = true;
-        // this._oldWidth = global.stage.width;
-        // this._oldHeight = global.stage.height;
-
-        // let width = 2 * (this._activeMonitor.x + this._activeMonitor.width/2);
-        // let height = 2 * (this._activeMonitor.y + this._activeMonitor.height/2);
-
-        // global.stage.set_size(width, height);
-    },
-
-    _disableMonitorFix: function() {
-        if(this._monitorFix) {
-            global.stage.set_size(this._oldWidth, this._oldHeight);
-            this._monitorFix = false;
-        }
     }
 };
