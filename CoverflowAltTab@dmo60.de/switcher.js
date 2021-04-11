@@ -385,36 +385,17 @@ class Switcher {
 
     // allow navigating by mouse-wheel scrolling
     _scrollEvent(actor, event) {
-    	if (!this._checkSwitchTime())
-    		return true;
-
         switch (event.get_scroll_direction()) {
-        	case Clutter.ScrollDirection.SMOOTH:
-        		let [dx, dy] = event.get_scroll_delta();
-        		if (Math.abs(dx) > Math.abs(dy)) {
-        			if (dx > 0)
-        				this._next();
-        			else
-        				this._previous();
-        		} else {
-        			if (dy > 0)
-        				this._next();
-        			else
-        				this._previous();
-        		}
-                return true;
-
         	case Clutter.ScrollDirection.LEFT:
         	case Clutter.ScrollDirection.UP:
-                this._previous();
-                return true;
+              this._previous();
+              return true;
 
         	case Clutter.ScrollDirection.RIGHT:
         	case Clutter.ScrollDirection.DOWN:
-                this._next();
-                return true;
+              this._next();
+              return true;
         }
-
         return true;
     }
 
