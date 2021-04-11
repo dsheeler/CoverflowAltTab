@@ -264,7 +264,7 @@ class CoverflowSwitcher extends BaseSwitcher {
             } else if (index > this._currentIndex) {
                 preview.set_pivot_point_placement(Placement.RIGHT);
             }
-	}
+        }
 
         let tweenParams = {
             x: preview.center_position.x,
