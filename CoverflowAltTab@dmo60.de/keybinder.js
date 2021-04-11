@@ -19,7 +19,7 @@
 
 /* CoverflowAltTab::Keybinder
  *
- * These are helper classes to handle the different keybinding apis.
+ * Originally, created to be helper classes to handle the different keybinding APIs.
  */
 
 const Lang = imports.lang;
@@ -27,17 +27,9 @@ const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Config = imports.misc.config;
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-const {
-    __ABSTRACT_METHOD__,
-} = ExtensionImports.lib;
-
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 class AbstractKeybinder {
     enable() { __ABSTRACT_METHOD__(this, this.enable) }
@@ -67,52 +59,5 @@ class Keybinder330Api extends AbstractKeybinder {
         Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Lang.bind(Main.wm, Main.wm._startSwitcher));
-    }
-}
-
-class KeybinderNewApi extends AbstractKeybinder {
-    enable(startAppSwitcherBind) {
-        Meta.keybindings_set_custom_handler('switch-applications', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-windows', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-group', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-panels', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-applications-backward', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-windows-backward', startAppSwitcherBind);
-        Meta.keybindings_set_custom_handler('switch-group-backward', startAppSwitcherBind);
-    }
-
-    disable() {
-        Meta.keybindings_set_custom_handler('switch-applications', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Meta.keybindings_set_custom_handler('switch-windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Meta.keybindings_set_custom_handler('switch-group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Meta.keybindings_set_custom_handler('switch-panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
-        Meta.keybindings_set_custom_handler('switch-applications-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Meta.keybindings_set_custom_handler('switch-windows-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Meta.keybindings_set_custom_handler('switch-group-backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-    }
-}
-
-class KeybinderOldApi extends AbstractKeybinder {
-    enable(startAppSwitcherBind) {
-        let wrapperBind = Lang.bind(this, function(wm, binding, mask, window, backwards) {
-            let bindingWrapper = {
-                get_mask: function() { return mask; },
-                get_name: function() { return binding.replace('_', '-'); }
-            };
-            startAppSwitcherBind(global.display, global.screen, window, bindingWrapper);
-        });
-        Main.wm.setKeybindingHandler('switch_windows', wrapperBind);
-        Main.wm.setKeybindingHandler('switch_group', wrapperBind);
-        Main.wm.setKeybindingHandler('switch_panels', wrapperBind);
-        Main.wm.setKeybindingHandler('switch_windows_backward', wrapperBind);
-        Main.wm.setKeybindingHandler('switch_group_backward', wrapperBind);
-    }
-
-    disable() {
-        Main.wm.setKeybindingHandler('switch_windows', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Main.wm.setKeybindingHandler('switch_group', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Main.wm.setKeybindingHandler('switch_panels', Lang.bind(Main.wm, Main.wm._startA11ySwitcher));
-        Main.wm.setKeybindingHandler('switch_windows_backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
-        Main.wm.setKeybindingHandler('switch_group_backward', Lang.bind(Main.wm, Main.wm._startAppSwitcher));
     }
 }

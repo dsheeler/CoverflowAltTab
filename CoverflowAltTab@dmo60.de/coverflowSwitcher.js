@@ -24,13 +24,7 @@ const Lang = imports.lang;
 const Config = imports.misc.config;
 
 const Clutter = imports.gi.Clutter;
-
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 
@@ -49,8 +43,7 @@ const PREVIEW_SCALE = 0.5;
 function appendParams(base, extra) {
     for (let key in extra) {
         base[key] = extra[key];
-}
-
+    }
 }
 
 class CoverflowSwitcher extends BaseSwitcher {
@@ -240,7 +233,7 @@ class CoverflowSwitcher extends BaseSwitcher {
             this._requiresUpdate = false;
             this._updatePreviews();
         }
-        }
+    }
     // TODO: Remove unused direction variable
     _animatePreviewToMid(preview, animation_time, extraParams = []) {
         preview.make_top_layer(this.previewActor);
@@ -259,7 +252,7 @@ class CoverflowSwitcher extends BaseSwitcher {
             transition: TRANSITION_TYPE,
         };
 
-            appendParams(tweenParams, extraParams);
+        appendParams(tweenParams, extraParams);
 
         this._manager.platform.tween(preview, tweenParams);
     }

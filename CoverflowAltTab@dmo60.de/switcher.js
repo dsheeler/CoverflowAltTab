@@ -37,16 +37,9 @@ const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
-const {
-    __ABSTRACT_METHOD__,
-} = ExtensionImports.lib;
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 
 class Switcher {
@@ -108,8 +101,6 @@ class Switcher {
     }
 
     show() {
-        this._enableMonitorFix();
-
         let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
@@ -543,8 +534,9 @@ class Switcher {
                 //ignore missing legacy tray
             }
 
-            this._manager.platform.undimBackground(Lang.bind(this, this._onHideBackgroundCompleted));
-            this._disableMonitorFix();
+            this._manager.platform.undimBackground(
+                Lang.bind(this, this._onHideBackgroundCompleted)
+            );
         }
 
         if (this._haveModal) {
@@ -582,29 +574,5 @@ class Switcher {
 
     destroy() {
         this._onDestroy();
-    }
-
-    _enableMonitorFix() {
-        if (Config.PACKAGE_VERSION >= '3.36')
-            return;
-        if (this._manager.display.get_n_monitors() < 2)
-            return;
-
-        this._updateActiveMonitor();
-        this._monitorFix = true;
-        this._oldWidth = global.stage.width;
-        this._oldHeight = global.stage.height;
-
-        let width = 2 * (this._activeMonitor.x + this._activeMonitor.width / 2);
-        let height = 2 * (this._activeMonitor.y + this._activeMonitor.height / 2);
-
-        global.stage.set_size(width, height);
-    }
-
-    _disableMonitorFix() {
-        if (this._monitorFix) {
-            global.stage.set_size(this._oldWidth, this._oldHeight);
-            this._monitorFix = false;
-        }
     }
 };

@@ -15,9 +15,10 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* CoverflowAltTab
+/*
+ * CoverflowAltTab
  *
- * Preferences dialog for gnome-shell-extensions-prefs tool
+ * Preferences dialog for "gnome-extensions prefs" tool
  */
 
 const Gtk = imports.gi.Gtk;
@@ -32,8 +33,6 @@ const Lib = ExtensionImports.lib;
 
 const SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
 
-const PACKAGE_VERSION = Config.PACKAGE_VERSION;
-
 let settings;
 
 function init() {
@@ -43,13 +42,13 @@ function init() {
 
 function getBaseString(translatedString) {
 	switch (translatedString) {
-	case _("Coverflow"): return "Coverflow";
-	case _("Timeline"): return "Timeline";
-	case _("Bottom"): return "Bottom";
-	case _("Top"): return "Top";
-	case _("Classic"): return "Classic";
-	case _("Overlay"): return "Overlay";
-	default: return translatedString;
+		case _("Coverflow"): return "Coverflow";
+		case _("Timeline"): return "Timeline";
+		case _("Bottom"): return "Bottom";
+		case _("Top"): return "Top";
+		case _("Classic"): return "Classic";
+		case _("Overlay"): return "Overlay";
+		default: return translatedString;
 	}
 }
 
@@ -63,12 +62,6 @@ function buildPrefsWidget() {
 		spacing: 10
 	});
 
-    if (PACKAGE_VERSION <= "3.4.0") {
-        let label = new Gtk.Label({label: _("<b>Please restart Gnome-Shell to apply changes! "+
-        "(Hit Alt+F2, type 'r' and press Enter)\n</b>")});
-        label.set_use_markup(true);
-        frame.append(label);
-    }
 	frame.append(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
 	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
 	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
@@ -129,7 +122,7 @@ function buildRange(key, values, labeltext, tooltip) {
 	hbox.append(range);
 
 	return hbox;
-};
+}
 
 function buildRadio(key, buttons, labeltext) {
 	let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 10 });
@@ -176,22 +169,25 @@ function buildSpin(key, values, labeltext) {
 	hbox.append(spin);
 
 	return hbox;
-
-};
+}
 
 function buildComboBox(key, values, labeltext) {
 
-    let hbox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL,
-                            margin_top: 5});
+    let hbox = new Gtk.Box({
+		orientation: Gtk.Orientation.HORIZONTAL,
+        margin_top: 5
+	});
 
-    let setting_label = new Gtk.Label({label: labeltext,
-                                       xalign: 0 });
-	
+    let setting_label = new Gtk.Label({
+		label: labeltext,
+        xalign: 0
+	});
+
 	let setting_enum = new Gtk.ComboBoxText({
 		tooltip_text: labeltext
 	});
 
-	for (let i=0; i<values.length; i++) {
+	for (let i = 0; i < values.length; i++) {
 		let item = values[i];
 		setting_enum.append(item.id, item.name);
 
@@ -202,7 +198,7 @@ function buildComboBox(key, values, labeltext) {
 
     setting_enum.connect('changed', function(entry) {
         let id = setting_enum.get_active_id();
-		
+
         settings.set_string(key, id);
     });
 
@@ -210,5 +206,4 @@ function buildComboBox(key, values, labeltext) {
     hbox.append(setting_enum);
 
     return hbox;
-
 }

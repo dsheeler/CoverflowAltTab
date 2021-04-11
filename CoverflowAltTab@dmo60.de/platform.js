@@ -17,9 +17,10 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* CoverflowAltTab::Platform
+/*
+ * CoverflowAltTab::Platform
  *
- * These are helper classes to handle gnome-shell / cinnamon differences.
+ * Originally, created to be helper classes to handle Gnome Shell and Cinnamon differences.
  */
 
 const Lang = imports.lang;
@@ -30,17 +31,7 @@ const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Clutter = imports.gi.Clutter;
 
-let Tweener = null;
-if (Config.PACKAGE_NAME == 'cinnamon' || Config.PACKAGE_VERSION <= "3.37") {
-    Tweener = imports.ui.tweener;
-}
-
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
@@ -63,8 +54,12 @@ class AbstractPlatform {
 
     getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass) }
     getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker) }
+    getPrimaryModifier(mask) { __ABSTRACT_METHOD__(this, this.getPrimaryModifier) }
 
     getSettings() { __ABSTRACT_METHOD__(this, this.getSettings) }
+
+    tween(actor, params) { __ABSTRACT_METHOD__(this, this.tween) }
+    removeTweens(actor) { __ABSTRACT_METHOD__(this, this.removeTweens) }
 
     getDefaultSettings() {
         return {
@@ -79,10 +74,6 @@ class AbstractPlatform {
             elastic_mode: false,
             current_workspace_only: '1',
         };
-    }
-
-    getPrimaryModifier(mask) {
-    	return imports.ui.altTab.primaryModifier(mask);
     }
 
     initBackground() {
@@ -113,173 +104,7 @@ class AbstractPlatform {
     removeBackground() {
     	global.overlay_group.remove_actor(this._background);
     }
-
-    tween(actor, params) {
-        throw new Error("Abstract method tween not implemented");
-    }
-
-    removeTweens(actor) {
-        throw new Error("Abstract method removeTweens not implemented");
-    }
 }
-
-class PlatformCinnamon extends AbstractPlatform {
-    constructor(...args) {
-        super(...args);
-
-        this._settings = null;
-        this._configMonitor = null;
-        this._configConnection = null;
-
-        let ExtensionMeta = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-        let ExtensionDir = imports.ui.extensionSystem.extensionMeta["CoverflowAltTab@dmo60.de"].path;
-        this._configFile = ExtensionDir + '/config.js';
-    }
-
-    enable() {
-        this.disable();
-
-        // watch for file changes
-        let file = Gio.file_new_for_path(this._configFile);
-        this._configMonitor = file.monitor(Gio.FileMonitorFlags.NONE, null);
-        this._configConnection = this._configMonitor.connect('changed', Lang.bind(this, this._onConfigUpdate));
-    }
-
-    disable() {
-        if(this._configMonitor) {
-            this._configMonitor.disconnect(this._configConnection);
-            this._configMonitor.cancel();
-            this._configMonitor = null;
-            this._configConnection = null;
-        }
-    }
-
-    getWidgetClass() {
-        return St.Group;
-    }
-
-    getWindowTracker() {
-        return imports.gi.Cinnamon.WindowTracker.get_default();
-    }
-
-    getSettings() {
-        if (!this._settings) {
-            this._settings = this._loadSettings();
-        }
-        return this._settings;
-    }
-
-    _onConfigUpdate() {
-        this._settings = null;
-    }
-
-    _convertConfigToSettings(config) {
-        return {
-            animation_time: Math.max(config.animation_time, 0),
-            dim_factor: clamp(config.dim_factor, 0, 1),
-            title_position: (config.title_position == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
-            icon_style: (config.icon_style == 'Overlay' ? 'Overlay' : 'Classic'),
-            offset: config.offset,
-            hide_panel: config.hide_panel === true,
-            enforce_primary_monitor: config.enforce_primary_monitor === true,
-            elastic_mode: config.elastic_mode === true,
-            switcher_class: config.switcher_style == 'Timeline' ? TimelineSwitcher :
-                CoverflowSwitcher,
-            current_workspace_only: config.current_workspace_only
-        };
-    }
-
-    _loadSettings() {
-        try {
-            let file = Gio.file_new_for_path(this._configFile);
-            if(file.query_exists(null)) {
-                let [flag, data] = file.load_contents(null);
-                if(flag) {
-                    let config = eval('(' + data + ')');
-                    return this._convertConfigToSettings(config);
-                }
-            }
-            global.log("Could not load file: " + this._configFile);
-        } catch(e) {
-            global.log(e);
-        }
-
-        return this.getDefaultSettings();
-    }
-
-    tween(actor, params) {
-        Tweener.addTween(actor, params);
-    }
-
-    removeTweens(actor) {
-        Tweener.removeTweens(actor);
-    }
-};
-
-class PlatformCinnamon18 extends AbstractPlatform {
-    constructor(...args) {
-        super(...args);
-
-        this._settings = this.getDefaultSettings();
-        this._settings.updateSwitcherStyle = () => {
-            this.switcher_class = this.switcher_style == 'Timeline' ? TimelineSwitcher :
-                CoverflowSwitcher;
-        };
-        this._settings.updateTitlePosition = () => {
-            this.title_position = this.titlePosition == 'Top' ? POSITION_TOP : POSITION_BOTTOM;
-        };
-
-
-        let Settings = imports.ui.settings;
-
-        // Init settings
-        let extSettings = new Settings.ExtensionSettings(this._settings, "CoverflowAltTab@dmo60.de");
-        function noop() {}
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "animation-time", "animation_time", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "dim-factor", "dim_factor", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "title-position", "titlePosition", this._settings.updateTitlePosition);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "icon-style", "icon_style", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "offset", "offset", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "hide-panel", "hide_panel", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "enforce-primary-monitor", "enforce_primary_monitor", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "elastic-mode", "elastic_mode", noop);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "switcher-style", "switcher_style", this._settings.updateSwitcherStyle);
-        extSettings.bindProperty(Settings.BindingDirection.ONE_WAY, "current-workspace-only", "current_workspace_only", noop);
-
-        this._settings.updateSwitcherStyle();
-        this._settings.updateTitlePosition();
-    }
-
-    // Prevent from throwing exceptions on calling these methods
-    enable() {}
-    disable() {}
-
-    getWidgetClass() {
-        return St.Group;
-    }
-
-    getWindowTracker() {
-        return imports.gi.Cinnamon.WindowTracker.get_default();
-    }
-
-    getSettings() {
-        return this._settings;
-    }
-
-    getPrimaryModifier(mask) {
-    	return imports.ui.appSwitcher.appSwitcher.primaryModifier(mask);
-    }
-
-    tween(actor, params) {
-        Tweener.addTween(actor, params);
-    }
-
-    removeTweens(actor) {
-        Tweener.removeTweens(actor);
-    }
-
-}
-
 
 class PlatformGnomeShell extends AbstractPlatform {
     constructor(...args) {
@@ -293,7 +118,7 @@ class PlatformGnomeShell extends AbstractPlatform {
     enable() {
         this.disable();
 
-        if(this._gioSettings == null)
+        if (this._gioSettings == null)
             this._gioSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
 
         let keys = [
@@ -317,7 +142,7 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     disable() {
-        if(this._connections) {
+        if (this._connections) {
             for (let connection of this._connections) {
                 this._gioSettings.disconnect(connection);
             }
@@ -332,6 +157,10 @@ class PlatformGnomeShell extends AbstractPlatform {
 
     getWindowTracker() {
         return imports.gi.Shell.WindowTracker.get_default();
+    }
+
+    getPrimaryModifier(mask) {
+        return imports.ui.switcherPopup.primaryModifier(mask);
     }
 
     getSettings() {
@@ -361,7 +190,7 @@ class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only")
             };
-        } catch(e) {
+        } catch (e) {
             global.log(e);
         }
 
@@ -369,10 +198,6 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     tween(actor, params) {
-        if (Tweener) {
-            return Tweener.addTween(actor, params);
-        }
-
         if (params.transition == "easeOutCubic") {
             params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
         } else {
@@ -394,50 +219,40 @@ class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeTweens(actor) {
-        if (Tweener) {
-            return Tweener.removeTweens(actor);
-        }
-
         actor.remove_all_transitions();
     }
 
-}
-
-class PlatformGnomeShell314 extends PlatformGnomeShell {
-    getPrimaryModifier(mask) {
-	    	return imports.ui.switcherPopup.primaryModifier(mask);
-	        }
-
     initBackground() {
-	    	let Background = imports.ui.background;
+    	let Background = imports.ui.background;
 
-	    	this._backgroundGroup = new Meta.BackgroundGroup();
+    	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-	    	if (this._backgroundGroup.lower_bottom) {
-	    	        this._backgroundGroup.lower_bottom();
-                } else {
-	    	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
-                }
+    	if (this._backgroundGroup.lower_bottom) {
+	        this._backgroundGroup.lower_bottom();
+        } else {
+	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+        }
+
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
                 container: this._backgroundGroup,
-                                               monitorIndex: i,
+                monitorIndex: i,
                 vignette: true
             });
         }
     }
 
     dimBackground() {
-	    	this._backgroundGroup.show();
+    	this._backgroundGroup.show();
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
             this.tween(background, {
-                               brightness: 0.8,
-                               vignette_sharpness: 1 - this.getSettings().dim_factor,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE
-                             });
+                brightness: 0.8,
+                vignette_sharpness: 1 - this.getSettings().dim_factor,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE
+            });
         }
     }
 
@@ -445,16 +260,16 @@ class PlatformGnomeShell314 extends PlatformGnomeShell {
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
             this.tween(background, {
-                               brightness: 1.0,
-                               vignette_sharpness: 0.0,
-                               time: this.getSettings().animation_time,
-                               transition: TRANSITION_TYPE,
-                               onComplete: onCompleteBind
-                             });
+                brightness: 1.0,
+                vignette_sharpness: 0.0,
+                time: this.getSettings().animation_time,
+                transition: TRANSITION_TYPE,
+                onComplete: onCompleteBind
+            });
         }
     }
 
     removeBackground() {
-	    	Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
+        Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
 	}
 }

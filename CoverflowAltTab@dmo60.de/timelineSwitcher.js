@@ -22,15 +22,9 @@
 
 const Lang = imports.lang;
 const Config = imports.misc.config;
-
 const Clutter = imports.gi.Clutter;
 
-let ExtensionImports;
-if (Config.PACKAGE_NAME === "cinnamon") {
-    ExtensionImports = imports.ui.extensionSystem.extensions["CoverflowAltTab@dmo60.de"];
-} else {
-    ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-}
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
 const BaseSwitcher = ExtensionImports.switcher.Switcher;
 

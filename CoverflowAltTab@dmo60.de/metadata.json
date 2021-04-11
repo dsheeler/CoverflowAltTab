@@ -1,20 +1,5 @@
 {
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
-    "cinnamon-version": [
-        "1.2",
-        "1.4",
-        "1.6",
-        "1.8",
-        "1.9",
-        "2.0",
-        "2.1",
-        "2.2",
-        "2.3",
-        "2.4",
-        "2.8",
-        "3.0",
-	    "3.2"
-    ],
     "shell-version": [
         "40"
     ],

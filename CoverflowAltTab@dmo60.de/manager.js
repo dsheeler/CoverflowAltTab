@@ -143,4 +143,4 @@ class Manager {
             let switcher = new switcher_class(windows, mask, currentIndex, this);
         }
     }
-};
+}
