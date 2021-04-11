@@ -74,5 +74,11 @@
     "default" : false,
     "description": "Elastic animations",
     "tooltip": "Use elastic animation style when toggling switcher"
+ },
+ "switch-per-monitor": {
+    "type" : "checkbox",
+    "default" : false,
+    "description" : "Per monitor window switch",
+    "tooltip" : "Switch between windows on current monitor (monitor with the mouse cursor)"
  }
 }

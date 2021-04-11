@@ -26,6 +26,24 @@ function matchWorkspace(win) {
     return win.get_workspace() == this && !win.is_skip_taskbar();
 }
 
+function matchMonitor(win ) {
+    let compositor = win.get_compositor_private();
+    let activeMonitor = this;
+
+    let a = compositor;
+    let b = activeMonitor;
+
+    // aabb collision
+    if (a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.height + a.y > b.y) {
+        return true;
+    }
+
+    return false;
+}
+
 function Manager(platform, keybinder) {
     this._init(platform, keybinder);
 }
@@ -54,7 +72,29 @@ Manager.prototype = {
         win.delete(global.get_current_time());
     },
 
+    getActiveMonitor: function() {
+        let x, y, mask;
+        [x, y, mask] = global.get_pointer();
+        try {
+            for each (var currentMonitor in Main.layoutManager.monitors){
+                var minX = currentMonitor.x;
+                var minY = currentMonitor.y;
+                var maxX = minX + currentMonitor.width;
+                var maxY = minY + currentMonitor.height;
+
+                if(x >= minX && x < maxX && y >= minY && y < maxY) {
+                    return currentMonitor;
+                }
+            }
+        } catch(e) {
+            global.log("caught: " + e);
+        }
+
+        return Main.layoutManager.primaryMonitor;
+    },
+
     _startWindowSwitcher: function(display, screen, window, binding) {
+
         let windows = [];
         let currentWorkspace = screen.get_active_workspace();
 
@@ -79,6 +119,12 @@ Manager.prototype = {
                 // Switch between windows of current workspace
                 windows = windows.filter( matchWorkspace, currentWorkspace );
                 break;
+        }
+
+        // filter by windows existing on the active monitor
+        if(this.platform.getSettings().switch_per_monitor)
+        {
+            windows = windows.filter ( matchMonitor, this.getActiveMonitor() );
         }
 
         // Sort by user time

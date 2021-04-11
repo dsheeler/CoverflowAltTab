@@ -59,5 +59,10 @@
         <summary>Elastic in/out animations when toggling Coverflow</summary>
         <description>Whether to show an elastic animation when Coverflow is toggled.</description>
     </key>
+    <key type="b" name="switch-per-monitor">
+        <default>false</default>
+        <summary>Per monitor window switch</summary>
+        <description>Switch between windows on current monitor (monitor with the mouse cursor)</description>
+    </key>
   </schema>
 </schemalist>

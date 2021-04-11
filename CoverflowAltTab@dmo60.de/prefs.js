@@ -52,6 +52,7 @@ function buildPrefsWidget() {
 	frame.add(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
 	frame.add(buildSwitcher("elastic-mode", _("Elastic animations")));
 	frame.add(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
+	frame.add(buildSwitcher("switch-per-monitor", _("Only switch between windows on current monitor")));
 
 	frame.show_all();
 
