@@ -44,7 +44,11 @@ translations: ${LOCALES_FILE}
 	msgfmt "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/nl/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/nl/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/ru/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/ru/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/sv/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/sv/LC_MESSAGES/coverflow.mo"
+	msgfmt "${LOCALE_DIR}/tr/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/tr/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.mo"
 	msgfmt "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.mo"
 

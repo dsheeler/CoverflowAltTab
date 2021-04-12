@@ -1,0 +1,105 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the coverflow package.
+# Morgan Antonsson <morgan.antonsson@gmail.com>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 16:06+0800\n"
+"PO-Revision-Date: 2021-04-12 11:58+0200\n"
+"Last-Translator: Morgan Antonsson <morgan.antonsson@gmail.com>\n"
+"Language-Team: \n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:46 CoverflowAltTab@dmo60.de/prefs.js:67
+msgid "Coverflow"
+msgstr "Täckflöde"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:67
+msgid "Timeline"
+msgstr "Tidslinje"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:70
+msgid "Bottom"
+msgstr "Under"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:70
+msgid "Top"
+msgstr "Över"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:71
+msgid "Classic"
+msgstr "Klassisk"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:51 CoverflowAltTab@dmo60.de/prefs.js:71
+msgid "Overlay"
+msgstr "Överlagrad"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:60
+msgid ""
+"<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
+"press Enter)\n"
+"</b>"
+msgstr ""
+"<b> Starta om Gnome-Shell för att tillämpa ändringarna! (Tryck Alt + F2, "
+"skriv 'r' och tryck Enter)\n"
+"</b>"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:65
+msgid "Hide panel during Coverflow"
+msgstr "Dölj panelen under växling"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:66
+msgid "Always show the switcher on the primary monitor"
+msgstr "Visa alltid växlaren på den primära bildskärmen"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:67
+msgid "Switcher style"
+msgstr "Stil för växlare"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:68
+msgid "Animation speed (smaller means faster)"
+msgstr "Animationshastighet (mindre betyder snabbare)"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:69
+msgid "Background dim-factor (smaller means darker)"
+msgstr "Bakgrundens dämpningsfaktor (mindre betyder mörkare)"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:70
+msgid "Window title box position"
+msgstr "Position för fönstrets titelruta"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:71
+msgid "Application icon style"
+msgstr "Applikationsikonstil"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:72
+msgid "Elastic animations"
+msgstr "Elastiska animationer"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:73
+msgid "Vertical offset (positive value moves everything up, negative down)"
+msgstr ""
+"Vertikal förskjutning (positivt värde flyttar allt uppåt, negativt nedåt)"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:75
+msgid "Current workspace only"
+msgstr "Endast nuvarande arbetsyta"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:77
+msgid "All workspaces"
+msgstr "Alla arbetsytor"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:79
+msgid "All workspaces, current first"
+msgstr "Alla arbetsytor, nuvarande först"
+
+#: CoverflowAltTab@dmo60.de/prefs.js:81
+msgid "Show windows from current or all workspaces"
+msgstr "Visa fönster från nuvarande eller alla arbetsytor"
