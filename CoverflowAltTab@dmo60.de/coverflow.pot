@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coverflow\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-24 16:06+0800\n"
+"POT-Creation-Date: 2021-04-16 00:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,28 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:46 CoverflowAltTab@dmo60.de/prefs.js:67
+#: CoverflowAltTab@dmo60.de/prefs.js:45 CoverflowAltTab@dmo60.de/prefs.js:67
 msgid "Coverflow"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:67
+#: CoverflowAltTab@dmo60.de/prefs.js:46 CoverflowAltTab@dmo60.de/prefs.js:67
 msgid "Timeline"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:70
+#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:70
 msgid "Bottom"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:70
+#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:70
 msgid "Top"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:71
+#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:71
 msgid "Classic"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:51 CoverflowAltTab@dmo60.de/prefs.js:71
+#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:71
 msgid "Overlay"
-msgstr ""
-
-#: CoverflowAltTab@dmo60.de/prefs.js:60
-msgid ""
-"<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
-"press Enter)\n"
-"</b>"
 msgstr ""
 
 #: CoverflowAltTab@dmo60.de/prefs.js:65
@@ -98,4 +91,8 @@ msgstr ""
 
 #: CoverflowAltTab@dmo60.de/prefs.js:81
 msgid "Show windows from current or all workspaces"
+msgstr ""
+
+#: CoverflowAltTab@dmo60.de/prefs.js:82
+msgid "Only switch between windows on current monitor"
 msgstr ""
