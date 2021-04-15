@@ -30,23 +30,28 @@ SUPER_PATH := /usr/share/gnome-shell/extensions
 SRC_DIR := CoverflowAltTab@dmo60.de
 LOCALE_DIR=${SRC_DIR}/locale
 PROJECT_NAME := coverflow
+POT_FILE := ${SRC_DIR}/${PROJECT_NAME}.pot
+PO_FILES := $(wildcard $(LOCALE_DIR)/*/*/*.po)
+MO_FILES := $(PO_FILES:.po=.mo)
 
 SCHEMA_DIR=${SRC_DIR}/schemas
 SCHEMA_FILE=org.gnome.shell.extensions.coverflowalttab.gschema.xml
 
 all: translations schema install
 
-${SRC_DIR}/${PROJECT_NAME}.pot:
+${SRC_DIR}/${PROJECT_NAME}.pot: ${SRC_DIR}/*.js
 	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${PROJECT_NAME}
 
-translations: ${LOCALES_FILE}
-	msgfmt "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/cs/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/de/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/fr/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/it/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/pt_BR/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_CN/LC_MESSAGES/coverflow.mo"
-	msgfmt "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.po" -o "${LOCALE_DIR}/zh_TW/LC_MESSAGES/coverflow.mo"
+translations: $(MO_FILES)
+
+%.mo: %.po
+	msgfmt --check --output-file=$@ $<
+
+mergepo: $(POT_FILE)
+	@for po in $(PO_FILES); \
+	do \
+		msgmerge --add-location --backup=none --update $${po} $(POT_FILE); \
+	done;
 
 ifneq ($(LOCALINSTALL),)
 INSTALL_PATH = $(SUPER_PATH)
