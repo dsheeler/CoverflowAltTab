@@ -57,7 +57,7 @@ var Switcher = class Switcher {
         this._checkDestroyedTimeoutId = 0;
         this._requiresUpdate = false;
         this._previews = [];
-
+        this._numPreviewsComplete = 0
         this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
         this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
 
@@ -428,7 +428,32 @@ var Switcher = class Switcher {
     }
 
     _activateSelected() {
-        this._manager.activateSelectedWindow(this._windows[this._currentIndex]);
+        if (this._settings.elastic_mode)
+            TRANSITION_TYPE = 'easeOutElastic';
+        else
+            TRANSITION_TYPE = 'easeOutCubic';
+        let monitor = this._updateActiveMonitor();
+
+        let win = this._windows[this._currentIndex];
+        let preview = this._previews[this._currentIndex];
+        let compositor = win.get_compositor_private();
+        preview.make_top_layer(this.previewActor);
+
+        this._manager.platform.tween(preview, {
+            x: ((win.minimized) ? 0 : compositor.x) - monitor.x,
+            y: ((win.minimized) ? 0 : compositor.y) - monitor.y,
+            width: compositor.width,
+            height:  compositor.height,
+
+            translation_x: 0,
+            scale_x: 1,
+            scale_y: 1,
+            rotation_angle_y: 0.0,
+            time: this._settings.animation_time,
+            transition: TRANSITION_TYPE,
+        });
+
+        this._manager.activateSelectedWindow(win);
         this.destroy();
     }
 
@@ -482,10 +507,21 @@ var Switcher = class Switcher {
                     scale_x: 1,
                     scale_y: 1,
                     rotation_angle_y: 0.0,
-
+                    onComplete: Lang.bind(this, this._onPreviewDestroyComplete),
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
                 });
+            }
+
+        }
+    }
+
+    _onPreviewDestroyComplete() {
+        this._numPreviewsComplete += 1
+        if (this._numPreviewsComplete >= this._previews.length) {
+            if (this._haveModal) {
+               Main.popModal(this.actor);
+                this._haveModal = false;
             }
 
             // window title and icon
@@ -522,29 +558,25 @@ var Switcher = class Switcher {
             this._manager.platform.undimBackground(
                 Lang.bind(this, this._onHideBackgroundCompleted)
             );
-        }
 
-        if (this._haveModal) {
-            Main.popModal(this.actor);
-            this._haveModal = false;
-        }
+            if (this._initialDelayTimeoutId !== 0) {
+                Mainloop.source_remove(this._initialDelayTimeoutId);
+            }
 
-        if (this._initialDelayTimeoutId !== 0) {
-            Mainloop.source_remove(this._initialDelayTimeoutId);
-        }
-        if (this._checkDestroyedTimeoutId !== 0) {
-            Mainloop.source_remove(this._checkDestroyedTimeoutId);
-        }
+            if (this._checkDestroyedTimeoutId !== 0) {
+                Mainloop.source_remove(this._checkDestroyedTimeoutId);
+            }
 
-        this._windowManager.disconnect(this._dcid);
-        this._windowManager.disconnect(this._mcid);
-        this._windows = null;
-        this._windowTitle = null;
-        this._icon = null;
-        this._applicationIconBox = null;
-        this._previews = null;
-        this._initialDelayTimeoutId = null;
-        this._checkDestroyedTimeoutId = null;
+            this._windows = null;
+            this._windowTitle = null;
+            this._icon = null;
+            this._applicationIconBox = null;
+            this._previews = null;
+            this._initialDelayTimeoutId = null;
+            this._checkDestroyedTimeoutId = null;
+            this._windowManager.disconnect(this._dcid);
+            this._windowManager.disconnect(this._mcid);
+        }
     }
 
     getPanels() {
