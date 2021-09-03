@@ -215,7 +215,7 @@ var Switcher = class Switcher {
             this._manager.platform.tween(this._windowTitle, {
                 opacity: 0,
                 time: animation_time,
-                transition: TRANSITION_TYPE,
+                transition: 'easeOutCubic',
                 onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._windowTitle),
             });
         }
@@ -234,7 +234,7 @@ var Switcher = class Switcher {
         this._manager.platform.tween(this._windowTitle, {
             opacity: 255,
             time: animation_time,
-            transition: TRANSITION_TYPE,
+            transition: 'easeOutCubic',
         });
 
         let cx = Math.round((monitor.width + label_offset) / 2);
@@ -248,7 +248,7 @@ var Switcher = class Switcher {
             this._manager.platform.tween(this._applicationIconBox, {
                 opacity: 0,
                 time: animation_time,
-                transition: TRANSITION_TYPE,
+                transition: 'easeOutCubic',
                 onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._applicationIconBox),
             });
         }
@@ -288,7 +288,7 @@ var Switcher = class Switcher {
         this._manager.platform.tween(this._applicationIconBox, {
             opacity: 255,
             time: animation_time,
-            transition: TRANSITION_TYPE,
+            transition: 'easeOutCubic',
         });
     }
 
