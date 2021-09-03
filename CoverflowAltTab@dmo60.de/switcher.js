@@ -482,6 +482,10 @@ var Switcher = class Switcher {
 
         let monitor = this._updateActiveMonitor();
 
+        // window title and icon
+        this._windowTitle.hide();
+        this._applicationIconBox.hide();
+
         if (this._initialDelayTimeoutId === 0) {
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
@@ -523,10 +527,6 @@ var Switcher = class Switcher {
                Main.popModal(this.actor);
                 this._haveModal = false;
             }
-
-            // window title and icon
-            this._windowTitle.hide();
-            this._applicationIconBox.hide();
 
             // panels
             let panels = this.getPanels();
