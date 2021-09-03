@@ -43,7 +43,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
         super(...args);
 
         if (this._settings.elastic_mode)
-        	TRANSITION_TYPE = 'easeOutBack';
+        	TRANSITION_TYPE = 'easeOutElastic';
         else
         	TRANSITION_TYPE = 'easeOutCubic';
     }
@@ -111,7 +111,6 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     _previewNext() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
         this._updatePreviews(1);
-        TRANSITION_TYPE = 'easeOutCubic';
     }
 
     _previewPrevious() {

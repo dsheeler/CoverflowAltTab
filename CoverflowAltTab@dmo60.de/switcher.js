@@ -451,7 +451,7 @@ var Switcher = class Switcher {
 
     _onDestroy() {
     	if (this._settings.elastic_mode)
-    		TRANSITION_TYPE = 'easeOutBack';
+    		TRANSITION_TYPE = 'easeOutElastic';
     	else
     		TRANSITION_TYPE = 'easeOutCubic';
 
