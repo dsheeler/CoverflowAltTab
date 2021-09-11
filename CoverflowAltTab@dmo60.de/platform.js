@@ -251,11 +251,9 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     	this._backgroundGroup.show();
         let backgrounds = this._backgroundGroup.get_children();
         for (let background of backgrounds) {
-            this.tween(background, {
+            background.content.set({
                 brightness: 0.8,
-                vignette_sharpness: 1 - this.getSettings().dim_factor,
-                time: this.getSettings().animation_time,
-                transition: TRANSITION_TYPE
+                vignette_sharpness: 1 - this.getSettings().dim_factor
             });
         }
     }
