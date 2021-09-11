@@ -202,10 +202,10 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     tween(actor, params) {
-        if (params.transition == "easeOutCubic") {
-            params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+        if (params.transition == "easeOutElastic") {
+            params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
         } else {
-            params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+            params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
         }
 
         if (params.onComplete) {

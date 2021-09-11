@@ -50,10 +50,11 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
 
-        if (this._settings.elastic_mode)
-        	TRANSITION_TYPE = 'easeOutBack';
-        else
-        	TRANSITION_TYPE = 'easeOutCubic';
+        if (this._settings.elastic_mode) {
+            TRANSITION_TYPE = 'easeOutElastic';
+        } else {
+            TRANSITION_TYPE = 'easeOutCubic';
+        }
     }
 
     _createPreviews() {
@@ -128,7 +129,6 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             this._currentIndex = this._currentIndex + 1;
             this._updatePreviews();
         }
-        TRANSITION_TYPE = 'easeOutCubic';
     }
 
     _previewPrevious() {
