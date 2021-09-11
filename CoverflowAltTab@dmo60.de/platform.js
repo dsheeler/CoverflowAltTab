@@ -133,6 +133,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "elastic-mode",
             "current-workspace-only",
             "switch-per-monitor",
+            "switcher-style"
         ];
 
         this._connections = [];
