@@ -20,7 +20,6 @@
  * Extends CoverflowAltTab::Switcher, switching tabs using a timeline
  */
 
-const Lang = imports.lang;
 const Config = imports.misc.config;
 const Clutter = imports.gi.Clutter;
 

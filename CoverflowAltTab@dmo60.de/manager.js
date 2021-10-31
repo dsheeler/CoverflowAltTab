@@ -22,7 +22,6 @@
  * This class is a helper class to start the actual switcher.
  */
 
-const Lang = imports.lang;
 const Main = imports.ui.main;
 
 function sortWindowsByUserTime(win1, win2) {
@@ -65,7 +64,7 @@ var Manager = class Manager {
 
     enable() {
         this.platform.enable();
-        this.keybinder.enable(Lang.bind(this, this._startWindowSwitcher));
+        this.keybinder.enable(this._startWindowSwitcher.bind(this));
     }
 
     disable() {

@@ -23,7 +23,6 @@
  * Originally, created to be helper classes to handle Gnome Shell and Cinnamon differences.
  */
 
-const Lang = imports.lang;
 const St = imports.gi.St;
 const Gio = imports.gi.Gio;
 const Config = imports.misc.config;
@@ -137,7 +136,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         ];
 
         this._connections = [];
-        let bind = Lang.bind(this, this._onSettingsChanged);
+        let bind = this._onSettingsChanged.bind(this);
         for (let key of keys) {
             this._connections.push(this._gioSettings.connect('changed::' + key, bind));
         }
