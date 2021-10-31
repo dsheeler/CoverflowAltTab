@@ -453,7 +453,8 @@ var Switcher = class Switcher {
           });
         }
 
-        this._manager.activateSelectedWindow(win);
+        if (win)
+          this._manager.activateSelectedWindow(win);
         this.destroy();
     }
 
