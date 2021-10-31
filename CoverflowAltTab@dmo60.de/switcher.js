@@ -20,8 +20,6 @@
  * The implementation of the switcher UI. Handles keyboard events.
  */
 
-const Lang = imports.lang;
-
 const Clutter = imports.gi.Clutter;
 const Config = imports.misc.config;
 const St = imports.gi.St;
@@ -58,8 +56,8 @@ var Switcher = class Switcher {
         this._requiresUpdate = false;
         this._previews = [];
         this._numPreviewsComplete = 0
-        this._dcid = this._windowManager.connect('destroy', Lang.bind(this, this._windowDestroyed));
-        this._mcid = this._windowManager.connect('map', Lang.bind(this, this._activateSelected));
+        this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
+        this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
 
         manager.platform.initBackground();
 
@@ -79,9 +77,9 @@ var Switcher = class Switcher {
 
         this._haveModal = true;
 
-        this.actor.connect('key-press-event', Lang.bind(this, this._keyPressEvent));
-        this.actor.connect('key-release-event', Lang.bind(this, this._keyReleaseEvent));
-        this.actor.connect('scroll-event', Lang.bind(this, this._scrollEvent));
+        this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
+        this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
+        this.actor.connect('scroll-event', this._scrollEvent.bind(this));
 
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
@@ -96,7 +94,7 @@ var Switcher = class Switcher {
     			return;
         }
 
-        this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, Lang.bind(this, this.show));
+        this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
 
     show() {
@@ -216,7 +214,7 @@ var Switcher = class Switcher {
                 opacity: 0,
                 time: animation_time,
                 transition: 'easeOutCubic',
-                onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._windowTitle),
+                onComplete: () => this.actor.remove_actor(this._windowTitle),
             });
         }
 
@@ -249,7 +247,7 @@ var Switcher = class Switcher {
                 opacity: 0,
                 time: animation_time,
                 transition: 'easeOutCubic',
-                onComplete: Lang.bind(this.actor, this.actor.remove_actor, this._applicationIconBox),
+                onComplete: () => this.actor.remove_actor(this._applicationIconBox),
             });
         }
 
@@ -311,7 +309,7 @@ var Switcher = class Switcher {
                 this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
                 this._checkDestroyedTimeoutId = Mainloop.timeout_add(
                     CHECK_DESTROYED_TIMEOUT,
-                    Lang.bind(this, this._checkDestroyed, this._windows[this._currentIndex])
+                    () => this._checkDestroyed(this._windows[this._currentIndex])
                 );
                 return true;
 
@@ -428,30 +426,32 @@ var Switcher = class Switcher {
     }
 
     _activateSelected() {
-        if (this._settings.elastic_mode)
-            TRANSITION_TYPE = 'easeOutElastic';
-        else
-            TRANSITION_TYPE = 'easeOutCubic';
-        let monitor = this._updateActiveMonitor();
-
-        let win = this._windows[this._currentIndex];
         let preview = this._previews[this._currentIndex];
-        let compositor = win.get_compositor_private();
-        preview.make_top_layer(this.previewActor);
+        let win = this._windows[this._currentIndex];
+        if (preview) {
+          if (this._settings.elastic_mode)
+              TRANSITION_TYPE = 'easeOutElastic';
+          else
+              TRANSITION_TYPE = 'easeOutCubic';
+          let monitor = this._updateActiveMonitor();
 
-        this._manager.platform.tween(preview, {
-            x: ((win.minimized) ? 0 : compositor.x) - monitor.x,
-            y: ((win.minimized) ? 0 : compositor.y) - monitor.y,
-            width: compositor.width,
-            height:  compositor.height,
+          let compositor = win.get_compositor_private();
+          preview.make_top_layer(this.previewActor);
 
-            translation_x: 0,
-            scale_x: 1,
-            scale_y: 1,
-            rotation_angle_y: 0.0,
-            time: this._settings.animation_time,
-            transition: TRANSITION_TYPE,
-        });
+          this._manager.platform.tween(preview, {
+              x: ((win.minimized) ? 0 : compositor.x) - monitor.x,
+              y: ((win.minimized) ? 0 : compositor.y) - monitor.y,
+              width: compositor.width,
+              height:  compositor.height,
+
+              translation_x: 0,
+              scale_x: 1,
+              scale_y: 1,
+              rotation_angle_y: 0.0,
+              time: this._settings.animation_time,
+              transition: TRANSITION_TYPE,
+          });
+        }
 
         this._manager.activateSelectedWindow(win);
         this.destroy();
@@ -475,18 +475,18 @@ var Switcher = class Switcher {
     }
 
     _onDestroy() {
-    	if (this._settings.elastic_mode)
-    		TRANSITION_TYPE = 'easeOutElastic';
-    	else
-    		TRANSITION_TYPE = 'easeOutCubic';
+      	if (this._settings.elastic_mode)
+      		TRANSITION_TYPE = 'easeOutElastic';
+      	else
+      		TRANSITION_TYPE = 'easeOutCubic';
 
         let monitor = this._updateActiveMonitor();
 
-        // window title and icon
-        this._windowTitle.hide();
-        this._applicationIconBox.hide();
-
         if (this._initialDelayTimeoutId === 0) {
+            // window title and icon
+            this._windowTitle.hide();
+            this._applicationIconBox.hide();
+
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
             for (let [i, preview] of this._previews.entries()) {
@@ -511,17 +511,19 @@ var Switcher = class Switcher {
                     scale_x: 1,
                     scale_y: 1,
                     rotation_angle_y: 0.0,
-                    onComplete: Lang.bind(this, this._onPreviewDestroyComplete),
+                    onComplete: this._onPreviewDestroyComplete.bind(this),
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
                 });
             }
 
+        } else {
+          this._onPreviewDestroyComplete();
         }
     }
 
     _onPreviewDestroyComplete() {
-        this._numPreviewsComplete += 1
+        this._numPreviewsComplete += 1;
         if (this._numPreviewsComplete >= this._previews.length) {
             if (this._haveModal) {
                Main.popModal(this.actor);
@@ -556,7 +558,7 @@ var Switcher = class Switcher {
             }
 
             this._manager.platform.undimBackground(
-                Lang.bind(this, this._onHideBackgroundCompleted)
+                this._onHideBackgroundCompleted.bind(this)
             );
 
             if (this._initialDelayTimeoutId !== 0) {
