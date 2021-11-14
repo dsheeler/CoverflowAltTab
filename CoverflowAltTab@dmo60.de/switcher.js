@@ -210,12 +210,7 @@ var Switcher = class Switcher {
 
         // window title label
         if (this._windowTitle) {
-            this._manager.platform.tween(this._windowTitle, {
-                opacity: 0,
-                time: animation_time,
-                transition: 'easeOutCubic',
-                onComplete: () => this.actor.remove_actor(this._windowTitle),
-            });
+            this.actor.remove_actor(this._windowTitle);
         }
 
         this._windowTitle = new St.Label({
@@ -243,12 +238,7 @@ var Switcher = class Switcher {
 
         // window icon
         if (this._applicationIconBox) {
-            this._manager.platform.tween(this._applicationIconBox, {
-                opacity: 0,
-                time: animation_time,
-                transition: 'easeOutCubic',
-                onComplete: () => this.actor.remove_actor(this._applicationIconBox),
-            });
+            this.actor.remove_actor(this._applicationIconBox);
         }
 
         let app = this._tracker.get_window_app(this._windows[this._currentIndex]);
