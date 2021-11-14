@@ -84,21 +84,11 @@ class AbstractPlatform {
 
     dimBackground() {
     	this._background.show();
-        this.tween(this._background, {
-            dim_factor: this._settings.dim_factor,
-            time: this._settings.animation_time,
-            transition: TRANSITION_TYPE
-        });
-    }
-
-    undimBackground(onCompleteBind) {
-    	this.removeTweens(this._background);
-        this.tween(this._background, {
-            dim_factor: 1.0,
-            time: this._settings.animation_time,
-            transition: TRANSITION_TYPE,
-            onComplete: onCompleteBind,
-        });
+      this.tween(this._background, {
+          dim_factor: this._settings.dim_factor,
+          time: this._settings.animation_time,
+          transition: TRANSITION_TYPE
+      });
     }
 
     removeBackground() {
@@ -253,19 +243,6 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             background.content.set({
                 brightness: 0.8,
                 vignette_sharpness: 1 - this.getSettings().dim_factor
-            });
-        }
-    }
-
-    undimBackground(onCompleteBind) {
-        let backgrounds = this._backgroundGroup.get_children();
-        for (let background of backgrounds) {
-            this.tween(background, {
-                brightness: 1.0,
-                vignette_sharpness: 0.0,
-                time: this.getSettings().animation_time,
-                transition: TRANSITION_TYPE,
-                onComplete: onCompleteBind
             });
         }
     }
