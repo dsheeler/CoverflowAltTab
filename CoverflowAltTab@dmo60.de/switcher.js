@@ -70,7 +70,8 @@ var Switcher = class Switcher {
 
         Main.uiGroup.add_actor(this.actor);
 
-        if (!Main.pushModal(this.actor)) {
+        this.grab = Main.pushModal(this.actor)
+        if (!this.grab) {
             this._activateSelected();
             return;
         }
@@ -517,7 +518,7 @@ var Switcher = class Switcher {
         this._numPreviewsComplete += 1;
         if (this._numPreviewsComplete >= this._previews.length) {
             if (this._haveModal) {
-               Main.popModal(this.actor);
+               Main.popModal(this.grab);
                 this._haveModal = false;
             }
 
