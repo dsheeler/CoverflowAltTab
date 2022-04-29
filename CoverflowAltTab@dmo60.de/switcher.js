@@ -549,8 +549,7 @@ var Switcher = class Switcher {
                 //ignore missing legacy tray
             }
 
-
-            Mainloop.timeout_add(100, () => this._onHideBackgroundCompleted());
+            this._manager._hideBackgroundTimeout = Mainloop.timeout_add(100, () => this._onHideBackgroundCompleted());
 
             if (this._initialDelayTimeoutId !== 0) {
                 Mainloop.source_remove(this._initialDelayTimeoutId);
