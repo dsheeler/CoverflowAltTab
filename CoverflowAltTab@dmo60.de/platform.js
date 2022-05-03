@@ -83,11 +83,11 @@ class AbstractPlatform {
     }
 
     dimBackground() {
-    	this._background.show();
-      this.tween(this._background, {
-          dim_factor: this._settings.dim_factor,
-          time: this._settings.animation_time,
-          transition: TRANSITION_TYPE
+        this._background.show();
+        this.tween(this._background, {
+            dim_factor: this._settings.dim_factor,
+            time: this._settings.animation_time,
+            transition: TRANSITION_TYPE
       });
     }
 

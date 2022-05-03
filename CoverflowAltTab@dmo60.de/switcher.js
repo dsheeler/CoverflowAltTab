@@ -287,7 +287,7 @@ var Switcher = class Switcher {
             case Clutter.KEY_Escape:
             case Clutter.Escape:
                 // Esc -> close CoverFlow
-                this.destroy();
+                this._activateSelected();
                 return true;
 
             case Clutter.KEY_q:
@@ -410,42 +410,15 @@ var Switcher = class Switcher {
                     this._updatePreviews(0);
                     this._setCurrentWindowTitle(this._windows[this._currentIndex]);
                 }
-
                 return;
             }
         }
     }
 
     _activateSelected() {
-        let preview = this._previews[this._currentIndex];
         let win = this._windows[this._currentIndex];
-        if (preview) {
-          if (this._settings.elastic_mode)
-              TRANSITION_TYPE = 'easeOutElastic';
-          else
-              TRANSITION_TYPE = 'easeOutCubic';
-          let monitor = this._updateActiveMonitor();
-
-          let compositor = win.get_compositor_private();
-          preview.make_top_layer(this.previewActor);
-
-          this._manager.platform.tween(preview, {
-              x: ((win.minimized) ? 0 : compositor.x) - monitor.x,
-              y: ((win.minimized) ? 0 : compositor.y) - monitor.y,
-              width: compositor.width,
-              height:  compositor.height,
-
-              translation_x: 0,
-              scale_x: 1,
-              scale_y: 1,
-              rotation_angle_y: 0.0,
-              time: this._settings.animation_time,
-              transition: TRANSITION_TYPE,
-          });
-        }
-
         if (win)
-          this._manager.activateSelectedWindow(win);
+            this._manager.activateSelectedWindow(win);
         this.destroy();
     }
 
@@ -456,14 +429,6 @@ var Switcher = class Switcher {
             }
         }
         this.destroy();
-    }
-
-    _onHideBackgroundCompleted() {
-    	this._manager.platform.removeBackground();
-    	Main.uiGroup.remove_actor(this.actor);
-
-        // show all window actors
-        global.window_group.show();
     }
 
     _onDestroy() {
@@ -483,40 +448,39 @@ var Switcher = class Switcher {
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
             for (let [i, preview] of this._previews.entries()) {
                 let metaWin = this._windows[i],
-                    compositor = metaWin.get_compositor_private();
+                compositor = metaWin.get_compositor_private();
 
                 // Move all non-activated windows behind the activated one
                 if (i !== this._currentIndex) {
                     preview.make_bottom_layer(this.previewActor);
+                } else {
+                    preview.make_top_layer(this.previewActor);
                 }
 
                 this._manager.platform.tween(preview, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
                         || metaWin.is_on_all_workspaces()) ? 255 : 0,
-
                     x: ((metaWin.minimized) ? 0 : compositor.x) - monitor.x,
                     y: ((metaWin.minimized) ? 0 : compositor.y) - monitor.y,
                     width: (metaWin.minimized) ? 0 : compositor.width,
                     height: (metaWin.minimized) ? 0 : compositor.height,
-
                     translation_x: 0,
                     scale_x: 1,
                     scale_y: 1,
                     rotation_angle_y: 0.0,
-                    onComplete: this._onPreviewDestroyComplete.bind(this),
+                    onComplete: this._onPreviewDestroyComplete.bind(this, false),
                     time: this._settings.animation_time,
                     transition: TRANSITION_TYPE,
                 });
             }
-
         } else {
-          this._onPreviewDestroyComplete();
+            this._onPreviewDestroyComplete(true);
         }
     }
 
-    _onPreviewDestroyComplete() {
-        this._numPreviewsComplete += 1;
-        if (this._numPreviewsComplete >= this._previews.length) {
+    _onPreviewDestroyComplete(force) {
+        if (!force) this._numPreviewsComplete += 1;
+        if (this._numPreviewsComplete >= this._previews.length || force) {
             if (this._haveModal) {
                Main.popModal(this.grab);
                 this._haveModal = false;
@@ -549,8 +513,6 @@ var Switcher = class Switcher {
                 //ignore missing legacy tray
             }
 
-            this._manager._hideBackgroundTimeout = Mainloop.timeout_add(100, () => this._onHideBackgroundCompleted());
-
             if (this._initialDelayTimeoutId !== 0) {
                 Mainloop.source_remove(this._initialDelayTimeoutId);
             }
@@ -568,6 +530,13 @@ var Switcher = class Switcher {
             this._checkDestroyedTimeoutId = null;
             this._windowManager.disconnect(this._dcid);
             this._windowManager.disconnect(this._mcid);
+
+            this._manager.platform.removeBackground();
+
+            Main.uiGroup.remove_actor(this.actor);
+            // show all window actors
+            global.window_group.show();
+            this._numPreviewsComplete = 0
         }
     }
 

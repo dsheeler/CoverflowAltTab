@@ -71,9 +71,6 @@ var Manager = class Manager {
     disable() {
         this.platform.disable();
         this.keybinder.disable();
-        if (this._hideBackgroundTimeout !== 0) {
-            Mainloop.source_remove(this._hideBackgroundTimeout);
-        }
     }
 
     activateSelectedWindow(win) {
