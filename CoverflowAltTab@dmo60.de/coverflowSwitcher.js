@@ -34,7 +34,6 @@ const {
     findUpperLeftFromCenter,
 } = ExtensionImports.preview;
 
-let TRANSITION_TYPE;
 const SIDE_ANGLE = 60;
 const BLEND_OUT_ANGLE = 30;
 const PREVIEW_SCALE = 0.5;
@@ -48,12 +47,6 @@ function appendParams(base, extra) {
 var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
-
-        if (this._settings.elastic_mode) {
-            TRANSITION_TYPE = 'easeOutElastic';
-        } else {
-            TRANSITION_TYPE = 'easeOutCubic';
-        }
     }
 
     _createPreviews() {
@@ -162,7 +155,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 opacity: 0,
                 rotation_angle_y: angle,
                 time: animation_time,
-                transition: TRANSITION_TYPE,
+                transition: 'easeOutCubic',
                 onComplete: this._onFlipIn,
                 onCompleteScope: this,
                 onCompleteParams: [preview, i, direction],
@@ -197,6 +190,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         }
         preview.rotation_angle_y = angleStart;
         let lastExtraParams = {
+            transition: 'easeOutCubic',
             onCompleteParams: [direction],
             onComplete: this._onFlipComplete,
             onCompleteScope: this
@@ -204,7 +198,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
 
         if (index == this._currentIndex) {
         	preview.make_top_layer(this.previewActor);
-            let extraParams = preview._cfIsLast ? lastExtraParams : null;
+            let extraParams = preview._cfIsLast ? lastExtraParams :  {transition: 'easeOutCubic'};
             this._animatePreviewToMid(preview, animation_time, extraParams);
         } else {
             if (direction === Direction.TO_RIGHT) {
@@ -217,7 +211,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 opacity: 255,
                 rotation_angle_y: angleEnd,
                 time: animation_time,
-                transition: TRANSITION_TYPE
+                transition: 'easeOutCubic'
             };
 
             if (preview._cfIsLast)
@@ -248,7 +242,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             scale_y: 1,
             rotation_angle_y: 0.0,
             time: animation_time,
-            transition: TRANSITION_TYPE,
+            transition: 'userChoice',
         };
 
         appendParams(tweenParams, extraParams);
@@ -306,7 +300,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                     opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
-                    transition: TRANSITION_TYPE
+                    transition: 'userChoice'
                 });
             } else /* i > this._currentIndex */ {
                 preview.make_bottom_layer(this.previewActor);
@@ -314,7 +308,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                     opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,
-                    transition: TRANSITION_TYPE
+                    transition: 'userChoice'
                 });
             }
         }

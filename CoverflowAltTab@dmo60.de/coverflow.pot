@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coverflow\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-16 00:50+0200\n"
+"POT-Creation-Date: 2022-05-14 22:52-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,19 +25,19 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:70
+#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:100
 msgid "Bottom"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:70
+#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:100
 msgid "Top"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:71
+#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:101
 msgid "Classic"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:71
+#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:101
 msgid "Overlay"
 msgstr ""
 
@@ -53,46 +53,46 @@ msgstr ""
 msgid "Switcher style"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:68
+#: CoverflowAltTab@dmo60.de/prefs.js:97
+msgid "Easing for Coverflow animations"
+msgstr ""
+
+#: CoverflowAltTab@dmo60.de/prefs.js:98
 msgid "Animation speed (smaller means faster)"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:69
+#: CoverflowAltTab@dmo60.de/prefs.js:99
 msgid "Background dim-factor (smaller means darker)"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:70
+#: CoverflowAltTab@dmo60.de/prefs.js:100
 msgid "Window title box position"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:71
+#: CoverflowAltTab@dmo60.de/prefs.js:101
 msgid "Application icon style"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:72
-msgid "Elastic animations"
-msgstr ""
-
-#: CoverflowAltTab@dmo60.de/prefs.js:73
+#: CoverflowAltTab@dmo60.de/prefs.js:102
 msgid "Vertical offset (positive value moves everything up, negative down)"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:75
+#: CoverflowAltTab@dmo60.de/prefs.js:104
 msgid "Current workspace only"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:77
+#: CoverflowAltTab@dmo60.de/prefs.js:106
 msgid "All workspaces"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:79
+#: CoverflowAltTab@dmo60.de/prefs.js:108
 msgid "All workspaces, current first"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:81
+#: CoverflowAltTab@dmo60.de/prefs.js:110
 msgid "Show windows from current or all workspaces"
 msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:82
+#: CoverflowAltTab@dmo60.de/prefs.js:111
 msgid "Only switch between windows on current monitor"
 msgstr ""

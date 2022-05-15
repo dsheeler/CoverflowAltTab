@@ -30,7 +30,6 @@ const Pango = imports.gi.Pango;
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
-let TRANSITION_TYPE = 'easeOutCubic';
 const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
@@ -119,7 +118,7 @@ var Switcher = class Switcher {
                     this._manager.platform.tween(panelActor, {
                         opacity: 0,
                         time: this._settings.animation_time,
-                        transition: TRANSITION_TYPE
+                        transition: 'easeOutCubic'
                     });
                 }
             } catch (e) {
@@ -432,11 +431,6 @@ var Switcher = class Switcher {
     }
 
     _onDestroy() {
-      	if (this._settings.elastic_mode)
-      		TRANSITION_TYPE = 'easeOutElastic';
-      	else
-      		TRANSITION_TYPE = 'easeOutCubic';
-
         let monitor = this._updateActiveMonitor();
 
         if (this._initialDelayTimeoutId === 0) {
@@ -470,7 +464,7 @@ var Switcher = class Switcher {
                     rotation_angle_y: 0.0,
                     onComplete: this._onPreviewDestroyComplete.bind(this, false),
                     time: this._settings.animation_time,
-                    transition: TRANSITION_TYPE,
+                    transition: 'userChoice',
                 });
             }
         } else {
@@ -497,7 +491,7 @@ var Switcher = class Switcher {
                         this._manager.platform.tween(panelActor, {
                             opacity: 255,
                             time: this._settings.animation_time,
-                            transition: TRANSITION_TYPE}
+                            transition: 'easeOutCubic'}
                         );
                     }
                 } catch (e) {

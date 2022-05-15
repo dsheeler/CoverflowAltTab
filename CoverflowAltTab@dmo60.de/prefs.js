@@ -65,13 +65,42 @@ function buildPrefsWidget() {
 	frame.append(buildSwitcher("hide-panel", _("Hide panel during Coverflow")));
 	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
 	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
-	frame.append(buildRange("animation-time", [100, 400, 10, 250], _("Animation speed (smaller means faster)")));
-	frame.append(buildRange("dim-factor", [0, 10, 1, 3], _("Background dim-factor (smaller means darker)")));
+		let options = [{
+		id: 'ease-out-cubic', name: "easeOutCubic"
+	}, {
+		id: 'ease-in-out-cubic', name: "easeInOutCubic"
+	}, {
+		id: 'ease-out-quad', name: "easeOutQuad"
+	}, {
+		id: 'ease-in-out-quad', name: "easeInOutQuad"
+	}, {
+		id: 'ease-out-quint', name: "easeOutQuint"
+	}, {
+		id: 'ease-in-out-quint', name: "easeInOutQuint"
+	}, {
+		id: 'ease-out-circ', name: "easeOutCirc"
+	}, {
+		id: 'ease-in-out-circ', name: "easeInOutCirc"
+	}, {
+		id: 'ease-out-back', name: "easeOutBack"
+	}, {
+		id: 'ease-in-out-back', name: "easeInOutBack"
+	}, {
+		id: 'ease-out-elastic', name: "easeOutElastic"
+	}, {
+		id: 'ease-in-out-elastic', name: "easeInOutElastic"
+	}, {
+		id: 'ease-out-bounce', name: "easeOutBounce"
+	}, {
+		id: 'ease-in-out-bounce', name: "easeInOutBounce"
+	}]
+	frame.append(buildComboBox("easing-function", options, _("Easing for Coverflow animations")));
+	frame.append(buildRange("animation-time", [50, 4000, 10, [250, 500, 1000, 2000, 4000]], _("Animation speed (smaller means faster)")));
+	frame.append(buildRange("dim-factor", [0, 10, 1, [3]], _("Background dim-factor (smaller means darker)")));
 	frame.append(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
 	frame.append(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
-	frame.append(buildSwitcher("elastic-mode", _("Elastic animations")));
 	frame.append(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
-	let options = [{
+	options = [{
 	    id: 'current', name: _("Current workspace only")
 	}, {
 	    id: 'all', name: _("All workspaces")
@@ -104,7 +133,7 @@ function buildSwitcher(key, labeltext, tooltip) {
 }
 
 function buildRange(key, values, labeltext, tooltip) {
-	let [min, max, step, defv] = values;
+	let [min, max, step, defvs] = values;
 	let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 10 });
 
 	let label = new Gtk.Label({label: labeltext, xalign: 0 });
@@ -112,7 +141,9 @@ function buildRange(key, values, labeltext, tooltip) {
 	let range = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, min, max, step);
 	range.set_value(settings.get_int(key));
 	range.set_draw_value(false);
-	range.add_mark(defv, Gtk.PositionType.BOTTOM, null);
+	for (let defv of defvs) {
+		range.add_mark(defv, Gtk.PositionType.BOTTOM, null);
+	}
 	range.set_size_request(200, -1);
 
 	range.connect('value-changed', function(slider) {
@@ -180,7 +211,7 @@ function buildComboBox(key, values, labeltext) {
 	});
 
     let setting_label = new Gtk.Label({
-		label: labeltext,
+		label: labeltext + '  ',
         xalign: 0
 	});
 

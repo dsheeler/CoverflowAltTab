@@ -40,9 +40,7 @@ const PREVIEW_SCALE = 0.5;
 var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
-
-        if (this._settings.elastic_mode)
-        	TRANSITION_TYPE = 'easeOutCubic';
+        TRANSITION_TYPE = 'easeOutCubic';
     }
 
     _createPreviews() {

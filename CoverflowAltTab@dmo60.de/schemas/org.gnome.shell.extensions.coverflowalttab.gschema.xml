@@ -43,7 +43,7 @@
         </choices>
         <default>"Classic"</default>
         <summary>Icon style</summary>
-        <description>Whether the application icon should be displayed next to the title lable or as an overlay.</description>
+        <description>Whether the application icon should be displayed next to the title label or as an overlay.</description>
     </key>
     <key type="s" name="switcher-style">
         <choices>
@@ -54,10 +54,26 @@
         <summary>Switcher style</summary>
         <description>The switcher display style.</description>
     </key>
-    <key type="b" name="elastic-mode">
-        <default>false</default>
-        <summary>Elastic in/out animations when toggling Coverflow</summary>
-        <description>Whether to show an elastic animation when Coverflow is toggled.</description>
+    <key type="s" name="easing-function">
+        <choices>
+            <choice value="ease-out-cubic"/>
+            <choice value="ease-in-out-cubic"/>
+            <choice value="ease-out-quad"/>
+            <choice value="ease-in-out-quad"/>
+            <choice value="ease-out-quint"/>
+            <choice value="ease-in-out-quint"/>
+            <choice value="ease-out-circ"/>
+            <choice value="ease-in-out-circ"/>
+            <choice value="ease-out-back"/>
+            <choice value="ease-in-out-back"/>
+            <choice value="ease-out-elastic"/>
+            <choice value="ease-in-out-elastic"/>
+            <choice value="ease-out-bounce"/>
+            <choice value="ease-in-out-bounce"/>
+        </choices>
+        <default>"ease-out-cubic"</default>
+        <summary>Easing function used in animations when toggling Coverflow</summary>
+        <description>Use this easing function for animation when Coverflow is toggled.</description>
     </key>
     <key type="s" name="current-workspace-only">
         <choices>

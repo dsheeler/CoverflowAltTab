@@ -70,7 +70,7 @@ class AbstractPlatform {
             hide_panel: true,
             enforce_primary_monitor: true,
             switcher_class: Switcher,
-            elastic_mode: false,
+            easing_function: 'ease-out-cubic',
             current_workspace_only: '1',
             switch_per_monitor: false,
         };
@@ -119,7 +119,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "offset",
             "hide-panel",
             "enforce-primary-monitor",
-            "elastic-mode",
+            "easing-function",
             "current-workspace-only",
             "switch-per-monitor",
             "switcher-style"
@@ -130,6 +130,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         for (let key of keys) {
             this._connections.push(this._gioSettings.connect('changed::' + key, bind));
         }
+
         this._settings = this._loadSettings();
     }
 
@@ -177,7 +178,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
-                elastic_mode: settings.get_boolean("elastic-mode"),
+                easing_function: settings.get_string("easing-function"),
                 switcher_class: settings.get_string("switcher-style") === 'Timeline'
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),
@@ -191,10 +192,38 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     tween(actor, params) {
-        if (params.transition == "easeOutElastic") {
-            params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
-        } else {
+        params.duration = params.time * 1000;
+        if (this.getSettings().switcher_class.name === "TimelineSwitcher" ||
+            params.transition === 'easeOutCubic') {
             params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+        } else {
+            if (this.getSettings().easing_function == "ease-out-bounce") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_BOUNCE;
+            } else if (this.getSettings().easing_function == "ease-in-out-bounce") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_BOUNCE;
+            } else if (this.getSettings().easing_function == "ease-out-back") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
+            } else if (this.getSettings().easing_function == "ease-in-out-back") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_BACK;
+            } else if (this.getSettings().easing_function == "ease-out-elastic") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_ELASTIC;
+            } else if (this.getSettings().easing_function == "ease-in-out-elastic") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_ELASTIC;
+            } else if (this.getSettings().easing_function == "ease-out-cubic") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+            } else if (this.getSettings().easing_function == "ease-in-out-cubic") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_CUBIC;
+            } else if (this.getSettings().easing_function == "ease-out_quad") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+            } else if (this.getSettings().easing_function == "ease-out-quint") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
+            } else if (this.getSettings().easing_function == "ease-in-out-quint") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+            } else if (this.getSettings().easing_function == "ease-out-quint") {
+                params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
+            } else if (this.getSettings().easing_function == "ease-in-out-quint") {
+                params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+            }
         }
 
         if (params.onComplete) {
@@ -207,7 +236,6 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             }
         }
 
-        params.duration = params.time * 1000;
         actor.ease(params);
     }
 
