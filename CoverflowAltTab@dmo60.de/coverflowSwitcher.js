@@ -84,17 +84,17 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-                    x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
-                        compositor.x) - monitor.x,
-                    y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
-                        compositor.y) - monitor.y,
-
+                    x: metaWin.minimized ? 0 :
+                        compositor.x - monitor.x,
+                    y: metaWin.minimized ? 0 :
+                        compositor.y - monitor.y,
                     translation_x: 0,
                     scale_x: 1,
                     scale_y: 1,
+                    width: metaWin.minimized ? 0 : width,
+                    height: metaWin.minimized ? 0 : height,
                     rotation_angle_y: 0,
                 });
-
                 preview.target_width = Math.round(width * scale);
                 preview.target_height = Math.round(height * scale);
 
@@ -152,10 +152,10 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         for (let [i, preview] of this._previews.entries()) {
             preview._cfIsLast = (i === this._windows.length - 1);
             this._animatePreviewToSide(preview, i, xOffset, {
-                opacity: 0,
+                opacity: 255,
                 rotation_angle_y: angle,
                 time: animation_time,
-                transition: 'easeOutCubic',
+                transition: 'userChoice',
                 onComplete: this._onFlipIn,
                 onCompleteScope: this,
                 onCompleteParams: [preview, i, direction],
@@ -190,7 +190,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         }
         preview.rotation_angle_y = angleStart;
         let lastExtraParams = {
-            transition: 'easeOutCubic',
+            transition: 'userChoice',
             onCompleteParams: [direction],
             onComplete: this._onFlipComplete,
             onCompleteScope: this
@@ -198,7 +198,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
 
         if (index == this._currentIndex) {
         	preview.make_top_layer(this.previewActor);
-            let extraParams = preview._cfIsLast ? lastExtraParams :  {transition: 'easeOutCubic'};
+            let extraParams = preview._cfIsLast ? lastExtraParams :  {transition: 'userChoice'};
             this._animatePreviewToMid(preview, animation_time, extraParams);
         } else {
             if (direction === Direction.TO_RIGHT) {
@@ -211,7 +211,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 opacity: 255,
                 rotation_angle_y: angleEnd,
                 time: animation_time,
-                transition: 'easeOutCubic'
+                transition: 'userChoice'
             };
 
             if (preview._cfIsLast)
@@ -232,11 +232,8 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         preview.make_top_layer(this.previewActor);
 
         let tweenParams = {
-            opacity: 255,
             x: preview.center_position.x,
             y: preview.center_position.y,
-            width: preview.target_width,
-            height: preview.target_height,
             translation_x: 0,
             scale_x: 1,
             scale_y: 1,
@@ -262,9 +259,6 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let tweenParams = {
             x: preview.center_position.x,
             y: preview.center_position.y,
-            width: preview.target_width,
-            height: preview.target_height,
-
             scale_x: 0.4 - 0.07 * Math.abs(index - this._currentIndex),
             scale_y: 1 - 0.07 * Math.abs(index - this._currentIndex)
         };
@@ -297,7 +291,6 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             } else if (i < this._currentIndex) {
                 preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
-                    opacity: 255,
                     rotation_angle_y: SIDE_ANGLE,
                     time: animation_time,
                     transition: 'userChoice'
@@ -305,12 +298,18 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             } else /* i > this._currentIndex */ {
                 preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetRight, {
-                    opacity: 255,
                     rotation_angle_y: -SIDE_ANGLE,
                     time: animation_time,
                     transition: 'userChoice'
                 });
             }
+            this._manager.platform.tween(preview, {
+                width: preview.target_width,
+                height: preview.target_height,
+                opacity:255,
+                time: animation_time,
+                transition: 'easeOutCubic'
+            })
         }
     }
 };

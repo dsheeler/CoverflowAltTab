@@ -444,48 +444,6 @@ var Switcher = class Switcher {
             this._windowTitle.hide();
             this._applicationIconBox.hide();
 
-            // preview windows
-            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-            for (let [i, preview] of this._previews.entries()) {
-                let metaWin = this._windows[i],
-                compositor = metaWin.get_compositor_private();
-
-                // Move all non-activated windows behind the activated one
-                if (i !== this._currentIndex) {
-                    preview.make_bottom_layer(this.previewActor);
-                } else {
-                    preview.make_top_layer(this.previewActor);
-                }
-
-                this._manager.platform.tween(preview, {
-                    opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace
-                        || metaWin.is_on_all_workspaces()) ? 255 : 0,
-                    x: ((metaWin.minimized) ? 0 : compositor.x) - monitor.x,
-                    y: ((metaWin.minimized) ? 0 : compositor.y) - monitor.y,
-                    width: (metaWin.minimized) ? 0 : compositor.width,
-                    height: (metaWin.minimized) ? 0 : compositor.height,
-                    translation_x: 0,
-                    scale_x: 1,
-                    scale_y: 1,
-                    rotation_angle_y: 0.0,
-                    onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                    time: this._settings.animation_time,
-                    transition: 'userChoice',
-                });
-            }
-        } else {
-            this._onPreviewDestroyComplete(true);
-        }
-    }
-
-    _onPreviewDestroyComplete(force) {
-        if (!force) this._numPreviewsComplete += 1;
-        if (this._numPreviewsComplete >= this._previews.length || force) {
-            if (this._haveModal) {
-               Main.popModal(this.grab);
-                this._haveModal = false;
-            }
-
             // panels
             let panels = this.getPanels();
             for (let panel of panels){
@@ -512,6 +470,63 @@ var Switcher = class Switcher {
             } catch (e) {
                 //ignore missing legacy tray
             }
+
+            // preview windows
+            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
+            for (let [i, preview] of this._previews.entries()) {
+                let metaWin = this._windows[i],
+                compositor = metaWin.get_compositor_private();
+
+                // Move all non-activated windows behind the activated one
+                if (i !== this._currentIndex) {
+                    preview.make_bottom_layer(this.previewActor);
+                } else {
+                    preview.make_top_layer(this.previewActor);
+                }
+                if (!metaWin.minimized) {
+                    this._manager.platform.tween(preview, {
+                        x: (metaWin.minimized) ? 0 : (compositor.x - monitor.x),
+                        y: (metaWin.minimized) ? 0 : (compositor.y - monitor.y),
+                        width: compositor.width,
+                        height: compositor.height,
+                        translation_x: 0,
+                        scale_x: 1,
+                        scale_y: 1,
+                        rotation_angle_y: 0.0,
+                        onComplete: this._onPreviewDestroyComplete.bind(this, false),
+                        time: this._settings.animation_time,
+                        transition: 'userChoice',
+                    });
+                } else {
+                    this._manager.platform.tween(preview, {
+                        x: 0,
+                        y: 0,
+                        width: 0,
+                        height: 0,
+                        opacity:  0,
+                        translation_x: 0,
+                        scale_x: 0,
+                        scale_y: 0,
+                        rotation_angle_y: 0.0,
+                        onComplete: this._onPreviewDestroyComplete.bind(this, false),
+                        time: this._settings.animation_time,
+                        transition: 'easeOutCubic'
+                    });
+                }
+            }
+        } else {
+            this._onPreviewDestroyComplete(true);
+        }
+    }
+
+    _onPreviewDestroyComplete(force) {
+        if (!force) this._numPreviewsComplete += 1;
+        if (this._previews != null && this._numPreviewsComplete >= this._previews.length || force) {
+            if (this._haveModal) {
+               Main.popModal(this.grab);
+                this._haveModal = false;
+            }
+
 
             if (this._initialDelayTimeoutId !== 0) {
                 Mainloop.source_remove(this._initialDelayTimeoutId);
