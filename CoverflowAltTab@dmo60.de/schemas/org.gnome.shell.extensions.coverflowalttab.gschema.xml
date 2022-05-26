@@ -45,6 +45,16 @@
         <summary>Icon style</summary>
         <description>Whether the application icon should be displayed next to the title label or as an overlay.</description>
     </key>
+    <key type="i" name="overlay-icon-size">
+        <default>128</default>
+        <summary>The size of the overlay icon</summary>
+        <description>Define the size of the overlay icon.</description>
+    </key>
+    <key type="i" name="overlay-icon-opacity">
+        <default>100</default>
+        <summary>The opacity of the overlay icon</summary>
+        <description>Define the opacity of the overlay icon.</description>
+    </key>
     <key type="s" name="switcher-style">
         <choices>
             <choice value="Coverflow"/>

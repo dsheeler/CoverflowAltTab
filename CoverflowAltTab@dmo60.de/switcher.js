@@ -195,6 +195,7 @@ var Switcher = class Switcher {
 
     _setCurrentWindowTitle(window) {
         let animation_time = this._settings.animation_time;
+        let overlay_icon_size = this._settings.overlay_icon_size;
 
         let monitor = this._updateActiveMonitor();
 
@@ -204,7 +205,7 @@ var Switcher = class Switcher {
             app_icon_size = ICON_SIZE;
             label_offset = ICON_SIZE + ICON_TITLE_SPACING;
         } else {
-            app_icon_size = ICON_SIZE_BIG;
+            app_icon_size = overlay_icon_size;
             label_offset = 0;
         }
 
@@ -273,8 +274,13 @@ var Switcher = class Switcher {
 
         this._applicationIconBox.add_actor(this._icon);
         this.actor.add_actor(this._applicationIconBox);
+        let alpha = 1;
+        if (this._settings.icon_style !== "Classic") {
+            alpha = this._settings.overlay_icon_opacity;
+        }
+
         this._manager.platform.tween(this._applicationIconBox, {
-            opacity: 255,
+            opacity: 255 * alpha,
             time: animation_time,
             transition: 'easeOutCubic',
         });
