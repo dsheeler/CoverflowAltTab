@@ -29,6 +29,7 @@ const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Clutter = imports.gi.Clutter;
+const Lightbox = imports.ui.lightbox;
 
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
@@ -282,26 +283,40 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else {
 	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
         }
+         this._lightbox = new Lightbox.Lightbox(this._backgroundGroup, {
+             inhibitEvents: true,
+             radialEffect: true,
+        });
 
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
                 container: this._backgroundGroup,
                 monitorIndex: i,
-                vignette: true
+                vignette: false,
             });
         }
-    }
+     }
 
-    dimBackground() {
-    	this._backgroundGroup.show();
-        let backgrounds = this._backgroundGroup.get_children();
-        for (let background of backgrounds) {
-            background.content.set({
-                brightness: 0.8,
-                vignette_sharpness: 1 - this.getSettings().dim_factor
-            });
-        }
+     dimBackground() {
+        this._backgroundGroup.show();
+        this._lightbox.lightOn();
+        this._lightbox.opacity = 0;
+        let alpha = 1 - this._settings.dim_factor;
+        this.tween(this._lightbox, {
+            opacity: 255 * alpha,
+            time: this._settings.animation_time,
+            transition: 'easeInOutQuint',
+        });
+     }
+
+    lightenBackground() {
+        this.tween(this._lightbox, {
+            time: this._settings.animation_time * 0.97,
+            transition: 'easeInOutQuint',
+            opacity: 0,
+            onComplete: this._lightbox.lightOff.bind(this._lightbox),
+        });
     }
 
     removeBackground() {

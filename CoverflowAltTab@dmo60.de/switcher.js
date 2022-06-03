@@ -436,13 +436,14 @@ var Switcher = class Switcher {
         this.destroy();
     }
 
-    _onDestroy() {
+    _onDestroy(transition) {
         let monitor = this._updateActiveMonitor();
 
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
             this._windowTitle.hide();
             this._applicationIconBox.hide();
+            this._manager.platform.lightenBackground();
 
             // panels
             let panels = this.getPanels();
