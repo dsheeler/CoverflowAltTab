@@ -252,6 +252,10 @@ var Switcher = class Switcher {
             });
         }
 
+        if (this._settings.icon_has_shadow) {
+            this._icon.add_style_class_name("icon-dropshadow");
+        }
+
         if (this._settings.icon_style == "Classic") {
             this._applicationIconBox = new St.Bin({
                 style_class: 'window-iconbox',

@@ -113,6 +113,7 @@ function buildPrefsWidget() {
 	frame.append(buildRange("dim-factor", [0, 10, 1, [3]], _("Background dim-factor (smaller means darker)")));
 	frame.append(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
 	frame.append(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));
+	frame.append(buildSwitcher("icon-has-shadow", _("Draw icon shadow")));
 	frame.append(buildRange("overlay-icon-size", [64, 1024, 8, [128, 256, 512]], _("Overlay icon size")));
 	frame.append(buildRange("overlay-icon-opacity", [0, 100, 5, [25, 50, 75]], _("Overlay icon opacity")));
 	frame.append(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
