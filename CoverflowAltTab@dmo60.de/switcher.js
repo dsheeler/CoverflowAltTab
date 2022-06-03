@@ -268,11 +268,11 @@ var Switcher = class Switcher {
         } else {
             this._applicationIconBox = new St.Bin({
                 style_class: 'window-iconbox',
-                width: app_icon_size * 1.15,
-                height: app_icon_size * 1.15,
+                width: app_icon_size * 1.25,
+                height: app_icon_size * 1.25,
                 opacity: 0,
-                x: (monitor.width - app_icon_size) / 2,
-                y: (monitor.height - app_icon_size) / 2,
+                x: (monitor.width - app_icon_size * 1.25) / 2,
+                y: (monitor.height - app_icon_size * 1.25) / 2,
             });
         }
 
