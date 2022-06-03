@@ -40,7 +40,7 @@ const PREVIEW_SCALE = 0.5;
 var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
-        TRANSITION_TYPE = 'easeOutCubic';
+        TRANSITION_TYPE = 'easeInOutQuint';
     }
 
     _createPreviews() {
@@ -227,5 +227,9 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
             this._manager.platform.tween(preview, preview.__finalTween);
             preview.__finalTween = null;
         }
+    }
+
+    destroy() {
+        this._onDestroy(TRANSITION_TYPE);
     }
 };

@@ -118,7 +118,7 @@ var Switcher = class Switcher {
                     this._manager.platform.tween(panelActor, {
                         opacity: 0,
                         time: this._settings.animation_time,
-                        transition: 'easeOutCubic'
+                        transition: 'easeInOutQuint'
                     });
                 }
             } catch (e) {
@@ -228,7 +228,7 @@ var Switcher = class Switcher {
         this._manager.platform.tween(this._windowTitle, {
             opacity: 255,
             time: animation_time,
-            transition: 'easeOutCubic',
+            transition: 'easeInOutQuint',
         });
 
         let cx = Math.round((monitor.width + label_offset) / 2);
@@ -282,7 +282,7 @@ var Switcher = class Switcher {
         this._manager.platform.tween(this._applicationIconBox, {
             opacity: 255 * alpha,
             time: animation_time,
-            transition: 'easeOutCubic',
+            transition: 'easeInOutQuint',
         });
     }
 
@@ -455,8 +455,8 @@ var Switcher = class Switcher {
                         this._manager.platform.tween(panelActor, {
                             opacity: 255,
                             time: this._settings.animation_time,
-                            transition: 'easeOutCubic'}
-                        );
+                            transition: 'easeInOutQuint'
+                        });
                     }
                 } catch (e) {
                     //ignore fake panels
@@ -485,8 +485,8 @@ var Switcher = class Switcher {
                 }
                 if (!metaWin.minimized) {
                     this._manager.platform.tween(preview, {
-                        x: (metaWin.minimized) ? 0 : (compositor.x - monitor.x),
-                        y: (metaWin.minimized) ? 0 : (compositor.y - monitor.y),
+                        x: compositor.x - monitor.x,
+                        y: compositor.y - monitor.y,
                         width: compositor.width,
                         height: compositor.height,
                         translation_x: 0,
@@ -495,7 +495,7 @@ var Switcher = class Switcher {
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
                         time: this._settings.animation_time,
-                        transition: 'userChoice',
+                        transition: transition,
                     });
                 } else {
                     this._manager.platform.tween(preview, {
@@ -510,7 +510,7 @@ var Switcher = class Switcher {
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
                         time: this._settings.animation_time,
-                        transition: 'easeOutCubic'
+                        transition: 'easeInOutQuint'
                     });
                 }
             }
@@ -566,6 +566,6 @@ var Switcher = class Switcher {
     }
 
     destroy() {
-        this._onDestroy();
+        this._onDestroy('userChoice');
     }
 }

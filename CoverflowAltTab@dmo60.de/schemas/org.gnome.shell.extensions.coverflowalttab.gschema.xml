@@ -66,18 +66,25 @@
     </key>
     <key type="s" name="easing-function">
         <choices>
+            <choice value="ease-in-cubic"/>
             <choice value="ease-out-cubic"/>
             <choice value="ease-in-out-cubic"/>
+            <choice value="ease-in-quad"/>
             <choice value="ease-out-quad"/>
             <choice value="ease-in-out-quad"/>
+            <choice value="ease-in-quint"/>
             <choice value="ease-out-quint"/>
             <choice value="ease-in-out-quint"/>
+            <choice value="ease-in-circ"/>
             <choice value="ease-out-circ"/>
             <choice value="ease-in-out-circ"/>
+            <choice value="ease-in-back"/>
             <choice value="ease-out-back"/>
             <choice value="ease-in-out-back"/>
+            <choice value="ease-in-elastic"/>
             <choice value="ease-out-elastic"/>
             <choice value="ease-in-out-elastic"/>
+            <choice value="ease-in-bounce"/>
             <choice value="ease-out-bounce"/>
             <choice value="ease-in-out-bounce"/>
         </choices>

@@ -308,7 +308,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 height: preview.target_height,
                 opacity:255,
                 time: animation_time,
-                transition: 'easeOutCubic'
+                transition: 'easeInOutQuint'
             })
         }
     }

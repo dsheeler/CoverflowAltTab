@@ -199,37 +199,60 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
     tween(actor, params) {
         params.duration = params.time * 1000;
-        if (this.getSettings().switcher_class.name === "TimelineSwitcher" ||
-            params.transition === 'easeOutCubic') {
+        if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-bounce" ||
+            params.transition == 'easeInBounce') {
+            params.mode = Clutter.AnimationMode.EASE_IN_BOUNCE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-bounce" ||
+            params.transition == 'easeOutBounce') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_BOUNCE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-bounce" ||
+            params.transition == 'easeInOutBounce') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_BOUNCE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-back" ||
+            params.transition == 'easeInBack') {
+            params.mode = Clutter.AnimationMode.EASE_IN_BACK;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-back" ||
+            params.transition == 'easeOutBack') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-back" ||
+            params.transition == 'easeInOutBack') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_BACK;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-elastic" ||
+            params.transition == 'easeInElastic') {
+            params.mode = Clutter.AnimationMode.EASE_IN_ELASTIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-elastic" ||
+            params.transition == 'easeOutElastic') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_ELASTIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-elastic" ||
+            params.transition == 'easeInOutElastic') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_ELASTIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-cubic" ||
+            params.transition == 'easeInCubic') {
+            params.mode = Clutter.AnimationMode.EASE_IN_CUBIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-cubic" ||
+            params.transition == 'easeOutCubic') {
             params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-        } else {
-            if (this.getSettings().easing_function == "ease-out-bounce") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_BOUNCE;
-            } else if (this.getSettings().easing_function == "ease-in-out-bounce") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_BOUNCE;
-            } else if (this.getSettings().easing_function == "ease-out-back") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
-            } else if (this.getSettings().easing_function == "ease-in-out-back") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_BACK;
-            } else if (this.getSettings().easing_function == "ease-out-elastic") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_ELASTIC;
-            } else if (this.getSettings().easing_function == "ease-in-out-elastic") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_ELASTIC;
-            } else if (this.getSettings().easing_function == "ease-out-cubic") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-            } else if (this.getSettings().easing_function == "ease-in-out-cubic") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_CUBIC;
-            } else if (this.getSettings().easing_function == "ease-out_quad") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
-            } else if (this.getSettings().easing_function == "ease-out-quint") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
-            } else if (this.getSettings().easing_function == "ease-in-out-quint") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
-            } else if (this.getSettings().easing_function == "ease-out-quint") {
-                params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
-            } else if (this.getSettings().easing_function == "ease-in-out-quint") {
-                params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
-            }
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-cubic" ||
+            params.transition == 'easeInOutCubic') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_CUBIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quad" ||
+            params.transition == 'easeInQuad') {
+            params.mode = Clutter.AnimationMode.EASE_IN_QUAD;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out_quad" ||
+            params.transition == 'easeOutQuad') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quad" ||
+            params.transition == 'easeInOutQuad') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quint" ||
+            params.transition == 'easeInQuint') {
+            params.mode = Clutter.AnimationMode.EASE_IN_QUINT;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quint" ||
+            params.transition == 'easeOutQuint') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quint" ||
+            params.transition == 'easeInOutQuint') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
         }
 
         if (params.onComplete) {

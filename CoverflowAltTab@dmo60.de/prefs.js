@@ -66,29 +66,43 @@ function buildPrefsWidget() {
 	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
 	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
 		let options = [{
+		id: 'ease-in-cubic', name: "easeInCubic"
+	}, {
 		id: 'ease-out-cubic', name: "easeOutCubic"
 	}, {
 		id: 'ease-in-out-cubic', name: "easeInOutCubic"
+	}, {
+		id: 'ease-in-quad', name: "easeInQuad"
 	}, {
 		id: 'ease-out-quad', name: "easeOutQuad"
 	}, {
 		id: 'ease-in-out-quad', name: "easeInOutQuad"
 	}, {
+		id: 'ease-in-quint', name: "easeInQuint"
+	}, {
 		id: 'ease-out-quint', name: "easeOutQuint"
 	}, {
 		id: 'ease-in-out-quint', name: "easeInOutQuint"
+	}, {
+		id: 'ease-in-circ', name: "easeInCirc"
 	}, {
 		id: 'ease-out-circ', name: "easeOutCirc"
 	}, {
 		id: 'ease-in-out-circ', name: "easeInOutCirc"
 	}, {
+		id: 'ease-in-back', name: "easeInBack"
+	}, {
 		id: 'ease-out-back', name: "easeOutBack"
 	}, {
 		id: 'ease-in-out-back', name: "easeInOutBack"
 	}, {
+		id: 'ease-in-elastic', name: "easeInElastic"
+	}, {
 		id: 'ease-out-elastic', name: "easeOutElastic"
 	}, {
 		id: 'ease-in-out-elastic', name: "easeInOutElastic"
+	}, {
+		id: 'ease-in-bounce', name: "easeInBounce"
 	}, {
 		id: 'ease-out-bounce', name: "easeOutBounce"
 	}, {
