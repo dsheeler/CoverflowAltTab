@@ -489,9 +489,10 @@ var Switcher = class Switcher {
                     preview.make_top_layer(this.previewActor);
                 }
                 if (!metaWin.minimized) {
+                    let rect = metaWin.get_buffer_rect();
                     this._manager.platform.tween(preview, {
-                        x: compositor.x - monitor.x,
-                        y: compositor.y - monitor.y,
+                        x: rect.x - monitor.x,
+                        y: rect.y - monitor.y,
                         width: compositor.width,
                         height: compositor.height,
                         translation_x: 0,
