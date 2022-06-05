@@ -277,6 +277,12 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     initBackground() {
+        this._vignette_sharpness_backup = Lightbox.VIGNETTE_SHARPNESS;
+        this._vignette_brigtness_backup = Lightbox.VIGNETTE_SHARPNESS;
+
+        Lightbox.VIGNETTE_SHARPNESS = 1.0;
+        Lightbox.VIGNETTE_BRIGHTNESS = 1.0;
+
     	let Background = imports.ui.background;
 
     	this._backgroundGroup = new Meta.BackgroundGroup();
@@ -323,6 +329,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeBackground() {
+        Lightbox.VIGNETTE_SHARPNESS = this._vignette_sharpness_backup;
+        Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
         Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
 	}
 }
