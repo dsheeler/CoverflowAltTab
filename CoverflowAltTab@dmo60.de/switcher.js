@@ -307,10 +307,6 @@ var Switcher = class Switcher {
             case Clutter.F4:
                 // Q -> Close window
                 this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
-                this._checkDestroyedTimeoutId = Mainloop.timeout_add(
-                    CHECK_DESTROYED_TIMEOUT,
-                    () => this._checkDestroyed(this._windows[this._currentIndex])
-                );
                 return true;
 
             case Clutter.KEY_Right:
