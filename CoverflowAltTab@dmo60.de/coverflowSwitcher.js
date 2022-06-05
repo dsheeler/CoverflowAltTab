@@ -201,7 +201,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             let extraParams = preview._cfIsLast ? lastExtraParams :  {transition: 'userChoice'};
             this._animatePreviewToMid(preview, animation_time, extraParams);
         } else {
-            if (direction === Direction.TO_RIGHT) {
+            if (direction === Direction.TO_LEFT) {
                 preview.make_top_layer(this.previewActor);
                 } else {
                 preview.make_bottom_layer(this.previewActor);
