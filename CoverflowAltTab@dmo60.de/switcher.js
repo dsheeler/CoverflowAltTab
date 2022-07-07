@@ -184,12 +184,14 @@ var Switcher = class Switcher {
     }
 
     _updateActiveMonitor() {
-        this._activeMonitor = null;
-        if (!this._settings.enforce_primary_monitor)
-            this._activeMonitor = Main.layoutManager.currentMonitor;
-        else
-            this._activeMonitor = Main.layoutManager.primaryMonitor;
-
+        // Always return the original monitor, otherwise, previews ease to the
+        // wrong monitor on destroy if you move the mouse to a different monitor.
+        if (!this._activeMonitor) {
+            if (!this._settings.enforce_primary_monitor)
+                this._activeMonitor = Main.layoutManager.currentMonitor;
+            else
+                this._activeMonitor = Main.layoutManager.primaryMonitor;
+        }
         return this._activeMonitor;
     }
 
