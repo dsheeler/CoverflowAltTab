@@ -204,10 +204,10 @@ var Switcher = class Switcher {
         let app_icon_size;
         let label_offset;
         if (this._settings.icon_style == "Classic") {
-            app_icon_size = ICON_SIZE;
-            label_offset = ICON_SIZE + ICON_TITLE_SPACING;
+            app_icon_size = this._settings.text_scaling_factor * ICON_SIZE ;
+            label_offset = this._settings.text_scaling_factor * (ICON_SIZE + ICON_TITLE_SPACING);
         } else {
-            app_icon_size = overlay_icon_size;
+            app_icon_size = this._settings.text_scaling_factor * overlay_icon_size;
             label_offset = 0;
         }
 
@@ -223,7 +223,8 @@ var Switcher = class Switcher {
         });
 
         // ellipsize if title is too long
-        this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;font-size: 14px;font-weight: bold; padding: 14px;");
+        let font_size = 14 * this._settings.text_scaling_factor;
+        this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;font-size: " + font_size + "px;font-weight: bold; padding: " + font_size + "px;");
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
         this.actor.add_actor(this._windowTitle);
