@@ -42,6 +42,9 @@ const {TimelineSwitcher} = ExtensionImports.timelineSwitcher;
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
 const SHELL_SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
+const DESKTOP_INTERFACE_SCHEMA = 'org.gnome.desktop.interface';
+const KEY_TEXT_SCALING_FACTOR = 'text-scaling-factor';
+
 const TRANSITION_TYPE = 'easeOutQuad';
 
 function clamp(value, min, max) {
@@ -70,6 +73,7 @@ class AbstractPlatform {
             icon_has_shadow: false,
             overlay_icon_size: 128,
             overlay_icon_opacity: 1,
+            text_scaling_factor: 1,
             offset: 0,
             hide_panel: true,
             enforce_primary_monitor: true,
@@ -106,14 +110,18 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
         this._settings = null;
         this._connections = null;
-        this._gioSettings = null;
+        this._extensionSettings = null;
+        this._desktopSettings = null;
     }
 
     enable() {
         this.disable();
 
-        if (this._gioSettings == null)
-            this._gioSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
+        if (this._extensionSettings == null)
+            this._extensionSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
+
+        if (this._desktopSettings == null)
+            this._desktopSettings = new Gio.Settings({ schema_id: DESKTOP_INTERFACE_SCHEMA });
 
         let keys = [
             "animation-time",
@@ -129,13 +137,22 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "easing-function",
             "current-workspace-only",
             "switch-per-monitor",
-            "switcher-style"
+            "switcher-style",
+        ];
+
+        let dkeys = [
+            KEY_TEXT_SCALING_FACTOR,
         ];
 
         this._connections = [];
         let bind = this._onSettingsChanged.bind(this);
         for (let key of keys) {
-            this._connections.push(this._gioSettings.connect('changed::' + key, bind));
+            this._connections.push(this._extensionSettings.connect('changed::' + key, bind));
+        }
+
+        this._dconnections = [];
+        for (let dkey of dkeys) {
+            this._dconnections.push(this._desktopSettings.connect('changed::' + dkey, bind));
         }
 
         this._settings = this._loadSettings();
@@ -144,9 +161,14 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     disable() {
         if (this._connections) {
             for (let connection of this._connections) {
-                this._gioSettings.disconnect(connection);
+                this._extensionSettings.disconnect(connection);
             }
             this._connections = null;
+        }
+        if (this._dconnections) {
+            for (let dconnection of this._dconnections) {
+                this._desktopSettings.disconnect(dconnection);
+            }
         }
         this._settings = null;
     }
@@ -176,7 +198,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
     _loadSettings() {
         try {
-            let settings = this._gioSettings;
+            let settings = this._extensionSettings;
+            let dsettings = this._desktopSettings;
             return {
                 animation_time: Math.max(settings.get_int("animation-time") / 1000, 0),
                 dim_factor: clamp(settings.get_int("dim-factor") / 10, 0, 1),
@@ -185,6 +208,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
                 overlay_icon_size: clamp(settings.get_int("overlay-icon-size"), 64, 1024),
                 overlay_icon_opacity: clamp(settings.get_int("overlay-icon-opacity") / 100, 0, 1),
+                text_scaling_factor: dsettings.get_double(KEY_TEXT_SCALING_FACTOR),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
