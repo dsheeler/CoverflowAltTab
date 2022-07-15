@@ -35,12 +35,14 @@ const {
 } = ExtensionImports.preview;
 
 let TRANSITION_TYPE;
-const PREVIEW_SCALE = 0.5;
+let IN_BOUNDS_TRANSITION_TYPE;
+const TILT_ANGLE = 12;
 
 var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
-        TRANSITION_TYPE = 'easeInOutQuint';
+        TRANSITION_TYPE = 'userChoice';
+        IN_BOUNDS_TRANSITION_TYPE = 'EaseInOutQuint';
     }
 
     _createPreviews() {
@@ -64,14 +66,15 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
 
+                let previewScale = this._settings.preview_to_monitor_ratio;
                 let scale = 1.0;
-                let previewWidth = monitor.width * PREVIEW_SCALE;
-                let previewHeight = monitor.height * PREVIEW_SCALE;
+                let previewWidth = monitor.width * previewScale;
+                let previewHeight = monitor.height * previewScale;
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
                 let preview = new Preview({
-                    opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
+                    opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
 
@@ -80,15 +83,17 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
 
-                    rotation_angle_y: 12,
+                    rotation_angle_y: 0,
                 });
 
-                preview.target_width = Math.round(width * scale);
-                preview.target_height = Math.round(height * scale);
+                preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
+                preview.target_width = width;
+                preview.target_height = height;
+                preview.scale = scale;
                 preview.target_width_side = preview.target_width * 2/3;
                 preview.target_height_side = preview.target_height;
 
-                preview.target_x = findUpperLeftFromCenter(preview.target_width,
+                preview.target_x = findUpperLeftFromCenter(preview.target_width * preview.scale,
                     this._previewsCenterPosition.x);
                 preview.target_y = findUpperLeftFromCenter(preview.target_height,
                     this._previewsCenterPosition.y);
@@ -123,59 +128,83 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
         if (this._previews.length == 1) {
             let preview = this._previews[0];
             this._manager.platform.tween(preview, {
-                opacity: 255,
                 x: preview.target_x,
                 y: preview.target_y,
-                width: preview.target_width,
-                height: preview.target_height,
+                scale_x: preview.scale,
+                scale_y: preview.scale,
+                scale_z: preview.scale,
                 time: animation_time / 2,
-                transition: TRANSITION_TYPE
+                transition: TRANSITION_TYPE,
+            });
+            this._manager.platform.tween(preview, {
+                opacity: 255,
+                time: animation_time / 2,
+                transition: IN_BOUNDS_TRANSITION_TYPE,
+                onComplete: () => {
+                    preview.set_reactive(true);
+                }
             });
             return;
         }
 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
+            animation_time = this._settings.animation_time;
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
-
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
                 this._manager.platform.tween(preview, {
-                    opacity: 0,
                     x: preview.target_x + 200,
                     y: preview.target_y + 100,
-                    width: preview.target_width,
-                    height: preview.target_height,
+                    scale_x: preview.scale,
+                    scale_y: preview.scale,
+                    scale_z: preview.scale,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
                     onCompleteParams: [preview, distance, animation_time],
                     onComplete: this._onFadeForwardComplete,
                     onCompleteScope: this,
                 });
-            } else if (distance === 0 && direction < 0) {
-                preview.__looping = true;
                 this._manager.platform.tween(preview, {
                     opacity: 0,
                     time: animation_time / 2,
-                    transition: TRANSITION_TYPE,
+                    transition: IN_BOUNDS_TRANSITION_TYPE,
+                });
+            } else if (distance === 0 && direction < 0) {
+                preview.__looping = true;
+                this._manager.platform.tween(preview, {
+                    time: animation_time / 2,
+                    transition: IN_BOUNDS_TRANSITION_TYPE,
                     onCompleteParams: [preview, distance, animation_time],
                     onComplete: this._onFadeBackwardsComplete,
                     onCompleteScope: this,
+                    opacity: 0,
                 });
             } else {
+               /* if (distance === 0) preview.make_top_layer(this.previewActor);
+                if (distance > 0) preview.make_bottom_layer(this.previewActor);*/
+                let scale = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance);//Math.max(preview.scale * ((20 - 2 * distance) / 20), 0);
                 let tweenparams = {
-                    opacity: 255,
                     x: preview.target_x - Math.sqrt(distance) * 150,
                     y: preview.target_y - Math.sqrt(distance) * 100,
-                    width: Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0),
-                    height: Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0),
+                    scale_x: scale,
+                    scale_y: scale,
+                    scale_z: scale,
                     time: animation_time,
                     transition: TRANSITION_TYPE,
+                    onComplete: () => { preview.set_reactive(true); },
+
+                };
+                let opacitytweenparams = {
+                    opacity: 255,
+                    time: animation_time,
+                    transition: IN_BOUNDS_TRANSITION_TYPE,
                 };
                 if (preview.__looping || preview.__finalTween)
-                    preview.__finalTween = tweenparams;
+                    preview.__finalTween = [tweenparams, opacitytweenparams];
                 else
                     this._manager.platform.tween(preview, tweenparams);
+                    this._manager.platform.tween(preview, opacitytweenparams);
             }
         }
     }
@@ -186,20 +215,23 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
         preview.x = preview.target_x + 200;
         preview.y =  preview.target_y + 100;
-        preview.width = preview.target_width;
-        preview.height = preview.target_height;
+        preview.scale_x = preview.scale;
+        preview.scale_y = preview.scale;
+        preview.scale_z = preview.scale;
 
         this._manager.platform.tween(preview, {
-            opacity: 255,
             x: preview.target_x,
             y: preview.target_y,
-            width: preview.target_width,
-            height: preview.target_height,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
             onCompleteParams: [preview],
             onComplete: this._onFinishMove,
             onCompleteScope: this,
+        });
+        this._manager.platform.tween(preview, {
+            opacity: 255,
+            time: animation_time / 2,
+            transition: IN_BOUNDS_TRANSITION_TYPE,
         });
     }
 
@@ -209,22 +241,31 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
         preview.x = preview.target_x - Math.sqrt(distance) * 150;
         preview.y = preview.target_y - Math.sqrt(distance) * 100;
-        preview.width = Math.max(preview.target_width * ((20 - 2 * distance) / 20), 0);
-        preview.height = Math.max(preview.target_height * ((20 - 2 * distance) / 20), 0);
-
+        let scale = Math.max(preview.scale * ((20 - 2 * distance) / 20), 0);
+        preview.scale_x = scale;
+        preview.scale_y = scale;
+        preview.scale_z = scale;
         this._manager.platform.tween(preview, {
-            opacity: 255,
+            x: preview.x + 50,
+            y: preview.y + 50,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
             onCompleteParams: [preview],
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
+        this._manager.platform.tween(preview, {
+            opacity: 255,
+            time: animation_time / 2,
+            transition: IN_BOUNDS_TRANSITION_TYPE,
+        });
     }
 
     _onFinishMove(preview) {
         if (preview.__finalTween) {
-            this._manager.platform.tween(preview, preview.__finalTween);
+            for (let tween of preview.__finalTween) {
+                this._manager.platform.tween(preview, tween);
+            }
             preview.__finalTween = null;
         }
     }

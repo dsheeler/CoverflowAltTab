@@ -81,6 +81,8 @@ class AbstractPlatform {
             easing_function: 'ease-out-cubic',
             current_workspace_only: '1',
             switch_per_monitor: false,
+            preview_to_monitor_ratio: 50,
+            preview_scaling_factor: 75,
         };
     }
 
@@ -138,6 +140,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "current-workspace-only",
             "switch-per-monitor",
             "switcher-style",
+            "preview-to-monitor-ratio",
+            "preview-scaling-factor",
         ];
 
         let dkeys = [
@@ -217,6 +221,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),
                 switch_per_monitor: settings.get_boolean("switch-per-monitor"),
+                preview_to_monitor_ratio: clamp(settings.get_int("preview-to-monitor-ratio") / 100, 0, 1),
+                preview_scaling_factor: clamp(settings.get_int("preview-scaling-factor") / 100, 0, 1),
             };
         } catch (e) {
             global.log(e);
@@ -281,6 +287,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quint" ||
             params.transition == 'easeInOutQuint') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+        } else if (params.transition == 'Linear') {
+            params.mode = Clutter.AnimationMode.LINEAR;
         }
 
         if (params.onComplete) {
@@ -304,8 +312,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         this._vignette_sharpness_backup = Lightbox.VIGNETTE_SHARPNESS;
         this._vignette_brigtness_backup = Lightbox.VIGNETTE_SHARPNESS;
 
-        Lightbox.VIGNETTE_SHARPNESS = 1.0;
-        Lightbox.VIGNETTE_BRIGHTNESS = 1.0;
+        Lightbox.VIGNETTE_SHARPNESS = 1 - this._settings.dim_factor;
+        Lightbox.VIGNETTE_BRIGHTNESS = 1;
 
     	let Background = imports.ui.background;
 
@@ -320,7 +328,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
              inhibitEvents: true,
              radialEffect: true,
         });
-
+        this._lightbox.opacity = 0;
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
@@ -329,23 +337,74 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 vignette: false,
             });
         }
-     }
+    }
 
      dimBackground() {
+        let panels = this.getPanels();
+        for (let panel of panels) {
+            try {
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                panelActor.set_reactive(false);
+                if (this._settings.hide_panel) {
+                    this.tween(panelActor, {
+                        opacity: 0,
+                        time: this._settings.animation_time,
+                        transition: 'easeInOutQuint'
+                    });
+                }
+            } catch (e) {
+                log(e);
+                // ignore fake panels
+            }
+        }
+
+        // hide gnome-shell legacy tray
+        try {
+            if (Main.legacyTray) {
+                Main.legacyTray.actor.hide();
+            }
+        } catch (e) {
+            // ignore missing legacy tray
+        }
         this._backgroundGroup.show();
         this._lightbox.lightOn();
-        this._lightbox.opacity = 0;
-        let alpha = 1 - this._settings.dim_factor;
         this.tween(this._lightbox, {
-            opacity: 255 * alpha,
+            opacity: 255,
             time: this._settings.animation_time,
             transition: 'easeInOutQuint',
         });
-     }
+    }
 
     lightenBackground() {
+        // panels
+        let panels = this.getPanels();
+        for (let panel of panels){
+            try {
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                panelActor.set_reactive(true);
+                if (this._settings.hide_panel) {
+                    this.removeTweens(panelActor);
+                    this.tween(panelActor, {
+                        opacity: 255,
+                        time: this._settings.animation_time,
+                        transition: 'easeInOutQuint'
+                    });
+                }
+            } catch (e) {
+                //ignore fake panels
+            }
+        }
+        // show gnome-shell legacy trayconn
+        try {
+            if (Main.legacyTray) {
+                Main.legacyTray.actor.show();
+            }
+        } catch (e) {
+            //ignore missing legacy tray
+        }
+
         this.tween(this._lightbox, {
-            time: this._settings.animation_time * 0.97,
+            time: this._settings.animation_time * 0.95,
             transition: 'easeInOutQuint',
             opacity: 0,
             onComplete: this._lightbox.lightOff.bind(this._lightbox),
@@ -357,4 +416,16 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
         Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
 	}
+
+    getPanels() {
+        let panels = [Main.panel];
+        if (Main.panel2)
+            panels.push(Main.panel2);
+        // gnome-shell dash
+        if (Main.overview._dash)
+            panels.push(Main.overview._dash);
+        return panels;
+    }
+
+
 }

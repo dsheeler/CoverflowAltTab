@@ -108,7 +108,7 @@ function buildPrefsWidget() {
 	}, {
 		id: 'ease-in-out-bounce', name: "easeInOutBounce"
 	}]
-	frame.append(buildComboBox("easing-function", options, _("Easing for Coverflow animations")));
+	frame.append(buildComboBox("easing-function", options, _("Easing for animations")));
 	frame.append(buildRange("animation-time", [50, 4000, 10, [250, 500, 1000, 2000, 4000]], _("Animation speed (smaller means faster)")));
 	frame.append(buildRange("dim-factor", [0, 10, 1, [3]], _("Background dim-factor (smaller means darker)")));
 	frame.append(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
@@ -117,6 +117,8 @@ function buildPrefsWidget() {
 	frame.append(buildRange("overlay-icon-size", [64, 1024, 8, [128, 256, 512]], _("Overlay icon size")));
 	frame.append(buildRange("overlay-icon-opacity", [0, 100, 5, [25, 50, 75]], _("Overlay icon opacity")));
 	frame.append(buildSpin("offset", [-500, 500, 1, 10], _("Vertical offset (positive value moves everything up, negative down)")));
+	frame.append(buildRange("preview-to-monitor-ratio", [0, 100, 5, [25, 50, 75]], _("Ratio of preview to monitor size")));
+	frame.append(buildRange("preview-scaling-factor", [0, 100, 5, [25, 50, 75]], _("Factor by which to shrink previews off to the sides")));
 	options = [{
 	    id: 'current', name: _("Current workspace only")
 	}, {

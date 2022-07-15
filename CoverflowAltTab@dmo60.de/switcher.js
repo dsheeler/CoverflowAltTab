@@ -36,6 +36,13 @@ const ICON_TITLE_SPACING = 10;
 
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
+const {
+    Preview,
+    Placement,
+    Direction,
+    findUpperLeftFromCenter
+} = ExtensionImports.preview;
+
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 var Switcher = class Switcher {
@@ -160,6 +167,8 @@ var Switcher = class Switcher {
     }
 
     _next() {
+        this._manager.platform.dimBackground();
+        this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -172,6 +181,8 @@ var Switcher = class Switcher {
     }
 
     _previous() {
+        this._manager.platform.dimBackground();
+        this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(0);
@@ -370,7 +381,7 @@ var Switcher = class Switcher {
         let [x, y, mods] = global.get_pointer();
         let state = mods & this._modifierMask;
 
-        if (state == 0) {
+        if (state == 0 && !this._destroying) {
             if (this._initialDelayTimeoutId !== 0)
                 this._currentIndex = (this._currentIndex + 1) % this._windows.length;
             this._activateSelected();
@@ -440,40 +451,14 @@ var Switcher = class Switcher {
     }
 
     _onDestroy(transition) {
-        let monitor = this._updateActiveMonitor();
-
+        this._destroying = true;
+        let monitor = this._activeMonitor;
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
             this._windowTitle.hide();
             this._applicationIconBox.hide();
             this._manager.platform.lightenBackground();
 
-            // panels
-            let panels = this.getPanels();
-            for (let panel of panels){
-                try {
-                    let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
-                    panelActor.set_reactive(true);
-                    if (this._settings.hide_panel) {
-                        this._manager.platform.removeTweens(panelActor);
-                        this._manager.platform.tween(panelActor, {
-                            opacity: 255,
-                            time: this._settings.animation_time,
-                            transition: 'easeInOutQuint'
-                        });
-                    }
-                } catch (e) {
-                    //ignore fake panels
-                }
-            }
-            // show gnome-shell legacy tray
-            try {
-                if (Main.legacyTray) {
-                    Main.legacyTray.actor.show();
-                }
-            } catch (e) {
-                //ignore missing legacy tray
-            }
 
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
@@ -487,31 +472,31 @@ var Switcher = class Switcher {
                 } else {
                     preview.make_top_layer(this.previewActor);
                 }
-                if (!metaWin.minimized) {
+                if (!metaWin.minimized && metaWin.get_workspace().active) {
                     let rect = metaWin.get_buffer_rect();
                     this._manager.platform.tween(preview, {
                         x: rect.x - monitor.x,
                         y: rect.y - monitor.y,
-                        width: compositor.width,
-                        height: compositor.height,
                         translation_x: 0,
                         scale_x: 1,
                         scale_y: 1,
+                        scale_z: 1,
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                        time: this._settings.animation_time,
+                        time: this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.5, 1.5) : 1),
                         transition: transition,
                     });
                 } else {
+                    let pivot_point = preview.get_pivot_point_placement(Placement.CENTER);
                     this._manager.platform.tween(preview, {
                         x: 0,
                         y: 0,
-                        width: 0,
-                        height: 0,
                         opacity:  0,
                         translation_x: 0,
                         scale_x: 0,
                         scale_y: 0,
+                        scale_z: 0,
+                        pivot_point: pivot_point,
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
                         time: this._settings.animation_time,
@@ -531,7 +516,6 @@ var Switcher = class Switcher {
                Main.popModal(this.grab);
                 this._haveModal = false;
             }
-
 
             if (this._initialDelayTimeoutId !== 0) {
                 Mainloop.source_remove(this._initialDelayTimeoutId);
@@ -558,16 +542,6 @@ var Switcher = class Switcher {
             global.window_group.show();
             this._numPreviewsComplete = 0
         }
-    }
-
-    getPanels() {
-        let panels = [Main.panel];
-        if (Main.panel2)
-            panels.push(Main.panel2);
-        // gnome-shell dash
-        if (Main.overview._dash)
-            panels.push(Main.overview._dash);
-        return panels;
     }
 
     destroy() {

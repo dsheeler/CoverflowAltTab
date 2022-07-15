@@ -89,8 +89,8 @@
             <choice value="ease-in-out-bounce"/>
         </choices>
         <default>"ease-out-cubic"</default>
-        <summary>Easing function used in animations when toggling Coverflow</summary>
-        <description>Use this easing function for animation when Coverflow is toggled.</description>
+        <summary>Easing function used in animations</summary>
+        <description>Use this easing function for animations.</description>
     </key>
     <key type="s" name="current-workspace-only">
         <choices>
@@ -111,6 +111,16 @@
         <default>false</default>
         <summary>Icon has shadow switch</summary>
         <description>Whether or not the icon has a drop shadow.</description>
+    </key>
+    <key type="i" name="preview-to-monitor-ratio">
+        <default>100</default>
+        <summary>The maximum ratio of the preview dimensions with the monitor dimensions</summary>
+        <description>Define the ratio of the preview to monitor sizes.</description>
+    </key>
+    <key type="i" name="preview-scaling-factor">
+        <default>100</default>
+        <summary>In Coverflow Switcher, scales the previews as they spread out to the sides in </summary>
+        <description>Define the scale factor successively applied each step away from the current preview.</description>
     </key>
   </schema>
 </schemalist>

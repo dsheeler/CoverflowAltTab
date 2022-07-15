@@ -18,8 +18,8 @@
 const {
     Clutter,
     GObject,
+    Graphene,
 } = imports.gi;
-
 
 /**
  * Direction and Placement properties values are set to be compatible with deprecated
@@ -85,12 +85,12 @@ var Preview = GObject.registerClass({
     }
 
     /**
-     * Sets the pivot point placement, relative to the preview.
+     * Gets the pivot point relative to the preview.
      *
      * @param {Placement} placement
-     * @return {void}
+     * @return {Graphene.Point}
      */
-    set_pivot_point_placement(placement) {
+    get_pivot_point_placement(placement) {
         let xFraction = 0,
             yFraction = 0;
 
@@ -141,8 +141,18 @@ var Preview = GObject.registerClass({
             default:
                 throw new Error("Unknown placement given");
         }
+        return new Graphene.Point({ x: xFraction, y: yFraction });
+    }
 
-        this.set_pivot_point(xFraction, yFraction);
+   /**
+     * Sets the pivot point placement, relative to the preview.
+     *
+     * @param {Placement} placement
+     * @return {void}
+     */
+    set_pivot_point_placement(placement) {
+        let point = this.get_pivot_point_placement(placement);
+        this.set_pivot_point(point.x, point.y);
     }
 });
 
