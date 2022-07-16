@@ -64,7 +64,7 @@ var Switcher = class Switcher {
         this._numPreviewsComplete = 0
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
-
+        manager.platform.switcher = this;
         manager.platform.initBackground();
 
         // create a container for all our widgets
@@ -108,41 +108,22 @@ var Switcher = class Switcher {
         let monitor = this._updateActiveMonitor();
         this.actor.set_position(monitor.x, monitor.y);
         this.actor.set_size(monitor.width, monitor.height);
-
         // create previews
         this._createPreviews();
+
+        for (let preview of this._previews) {
+            preview.switcher = this;
+            preview.set_reactive(false);
+            preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
+        }
 
         // hide windows and show Coverflow actors
         global.window_group.hide();
         this.actor.show();
 
-        let panels = this.getPanels();
-        for (let panel of panels) {
-            try {
-                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
-                panelActor.set_reactive(false);
-                if (this._settings.hide_panel) {
-                    this._manager.platform.tween(panelActor, {
-                        opacity: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint'
-                    });
-                }
-            } catch (e) {
-                // ignore fake panels
-            }
-        }
 
-        // hide gnome-shell legacy tray
-        try {
-            if (Main.legacyTray) {
-                Main.legacyTray.actor.hide();
-            }
-        } catch (e) {
-            // ignore missing legacy tray
-        }
 
-        this._manager.platform.dimBackground();
+        //this._manager.platform.dimBackground();
 
         this._initialDelayTimeoutId = 0;
 
@@ -434,6 +415,16 @@ var Switcher = class Switcher {
         }
     }
 
+    _previewButtonPressEvent(preview) {
+        for (let [i, p] of this._previews.entries()) {
+            if (preview == p) {
+                this._currentIndex = i;
+                this._activateSelected();
+                break;
+            }
+        }
+    }
+
     _activateSelected() {
         let win = this._windows[this._currentIndex];
         if (win)
@@ -450,6 +441,10 @@ var Switcher = class Switcher {
         this.destroy();
     }
 
+    _getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
     _onDestroy(transition) {
         this._destroying = true;
         let monitor = this._activeMonitor;
@@ -462,6 +457,7 @@ var Switcher = class Switcher {
 
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
+            this._destroying = true;
             for (let [i, preview] of this._previews.entries()) {
                 let metaWin = this._windows[i],
                 compositor = metaWin.get_compositor_private();

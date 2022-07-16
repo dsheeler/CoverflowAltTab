@@ -112,6 +112,11 @@
         <summary>Icon has shadow switch</summary>
         <description>Whether or not the icon has a drop shadow.</description>
     </key>
+    <key type="b" name="randomize-animation-times">
+        <default>false</default>
+        <summary>Randomize animation times switch</summary>
+        <description>Whether or not to have each animation take a different, randomized time to complete.</description>
+    </key>
     <key type="i" name="preview-to-monitor-ratio">
         <default>100</default>
         <summary>The maximum ratio of the preview dimensions with the monitor dimensions</summary>

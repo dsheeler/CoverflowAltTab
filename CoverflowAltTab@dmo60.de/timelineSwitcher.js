@@ -36,7 +36,7 @@ const {
 
 let TRANSITION_TYPE;
 let IN_BOUNDS_TRANSITION_TYPE;
-const TILT_ANGLE = 12;
+const TILT_ANGLE = 24;
 
 var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
@@ -123,7 +123,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
             return;
 
         let monitor = this._updateActiveMonitor();
-        let animation_time = this._settings.animation_time;
+        let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
 
         if (this._previews.length == 1) {
             let preview = this._previews[0];
@@ -135,6 +135,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                 scale_z: preview.scale,
                 time: animation_time / 2,
                 transition: TRANSITION_TYPE,
+                rotation_angle_y: TILT_ANGLE,
             });
             this._manager.platform.tween(preview, {
                 opacity: 255,
@@ -149,7 +150,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
-            animation_time = this._settings.animation_time;
+            animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
@@ -161,6 +162,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                     scale_z: preview.scale,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
+                    rotation_angle_y: TILT_ANGLE,
                     onCompleteParams: [preview, distance, animation_time],
                     onComplete: this._onFadeForwardComplete,
                     onCompleteScope: this,
@@ -181,8 +183,6 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                     opacity: 0,
                 });
             } else {
-               /* if (distance === 0) preview.make_top_layer(this.previewActor);
-                if (distance > 0) preview.make_bottom_layer(this.previewActor);*/
                 let scale = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance);//Math.max(preview.scale * ((20 - 2 * distance) / 20), 0);
                 let tweenparams = {
                     x: preview.target_x - Math.sqrt(distance) * 150,
@@ -191,6 +191,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                     scale_y: scale,
                     scale_z: scale,
                     time: animation_time,
+                    rotation_angle_y: TILT_ANGLE,
                     transition: TRANSITION_TYPE,
                     onComplete: () => { preview.set_reactive(true); },
 

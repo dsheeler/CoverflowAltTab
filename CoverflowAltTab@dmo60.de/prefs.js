@@ -110,6 +110,7 @@ function buildPrefsWidget() {
 	}]
 	frame.append(buildComboBox("easing-function", options, _("Easing for animations")));
 	frame.append(buildRange("animation-time", [50, 4000, 10, [250, 500, 1000, 2000, 4000]], _("Animation speed (smaller means faster)")));
+	frame.append(buildSwitcher("randomize-animation-times", _("Randomize durations of animations")));
 	frame.append(buildRange("dim-factor", [0, 10, 1, [3]], _("Background dim-factor (smaller means darker)")));
 	frame.append(buildRadio("position", [_("Bottom"), _("Top")], _("Window title box position")));
 	frame.append(buildRadio("icon-style", [_("Classic"), _("Overlay")], _("Application icon style")));

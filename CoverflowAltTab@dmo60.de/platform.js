@@ -67,6 +67,7 @@ class AbstractPlatform {
     getDefaultSettings() {
         return {
             animation_time: 0.25,
+            randomize_animation_times: false,
             dim_factor: 0.4,
             title_position: POSITION_BOTTOM,
             icon_style: 'Classic',
@@ -127,6 +128,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
         let keys = [
             "animation-time",
+            "randomize-animation-times",
             "dim-factor",
             "position",
             "icon-style",
@@ -206,6 +208,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             let dsettings = this._desktopSettings;
             return {
                 animation_time: Math.max(settings.get_int("animation-time") / 1000, 0),
+                randomize_animation_times: settings.get_boolean("randomize-animation-times"),
                 dim_factor: clamp(settings.get_int("dim-factor") / 10, 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
