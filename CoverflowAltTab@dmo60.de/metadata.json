@@ -1,8 +1,8 @@
 {
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
     "shell-version": [
-        "42"
-
+        "42",
+        "43"
     ],
     "dangerous": false,
     "name": "Coverflow Alt-Tab",
