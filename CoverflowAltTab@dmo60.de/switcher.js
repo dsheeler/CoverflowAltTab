@@ -462,11 +462,13 @@ var Switcher = class Switcher {
                 let metaWin = this._windows[i],
                 compositor = metaWin.get_compositor_private();
 
+                let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
                 // Move all non-activated windows behind the activated one
                 if (i !== this._currentIndex) {
                     preview.make_bottom_layer(this.previewActor);
                 } else {
                     preview.make_top_layer(this.previewActor);
+                    animation_time = this._settings.animation_time;
                 }
                 if (!metaWin.minimized && metaWin.get_workspace().active) {
                     let rect = metaWin.get_buffer_rect();
@@ -479,7 +481,7 @@ var Switcher = class Switcher {
                         scale_z: 1,
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                        time: this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.5, 1.5) : 1),
+                        time: animation_time,
                         transition: transition,
                     });
                 } else {
@@ -496,7 +498,7 @@ var Switcher = class Switcher {
                         rotation_angle_y: 0.0,
                         onComplete: this._onPreviewDestroyComplete.bind(this, false),
                         time: this._settings.animation_time,
-                        transition: 'easeInOutQuint'
+                        transition: 'easeLinear'
                     });
                 }
             }

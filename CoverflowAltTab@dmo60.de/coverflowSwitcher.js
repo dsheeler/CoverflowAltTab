@@ -295,9 +295,9 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
-            let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
+            let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
             if (i === this._currentIndex) {
-                this._animatePreviewToMid(preview, animation_time);
+                this._animatePreviewToMid(preview, this._settings.animation_time);
             } else if (i < this._currentIndex) {
                 preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetLeft, {

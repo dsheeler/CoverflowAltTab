@@ -150,7 +150,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
-            animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
+            animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
