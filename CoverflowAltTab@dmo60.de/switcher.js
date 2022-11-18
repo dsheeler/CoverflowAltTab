@@ -184,6 +184,9 @@ var Switcher = class Switcher {
             else
                 this._activeMonitor = Main.layoutManager.primaryMonitor;
         }
+        this.monitor_number = this._activeMonitor.index + 1;
+        this.num_monitors = global.display.get_n_monitors();
+        print(this.num_monitors, this.monitor_number);
         return this._activeMonitor;
     }
 

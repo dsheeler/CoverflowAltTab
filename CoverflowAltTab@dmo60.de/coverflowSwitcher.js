@@ -36,7 +36,7 @@ const {
 } = ExtensionImports.preview;
 
 const SIDE_ANGLE = 90;
-const BLEND_OUT_ANGLE = 30;
+const BLEND_OUT_ANGLE = 0;
 const ALPHA = 1;
 
 function appendParams(base, extra) {
@@ -180,12 +180,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
-            angleEnd = -SIDE_ANGLE;
+            angleEnd = -(SIDE_ANGLE + this._getPerspectiveCorrectionAngle());
         } else {
             xOffsetStart = -this._xOffsetLeft;
             xOffsetEnd = this._xOffsetLeft;
             angleStart = BLEND_OUT_ANGLE;
-            angleEnd = SIDE_ANGLE;
+            angleEnd = SIDE_ANGLE - this._getPerspectiveCorrectionAngle();
         }
 
         let animation_time = this._settings.animation_time * 2/3;
@@ -285,6 +285,26 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         this._manager.platform.tween(preview, tweenParams);
     }
 
+    _getPerspectiveCorrectionAngle() {
+        if (this.num_monitors == 1) {
+            return 0;
+        } else if (this.num_monitors == 2) {
+            if (this.monitor_number == 2) {
+                return -508/1000 * 90;
+            } else {
+                return 508/1000 * 90;
+            }
+        } else if (this.num_monitors == 3) {
+            if (this.monitor_number == 3) {
+                return -715/1000 * 90;
+            } else if (this.monitor_number == 2) {
+                return 0;
+            } else {
+                return 715/1000 * 90;
+            }
+        }
+    }
+
     _updatePreviews() {
         if(this._looping) {
             this._requiresUpdate = true;
@@ -301,14 +321,14 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             } else if (i < this._currentIndex) {
                 preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
-                    rotation_angle_y: SIDE_ANGLE,
+                    rotation_angle_y: SIDE_ANGLE - this._getPerspectiveCorrectionAngle(),
                     time: animation_time,
                     transition: 'userChoice',
                 });
             } else /* i > this._currentIndex */ {
                 preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetRight, {
-                    rotation_angle_y: -SIDE_ANGLE,
+                    rotation_angle_y: -(SIDE_ANGLE + this._getPerspectiveCorrectionAngle()),
                     time: animation_time,
                     transition: 'userChoice',
                 });
