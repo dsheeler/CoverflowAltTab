@@ -313,7 +313,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
     initBackground() {
         this._vignette_sharpness_backup = Lightbox.VIGNETTE_SHARPNESS;
-        this._vignette_brigtness_backup = Lightbox.VIGNETTE_SHARPNESS;
+        this._vignette_brigtness_backup = Lightbox.VIGNETTE_BRIGHTNESS;
 
         Lightbox.VIGNETTE_SHARPNESS = 1 - this._settings.dim_factor;
         Lightbox.VIGNETTE_BRIGHTNESS = 1;
