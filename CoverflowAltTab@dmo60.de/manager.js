@@ -65,7 +65,7 @@ var Manager = class Manager {
 
     enable() {
         this.platform.enable();
-        this.keybinder.enable(this._startWindowSwitcher.bind(this));
+        this.keybinder.enable(this._startWindowSwitcher.bind(this), this.platform);
     }
 
     disable() {
