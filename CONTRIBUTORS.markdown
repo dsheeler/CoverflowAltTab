@@ -38,4 +38,5 @@ CoverflowAltTab contributors (sorted randomly)
 * [Daniel Sheeler](https://github.com/dsheeler)
   * Keybindings for Gnome 3.36
   * Support for Gnome 42
- 
+* Simon Elst
+  * Maintaining French translation
