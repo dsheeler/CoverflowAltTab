@@ -36,15 +36,22 @@ class AbstractKeybinder {
 }
 
 var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
-    enable(startAppSwitcherBind) {
+    constructor(...args) {
+        super(...args);
+
+        this._startAppSwitcherBind = null;
+    }
+
+    enable(startAppSwitcherBind, platform) {
         let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
-        Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, startAppSwitcherBind);
+
+        this._startAppSwitcherBind = startAppSwitcherBind;
+
+        platform.addSettingsChangedCallback(this._onSettingsChanged.bind(this));
+
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-panels', mode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
     }
 
@@ -58,5 +65,25 @@ var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+    }
+
+    _onSettingsChanged(settings) {
+        let Shell = imports.gi.Shell;
+        let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
+        if (settings.get_boolean('bind-to-switch-applications')) {
+            Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._startAppSwitcherBind);
+            Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, this._startAppSwitcherBind);
+        } else {
+            Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+            Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+        }
+        if (settings.get_boolean('bind-to-switch-windows')) {
+            log("binding to switch windows");
+            Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, this._startAppSwitcherBind);
+            Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, this._startAppSwitcherBind);
+        } else {
+            Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+            Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+        }
     }
 }

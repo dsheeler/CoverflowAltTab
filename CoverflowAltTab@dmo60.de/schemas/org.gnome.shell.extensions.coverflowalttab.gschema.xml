@@ -127,5 +127,15 @@
         <summary>In Coverflow Switcher, scales the previews as they spread out to the sides in </summary>
         <description>Define the scale factor successively applied each step away from the current preview.</description>
     </key>
+    <key type="b" name="bind-to-switch-applications">
+        <default>true</default>
+        <summary>Bind to 'switch-applications' keybinding</summary>
+        <description>Whether or not to bind to the 'switch-applications' keybinding.</description>
+    </key>
+    <key type="b" name="bind-to-switch-windows">
+        <default>true</default>
+        <summary>Bind to 'switch-windows' keybinding</summary>
+        <description>Whether or not to bind to the 'switch-windows' keybinding.</description>
+    </key>
   </schema>
 </schemalist>
