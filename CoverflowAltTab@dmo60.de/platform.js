@@ -84,6 +84,8 @@ class AbstractPlatform {
             switch_per_monitor: false,
             preview_to_monitor_ratio: 50,
             preview_scaling_factor: 75,
+            bind_to_switch_applications: true,
+            bind_to_switch_windows: true,
         };
     }
 
@@ -115,10 +117,13 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         this._connections = null;
         this._extensionSettings = null;
         this._desktopSettings = null;
+        this._settings_changed_callbacks = null;
     }
 
     enable() {
         this.disable();
+
+        this._settings_changed_callbacks = [];
 
         if (this._extensionSettings == null)
             this._extensionSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
@@ -144,6 +149,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "switcher-style",
             "preview-to-monitor-ratio",
             "preview-scaling-factor",
+            "bind-to-switch-applications",
+            "bind-to-switch-windows",
         ];
 
         let dkeys = [
@@ -198,9 +205,18 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         return this._settings;
     }
 
+    addSettingsChangedCallback(cb) {
+        cb(this._extensionSettings);
+        this._settings_changed_callbacks.push(cb);
+    }
+
     _onSettingsChanged() {
         this._settings = null;
+        for (let cb of this._settings_changed_callbacks) {
+            cb(this._extensionSettings);
+        }
     }
+
 
     _loadSettings() {
         try {
@@ -226,6 +242,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 switch_per_monitor: settings.get_boolean("switch-per-monitor"),
                 preview_to_monitor_ratio: clamp(settings.get_int("preview-to-monitor-ratio") / 100, 0, 1),
                 preview_scaling_factor: clamp(settings.get_int("preview-scaling-factor") / 100, 0, 1),
+                bind_to_switch_applications: settings.get_boolean("bind-to-switch-applications"),
+                bind_to_switch_windows: settings.get_boolean("bind-to-switch-windows"),
             };
         } catch (e) {
             global.log(e);

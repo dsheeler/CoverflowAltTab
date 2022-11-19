@@ -129,6 +129,8 @@ function buildPrefsWidget() {
 	}]
 	frame.append(buildComboBox("current-workspace-only", options, _("Show windows from current or all workspaces")));
 	frame.append(buildSwitcher("switch-per-monitor", _("Only switch between windows on current monitor")));
+	frame.append(buildSwitcher("bind-to-switch-applications", _("Bind to switch-applications keybinding")));
+	frame.append(buildSwitcher("bind-to-switch-windows", _("Bind to switch-windows keybinding")));
 
 	return frame;
 }
