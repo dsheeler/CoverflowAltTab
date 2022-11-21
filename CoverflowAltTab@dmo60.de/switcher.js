@@ -184,9 +184,17 @@ var Switcher = class Switcher {
             else
                 this._activeMonitor = Main.layoutManager.primaryMonitor;
         }
-        this.monitor_number = this._activeMonitor.index + 1;
         this.num_monitors = global.display.get_n_monitors();
-        print(this.num_monitors, this.monitor_number);
+        this.monitors_ltr = [];
+        for (let m of Main.layoutManager.monitors) {
+            this.monitors_ltr.push(m);
+        }
+
+        this.monitors_ltr.sort(function compareFn(A, B) {
+            return A.x - B.x;
+        });
+
+        this.monitor_number = this._activeMonitor.index;
         return this._activeMonitor;
     }
 
