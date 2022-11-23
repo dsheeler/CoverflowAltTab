@@ -59,5 +59,6 @@ function enable() {
 function disable() {
     if (manager) {
         manager.disable();
+        manager = null;
     }
 }
