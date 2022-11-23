@@ -66,9 +66,9 @@ class AbstractPlatform {
 
     getDefaultSettings() {
         return {
-            animation_time: 0.25,
+            animation_time: 0.2,
             randomize_animation_times: false,
-            dim_factor: 0.4,
+            dim_factor: 0,
             title_position: POSITION_BOTTOM,
             icon_style: 'Classic',
             icon_has_shadow: false,
@@ -82,8 +82,8 @@ class AbstractPlatform {
             easing_function: 'ease-out-cubic',
             current_workspace_only: '1',
             switch_per_monitor: false,
-            preview_to_monitor_ratio: 50,
-            preview_scaling_factor: 75,
+            preview_to_monitor_ratio: 0.5,
+            preview_scaling_factor: 0.75,
             bind_to_switch_applications: true,
             bind_to_switch_windows: true,
         };
@@ -223,14 +223,14 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             let settings = this._extensionSettings;
             let dsettings = this._desktopSettings;
             return {
-                animation_time: Math.max(settings.get_int("animation-time") / 1000, 0),
+                animation_time: clamp(settings.get_int("animation-time") / 1000, 0.01, 8),
                 randomize_animation_times: settings.get_boolean("randomize-animation-times"),
-                dim_factor: clamp(settings.get_int("dim-factor") / 10, 0, 1),
+                dim_factor: clamp(settings.get_int("dim-factor") / 1000, 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
-                overlay_icon_size: clamp(settings.get_int("overlay-icon-size"), 64, 1024),
-                overlay_icon_opacity: clamp(settings.get_int("overlay-icon-opacity") / 100, 0, 1),
+                overlay_icon_size: clamp(settings.get_int("overlay-icon-size"), 0, 1024),
+                overlay_icon_opacity: clamp(settings.get_int("overlay-icon-opacity") / 1000, 0, 1),
                 text_scaling_factor: dsettings.get_double(KEY_TEXT_SCALING_FACTOR),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
@@ -240,8 +240,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),
                 switch_per_monitor: settings.get_boolean("switch-per-monitor"),
-                preview_to_monitor_ratio: clamp(settings.get_int("preview-to-monitor-ratio") / 100, 0, 1),
-                preview_scaling_factor: clamp(settings.get_int("preview-scaling-factor") / 100, 0, 1),
+                preview_to_monitor_ratio: clamp(settings.get_int("preview-to-monitor-ratio") / 1000, 0, 1),
+                preview_scaling_factor: clamp(settings.get_int("preview-scaling-factor") / 1000, 0, 1),
                 bind_to_switch_applications: settings.get_boolean("bind-to-switch-applications"),
                 bind_to_switch_windows: settings.get_boolean("bind-to-switch-windows"),
             };

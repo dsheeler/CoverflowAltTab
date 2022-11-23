@@ -27,6 +27,7 @@
 
 NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
 SUPER_PATH := /usr/share/gnome-shell/extensions
+SYSTEMWIDE_SCHEMA_PATH := /usr/share/glib-2.0/schemas
 SRC_DIR := CoverflowAltTab@dmo60.de
 LOCALE_DIR=${SRC_DIR}/locale
 PROJECT_NAME := coverflow
@@ -64,6 +65,15 @@ install:
 
 uninstall:
 	rm -rf $(INSTALL_PATH)/$(SRC_DIR)
+	rm ${SCHEMA_DIR}/gschemas.compiled
 
 schema: ${SCHEMA_DIR}/${SCHEMA_FILE}
 	glib-compile-schemas "${SCHEMA_DIR}"
+
+install_schema_systemwide:
+	cp ${SCHEMA_DIR}/${SCHEMA_FILE} ${SYSTEMWIDE_SCHEMA_PATH}
+	glib-compile-schemas ${SYSTEMWIDE_SCHEMA_PATH}
+
+uninstall_schema_systemwide:
+	rm ${SYSTEMWIDE_SCHEMA_PATH}/${SCHEMA_FILE}
+	glib-compile-schemas ${SYSTEMWIDE_SCHEMA_PATH}
