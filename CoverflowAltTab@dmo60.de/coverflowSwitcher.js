@@ -180,12 +180,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
-            angleEnd = -(SIDE_ANGLE + this._getPerspectiveCorrectionAngle());
+            angleEnd = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0);
         } else {
             xOffsetStart = -this._xOffsetLeft;
             xOffsetEnd = this._xOffsetLeft;
             angleStart = BLEND_OUT_ANGLE;
-            angleEnd = SIDE_ANGLE - this._getPerspectiveCorrectionAngle();
+            angleEnd = SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
         }
 
         let animation_time = this._settings.animation_time * 2/3;
@@ -285,22 +285,26 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         this._manager.platform.tween(preview, tweenParams);
     }
 
-    _getPerspectiveCorrectionAngle() {
+    _getPerspectiveCorrectionAngle(side) {
         if (this.num_monitors == 1) {
             return 0;
         } else if (this.num_monitors == 2) {
             if (this.monitor_number == this.monitors_ltr[0].index) {
-                return -508/1000 * 90;
+                if (side == 0) return 508/1000 * 90;
+                else return 508/1000 *90;
             } else {
-                return 508/1000 * 90;
+                if (side == 0) return -508/1000 * 90;
+                else return -508/1000 * 90;
             }
         } else if (this.num_monitors == 3) {
             if (this.monitor_number == this.monitors_ltr[0].index) {
-                return -715/1000 * 90;
+                if (side == 0) return (644)/1000 * 90;
+                else return 815/1000 * 90;
             } else if (this.monitor_number == this.monitors_ltr[1].index) {
                 return 0;
             } else {
-                return 715/1000 * 90;
+                if (side == 0) return (-815)/1000 * 90;
+                else return -644/1000 * 90;
             }
         }
     }
@@ -321,14 +325,14 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             } else if (i < this._currentIndex) {
                 preview.make_top_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetLeft, {
-                    rotation_angle_y: SIDE_ANGLE - this._getPerspectiveCorrectionAngle(),
+                    rotation_angle_y: SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0),
                     time: animation_time,
                     transition: 'userChoice',
                 });
             } else /* i > this._currentIndex */ {
                 preview.make_bottom_layer(this.previewActor);
                 this._animatePreviewToSide(preview, i, this._xOffsetRight, {
-                    rotation_angle_y: -(SIDE_ANGLE + this._getPerspectiveCorrectionAngle()),
+                    rotation_angle_y: -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1),
                     time: animation_time,
                     transition: 'userChoice',
                 });
