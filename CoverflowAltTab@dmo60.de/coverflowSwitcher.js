@@ -180,12 +180,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
-            angleEnd = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0);
+            angleEnd = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
         } else {
             xOffsetStart = -this._xOffsetLeft;
             xOffsetEnd = this._xOffsetLeft;
             angleStart = BLEND_OUT_ANGLE;
-            angleEnd = SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
+            angleEnd = SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0);
         }
 
         let animation_time = this._settings.animation_time * 2/3;
