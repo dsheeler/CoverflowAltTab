@@ -1,6 +1,11 @@
 CoverflowAltTab contributors (sorted randomly)
 ============================================
 
+* [Daniel Sheeler](https://github.com/dsheeler)
+  * Current Maintainer
+  * Fixes and some new features
+  * Keybindings for Gnome 3.36
+  * Support for Gnome 42
 * [XZS](https://github.com/dffischer)
   * Support for Gnome 3.18
 * [Timo Loewe (dmo60)](https://github.com/dmo60)
@@ -14,7 +19,7 @@ CoverflowAltTab contributors (sorted randomly)
 * [Victor Tseng (Palatis)](https://github.com/Palatis)
   * Original developer of the extension with the Coverflow switcher
 * [Paolo Inaudi (p91paul)](https://github.com/p91paul)
-  * Maintainer, small fixes
+  * Maintainer for several years, small fixes
 * [Richard K](https://github.com/vltr)
   * Brazilian portuguese translation
   * Added option to show windows from all workspaces
@@ -35,8 +40,5 @@ CoverflowAltTab contributors (sorted randomly)
   * Add overlay icons to windows in animation
 * [John Garland](https://github.com/johnnyg)
   * Support for Gnome 3.4
-* [Daniel Sheeler](https://github.com/dsheeler)
-  * Keybindings for Gnome 3.36
-  * Support for Gnome 42
 * Simon Elst
   * Maintaining French translation
