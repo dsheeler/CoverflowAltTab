@@ -47,6 +47,40 @@ const KEY_TEXT_SCALING_FACTOR = 'text-scaling-factor';
 
 const TRANSITION_TYPE = 'easeOutQuad';
 
+const modes = [
+    Clutter.AnimationMode.EASE_IN_BOUNCE,
+    Clutter.AnimationMode.EASE_OUT_BOUNCE,
+    Clutter.AnimationMode.EASE_IN_OUT_BOUNCE,
+    Clutter.AnimationMode.EASE_IN_BACK,
+    Clutter.AnimationMode.EASE_OUT_BACK,
+    Clutter.AnimationMode.EASE_IN_OUT_BACK,
+    Clutter.AnimationMode.EASE_IN_ELASTIC,
+    Clutter.AnimationMode.EASE_OUT_ELASTIC,
+    Clutter.AnimationMode.EASE_IN_OUT_ELASTIC,
+    Clutter.AnimationMode.EASE_IN_QUAD,
+    Clutter.AnimationMode.EASE_OUT_QUAD,
+    Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+    Clutter.AnimationMode.EASE_IN_CUBIC,
+    Clutter.AnimationMode.EASE_OUT_CUBIC,
+    Clutter.AnimationMode.EASE_IN_OUT_CUBIC,
+    Clutter.AnimationMode.EASE_IN_QUART,
+    Clutter.AnimationMode.EASE_OUT_QUART,
+    Clutter.AnimationMode.EASE_IN_OUT_QUART,
+    Clutter.AnimationMode.EASE_IN_QUINT,
+    Clutter.AnimationMode.EASE_OUT_QUINT,
+    Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+    Clutter.AnimationMode.EASE_IN_SINE,
+    Clutter.AnimationMode.EASE_OUT_SINE,
+    Clutter.AnimationMode.EASE_IN_OUT_SINE,
+    Clutter.AnimationMode.EASE_IN_EXPO,
+    Clutter.AnimationMode.EASE_OUT_EXPO,
+    Clutter.AnimationMode.EASE_IN_OUT_EXPO,
+    Clutter.AnimationMode.EASE_IN_CIRC,
+    Clutter.AnimationMode.EASE_OUT_CIRC,
+    Clutter.AnimationMode.EASE_IN_OUT_CIRC,
+    Clutter.AnimationMode.LINEAR
+];
+
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
@@ -254,7 +288,10 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
 
     tween(actor, params) {
         params.duration = params.time * 1000;
-        if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-bounce" ||
+        if (params.transition == 'userChoice' && this.getSettings().easing_function == 'random' ||
+            params.transition == 'Random') {
+            params.mode = modes[Math.floor(Math.random()*modes.length)];
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-bounce" ||
             params.transition == 'easeInBounce') {
             params.mode = Clutter.AnimationMode.EASE_IN_BOUNCE;
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-bounce" ||
@@ -281,6 +318,15 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-elastic" ||
             params.transition == 'easeInOutElastic') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_ELASTIC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quad" ||
+            params.transition == 'easeInQuad') {
+            params.mode = Clutter.AnimationMode.EASE_IN_QUAD;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out_quad" ||
+            params.transition == 'easeOutQuad') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quad" ||
+            params.transition == 'easeInOutQuad') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-cubic" ||
             params.transition == 'easeInCubic') {
             params.mode = Clutter.AnimationMode.EASE_IN_CUBIC;
@@ -290,15 +336,15 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-cubic" ||
             params.transition == 'easeInOutCubic') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_CUBIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quad" ||
-            params.transition == 'easeInQuad') {
-            params.mode = Clutter.AnimationMode.EASE_IN_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out_quad" ||
-            params.transition == 'easeOutQuad') {
-            params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quad" ||
-            params.transition == 'easeInOutQuad') {
-            params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quart" ||
+            params.transition == 'easeInQuart') {
+            params.mode = Clutter.AnimationMode.EASE_IN_QUART;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quart" ||
+            params.transition == 'easeOutQuart') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_QUART;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quart" ||
+            params.transition == 'easeInOutQuart') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUART;
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quint" ||
             params.transition == 'easeInQuint') {
             params.mode = Clutter.AnimationMode.EASE_IN_QUINT;
@@ -308,8 +354,37 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quint" ||
             params.transition == 'easeInOutQuint') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
-        } else if (params.transition == 'Linear') {
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-sine" ||
+            params.transition == 'easeInSine') {
+            params.mode = Clutter.AnimationMode.EASE_IN_SINE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-sine" ||
+            params.transition == 'easeOutSine') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_SINE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-sine" ||
+            params.transition == 'easeInOutSine') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_SINE;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-expo" ||
+            params.transition == 'easeInExpo') {
+            params.mode = Clutter.AnimationMode.EASE_IN_EXPO;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-expo" ||
+            params.transition == 'easeOutExpo') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_EXPO;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-expo" ||
+            params.transition == 'easeInOutExpo') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_EXPO;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-circ" ||
+            params.transition == 'easeInCirc') {
+            params.mode = Clutter.AnimationMode.EASE_IN_CIRC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-circ" ||
+            params.transition == 'easeOutCirc') {
+            params.mode = Clutter.AnimationMode.EASE_OUT_CIRC;
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-circ" ||
+            params.transition == 'easeInOutCirc') {
+            params.mode = Clutter.AnimationMode.EASE_IN_OUT_CIRC;
+        } else if (params.transition == 'easeLinear') {
             params.mode = Clutter.AnimationMode.LINEAR;
+        } else {
+            global.log("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);
         }
 
         if (params.onComplete) {

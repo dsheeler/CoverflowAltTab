@@ -157,7 +157,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 onComplete: this._onFlipIn,
                 onCompleteScope: this,
                 onCompleteParams: [preview, i, direction],
-                transition: 'EaseInOutQuint',
+                transition: 'easeInOutQuint',
                 opacity: 0,
                 x: 0,
                 y: 0,
@@ -204,7 +204,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             onCompleteScope: this
         };
         this._manager.platform.tween(preview, {
-            transition: 'EaseInOutQuint',
+            transition: 'easeInOutQuint',
             opacity: ALPHA * 255,
             time: animation_time,
         });
@@ -340,7 +340,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             this._manager.platform.tween(preview, {
                 opacity: ALPHA * 255,
                 time: this._settings.animation_time,
-                transition: 'EaseInOutQuint',
+                transition: 'easeInOutQuint',
                 onComplete: () => {
                     preview.set_reactive(true);
                 }

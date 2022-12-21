@@ -66,23 +66,41 @@ function buildPrefsWidget() {
 	frame.append(buildSwitcher("enforce-primary-monitor", _("Always show the switcher on the primary monitor")));
 	frame.append(buildRadio("switcher-style", [_("Coverflow"), _("Timeline")], _("Switcher style")));
 		let options = [{
-		id: 'ease-in-cubic', name: "easeInCubic"
-	}, {
-		id: 'ease-out-cubic', name: "easeOutCubic"
-	}, {
-		id: 'ease-in-out-cubic', name: "easeInOutCubic"
-	}, {
 		id: 'ease-in-quad', name: "easeInQuad"
 	}, {
 		id: 'ease-out-quad', name: "easeOutQuad"
 	}, {
 		id: 'ease-in-out-quad', name: "easeInOutQuad"
 	}, {
+		id: 'ease-in-cubic', name: "easeInCubic"
+	}, {
+		id: 'ease-out-cubic', name: "easeOutCubic"
+	}, {
+		id: 'ease-in-out-cubic', name: "easeInOutCubic"
+	}, {
+		id: 'ease-in-quart', name: "easeInQuart"
+	}, {
+		id: 'ease-out-quart', name: "easeOutQuart"
+	}, {
+		id: 'ease-in-out-quart', name: "easeInOutQuart"
+	}, {
 		id: 'ease-in-quint', name: "easeInQuint"
 	}, {
 		id: 'ease-out-quint', name: "easeOutQuint"
 	}, {
 		id: 'ease-in-out-quint', name: "easeInOutQuint"
+	}, {
+		id: 'ease-in-sine', name: "easeInSine"
+	}, {
+		id: 'ease-out-sine', name: "easeOutSine"
+	}, {
+		id: 'ease-in-out-sine', name: "easeInOutSine"
+	}, {
+		id: 'ease-in-expo', name: "easeInExpo"
+	}, {
+		id: 'ease-out-expo', name: "easeOutExpo"
+	}, {
+		id: 'ease-in-out-expo', name: "easeInOutExpo"
 	}, {
 		id: 'ease-in-circ', name: "easeInCirc"
 	}, {
@@ -107,7 +125,10 @@ function buildPrefsWidget() {
 		id: 'ease-out-bounce', name: "easeOutBounce"
 	}, {
 		id: 'ease-in-out-bounce', name: "easeInOutBounce"
+	}, {
+		id: 'random', name: "Random"
 	}]
+
 	frame.append(buildComboBox("easing-function", options, _("Easing for animations")));
 	frame.append(buildRange("animation-time", [10, 8000, 1, [200, 666, 1000, 2000, 4000]], _("Animation speed (smaller means faster)")));
 	frame.append(buildSwitcher("randomize-animation-times", _("Randomize durations of animations")));

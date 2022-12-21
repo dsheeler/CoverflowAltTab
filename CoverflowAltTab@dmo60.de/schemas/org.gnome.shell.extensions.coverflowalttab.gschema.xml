@@ -70,15 +70,24 @@
     </key>
     <key type="s" name="easing-function">
         <choices>
-            <choice value="ease-in-cubic"/>
-            <choice value="ease-out-cubic"/>
-            <choice value="ease-in-out-cubic"/>
             <choice value="ease-in-quad"/>
             <choice value="ease-out-quad"/>
             <choice value="ease-in-out-quad"/>
+            <choice value="ease-in-cubic"/>
+            <choice value="ease-out-cubic"/>
+            <choice value="ease-in-out-cubic"/>
+            <choice value="ease-in-quart"/>
+            <choice value="ease-out-quart"/>
+            <choice value="ease-in-out-quart"/>
             <choice value="ease-in-quint"/>
             <choice value="ease-out-quint"/>
             <choice value="ease-in-out-quint"/>
+            <choice value="ease-in-sine"/>
+            <choice value="ease-out-sine"/>
+            <choice value="ease-in-out-sine"/>
+            <choice value="ease-in-expo"/>
+            <choice value="ease-out-expo"/>
+            <choice value="ease-in-out-expo"/>
             <choice value="ease-in-circ"/>
             <choice value="ease-out-circ"/>
             <choice value="ease-in-out-circ"/>
@@ -91,6 +100,7 @@
             <choice value="ease-in-bounce"/>
             <choice value="ease-out-bounce"/>
             <choice value="ease-in-out-bounce"/>
+            <choice value="random"/>
         </choices>
         <default>"ease-out-cubic"</default>
         <summary>Easing function used in animations</summary>
