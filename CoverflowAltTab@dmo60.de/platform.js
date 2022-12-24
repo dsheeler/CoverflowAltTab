@@ -120,6 +120,9 @@ class AbstractPlatform {
             preview_scaling_factor: 0.75,
             bind_to_switch_applications: true,
             bind_to_switch_windows: true,
+            perspective_correction_method: "None",
+            highlight_mouse_over: false,
+            raise_mouse_over: true,
         };
     }
 
@@ -185,6 +188,9 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "preview-scaling-factor",
             "bind-to-switch-applications",
             "bind-to-switch-windows",
+            "perspective-correction-method",
+            "highlight-mouse-over",
+            "raise-mouse-over",
         ];
 
         let dkeys = [
@@ -257,14 +263,14 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             let settings = this._extensionSettings;
             let dsettings = this._desktopSettings;
             return {
-                animation_time: clamp(settings.get_int("animation-time") / 1000, 0.01, 8),
+                animation_time: settings.get_double("animation-time"),
                 randomize_animation_times: settings.get_boolean("randomize-animation-times"),
-                dim_factor: clamp(settings.get_int("dim-factor") / 1000, 0, 1),
+                dim_factor: clamp(settings.get_double("dim-factor"), 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
-                overlay_icon_size: clamp(settings.get_int("overlay-icon-size"), 0, 1024),
-                overlay_icon_opacity: clamp(settings.get_int("overlay-icon-opacity") / 1000, 0, 1),
+                overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 0, 1024),
+                overlay_icon_opacity: clamp(settings.get_double("overlay-icon-opacity"), 0, 1),
                 text_scaling_factor: dsettings.get_double(KEY_TEXT_SCALING_FACTOR),
                 offset: settings.get_int("offset"),
                 hide_panel: settings.get_boolean("hide-panel"),
@@ -274,10 +280,13 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),
                 switch_per_monitor: settings.get_boolean("switch-per-monitor"),
-                preview_to_monitor_ratio: clamp(settings.get_int("preview-to-monitor-ratio") / 1000, 0, 1),
-                preview_scaling_factor: clamp(settings.get_int("preview-scaling-factor") / 1000, 0, 1),
+                preview_to_monitor_ratio: clamp(settings.get_double("preview-to-monitor-ratio"), 0, 1),
+                preview_scaling_factor: clamp(settings.get_double("preview-scaling-factor"), 0, 1),
                 bind_to_switch_applications: settings.get_boolean("bind-to-switch-applications"),
                 bind_to_switch_windows: settings.get_boolean("bind-to-switch-windows"),
+                perspective_correction_method: settings.get_string("perspective-correction-method"),
+                highlight_mouse_over: settings.get_boolean("highlight-mouse-over"),
+                raise_mouse_over: settings.get_boolean("raise-mouse-over"),
             };
         } catch (e) {
             global.log(e);
@@ -381,7 +390,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-circ" ||
             params.transition == 'easeInOutCirc') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_CIRC;
-        } else if (params.transition == 'easeLinear') {
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-linear" ||
+            params.transition == 'easeLinear') {
             params.mode = Clutter.AnimationMode.LINEAR;
         } else {
             global.log("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);

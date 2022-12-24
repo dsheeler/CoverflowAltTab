@@ -42,7 +42,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
         TRANSITION_TYPE = 'userChoice';
-        IN_BOUNDS_TRANSITION_TYPE = 'EaseInOutQuint';
+        IN_BOUNDS_TRANSITION_TYPE = 'easeInOutQuint';
     }
 
     _createPreviews() {
@@ -73,16 +73,15 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let preview = new Preview({
+                let preview = new Preview(metaWin, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
-
+                    name: metaWin.title,
                     x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
                         compositor.x) - monitor.x,
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
-
                     rotation_angle_y: 0,
                 });
 
@@ -110,22 +109,23 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
     _previewNext() {
         this._currentIndex = (this._currentIndex + 1) % this._windows.length;
-        this._updatePreviews(1);
+        this._updatePreviews(false, 1);
     }
 
     _previewPrevious() {
         this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
-        this._updatePreviews(-1);
+        this._updatePreviews(false, -1);
     }
 
-    _updatePreviews(direction) {
-        if (this._previews.length == 0)
+    _updatePreviews(reorder_only=false, direction=0) {
+        if (this._previews == null || this._previews.length == 0)
             return;
 
         let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
 
         if (this._previews.length == 1) {
+            if (reorder_only) return;
             let preview = this._previews[0];
             this._manager.platform.tween(preview, {
                 x: preview.target_x,
@@ -150,6 +150,8 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
+            preview.make_bottom_layer(this.previewActor);
+            if (reorder_only) continue;
             animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
             if (distance === this._previews.length - 1 && direction > 0) {
@@ -272,6 +274,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
     }
 
     destroy() {
+        this.destroying = true;
         this._onDestroy(TRANSITION_TYPE);
     }
 };

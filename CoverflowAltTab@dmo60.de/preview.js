@@ -19,7 +19,11 @@ const {
     Clutter,
     GObject,
     Graphene,
+    St,
 } = imports.gi;
+
+const Lightbox = imports.ui.lightbox;
+const Main = imports.ui.main;
 
 /**
  * Direction and Placement properties values are set to be compatible with deprecated
@@ -41,11 +45,16 @@ Placement.LEFT = 7;
 Placement.TOP_LEFT = 8;
 Placement.CENTER = 9;
 
+
 var Preview = GObject.registerClass({
     GTypeName: "Preview"
 }, class Preview extends Clutter.Clone {
-    _init(...args) {
+    _init(window, ...args) {
         super._init(...args);
+        this.metaWin = window;
+        this._highlight = null;
+        this._flash = null;
+        this._entered = false;
     }
 
     /**
@@ -82,6 +91,99 @@ var Preview = GObject.registerClass({
             // Don't throw anything here, it may cause unstabilities
             logError("No method found for making preview the bottom layer");
         }
+    }
+
+    _pulse_highlight() {
+        if (this._highlight == null) return;
+        this._highlight.ease({
+            opacity: 255,
+            duration: 2000,
+            mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+            onComplete: () => {
+                this._highlight.ease({
+                    opacity: 80,
+                    duration: 1400,
+                    mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+                    onComplete: () => {
+                        this._pulse_highlight();
+                    },
+                });
+            },
+        });
+    }
+
+    remove_highlight() {
+        if (this._highlight != null) {
+            this._highlight.ease({
+                opacity: 0,
+                duration: 300,
+                mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+                onComplete: () => {
+                    this._highlight.destroy()
+                    this._highlight = null;
+                },
+            });
+        }
+        if (this._flash != null) {
+            this._flash.destroy();
+            this._flash = null;
+        }
+    }
+
+    vfunc_enter_event(crossingEvent) {
+        if (this.switcher._destroying || this._entered == true) return Clutter.EVENT_PROPAGATE;
+        this._entered = true;
+        if (this.switcher._settings.raise_mouse_over) this.make_top_layer(this.switcher.previewActor);
+        if (this.switcher._settings.highlight_mouse_over) {
+            let window_actor = this.metaWin.get_compositor_private();
+            if (this._highlight == null) {
+                    this._highlight = new St.Bin({
+                    style_class: 'highlight',
+                    opacity: 0,
+                    width: this.width,
+                    height: this.height,
+                    x: 0,
+                    y: 0,
+                    reactive: false,
+                });
+                this._highlight.set_style('background-color: rgba(255, 255, 255, 0.3);');
+                let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
+                this._highlight.add_constraint(constraint);
+                window_actor.add_actor(this._highlight);
+
+            }
+            if (this._flash == null) {
+                this._flash = new St.Bin({
+                    style_class: 'flashspot',
+                    width: 1,
+                    height: 1,
+                    opacity: 255,
+                    reactive: false,
+                    x: 0,
+                    y: 0,
+                });
+                let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
+                this._flash.add_constraint(constraint);
+                window_actor.add_actor(this._flash);
+                this._flash.ease({
+                    opacity: 0,
+                    duration: 500,
+                    mode: Clutter.AnimationMode.EASE_OUT_QUINT,
+                    onComplete: () => {
+                        this._pulse_highlight();
+                    }
+                });
+            }
+        }
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    vfunc_leave_event(crossingEvent) {
+        if (crossingEvent.source == null) return Clutter.EVENT_PROPAGATE;
+        this.remove_highlight();
+        this._entered = false;
+        if (this.switcher._settings.raise_mouse_over) this.switcher._updatePreviews(true, 0);
+        return Clutter.EVENT_PROPAGATE;
     }
 
     /**

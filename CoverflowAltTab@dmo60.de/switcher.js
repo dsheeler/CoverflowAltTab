@@ -120,7 +120,7 @@ var Switcher = class Switcher {
         // hide windows and show Coverflow actors
         global.window_group.hide();
         this.actor.show();
-
+        this._enablePerspectiveCorrection();
 
 
         //this._manager.platform.dimBackground();
@@ -152,7 +152,7 @@ var Switcher = class Switcher {
         this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updatePreviews(0);
+            this._updatePreviews(false, 1);
         } else {
             this.actor.set_reactive(false);
             this._previewNext();
@@ -166,7 +166,7 @@ var Switcher = class Switcher {
         this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
-            this._updatePreviews(0);
+            this._updatePreviews(false, -1);
         } else {
             this.actor.set_reactive(false);
             this._previewPrevious();
@@ -198,9 +198,10 @@ var Switcher = class Switcher {
         return this._activeMonitor;
     }
 
-    _setCurrentWindowTitle(window) {
+    _setCurrentWindowTitle(window, initially_opaque=false) {
         let animation_time = this._settings.animation_time;
         let overlay_icon_size = this._settings.overlay_icon_size;
+        let preview = this._previews[this._currentIndex];
 
         let monitor = this._updateActiveMonitor();
 
@@ -238,7 +239,7 @@ var Switcher = class Switcher {
         });
 
         let cx = Math.round((monitor.width + label_offset) / 2);
-        let cy = Math.round(monitor.height * this._settings.title_position / 8 - this._settings.offset);
+        let cy = Math.round(monitor.height * this._settings.title_position / 8 + this._settings.offset);
 
         this._windowTitle.x = cx - Math.round(this._windowTitle.get_width()/2);
         this._windowTitle.y = cy - Math.round(this._windowTitle.get_height()/2);
@@ -276,7 +277,7 @@ var Switcher = class Switcher {
                 style_class: 'window-iconbox',
                 width: app_icon_size * 1.25,
                 height: app_icon_size * 1.25,
-                opacity: 0,
+                opacity: (initially_opaque ? 255 * this._settings.overlay_icon_opacity : 0),
                 x: (monitor.width - app_icon_size * 1.25) / 2,
                 y: (monitor.height - app_icon_size * 1.25) / 2,
             });
@@ -418,7 +419,7 @@ var Switcher = class Switcher {
                     this._previews.splice(i, 1);
                     this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
                         this._currentIndex % this._windows.length;
-                    this._updatePreviews(0);
+                    this._updatePreviews(false, 0);
                     this._setCurrentWindowTitle(this._windows[this._currentIndex]);
                 }
                 return;
@@ -430,16 +431,22 @@ var Switcher = class Switcher {
         for (let [i, p] of this._previews.entries()) {
             if (preview == p) {
                 this._currentIndex = i;
-                this._activateSelected();
+                this._activateSelected(true);
                 break;
             }
         }
     }
 
-    _activateSelected() {
+    _activateSelected(reset_current_window_title) {
+        let preview = this._previews[this._currentIndex];
+        if (preview) {
+            preview.remove_highlight();
+        }
         let win = this._windows[this._currentIndex];
-        if (win)
+        if (win) {
             this._manager.activateSelectedWindow(win);
+            if (reset_current_window_title) this._setCurrentWindowTitle(win, true);
+        }
         this.destroy();
     }
 
@@ -458,11 +465,19 @@ var Switcher = class Switcher {
 
     _onDestroy(transition) {
         this._destroying = true;
-        let monitor = this._activeMonitor;
+        let monitor = this._updateActiveMonitor();
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
             this._windowTitle.hide();
-            this._applicationIconBox.hide();
+            if (this._settings.icon_style == 'Classic') {
+                this._applicationIconBox.hide();
+            } else {
+                this._manager.platform.tween(this._applicationIconBox, {
+                    time: this._settings.animation_time,
+                    opacity: 0,
+                    transition: 'easeInOutQuint',
+                });
+            }
             this._manager.platform.lightenBackground();
 
 
@@ -546,6 +561,7 @@ var Switcher = class Switcher {
 
             this._manager.platform.removeBackground();
 
+            this._disablePerspectiveCorrection();
             Main.uiGroup.remove_actor(this.actor);
             // show all window actors
             global.window_group.show();
@@ -555,5 +571,142 @@ var Switcher = class Switcher {
 
     destroy() {
         this._onDestroy('userChoice');
+    }
+
+    /*
+     *
+     * The following code that centers the camera on an off-center monitor
+     * is taken from the Desktop Cube extension.
+     * https://github.com/Schneegans/Desktop-Cube/blob/fa07fba3016ede5049eace2c028a7ba34dae12ef/extension.js#L1032-L1174
+     *
+     */
+
+    // Calls inhibit_culling on the given actor and recursively on all mapped children.
+    _inhibitCulling(actor) {
+        if (actor.mapped) {
+            actor.inhibit_culling();
+            actor._culling_inhibited = true;
+            actor.get_children().forEach(c => this._inhibitCulling(c));
+        }
+    };
+
+    // Calls uninhibit_culling on the given actor and recursively on all children. It will
+    // only call uninhibit_culling() on those actors which were inhibited before.
+    _uninhibitCulling(actor) {
+        if (actor._culling_inhibited) {
+            delete actor._culling_inhibited;
+            actor.uninhibit_culling();
+            actor.get_children().forEach(c => this._uninhibitCulling(c));
+        }
+    };
+    // Usually, GNOME Shell uses one central perspective for all monitors combined. This
+    // results in a somewhat sheared appearance of the cube on multi-monitor setups where
+    // the primary monitor is not in the middle (or cubes are shown on multiple monitors).
+    // With the code below, we modify the projection and view matrices for each monitor so
+    // that each monitor uses its own central perspective. This seems to be possible on
+    // Wayland only. On X11, there's only one set of projection and view matrices for all
+    // monitors combined, so we tweak them so that the projection center is in the middle of
+    // the primary monitor. So it will at least only look bad on X11 if the cube is shown on
+    // all monitors...
+    _enablePerspectiveCorrection() {
+        if (this._settings.perspective_correction_method != "Move Camera") return;
+        this._stageBeforeUpdateID = global.stage.connect('before-update', (stage, view) => {
+            // Do nothing if neither overview or desktop switcher are shown.
+            if (!this.actor.visible) {
+                return;
+            }
+
+            // Usually, the virtual camera is positioned centered in front of the stage. We will
+            // move the virtual camera around. These variables will be the new stage-relative
+            // coordinates of the virtual camera.
+            let cameraX, cameraY;
+
+            const activeMonitorRect =
+              global.display.get_monitor_geometry(this._activeMonitor);
+
+            cameraX = this._activeMonitor.x + this._activeMonitor.width / 2;
+            cameraY = this._activeMonitor.y + this._activeMonitor.height / 2;
+
+            // This is the offset to the original, centered camera position. Y is flipped due to
+            // some negative scaling at some point in Mutter.
+            const camOffsetX = stage.width / 2 - cameraX;
+            const camOffsetY = cameraY - stage.height / 2;
+
+            const z_near = stage.perspective.z_near;
+            const z_far  = stage.perspective.z_far;
+
+            // The code below is copied from Mutter's Clutter.
+            // https://gitlab.gnome.org/GNOME/mutter/-/blob/main/clutter/clutter/clutter-stage.c#L2255
+            const A = 0.57735025882720947265625;
+            const B = 0.866025388240814208984375;
+            const C = 0.86162912845611572265625;
+            const D = 0.00872653536498546600341796875;
+
+            const z_2d = z_near * A * B * C / D + z_near;
+
+            // The code below is copied from Mutter's Clutter as well.
+            // https://gitlab.gnome.org/GNOME/mutter/-/blob/main/clutter/clutter/clutter-stage.c#L2270
+            const top    = z_near * Math.tan(stage.perspective.fovy * Math.PI / 360.0);
+            const left   = -top * stage.perspective.aspect;
+            const right  = top * stage.perspective.aspect;
+            const bottom = -top;
+
+            const left_2d_plane   = left / z_near * z_2d;
+            const right_2d_plane  = right / z_near * z_2d;
+            const bottom_2d_plane = bottom / z_near * z_2d;
+            const top_2d_plane    = top / z_near * z_2d;
+
+            const width_2d_start  = right_2d_plane - left_2d_plane;
+            const height_2d_start = top_2d_plane - bottom_2d_plane;
+
+            const width_scale  = width_2d_start / stage.width;
+            const height_scale = height_2d_start / stage.height;
+            // End of the copy-paste code.
+
+            // Compute the required offset of the frustum planes at the near plane. This
+            // basically updates the projection matrix according to our new camera position.
+            const offsetX = camOffsetX * width_scale / z_2d * z_near;
+            const offsetY = camOffsetY * height_scale / z_2d * z_near;
+
+            // Set the new frustum.
+            view.get_framebuffer().frustum(left + offsetX, right + offsetX, bottom + offsetY,
+                                           top + offsetY, z_near, z_far);
+
+            // Translate the virtual camera. This basically updates the view matrix according to
+            // our new camera position.
+            view.get_framebuffer().push_matrix();
+            view.get_framebuffer().translate(camOffsetX * width_scale,
+                                             camOffsetY * height_scale, 0);
+
+            this._inhibitCulling(this.actor)
+        });
+
+        // Revert the matrix changes before the update,
+        this._stageAfterUpdateID = global.stage.connect('after-update', (stage, view) => {
+            // Nothing to do if neither overview or desktop switcher are shown.
+            if (!this.actor.visible) {
+                return;
+            }
+
+            view.get_framebuffer().pop_matrix();
+            view.get_framebuffer().perspective(stage.perspective.fovy, stage.perspective.aspect,
+                                               stage.perspective.z_near,
+                                               stage.perspective.z_far);
+
+            this._uninhibitCulling(this.actor)
+        });
+    }
+
+    // Reverts the changes done with the method above.
+    _disablePerspectiveCorrection() {
+        if (this._stageBeforeUpdateID) {
+            global.stage.disconnect(this._stageBeforeUpdateID);
+            this._stageBeforeUpdateID = 0;
+        }
+
+        if (this._stageAfterUpdateID) {
+            global.stage.disconnect(this._stageAfterUpdateID);
+            this._stageAfterUpdateID = 0;
+        }
     }
 }
