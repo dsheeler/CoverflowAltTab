@@ -279,7 +279,7 @@ var Switcher = class Switcher {
                 height: app_icon_size * 1.25,
                 opacity: (initially_opaque ? 255 * this._settings.overlay_icon_opacity : 0),
                 x: (monitor.width - app_icon_size * 1.25) / 2,
-                y: (monitor.height - app_icon_size * 1.25) / 2,
+                y: (monitor.height - app_icon_size * 1.25) / 2 + this._settings.offset,
             });
         }
 

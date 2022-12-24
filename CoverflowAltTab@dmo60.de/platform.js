@@ -158,7 +158,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     enable() {
-        this.disable();
+        //this.disable();
 
         this._settings_changed_callbacks = [];
 
@@ -198,13 +198,14 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         ];
 
         this._connections = [];
-        let bind = this._onSettingsChanged.bind(this);
         for (let key of keys) {
+            let bind = this._onSettingsChanged.bind(this, key);
             this._connections.push(this._extensionSettings.connect('changed::' + key, bind));
         }
 
         this._dconnections = [];
         for (let dkey of dkeys) {
+            let bind = this._onSettingsChanged.bind(this, dkey);
             this._dconnections.push(this._desktopSettings.connect('changed::' + dkey, bind));
         }
 
@@ -250,10 +251,10 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         this._settings_changed_callbacks.push(cb);
     }
 
-    _onSettingsChanged() {
+    _onSettingsChanged(key) {
         this._settings = null;
         for (let cb of this._settings_changed_callbacks) {
-            cb(this._extensionSettings);
+            cb(this._extensionSettings, key);
         }
     }
 

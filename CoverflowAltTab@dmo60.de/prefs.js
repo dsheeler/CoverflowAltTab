@@ -20,7 +20,7 @@
  *
  * Preferences dialog for "gnome-extensions prefs" tool
  *
- * Based on JustPerfection & dash2doc-lite
+ * Based on preferences in the following extensions: JustPerfection, dash2doc-lite, and desktop cube
  *
  */
 const { Adw, Gdk, GLib, Gtk } = imports.gi;
@@ -125,6 +125,14 @@ function getBaseString(translatedString) {
 	}
 }
 
+function makeResetButton() {
+	return new Gtk.Button({
+		icon_name: "edit-clear-symbolic",
+		tooltip_text: _("Reset to default value"),
+		valign: Gtk.Align.CENTER,
+	});
+}
+
 function fillPreferencesWindow(window) {
 	let general_page = new Adw.PreferencesPage({
 		title: _('General'),
@@ -209,19 +217,19 @@ function fillPreferencesWindow(window) {
 	});
 	icon_pref_group.add(buildRadioAdw("icon-style", [_("Classic"), _("Overlay")], _("Application Icon Style")));
 	icon_pref_group.add(buildRangeAdw("overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true));
-	icon_pref_group.add(buildRangeAdw("overlay-icon-opacity", [0, 1, 0.01, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true));
+	icon_pref_group.add(buildRangeAdw("overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true));
 	icon_pref_group.add(buildSwitcherAdw("icon-has-shadow", _("Draw Icon with a Shadow")));
 
 	let window_pref_group = new Adw.PreferencesGroup({
 		title: _("Window Size")
 	});
-	window_pref_group.add(buildRangeAdw("preview-to-monitor-ratio", [0, 1, 0.01, [0.250, 0.500, 0.750]], _("Preview to Monintor Ratio"), _("Maximum ratio of preview to monitor size."), true));
-	window_pref_group.add(buildRangeAdw("preview-scaling-factor", [0, 1, 0.01, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to shrink previews off to the sides."), true));
+	window_pref_group.add(buildRangeAdw("preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Preview to Monintor Ratio"), _("Maximum ratio of preview to monitor size."), true));
+	window_pref_group.add(buildRangeAdw("preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to shrink previews off to the sides."), true));
 
 	let background_pref_group = new Adw.PreferencesGroup({
 		title: _('Background'),
 	});
-	background_pref_group.add(buildRangeAdw("dim-factor", [0, 1, 0.01, [0.25, 0.5, 0.75]], _("Background Dim-factor"), _("Smaller means darker.")));
+	background_pref_group.add(buildRangeAdw("dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Dim-factor"), _("Smaller means darker.")));
 
 	appearance_page.add(icon_pref_group);
 	appearance_page.add(window_pref_group);
@@ -254,6 +262,13 @@ function buildSwitcherAdw(key, title, subtitle=null) {
 
 	pref.set_activatable_widget(switcher);
 	pref.add_suffix(switcher);
+
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset(key);
+		switcher.set_active(settings.get_boolean(key));
+	})
+	pref.add_suffix(reset_button);
 	return pref;
 }
 
@@ -278,13 +293,18 @@ function buildRangeAdw(key, values, title, subtitle=null, draw_value=false) {
 	range.set_size_request(200, -1);
 
 	range.connect('value-changed', function(slider) {
-		log(key, slider.get_value());
 		settings.set_double(key, slider.get_value());
 	});
 
 	pref.set_activatable_widget(range);
 	pref.add_suffix(range)
 
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset(key);
+		range.set_value(settings.get_double(key));
+	});
+	pref.add_suffix(reset_button);
 	return pref;
 }
 
@@ -303,12 +323,13 @@ function buildRadioAdw(key, buttons, title, subtitle=null) {
 
 	let radio = new Gtk.ToggleButton();
 
+	let radio_for_button = {};
 	for (let button of buttons) {
 		radio = new Gtk.ToggleButton({group: radio, label: button});
 		if (getBaseString(button) == settings.get_string(key)) {
 			radio.set_active(true);
 		}
-
+		radio_for_button[button] = radio;
 		radio.connect('toggled', function(widget) {
 			if (widget.get_active()) {
 				settings.set_string(key, getBaseString(widget.get_label()));
@@ -317,8 +338,20 @@ function buildRadioAdw(key, buttons, title, subtitle=null) {
 
 		hbox.append(radio);
 	};
+
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset(key);
+		for (let button of buttons) {
+			if (getBaseString(button) == settings.get_string(key)) {
+				radio_for_button[button].set_active(true);
+			}
+		}
+	});
+
 	pref.set_activatable_widget(hbox);
 	pref.add_suffix(hbox);
+	pref.add_suffix(reset_button);
 	return pref;
 };
 
@@ -341,6 +374,15 @@ function buildSpinAdw(key, values, title, subtitle=null) {
 
 	pref.set_activatable_widget(spin);
 	pref.add_suffix(spin);
+
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset(key);
+		spin.set_value(settings.get_int(key));
+	});
+
+	pref.add_suffix(reset_button);
+
 	return pref;
 }
 
@@ -368,11 +410,23 @@ function buildDropDownAdw(key, values, title, subtitle=null) {
 	});
     chooser.connect('notify::selected-item', function(c) {
     	let idx = c.get_selected();
-    	print(key, values[idx].id);
         settings.set_string(key, values[idx].id);
     });
 	pref.set_activatable_widget(chooser);
 	pref.add_suffix(chooser);
+
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset(key);
+		for (let i = 0; i < values.length; i++) {
+			let item = values[i];
+			if (item.id == settings.get_string(key)) {
+				chooser.set_selected(i);
+				break;
+			}
+		}
+	});
+	pref.add_suffix(reset_button);
 	return pref;
 }
 
