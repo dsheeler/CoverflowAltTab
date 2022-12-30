@@ -144,9 +144,9 @@ function fillPreferencesWindow(window) {
 	let switcher_pref_group = new Adw.PreferencesGroup({
 		title: _('Switcher'),
 	});
-	switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", [_("Coverflow"), _("Timeline")], _("Style"), _("Pick the type of switcher.")))
+	switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), []], [_("Timeline"), []] ]), _("Style"), _("Pick the type of switcher.")))
 	switcher_pref_group.add(buildSpinAdw(settings, "offset", [-500, 500, 1, 10], _("Vertical Offset"), _("Positive value moves everything down, negative up.")));
-	switcher_pref_group.add(buildRadioAdw(settings, "position", [_("Bottom"), _("Top")], _("Window Title Position"), _("Place window title above or below the switcher.")));
+	switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), []], [_("Top"), []]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
 	switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
 	let behavior_pref_group = new Adw.PreferencesGroup({
@@ -178,9 +178,13 @@ function fillPreferencesWindow(window) {
 	let icon_pref_group = new Adw.PreferencesGroup({
 		title: _("Icon"),
 	});
-	icon_pref_group.add(buildRadioAdw(settings, "icon-style", [_("Classic"), _("Overlay")], _("Application Icon Style")));
-	icon_pref_group.add(buildRangeAdw(settings, "overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true));
-	icon_pref_group.add(buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true));
+	let size_row = buildRangeAdw(settings, "overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
+	let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
+
+	let buttons = new Map([ [_("Classic"), []], [_("Overlay"), [size_row, opacity_row]] ]);
+	icon_pref_group.add(buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style")));
+	icon_pref_group.add(size_row);
+	icon_pref_group.add(opacity_row);
 	icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", _("Icon Shadow")));
 
 	let window_size_pref_group = new Adw.PreferencesGroup({
@@ -343,13 +347,12 @@ function buildSwitcherAdw(settings, key, title, subtitle=null) {
 	return pref;
 }
 
-function buildRangeAdw(settings, key, values, title, subtitle=null, draw_value=false) {
+function buildRangeAdw(settings, key, values, title, subtitle="", draw_value=false) {
 	let [min, max, step, defvs] = values;
 
 	let pref = new Adw.ActionRow({
-		title: title,
-	});
-	if (subtitle != null) {
+		title: title,	});
+	if (subtitle !== null && subtitle !== "") {
 		pref.set_subtitle(subtitle);
 	}
 	let range = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, min, max, step);
@@ -395,25 +398,30 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
 	let radio = new Gtk.ToggleButton();
 
 	let radio_for_button = {};
-	for (let button of buttons) {
-		radio = new Gtk.ToggleButton({group: radio, label: button});
-		if (getBaseString(button) == settings.get_string(key)) {
+	for (let button_name of buttons.keys()) {
+		radio = new Gtk.ToggleButton({group: radio, label: button_name});
+		if (getBaseString(button_name) == settings.get_string(key)) {
 			radio.set_active(true);
 		}
-		radio_for_button[button] = radio;
+		radio_for_button[button_name] = radio;
 		radio.connect('toggled', function(widget) {
 			if (widget.get_active()) {
 				settings.set_string(key, getBaseString(widget.get_label()));
 			}
+			for (let pref_row of buttons.get(button_name)) {
+				pref_row.set_sensitive(widget.get_active());
+			}
 		});
-
+		for (let pref_row of buttons.get(button_name)) {
+			pref_row.set_sensitive(radio_for_button[button_name].get_active());
+		}
 		hbox.append(radio);
 	};
 
 	reset_button = makeResetButton();
 	reset_button.connect("clicked", function(widget) {
 		settings.reset(key);
-		for (let button of buttons) {
+		for (let button of buttons.keys()) {
 			if (getBaseString(button) == settings.get_string(key)) {
 				radio_for_button[button].set_active(true);
 			}
