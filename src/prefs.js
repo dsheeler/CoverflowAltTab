@@ -159,7 +159,7 @@ function fillPreferencesWindow(window) {
 	});
 
     animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
-    animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration"), _("In seconds."), true));
+    animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration [s]"),  "", true));
 	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration")));
 
 	let windows_pref_group = new Adw.PreferencesGroup({
