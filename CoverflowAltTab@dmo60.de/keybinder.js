@@ -51,7 +51,6 @@ var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         platform.addSettingsChangedCallback(this._onSettingsChanged.bind(this));
 
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
-        Main.wm.setCustomKeybindingHandler('switch-panels', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
     }
 
@@ -61,7 +60,6 @@ var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-panels', mode.NORMAL, Main.wm._startA11ySwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
