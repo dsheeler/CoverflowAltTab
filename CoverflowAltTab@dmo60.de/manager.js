@@ -96,11 +96,6 @@ var Manager = class Manager {
         windowActors = null;
 
         switch (binding.get_name()) {
-            case 'switch-panels':
-                // Switch between windows of all workspaces
-                windows = windows.filter(matchSkipTaskbar);
-                break;
-
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];

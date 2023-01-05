@@ -349,7 +349,6 @@ var Switcher = class Switcher {
             case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
-            case Meta.KeyBindingAction.SWITCH_PANELS:
                 if (this._checkSwitchTime()) {
                     // shift -> backwards
                     if (event_state & Clutter.ModifierType.SHIFT_MASK)
@@ -361,7 +360,6 @@ var Switcher = class Switcher {
             case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-            case Meta.KeyBindingAction.SWITCH_PANELS_BACKWARD:
                 if (this._checkSwitchTime())
                     this._previous();
                 return true;
