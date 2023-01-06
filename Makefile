@@ -25,6 +25,7 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+UUID = CoverflowAltTab@palatis.blogspot.com
 NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
 SUPER_PATH := /usr/share/gnome-shell/extensions
 SYSTEMWIDE_SCHEMA_PATH := /usr/share/glib-2.0/schemas
@@ -71,18 +72,11 @@ mergepo: $(POT_FILE)
 		msgmerge --add-location --backup=none --update $${po} $(POT_FILE); \
 	done;
 
-ifneq ($(LOCALINSTALL),)
-INSTALL_PATH = $(SUPER_PATH)
-else
-INSTALL_PATH = $(NORMAL_PATH)
-endif
-
-install:
-	cp -r "$(SRC_DIR)" $(INSTALL_PATH)
+install: build
+	gnome-extensions install -f build/$(UUID).shell-extension.zip
 
 uninstall:
-	rm -rf $(INSTALL_PATH)/$(SRC_DIR)
-	rm ${SCHEMA_DIR}/gschemas.compiled
+	gnome-extensions uninstall $(UUID)
 
 schema: ${SCHEMA_DIR}/${SCHEMA_FILE}
 	glib-compile-schemas "${SCHEMA_DIR}"
