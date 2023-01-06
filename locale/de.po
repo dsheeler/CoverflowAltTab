@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-08 17:40+0100\n"
+"POT-Creation-Date: 2023-01-06 06:48+0330\n"
 "PO-Revision-Date: 2019-06-17 17:27+0200\n"
 "Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
@@ -18,90 +18,295 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: prefs.js:28 prefs.js:48
+#: src/prefs.js:115 src/prefs.js:147
 msgid "Coverflow"
 msgstr "Bilderfluss"
 
-#: prefs.js:29 prefs.js:48
+#: src/prefs.js:116 src/prefs.js:147
 msgid "Timeline"
 msgstr "Zeitstrahl"
 
-#: prefs.js:30 prefs.js:51
+#: src/prefs.js:117 src/prefs.js:149
 msgid "Bottom"
 msgstr "Unten"
 
-#: prefs.js:31 prefs.js:51
+#: src/prefs.js:118 src/prefs.js:149
 msgid "Top"
 msgstr "Oben"
 
-#: prefs.js:32 prefs.js:52
+#: src/prefs.js:119 src/prefs.js:181
 msgid "Classic"
 msgstr "Klassisch"
 
-#: prefs.js:33 prefs.js:52
+#: src/prefs.js:120 src/prefs.js:181
 msgid "Overlay"
 msgstr "Überlagern"
 
-#: prefs.js:42
-msgid ""
-"<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
-"press Enter)\n"
-"</b>"
+#: src/prefs.js:128
+msgid "Reset to default value"
 msgstr ""
-"<b>Die Gnome-Shell muss neugestartet werden, um die Änderungen anzuwenden! "
-"(Alt+F2 drücken, 'r' eingeben und Enter drücken)\n"
-"</b>"
 
-#: prefs.js:46
-msgid "Hide panel during Coverflow"
-msgstr "Panel während des Umschaltens ausblenden"
+#: src/prefs.js:134
+#, javascript-format
+msgid "Version %d"
+msgstr ""
 
-#: prefs.js:47
-msgid "Always show the switcher on the primary monitor"
-msgstr "Den Umschalter auf dem primären Monitor immer anzeigen"
+#: src/prefs.js:140
+msgid "General"
+msgstr ""
 
-#: prefs.js:48
-msgid "Switcher style"
+#: src/prefs.js:145
+#, fuzzy
+msgid "Switcher"
 msgstr "Umschaltstil"
 
-#: prefs.js:49
-msgid "Animation speed (smaller means faster)"
-msgstr "Animationsgeschwindigkeit (kleiner bedeutet schneller)"
+#: src/prefs.js:147
+msgid "Style"
+msgstr ""
 
-#: prefs.js:50
-msgid "Background dim-factor (smaller means darker)"
-msgstr "Hintergrundabblendfaktor (kleiner bedeutet dunkler)"
+#: src/prefs.js:147
+msgid "Pick the type of switcher."
+msgstr ""
 
-#: prefs.js:51
-msgid "Window title box position"
+#: src/prefs.js:148
+msgid "Vertical Offset"
+msgstr ""
+
+#: src/prefs.js:148
+#, fuzzy
+msgid "Positive value moves everything down, negative up."
+msgstr ""
+"Vertikaler Versatz (positive Werte bewegen alles nach oben, negative Werte "
+"nach unten)"
+
+#: src/prefs.js:149
+#, fuzzy
+msgid "Window Title Position"
 msgstr "Anzeigeposition des Fenstertitels"
 
-#: prefs.js:52
-msgid "Application icon style"
-msgstr "Stil des Anwendungssymbols"
-
-#: prefs.js:53
-msgid "Elastic animations"
-msgstr "Elastische Animationen"
-
-#: prefs.js:54
-msgid "Vertical offset (positive value moves everything up, negative down)"
+#: src/prefs.js:149
+msgid "Place window title above or below the switcher."
 msgstr ""
-"Vertikaler Versatz (positive Werte bewegen alles nach oben, negative Werte nach "
-"unten)"
 
-#: prefs.js:58
+#: src/prefs.js:150
+msgid "Enforce Primary Monitor"
+msgstr ""
+
+#: src/prefs.js:150
+#, fuzzy
+msgid ""
+"Always show on the primary monitor, otherwise, show on the active monitor."
+msgstr "Den Umschalter auf dem primären Monitor immer anzeigen"
+
+#: src/prefs.js:153
+msgid "Behavior"
+msgstr ""
+
+#: src/prefs.js:155
+msgid "Hide Panel"
+msgstr ""
+
+#: src/prefs.js:155
+msgid "Hide panel when switching widnows."
+msgstr ""
+
+#: src/prefs.js:158
+msgid "Animation"
+msgstr ""
+
+#: src/prefs.js:162
+msgid "Duration"
+msgstr ""
+
+#: src/prefs.js:162
+msgid "In seconds."
+msgstr ""
+
+#: src/prefs.js:163
+msgid "Randomize Durations"
+msgstr ""
+
+#: src/prefs.js:163
+msgid ""
+"Each animation duration assigned randomly between 0 and configured duration"
+msgstr ""
+
+#: src/prefs.js:166
+#, fuzzy
+msgid "Switcher Windows"
+msgstr "Umschaltstil"
+
+#: src/prefs.js:169
 msgid "Current workspace only"
 msgstr "Nur aktuelle Arbeitsfläche"
 
-#: prefs.js:60
+#: src/prefs.js:171
 msgid "All workspaces"
 msgstr "Alle Arbeitsflächen"
 
-#: prefs.js:62
+#: src/prefs.js:173
 msgid "All workspaces, current first"
 msgstr "Alle Arbeitsflächen, aktuelle zuerst"
 
-#: prefs.js:64
-msgid "Show windows from current or all workspaces"
+#: src/prefs.js:175
+#, fuzzy
+msgid "Workspaces"
+msgstr "Alle Arbeitsflächen"
+
+#: src/prefs.js:175
+#, fuzzy
+msgid "Switch between windows on current or on all workspaces"
 msgstr "Zeige Fenster der aktuellen Arbeitsfläche oder aller Arbeitsflächen"
+
+#: src/prefs.js:176
+msgid "Current Monitor"
+msgstr ""
+
+#: src/prefs.js:176
+msgid "Switch between windows on current monitor"
+msgstr ""
+
+#: src/prefs.js:179
+msgid "Icon"
+msgstr ""
+
+#: src/prefs.js:181
+#, fuzzy
+msgid "Application Icon Style"
+msgstr "Stil des Anwendungssymbols"
+
+#: src/prefs.js:182
+msgid "Overlay Icon Size"
+msgstr ""
+
+#: src/prefs.js:182
+msgid "Set the overlay icon size in pixels."
+msgstr ""
+
+#: src/prefs.js:183
+msgid "Overlay Icon Opacity"
+msgstr ""
+
+#: src/prefs.js:183
+msgid "Set the overlay icon opacity."
+msgstr ""
+
+#: src/prefs.js:184
+msgid "Icon Shadow"
+msgstr ""
+
+#: src/prefs.js:187
+msgid "Window Size"
+msgstr ""
+
+#: src/prefs.js:189
+msgid "Window Preview Size to Monintor Size Ratio"
+msgstr ""
+
+#: src/prefs.js:189
+msgid "Maximum ratio of window preview size to monitor size."
+msgstr ""
+
+#: src/prefs.js:190
+msgid "Off-center Size Factor"
+msgstr ""
+
+#: src/prefs.js:190
+msgid "Factor by which to successively shrink previews off to the side"
+msgstr ""
+
+#: src/prefs.js:193
+msgid "Background"
+msgstr ""
+
+#: src/prefs.js:195
+#, fuzzy
+msgid "Background Dim-factor"
+msgstr "Hintergrundabblendfaktor (kleiner bedeutet dunkler)"
+
+#: src/prefs.js:195
+msgid "Smaller means darker."
+msgstr ""
+
+#: src/prefs.js:198
+msgid "Keybindings"
+msgstr ""
+
+#: src/prefs.js:200
+msgid "Bind to 'switch-windows'"
+msgstr ""
+
+#: src/prefs.js:201
+msgid "Bind to 'switch-applications'"
+msgstr ""
+
+#: src/prefs.js:214 src/prefs.js:220
+msgid "Perspective Correction"
+msgstr ""
+
+#: src/prefs.js:217
+msgid "None"
+msgstr ""
+
+#: src/prefs.js:218
+msgid "Move Camera"
+msgstr ""
+
+#: src/prefs.js:219
+msgid "Adjust Angles"
+msgstr ""
+
+#: src/prefs.js:223 src/prefs.js:225
+msgid "Highlight Window Under Mouse"
+msgstr ""
+
+#: src/prefs.js:225
+msgid ""
+"Draw embelishment on window under the mouse to know the effects of clicking."
+msgstr ""
+
+#: src/prefs.js:226
+msgid "Raise Window Under Mouse"
+msgstr ""
+
+#: src/prefs.js:226
+msgid "Raise the window under the mouse above all others."
+msgstr ""
+
+#: src/prefs.js:229
+msgid "Tweaks"
+msgstr ""
+
+#: src/prefs.js:236
+msgid "Appearance"
+msgstr ""
+
+#: src/prefs.js:241
+msgid "Contribute"
+msgstr ""
+
+#: src/prefs.js:277
+msgid "Code (create pull requests, report issues, etc.)"
+msgstr ""
+
+#: src/prefs.js:284
+msgid "Support me with a Donation"
+msgstr ""
+
+#~ msgid ""
+#~ "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
+#~ "press Enter)\n"
+#~ "</b>"
+#~ msgstr ""
+#~ "<b>Die Gnome-Shell muss neugestartet werden, um die Änderungen "
+#~ "anzuwenden! (Alt+F2 drücken, 'r' eingeben und Enter drücken)\n"
+#~ "</b>"
+
+#~ msgid "Hide panel during Coverflow"
+#~ msgstr "Panel während des Umschaltens ausblenden"
+
+#~ msgid "Animation speed (smaller means faster)"
+#~ msgstr "Animationsgeschwindigkeit (kleiner bedeutet schneller)"
+
+#~ msgid "Elastic animations"
+#~ msgstr "Elastische Animationen"

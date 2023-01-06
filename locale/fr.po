@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-14 22:52-0500\n"
+"POT-Creation-Date: 2023-01-06 06:48+0330\n"
 "PO-Revision-Date: 2022-11-19 10:41+0100\n"
 "Last-Translator: DAEM Q.\n"
 "Language-Team: \n"
@@ -19,89 +19,294 @@ msgstr ""
 "X-Generator: Poedit 3.1.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:45 CoverflowAltTab@dmo60.de/prefs.js:67
+#: src/prefs.js:115 src/prefs.js:147
 msgid "Coverflow"
 msgstr "Coverflow"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:46 CoverflowAltTab@dmo60.de/prefs.js:67
+#: src/prefs.js:116 src/prefs.js:147
 msgid "Timeline"
 msgstr "Ligne du temps"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:47 CoverflowAltTab@dmo60.de/prefs.js:100
+#: src/prefs.js:117 src/prefs.js:149
 msgid "Bottom"
 msgstr "Bas"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:48 CoverflowAltTab@dmo60.de/prefs.js:100
+#: src/prefs.js:118 src/prefs.js:149
 msgid "Top"
 msgstr "Haut"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:49 CoverflowAltTab@dmo60.de/prefs.js:101
+#: src/prefs.js:119 src/prefs.js:181
 msgid "Classic"
 msgstr "Classique"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:50 CoverflowAltTab@dmo60.de/prefs.js:101
+#: src/prefs.js:120 src/prefs.js:181
 msgid "Overlay"
 msgstr "Superposé"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:65
-msgid "Hide panel during Coverflow"
-msgstr "Cacher la barre supérieure pendant le Coverflow"
+#: src/prefs.js:128
+msgid "Reset to default value"
+msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:66
-msgid "Always show the switcher on the primary monitor"
-msgstr "Toujours afficher le Coverflow sur le moniteur principal"
+#: src/prefs.js:134
+#, javascript-format
+msgid "Version %d"
+msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:67
-msgid "Switcher style"
+#: src/prefs.js:140
+msgid "General"
+msgstr ""
+
+#: src/prefs.js:145
+#, fuzzy
+msgid "Switcher"
 msgstr "Style"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:97
-msgid "Easing for Coverflow animations"
-msgstr "Lissage des animations Coverflow"
+#: src/prefs.js:147
+msgid "Style"
+msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:98
-msgid "Animation speed (smaller means faster)"
-msgstr "Vitesse d’animation (plus petit signifie plus rapide)"
+#: src/prefs.js:147
+msgid "Pick the type of switcher."
+msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:99
-msgid "Background dim-factor (smaller means darker)"
-msgstr "Facteur dim d’arrière-plan (plus petit signifie plus sombre)"
+#: src/prefs.js:148
+msgid "Vertical Offset"
+msgstr ""
 
-#: CoverflowAltTab@dmo60.de/prefs.js:100
-msgid "Window title box position"
-msgstr "Position du cadre du titre de la fenêtre"
-
-#: CoverflowAltTab@dmo60.de/prefs.js:101
-msgid "Application icon style"
-msgstr "Affichage de l’icone de l’application"
-
-#: CoverflowAltTab@dmo60.de/prefs.js:102
-msgid "Vertical offset (positive value moves everything up, negative down)"
+#: src/prefs.js:148
+#, fuzzy
+msgid "Positive value moves everything down, negative up."
 msgstr "Décalage vertical (positif vers le haut, négatif vers le bas)"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:104
+#: src/prefs.js:149
+#, fuzzy
+msgid "Window Title Position"
+msgstr "Position du cadre du titre de la fenêtre"
+
+#: src/prefs.js:149
+msgid "Place window title above or below the switcher."
+msgstr ""
+
+#: src/prefs.js:150
+msgid "Enforce Primary Monitor"
+msgstr ""
+
+#: src/prefs.js:150
+#, fuzzy
+msgid ""
+"Always show on the primary monitor, otherwise, show on the active monitor."
+msgstr "Toujours afficher le Coverflow sur le moniteur principal"
+
+#: src/prefs.js:153
+msgid "Behavior"
+msgstr ""
+
+#: src/prefs.js:155
+msgid "Hide Panel"
+msgstr ""
+
+#: src/prefs.js:155
+msgid "Hide panel when switching widnows."
+msgstr ""
+
+#: src/prefs.js:158
+msgid "Animation"
+msgstr ""
+
+#: src/prefs.js:162
+msgid "Duration"
+msgstr ""
+
+#: src/prefs.js:162
+msgid "In seconds."
+msgstr ""
+
+#: src/prefs.js:163
+msgid "Randomize Durations"
+msgstr ""
+
+#: src/prefs.js:163
+msgid ""
+"Each animation duration assigned randomly between 0 and configured duration"
+msgstr ""
+
+#: src/prefs.js:166
+#, fuzzy
+msgid "Switcher Windows"
+msgstr "Style"
+
+#: src/prefs.js:169
 msgid "Current workspace only"
 msgstr "Espace de travail actif uniquement"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:106
+#: src/prefs.js:171
 msgid "All workspaces"
 msgstr "Tous les espaces de travail"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:108
+#: src/prefs.js:173
 msgid "All workspaces, current first"
 msgstr "Tous les espaces de travail, actif d’abord"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:110
-msgid "Show windows from current or all workspaces"
+#: src/prefs.js:175
+#, fuzzy
+msgid "Workspaces"
+msgstr "Tous les espaces de travail"
+
+#: src/prefs.js:175
+#, fuzzy
+msgid "Switch between windows on current or on all workspaces"
 msgstr "Afficher les fenêtres de l’espace de travail actif ou de tous"
 
-#: CoverflowAltTab@dmo60.de/prefs.js:111
-msgid "Only switch between windows on current monitor"
+#: src/prefs.js:176
+msgid "Current Monitor"
+msgstr ""
+
+#: src/prefs.js:176
+#, fuzzy
+msgid "Switch between windows on current monitor"
 msgstr "Changer de fenêtre uniquement sur le moniteur actif"
 
+#: src/prefs.js:179
+msgid "Icon"
+msgstr ""
+
+#: src/prefs.js:181
+#, fuzzy
+msgid "Application Icon Style"
+msgstr "Affichage de l’icone de l’application"
+
+#: src/prefs.js:182
+msgid "Overlay Icon Size"
+msgstr ""
+
+#: src/prefs.js:182
+msgid "Set the overlay icon size in pixels."
+msgstr ""
+
+#: src/prefs.js:183
+msgid "Overlay Icon Opacity"
+msgstr ""
+
+#: src/prefs.js:183
+msgid "Set the overlay icon opacity."
+msgstr ""
+
+#: src/prefs.js:184
+msgid "Icon Shadow"
+msgstr ""
+
+#: src/prefs.js:187
+msgid "Window Size"
+msgstr ""
+
+#: src/prefs.js:189
+msgid "Window Preview Size to Monintor Size Ratio"
+msgstr ""
+
+#: src/prefs.js:189
+msgid "Maximum ratio of window preview size to monitor size."
+msgstr ""
+
+#: src/prefs.js:190
+msgid "Off-center Size Factor"
+msgstr ""
+
+#: src/prefs.js:190
+msgid "Factor by which to successively shrink previews off to the side"
+msgstr ""
+
+#: src/prefs.js:193
+msgid "Background"
+msgstr ""
+
+#: src/prefs.js:195
+#, fuzzy
+msgid "Background Dim-factor"
+msgstr "Facteur dim d’arrière-plan (plus petit signifie plus sombre)"
+
+#: src/prefs.js:195
+msgid "Smaller means darker."
+msgstr ""
+
+#: src/prefs.js:198
+msgid "Keybindings"
+msgstr ""
+
+#: src/prefs.js:200
+msgid "Bind to 'switch-windows'"
+msgstr ""
+
+#: src/prefs.js:201
+msgid "Bind to 'switch-applications'"
+msgstr ""
+
+#: src/prefs.js:214 src/prefs.js:220
+msgid "Perspective Correction"
+msgstr ""
+
+#: src/prefs.js:217
+msgid "None"
+msgstr ""
+
+#: src/prefs.js:218
+msgid "Move Camera"
+msgstr ""
+
+#: src/prefs.js:219
+msgid "Adjust Angles"
+msgstr ""
+
+#: src/prefs.js:223 src/prefs.js:225
+msgid "Highlight Window Under Mouse"
+msgstr ""
+
+#: src/prefs.js:225
+msgid ""
+"Draw embelishment on window under the mouse to know the effects of clicking."
+msgstr ""
+
+#: src/prefs.js:226
+msgid "Raise Window Under Mouse"
+msgstr ""
+
+#: src/prefs.js:226
+msgid "Raise the window under the mouse above all others."
+msgstr ""
+
+#: src/prefs.js:229
+msgid "Tweaks"
+msgstr ""
+
+#: src/prefs.js:236
+msgid "Appearance"
+msgstr ""
+
+#: src/prefs.js:241
+msgid "Contribute"
+msgstr ""
+
+#: src/prefs.js:277
+msgid "Code (create pull requests, report issues, etc.)"
+msgstr ""
+
+#: src/prefs.js:284
+msgid "Support me with a Donation"
+msgstr ""
+
+#~ msgid "Hide panel during Coverflow"
+#~ msgstr "Cacher la barre supérieure pendant le Coverflow"
+
+#~ msgid "Easing for Coverflow animations"
+#~ msgstr "Lissage des animations Coverflow"
+
+#~ msgid "Animation speed (smaller means faster)"
+#~ msgstr "Vitesse d’animation (plus petit signifie plus rapide)"
+
 #~ msgid ""
-#~ "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n"
+#~ "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
+#~ "press Enter)\n"
 #~ "</b>"
 #~ msgstr ""
-#~ "<b>Redémarrez Gnome-Shell pour appliquer les changements ! (Alt+F2, tapez 'r' puis tapez Entrer)\n"
+#~ "<b>Redémarrez Gnome-Shell pour appliquer les changements ! (Alt+F2, tapez "
+#~ "'r' puis tapez Entrer)\n"
 #~ "</b>"
