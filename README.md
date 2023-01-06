@@ -8,23 +8,19 @@ Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [
 
 ## Installation
 
-#### Gnome-Shell
+### Gnome-Shell
 
 Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
 
-If you want to install it manually (e.g. to test the latest, probably unstable code), download the zip file by clicking the zip button on the upper part of this page and extract it.
+If you want to install it manually (e.g. to test the latest, probably unstable code):
 
-  1. Copy the folder "CoverflowAltTab@dmo60.de" to `~/.local/share/gnome-shell/extensions/`.
+1. Download the zip file by clicking the zip button on the upper part of this page and extract it (or you can just clone the repository).
 
-  2. Use the Extensions tool or [extensions.gnome.org](https://extensions.gnome.org/local/) to enable the extension.
+2. Install the extension locally by running the following command in Terminal:
 
-or execute commands at the terminal:
+    - `make all`
 
-  - `make all` (With this command, the script installs this extension in the user directory)
-
-  - `make all LOCALINSTALL=true` (With this command, the script installs this extension in the /usr directory)
-
-#### Cinnamon
+### Cinnamon
 
 Not maintained anymore, unfortunately. However, pull requests are always welcomed.
 
