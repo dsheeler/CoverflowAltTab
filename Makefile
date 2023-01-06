@@ -38,7 +38,7 @@ SCHEMA_FILE = org.gnome.shell.extensions.coverflowalttab.gschema.xml
 
 .PHONY: $(POT_FILE)
 
-all: translations schema install
+all: build schema install
 
 build:
 	mkdir build
