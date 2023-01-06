@@ -36,12 +36,12 @@ MO_FILES := $(PO_FILES:.po=.mo)
 SCHEMA_DIR = ./schemas
 SCHEMA_FILE = org.gnome.shell.extensions.coverflowalttab.gschema.xml
 
-.PHONY: $(POT_FILE)
+.PHONY: $(POT_FILE) build
 
 all: build schema install
 
 build:
-	mkdir build
+	mkdir -p build
 	cd src && gnome-extensions pack -f \
 		--extra-source ./coverflowSwitcher.js \
 		--extra-source ./keybinder.js \
