@@ -40,6 +40,23 @@ SCHEMA_FILE=org.gnome.shell.extensions.coverflowalttab.gschema.xml
 
 all: translations schema install
 
+build:
+	mkdir build
+	cd src && gnome-extensions pack -f \
+		--extra-source ./coverflowSwitcher.js \
+		--extra-source ./keybinder.js \
+		--extra-source ./lib.js \
+		--extra-source ./manager.js \
+		--extra-source ./platform.js \
+		--extra-source ./preview.js \
+		--extra-source ./switcher.js \
+		--extra-source ./timelineSwitcher.js \
+		--extra-source ../metadata.json \
+		--extra-source ../ui \
+		--schema ../schemas/org.gnome.shell.extensions.coverflowalttab.gschema.xml \
+		--podir ../locale/ \
+		-o ../build/
+
 ${SRC_DIR}/${PROJECT_NAME}.pot: ${SRC_DIR}/*.js
 	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${PROJECT_NAME}
 
