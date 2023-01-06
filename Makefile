@@ -72,10 +72,10 @@ mergepo: $(POT_FILE)
 	done;
 
 install: build
-	gnome-extensions install -f build/$(UUID).shell-extension.zip
+	gnome-extensions install -f build/${UUID}.shell-extension.zip
 
 uninstall:
-	gnome-extensions uninstall $(UUID)
+	gnome-extensions uninstall ${UUID}
 
 schema: $(SCHEMA_DIR)/$(SCHEMA_FILE)
 	glib-compile-schemas "${SCHEMA_DIR}"
