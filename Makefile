@@ -26,13 +26,11 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 UUID = CoverflowAltTab@palatis.blogspot.com
-NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
-SUPER_PATH := /usr/share/gnome-shell/extensions
 SYSTEMWIDE_SCHEMA_PATH := /usr/share/glib-2.0/schemas
 SRC_DIR := ./src
 LOCALE_DIR = ./locale
 POT_FILE := $(LOCALE_DIR)/$(UUID).pot
-PO_FILES := $(wildcard $(LOCALE_DIR)/*/*/*.po)
+PO_FILES := $(wildcard $(LOCALE_DIR)/*.po)
 MO_FILES := $(PO_FILES:.po=.mo)
 
 SCHEMA_DIR = ./schemas
@@ -68,9 +66,9 @@ translations: $(MO_FILES)
 	msgfmt --check --output-file=$@ $<
 
 mergepo: $(POT_FILE)
-	@for po in $(PO_FILES); \
+	@for po in ${PO_FILES}; \
 	do \
-		msgmerge --add-location --backup=none --update $${po} $(POT_FILE); \
+		msgmerge --add-location --backup=none --update $${po} ${POT_FILE}; \
 	done;
 
 install: build
@@ -79,7 +77,7 @@ install: build
 uninstall:
 	gnome-extensions uninstall $(UUID)
 
-schema: ${SCHEMA_DIR}/${SCHEMA_FILE}
+schema: $(SCHEMA_DIR)/$(SCHEMA_FILE)
 	glib-compile-schemas "${SCHEMA_DIR}"
 
 install_schema_systemwide:
@@ -89,3 +87,7 @@ install_schema_systemwide:
 uninstall_schema_systemwide:
 	rm ${SYSTEMWIDE_SCHEMA_PATH}/${SCHEMA_FILE}
 	glib-compile-schemas ${SYSTEMWIDE_SCHEMA_PATH}
+
+clean:
+	rm -rf build/
+	rm -f ${LOCALE_DIR}/*.mo
