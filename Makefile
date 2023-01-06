@@ -29,15 +29,16 @@ UUID = CoverflowAltTab@palatis.blogspot.com
 NORMAL_PATH := ${HOME}/.local/share/gnome-shell/extensions
 SUPER_PATH := /usr/share/gnome-shell/extensions
 SYSTEMWIDE_SCHEMA_PATH := /usr/share/glib-2.0/schemas
-SRC_DIR := CoverflowAltTab@dmo60.de
-LOCALE_DIR=${SRC_DIR}/locale
-PROJECT_NAME := coverflow
-POT_FILE := ${SRC_DIR}/${PROJECT_NAME}.pot
+SRC_DIR := ./src
+LOCALE_DIR = ./locale
+POT_FILE := $(LOCALE_DIR)/$(UUID).pot
 PO_FILES := $(wildcard $(LOCALE_DIR)/*/*/*.po)
 MO_FILES := $(PO_FILES:.po=.mo)
 
-SCHEMA_DIR=${SRC_DIR}/schemas
-SCHEMA_FILE=org.gnome.shell.extensions.coverflowalttab.gschema.xml
+SCHEMA_DIR = ./schemas
+SCHEMA_FILE = org.gnome.shell.extensions.coverflowalttab.gschema.xml
+
+.PHONY: $(POT_FILE)
 
 all: translations schema install
 
@@ -58,8 +59,8 @@ build:
 		--podir ../locale/ \
 		-o ../build/
 
-${SRC_DIR}/${PROJECT_NAME}.pot: ${SRC_DIR}/*.js
-	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${PROJECT_NAME}
+$(POT_FILE): $(SRC_DIR)/*.js
+	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${UUID}
 
 translations: $(MO_FILES)
 
