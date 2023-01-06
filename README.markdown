@@ -4,7 +4,7 @@ CoverflowAltTab is an Alt-Tab replacement available as an extension for [Gnome-S
 
 Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [palatis](http://code.google.com/p/gnome-shell-extensions-coverflowalttab/) and the recent rewrite with lots of improvements was done by [Lusito](https://github.com/Lusito), so a big thanks and all the glory to them!
 
-![Screenshot](img/screenshot_small.png)
+![Screenshot](img/screenshot.png)
 
 ## Installation
 
