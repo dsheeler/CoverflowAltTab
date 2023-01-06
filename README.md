@@ -29,8 +29,8 @@ Not maintained anymore, unfortunately. However, pull requests are always welcome
 This extension uses the following key bindings (you can change or disable them in your system settings):
 
 -   "Switch applications" (usually **Alt+Tab**): Cycle through all windows from the current workspace
--   "Switch windows of an application" (usually **Ctrl+Tab**): Cycle through all windows from the current application from all workspaces
--   "Switch system controls" (usually **Ctrl+Alt+Tab**): Cycle through all windows from all workspaces (who wants to cycle through system controls anyway?)
+
+-   "Switch windows of an application" (usually **Alt+\`**): Cycle through all windows from the current application from all workspaces
 
 All of the shortcuts with **Shift** key pressed cycles backward.
 
@@ -46,19 +46,19 @@ To change the keybindings, use your system keyboard settings! See above for the 
 
 Recently we have added a second Animation style you can use instead of the Coverflow one. It is called 'Timeline' and was inspired by the Windows 7 Super-Tab switcher. You can activate it in the extension preferences. Check it out!
 
-#### Gnome-Shell
+### Gnome-Shell
 
 To access preferences you can:
 
   - Open the Extensions tool. You should find it in your system menu
   - Click the preferences button on [extensions.gnome.org](https://extensions.gnome.org/local/)
-  - run `gnome-extensions prefs CoverflowAltTab@dmo60.de` inside a terminal
+  - run `gnome-extensions prefs CoverflowAltTab@palatis.blogspot.com` inside a terminal
 
 This will show you a preference dialog where you can change the settings to your needs.
 
 ## Troubleshooting
 
-#### I have to manually enable the extension every time I start my computer.
+### I have to manually enable the extension every time I start my computer.
 
 Many GNU/Linux distributions, namely Debian and its derivatives, install some extensions by default. Among those it's very common to find the [AlternateTab](https://extensions.gnome.org/extension/15/alternatetab/) extension; unfortunately, both AlternateTab and CoverflowAltTab are alt-tab replacements, and so they conflict: AlternateTab is usually the winning one, and so CoverflowAltTab appears as enabled but does not work as expected.
 
@@ -68,4 +68,4 @@ All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disabl
 
 CoverflowAltTab is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-See the [contributors list](CONTRIBUTORS.markdown) and [a copy of the license](COPYING).
+See the [contributors list](CONTRIBUTORS.md) and [a copy of the license](COPYING).
