@@ -22,6 +22,7 @@
 
 const Clutter = imports.gi.Clutter;
 const Config = imports.misc.config;
+const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
@@ -33,6 +34,7 @@ const CHECK_DESTROYED_TIMEOUT = 100;
 const ICON_SIZE = 64;
 const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
+const DESATURATION_EFFECT_DURATION = 150;
 
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
@@ -45,8 +47,12 @@ const {
 
 const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
+var DestroyReason = class DestroyReason {}
+DestroyReason.ACTIVATE_SELECTED = 1;
+DestroyReason.NO_ACTIVATION = 2;
+
 var Switcher = class Switcher {
-    constructor(windows, mask, currentIndex, manager) {
+    constructor(windows, mask, currentIndex, manager, appSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -61,11 +67,19 @@ var Switcher = class Switcher {
         this._checkDestroyedTimeoutId = 0;
         this._requiresUpdate = false;
         this._previews = [];
-        this._numPreviewsComplete = 0
+        this._numPreviewsComplete = 0;
+        this._appSwitcher = appSwitcher;
+        this._appWindowsMap = new Map();
+        this._x = x_in;
+        this._y = y_in;
+        this._width = width_in;
+        this._height = height_in;
+        this._parent = parent;
+
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
         manager.platform.switcher = this;
-        manager.platform.initBackground();
+        if (this._parent === null) manager.platform.initBackground();
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -83,6 +97,23 @@ var Switcher = class Switcher {
         }
 
         this._haveModal = true;
+
+        if (this._appSwitcher) {
+            // Find all the apps and associated windows
+            for (let metaWin of this._windows) {
+                let app = this._tracker.get_window_app(metaWin);
+                if (this._appWindowsMap.has(app)) {
+                    this._appWindowsMap.get(app).push(metaWin);
+                } else {
+                    this._appWindowsMap.set(app, [metaWin]);
+                }
+            }
+            // For each app, display the first window only
+            this._windows = [];
+            for (let app of this._appWindowsMap.keys()) {
+                this._windows.push(this._appWindowsMap.get(app)[0]);
+            }
+        }
 
         this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
         this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
@@ -106,8 +137,31 @@ var Switcher = class Switcher {
 
     show() {
         let monitor = this._updateActiveMonitor();
-        this.actor.set_position(monitor.x, monitor.y);
-        this.actor.set_size(monitor.width, monitor.height);
+        if (this._parent === null) {
+            this.actor.set_size(monitor.width, monitor.height);
+            this.actor.set_position(monitor.x, monitor.y);
+        } else {
+            this.actor.set_size(this._width, this._height);
+            this.actor.set_position(this._x, this._y);
+            for (let preview of this._parent._previews) {
+                let desaturateEffect = new Clutter.DesaturateEffect({ factor: 0.0, });
+                let effectName = 'desaturate-effect';
+                let factorPropName = `@effects.${effectName}.factor`;
+                let transition = Clutter.PropertyTransition.new(factorPropName);
+                transition.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+                transition.duration = DESATURATION_EFFECT_DURATION;
+                transition.remove_on_complete = true;
+                transition.set_to(this._settings.desaturation_factor);
+                preview.add_effect_with_name(effectName, desaturateEffect);
+                preview.add_transition('desaturate-effect-animation', transition);
+
+                let blurEffect = new Shell.BlurEffect({ sigma: this._settings.blur_sigma, brightness: 1 });
+                effectName = 'blur-effect';
+                preview.add_effect_with_name(effectName, blurEffect);
+
+            }
+        }
+
         // create previews
         this._createPreviews();
 
@@ -117,17 +171,20 @@ var Switcher = class Switcher {
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
         }
 
-        // hide windows and show Coverflow actors
-        global.window_group.hide();
+        // hide windows and showcd  Coverflow actors
+        if (this._parent === null) global.window_group.hide();
         this.actor.show();
         this._enablePerspectiveCorrection();
 
-
-        //this._manager.platform.dimBackground();
-
         this._initialDelayTimeoutId = 0;
 
-        this._next();
+        if (this._parent !== null) {
+            this._currentIndex = 0;
+            this._updatePreviews(false);
+            this._setCurrentWindowTitle(this._windows[this._currentIndex]);
+        } else {
+            this._next();
+        }
     }
 
     _createPreviews() { __ABSTRACT_METHOD__(this, this._createPreviews) }
@@ -147,8 +204,20 @@ var Switcher = class Switcher {
         return true;
     }
 
+    _showSubswitcher() {
+        if (this._appSwitcher) {
+            let wins = this._appWindowsMap.get(this._tracker.get_window_app(this._windows[this._currentIndex]))
+            if (wins.length > 1) {
+                let switcher_class = this._manager.platform.getSettings().switcher_class;
+                this._subSwitcher = new switcher_class(wins, this._modifierMask, 0, this._manager, false, this,
+                    this.actor.x + this.actor.width/4,
+                    this.actor.height/4, this.actor.width/2, this.actor.height/2);
+            }
+        }
+    }
+
     _next() {
-        this._manager.platform.dimBackground();
+        if (this._parent === null) this._manager.platform.dimBackground();
         this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
@@ -156,13 +225,14 @@ var Switcher = class Switcher {
         } else {
             this.actor.set_reactive(false);
             this._previewNext();
+            this._showSubswitcher();
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     }
 
     _previous() {
-        this._manager.platform.dimBackground();
+        if (this._parent === null) this._manager.platform.dimBackground();
         this._destroying = false;
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
@@ -170,6 +240,7 @@ var Switcher = class Switcher {
         } else {
             this.actor.set_reactive(false);
             this._previewPrevious();
+            this._showSubswitcher();
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
@@ -228,7 +299,7 @@ var Switcher = class Switcher {
 
         // ellipsize if title is too long
         let font_size = 14 * this._settings.text_scaling_factor;
-        this._windowTitle.set_style("max-width:" + (monitor.width - 200) + "px;font-size: " + font_size + "px;font-weight: bold; padding: " + font_size + "px;");
+        this._windowTitle.set_style("max-width:" + (this.actor.width - 200) + "px;font-size: " + font_size + "px;font-weight: bold; padding: " + font_size + "px;");
         this._windowTitle.clutter_text.ellipsize = Pango.EllipsizeMode.END;
 
         this.actor.add_actor(this._windowTitle);
@@ -238,8 +309,8 @@ var Switcher = class Switcher {
             transition: 'easeInOutQuint',
         });
 
-        let cx = Math.round((monitor.width + label_offset) / 2);
-        let cy = Math.round(monitor.height * this._settings.title_position / 8 + this._settings.offset);
+        let cx = Math.round((this.actor.width + label_offset) / 2);
+        let cy = Math.round(this.actor.height * this._settings.title_position / 8 + this._settings.offset);
 
         this._windowTitle.x = cx - Math.round(this._windowTitle.get_width()/2);
         this._windowTitle.y = cy - Math.round(this._windowTitle.get_height()/2);
@@ -278,8 +349,8 @@ var Switcher = class Switcher {
                 width: app_icon_size * 1.25,
                 height: app_icon_size * 1.25,
                 opacity: (initially_opaque ? 255 * this._settings.overlay_icon_opacity : 0),
-                x: (monitor.width - app_icon_size * 1.25) / 2,
-                y: (monitor.height - app_icon_size * 1.25) / 2 + this._settings.offset,
+                x: (this.actor.width - app_icon_size * 1.25) / 2,
+                y: (this.actor.height - app_icon_size * 1.25) / 2 + this._settings.offset,
             });
         }
 
@@ -316,19 +387,27 @@ var Switcher = class Switcher {
                 this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
                 return true;
 
-            case Clutter.KEY_Right:
             case Clutter.KEY_Down:
-            case Clutter.Right:
             case Clutter.Down:
+                this._showSubswitcher();
+                return true;
+
+            case Clutter.KEY_Up:
+            case Clutter.Up:
+                if (this._parent) {
+                    this.destroy(DestroyReason.NO_ACTIVATION);
+                }
+                return true;
+
+            case Clutter.KEY_Right:
+            case Clutter.Right:
                 // Right/Down -> navigate to next preview
                 if (this._checkSwitchTime())
                     this._next();
                 return true;
 
             case Clutter.KEY_Left:
-            case Clutter.KEY_Up:
             case Clutter.Left:
-            case Clutter.Up:
                 // Left/Up -> navigate to previous preview
                 if (this._checkSwitchTime())
                     this._previous();
@@ -351,17 +430,34 @@ var Switcher = class Switcher {
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
                 if (this._checkSwitchTime()) {
                     // shift -> backwards
-                    if (event_state & Clutter.ModifierType.SHIFT_MASK)
-                        this._previous();
-                    else
-                        this._next();
+                    if (event_state & Clutter.ModifierType.SHIFT_MASK) {
+                        if (this._parent) {
+                            this.destroy(DestroyReason.NO_ACTIVATION);
+                            this._parent._previous();
+                        } else {
+                           this._previous();
+                        }
+                    } else {
+                        if (this._parent) {
+                            this.destroy(DestroyReason.NO_ACTIVATION);
+                            this._parent._next();
+                        } else {
+                            this._next();
+                        }
+                    }
                 }
                 return true;
             case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-                if (this._checkSwitchTime())
-                    this._previous();
+                if (this._checkSwitchTime()) {
+                    if (this._parent) {
+                        this.destroy(DestroyReason.NO_ACTIVATION);
+                        this._parent._previous();
+                    } else {
+                       this._previous();
+                    }
+                }
                 return true;
         }
 
@@ -410,7 +506,7 @@ var Switcher = class Switcher {
         for (let i in this._windows) {
             if (window == this._windows[i]) {
                 if (this._windows.length === 1)
-                    this.destroy();
+                    this.destroy(DestroyReason.ACTIVATE_SELECTED);
                 else {
                     this._windows.splice(i, 1);
                     this._previews[i].destroy();
@@ -445,7 +541,10 @@ var Switcher = class Switcher {
             this._manager.activateSelectedWindow(win);
             if (reset_current_window_title) this._setCurrentWindowTitle(win, true);
         }
-        this.destroy();
+        this.destroy(DestroyReason.ACTIVATE_SELECTED);
+        if (this._parent) {
+            this._parent.destroy(DestroyReason.ACTIVATE_SELECTED);
+        }
     }
 
     _showDesktop() {
@@ -454,15 +553,33 @@ var Switcher = class Switcher {
                 window.minimize();
             }
         }
-        this.destroy();
+        this.destroy(DestroyReason.ACTIVATE_SELECTED);
     }
 
     _getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
     }
 
-    _onDestroy(transition) {
+    _onDestroy(reason, transition) {
         this._destroying = true;
+        if (this._parent) {
+            for (let preview of this._parent._previews) {
+                preview.remove_transition('desaturate-effect-animation');
+                let effectName = 'desaturate-effect';
+                let factorPropName = `@effects.${effectName}.factor`;
+
+                let transition = Clutter.PropertyTransition.new(factorPropName);
+                transition.progress_mode = Clutter.AnimationMode.EASE_IN_EXPO;
+                transition.duration = DESATURATION_EFFECT_DURATION;
+                transition.remove_on_complete = true;
+                transition.set_to(0.00001);
+                preview.add_transition('saturate-effect-animation', transition);
+                transition.connect('stopped', () => {
+                    preview.remove_effect_by_name(effectName);
+                    preview.remove_effect_by_name('blur-effect')
+                })
+            }
+        }
         let monitor = this._updateActiveMonitor();
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
@@ -476,55 +593,63 @@ var Switcher = class Switcher {
                     transition: 'easeInOutQuint',
                 });
             }
-            this._manager.platform.lightenBackground();
-
+            if (this._parent === null) this._manager.platform.lightenBackground();
 
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
             this._destroying = true;
-            for (let [i, preview] of this._previews.entries()) {
-                let metaWin = this._windows[i],
-                compositor = metaWin.get_compositor_private();
+            if (reason === DestroyReason.ACTIVATE_SELECTED) {
+                for (let [i, preview] of this._previews.entries()) {
+                    let metaWin = this._windows[i],
+                    compositor = metaWin.get_compositor_private();
 
-                let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
-                // Move all non-activated windows behind the activated one
-                if (i !== this._currentIndex) {
-                    preview.make_bottom_layer(this.previewActor);
-                } else {
-                    preview.make_top_layer(this.previewActor);
-                    animation_time = this._settings.animation_time;
+                    let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
+                    // Move all non-activated windows behind the activated one
+                    if (i !== this._currentIndex) {
+                        preview.make_bottom_layer(this.previewActor);
+                    } else {
+                        preview.make_top_layer(this.previewActor);
+                        animation_time = this._settings.animation_time;
+                    }
+                    if (!metaWin.minimized && metaWin.get_workspace().active) {
+                        let rect = metaWin.get_buffer_rect();
+                        this._manager.platform.tween(preview, {
+                            x: rect.x - this.actor.x,
+                            y: rect.y - this.actor.y,
+                            translation_x: 0,
+                            scale_x: 1,
+                            scale_y: 1,
+                            scale_z: 1,
+                            rotation_angle_y: 0.0,
+                            onComplete: this._onPreviewDestroyComplete.bind(this, false),
+                            time: animation_time,
+                            transition: transition,
+                        });
+                    } else {
+                        let pivot_point = preview.get_pivot_point_placement(Placement.CENTER);
+                        this._manager.platform.tween(preview, {
+                            x: 0,
+                            y: 0,
+                            opacity:  0,
+                            translation_x: 0,
+                            scale_x: 0,
+                            scale_y: 0,
+                            scale_z: 0,
+                            pivot_point: pivot_point,
+                            rotation_angle_y: 0.0,
+                            onComplete: this._onPreviewDestroyComplete.bind(this, false),
+                            time: this._settings.animation_time,
+                            transition: 'easeInOutExpo'
+                        });
+                    }
                 }
-                if (!metaWin.minimized && metaWin.get_workspace().active) {
-                    let rect = metaWin.get_buffer_rect();
-                    this._manager.platform.tween(preview, {
-                        x: rect.x - monitor.x,
-                        y: rect.y - monitor.y,
-                        translation_x: 0,
-                        scale_x: 1,
-                        scale_y: 1,
-                        scale_z: 1,
-                        rotation_angle_y: 0.0,
-                        onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                        time: animation_time,
-                        transition: transition,
-                    });
-                } else {
-                    let pivot_point = preview.get_pivot_point_placement(Placement.CENTER);
-                    this._manager.platform.tween(preview, {
-                        x: 0,
-                        y: 0,
-                        opacity:  0,
-                        translation_x: 0,
-                        scale_x: 0,
-                        scale_y: 0,
-                        scale_z: 0,
-                        pivot_point: pivot_point,
-                        rotation_angle_y: 0.0,
-                        onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                        time: this._settings.animation_time,
-                        transition: 'easeLinear'
-                    });
-                }
+            } else {
+                this._manager.platform.tween(this.actor, {
+                    opacity: 0,
+                    time: 0.5 * this._settings.animation_time,
+                    transition: 'easeInOutQuint',
+                    onComplete: this._onPreviewDestroyComplete.bind(this, true),
+                })
             }
         } else {
             this._onPreviewDestroyComplete(true);
@@ -533,7 +658,7 @@ var Switcher = class Switcher {
 
     _onPreviewDestroyComplete(force) {
         if (!force) this._numPreviewsComplete += 1;
-        if (this._previews != null && this._numPreviewsComplete >= this._previews.length || force) {
+        if (this._previews !== null && this._numPreviewsComplete >= this._previews.length || force) {
             if (this._haveModal) {
                Main.popModal(this.grab);
                 this._haveModal = false;
@@ -557,18 +682,18 @@ var Switcher = class Switcher {
             this._windowManager.disconnect(this._dcid);
             this._windowManager.disconnect(this._mcid);
 
-            this._manager.platform.removeBackground();
+            if (this._parent === null) this._manager.platform.removeBackground();
 
             this._disablePerspectiveCorrection();
             Main.uiGroup.remove_actor(this.actor);
             // show all window actors
-            global.window_group.show();
+            if (this._parent === null) global.window_group.show();
             this._numPreviewsComplete = 0
         }
     }
 
-    destroy() {
-        this._onDestroy('userChoice');
+    destroy(reason=DestroyReason.ACTIVATE_SELECTED) {
+        this._onDestroy(reason, 'userChoice');
     }
 
     /*
@@ -622,8 +747,8 @@ var Switcher = class Switcher {
             const activeMonitorRect =
               global.display.get_monitor_geometry(this._activeMonitor);
 
-            cameraX = this._activeMonitor.x + this._activeMonitor.width / 2;
-            cameraY = this._activeMonitor.y + this._activeMonitor.height / 2;
+            cameraX = this.actor.x + this.actor.width / 2;
+            cameraY = this.actor.y + this.actor.height / 2;
 
             // This is the offset to the original, centered camera position. Y is flipped due to
             // some negative scaling at some point in Mutter.
