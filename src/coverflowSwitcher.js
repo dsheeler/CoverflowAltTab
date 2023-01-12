@@ -56,11 +56,11 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
         this._previewsCenterPosition = {
-            x: monitor.width / 2,
-            y: monitor.height / 2 + this._settings.offset
+            x: this.actor.width / 2,
+            y: this.actor.height / 2 + this._settings.offset
         };
-        this._xOffsetLeft = monitor.width * 0.1;
-        this._xOffsetRight = monitor.width - this._xOffsetLeft;
+        this._xOffsetLeft = this.actor.width * 0.1;
+        this._xOffsetRight = this.actor.width - this._xOffsetLeft;
 
         for (let metaWin of this._windows) {
             let compositor = metaWin.get_compositor_private();
@@ -77,8 +77,8 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
 
                 let scale = 1.0;
                 let previewScale = this._settings.preview_to_monitor_ratio;
-                let previewWidth = monitor.width * previewScale;
-                let previewHeight = monitor.height * previewScale;
+                let previewWidth = this.actor.width * previewScale;
+                let previewHeight = this.actor.height * previewScale;
                 if (width > previewWidth || height > previewHeight)
                      scale = Math.min(previewWidth / width, previewHeight / height);
 
@@ -176,7 +176,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         this._updateActiveMonitor();
 
         if (direction === Direction.TO_LEFT) {
-            xOffsetStart = this._activeMonitor.width + this._xOffsetLeft;
+            xOffsetStart = this.actor.width + this._xOffsetLeft;
             xOffsetEnd = this._xOffsetRight;
             angleStart = -BLEND_OUT_ANGLE;
             angleEnd = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
@@ -313,9 +313,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             this._requiresUpdate = true;
             return;
         }
-
         this._updateActiveMonitor();
-
         // preview windows
         if (this._previews == null) return;
         for (let [i, preview] of this._previews.entries()) {

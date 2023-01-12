@@ -193,6 +193,12 @@ function fillPreferencesWindow(window) {
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monintor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side"), true));
 
+	let background_application_switcher_pref_group = new Adw.PreferencesGroup({
+		title: _('Application Switcher'),
+	});
+	background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturation-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Switcher Desaturation"), _("Larger means more desaturation."), true));
+	background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Background Switcher Blur Sigma"), _("Bigger means blurrier.")));
+
 	let background_pref_group = new Adw.PreferencesGroup({
 		title: _('Background'),
 	});
@@ -211,6 +217,7 @@ function fillPreferencesWindow(window) {
 	general_page.add(window_size_pref_group);
 	general_page.add(behavior_pref_group);
 	general_page.add(background_pref_group);
+	general_page.add(background_application_switcher_pref_group);
 	general_page.add(keybinding_pref_group);
 
 
@@ -235,11 +242,6 @@ function fillPreferencesWindow(window) {
 	});
 	tweaks_page.add(pcorrection_pref_group);
 	tweaks_page.add(highlight_mouse_over_pref_group);
-
-	let appearance_page = new Adw.PreferencesPage({
-		title: _("Appearance"),
-		icon_name: 'dash-symbolic',
-	});
 
 	let contribution_page = new Adw.PreferencesPage({
 		title: _("Contribute"),
