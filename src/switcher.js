@@ -144,16 +144,9 @@ var Switcher = class Switcher {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
             for (let preview of this._parent._previews) {
-                let desaturateEffect = new Clutter.DesaturateEffect({ factor: 0.0, });
+                let desaturateEffect = new Clutter.DesaturateEffect({ factor: this._settings.desaturation_factor, });
                 let effectName = 'desaturate-effect';
-                let factorPropName = `@effects.${effectName}.factor`;
-                let transition = Clutter.PropertyTransition.new(factorPropName);
-                transition.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
-                transition.duration = DESATURATION_EFFECT_DURATION;
-                transition.remove_on_complete = true;
-                transition.set_to(this._settings.desaturation_factor);
                 preview.add_effect_with_name(effectName, desaturateEffect);
-                preview.add_transition('desaturate-effect-animation', transition);
 
                 let blurEffect = new Shell.BlurEffect({ sigma: this._settings.blur_sigma, brightness: 1 });
                 effectName = 'blur-effect';
@@ -179,7 +172,6 @@ var Switcher = class Switcher {
         this._initialDelayTimeoutId = 0;
 
         if (this._parent !== null) {
-            this._currentIndex = 0;
             this._updatePreviews(false);
             this._setCurrentWindowTitle(this._windows[this._currentIndex]);
         } else {
@@ -564,20 +556,8 @@ var Switcher = class Switcher {
         this._destroying = true;
         if (this._parent) {
             for (let preview of this._parent._previews) {
-                preview.remove_transition('desaturate-effect-animation');
-                let effectName = 'desaturate-effect';
-                let factorPropName = `@effects.${effectName}.factor`;
-
-                let transition = Clutter.PropertyTransition.new(factorPropName);
-                transition.progress_mode = Clutter.AnimationMode.EASE_IN_EXPO;
-                transition.duration = DESATURATION_EFFECT_DURATION;
-                transition.remove_on_complete = true;
-                transition.set_to(0.00001);
-                preview.add_transition('saturate-effect-animation', transition);
-                transition.connect('stopped', () => {
-                    preview.remove_effect_by_name(effectName);
-                    preview.remove_effect_by_name('blur-effect')
-                })
+                preview.remove_effect_by_name('desaturate-effect');
+                preview.remove_effect_by_name('blur-effect')
             }
         }
         let monitor = this._updateActiveMonitor();
