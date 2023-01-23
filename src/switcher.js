@@ -196,12 +196,13 @@ var Switcher = class Switcher {
         return true;
     }
 
-    _showSubswitcher() {
+    _showSubswitcher(direction) {
         if (this._appSwitcher) {
             let wins = this._appWindowsMap.get(this._tracker.get_window_app(this._windows[this._currentIndex]))
             if (wins.length > 1) {
                 let switcher_class = this._manager.platform.getSettings().switcher_class;
-                this._subSwitcher = new switcher_class(wins, this._modifierMask, 0, this._manager, false, this,
+                let current_index = direction == Direction.TO_RIGHT ? 0 : wins.length - 1;
+                this._subSwitcher = new switcher_class(wins, this._modifierMask, current_index, this._manager, false, this,
                     this.actor.x + this.actor.width/4,
                     this.actor.height/4, this.actor.width/2, this.actor.height/2);
             }
@@ -216,8 +217,13 @@ var Switcher = class Switcher {
             this._updatePreviews(false, 1);
         } else {
             this.actor.set_reactive(false);
-            this._previewNext();
-            this._showSubswitcher();
+            if (this._parent && this._currentIndex == this._previews.length - 1) {
+                this.destroy(DestroyReason.NO_ACTIVATION);
+                this._parent._next();
+            } else {
+                this._previewNext();
+            }
+            this._showSubswitcher(Direction.TO_RIGHT);
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
@@ -231,8 +237,13 @@ var Switcher = class Switcher {
             this._updatePreviews(false, -1);
         } else {
             this.actor.set_reactive(false);
-            this._previewPrevious();
-            this._showSubswitcher();
+            if (this._parent && this._currentIndex == 0) {
+                this.destroy(DestroyReason.NO_ACTIVATION);
+                this._parent._previous();
+            } else {
+                this._previewPrevious();
+            }
+            this._showSubswitcher(Direction.TO_LEFT);
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
@@ -381,7 +392,7 @@ var Switcher = class Switcher {
 
             case Clutter.KEY_Down:
             case Clutter.Down:
-                this._showSubswitcher();
+                this._showSubswitcher(Direction.TO_RIGHT);
                 return true;
 
             case Clutter.KEY_Up:
