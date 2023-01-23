@@ -147,12 +147,12 @@ function fillPreferencesWindow(window) {
 	switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), []], [_("Timeline"), []] ]), _("Style"), _("Pick the type of switcher.")))
 	switcher_pref_group.add(buildSpinAdw(settings, "offset", [-500, 500, 1, 10], _("Vertical Offset"), _("Positive value moves everything down, negative up.")));
 	switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), []], [_("Top"), []]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
-	switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
+	switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
 	let behavior_pref_group = new Adw.PreferencesGroup({
 		title: _("Behavior"),
 	});
-	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", _("Hide Panel"), _("Hide panel when switching widnows.")));
+	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching widnows.")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),
@@ -160,7 +160,7 @@ function fillPreferencesWindow(window) {
 
     animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
     animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration [s]"),  "", true));
-	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration")));
+	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration")));
 
 	let windows_pref_group = new Adw.PreferencesGroup({
 		title: _('Switcher Windows'),
@@ -173,7 +173,7 @@ function fillPreferencesWindow(window) {
 	    id: 'all-currentfirst', name: _("All workspaces, current first")
 	}];
 	windows_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", options, _("Workspaces"), _("Switch between windows on current or on all workspaces")));
-	windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", _("Current Monitor"), _("Switch between windows on current monitor")));
+	windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], _("Current Monitor"), _("Switch between windows on current monitor")));
 
 	let icon_pref_group = new Adw.PreferencesGroup({
 		title: _("Icon"),
@@ -185,7 +185,7 @@ function fillPreferencesWindow(window) {
 	icon_pref_group.add(buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style")));
 	icon_pref_group.add(size_row);
 	icon_pref_group.add(opacity_row);
-	icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", _("Icon Shadow")));
+	icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], _("Icon Shadow")));
 
 	let window_size_pref_group = new Adw.PreferencesGroup({
 		title: _("Window Size")
@@ -207,8 +207,8 @@ function fillPreferencesWindow(window) {
 	let keybinding_pref_group = new Adw.PreferencesGroup({
 		title: _("Keybindings"),
 	});
-	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", _("Bind to 'switch-windows'")));
-	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", _("Bind to 'switch-applications'")));
+	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], _("Bind to 'switch-windows'")));
+	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [background_application_switcher_pref_group], _("Bind to 'switch-applications'")));
 
 	general_page.add(switcher_pref_group);
 	general_page.add(animation_pref_group);
@@ -233,8 +233,8 @@ function fillPreferencesWindow(window) {
 	let highlight_mouse_over_pref_group = new Adw.PreferencesGroup({
 		title: _("Highlight Window Under Mouse"),
 	});
-	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
-	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
+	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
+	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
 
 	let tweaks_page = new Adw.PreferencesPage({
 		title: _('Tweaks'),
@@ -319,7 +319,7 @@ function fillPreferencesWindow(window) {
 	window.set_search_enabled(true);
 }
 
-function buildSwitcherAdw(settings, key, title, subtitle=null) {
+function buildSwitcherAdw(settings, key, dependant_widgets, title, subtitle=null) {
 	let pref = new Adw.ActionRow({
 		title: title,
 	});
@@ -339,6 +339,16 @@ function buildSwitcherAdw(settings, key, title, subtitle=null) {
 
 	pref.set_activatable_widget(switcher);
 	pref.add_suffix(switcher);
+
+	switcher.connect('notify::active', function(widget) {
+		for (let dep of dependant_widgets) {
+			dep.set_sensitive(widget.get_active());
+		}
+	});
+
+	for (let widget of dependant_widgets) {
+		widget.set_sensitive(switcher.get_active());
+	}
 
 	reset_button = makeResetButton();
 	reset_button.connect("clicked", function(widget) {
