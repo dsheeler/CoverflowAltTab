@@ -152,7 +152,7 @@ function fillPreferencesWindow(window) {
 	let behavior_pref_group = new Adw.PreferencesGroup({
 		title: _("Behavior"),
 	});
-	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", _("Hide Panel"), _("Hide panel when switching widnows.")));
+	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", _("Hide Panel"), _("Hide panel when switching windows.")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),

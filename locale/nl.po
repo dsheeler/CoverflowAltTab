@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-06 06:48+0330\n"
+"POT-Creation-Date: 2023-01-29 17:05+0000\n"
 "PO-Revision-Date: 2021-07-11 19:01+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <kde-i18n-doc@kde.org>\n"
@@ -33,11 +33,11 @@ msgstr "Onderaan"
 msgid "Top"
 msgstr "Bovenaan"
 
-#: src/prefs.js:119 src/prefs.js:181
+#: src/prefs.js:119 src/prefs.js:184
 msgid "Classic"
 msgstr "Klassiek"
 
-#: src/prefs.js:120 src/prefs.js:181
+#: src/prefs.js:120 src/prefs.js:184
 msgid "Overlay"
 msgstr "Bovenop"
 
@@ -106,7 +106,7 @@ msgid "Hide Panel"
 msgstr ""
 
 #: src/prefs.js:155
-msgid "Hide panel when switching widnows."
+msgid "Hide panel when switching windows."
 msgstr ""
 
 #: src/prefs.js:158
@@ -114,11 +114,7 @@ msgid "Animation"
 msgstr ""
 
 #: src/prefs.js:162
-msgid "Duration"
-msgstr ""
-
-#: src/prefs.js:162
-msgid "In seconds."
+msgid "Duration [s]"
 msgstr ""
 
 #: src/prefs.js:163
@@ -171,125 +167,125 @@ msgid "Icon"
 msgstr ""
 
 #: src/prefs.js:181
+msgid "Overlay Icon Size"
+msgstr ""
+
+#: src/prefs.js:181
+msgid "Set the overlay icon size in pixels."
+msgstr ""
+
+#: src/prefs.js:182
+msgid "Overlay Icon Opacity"
+msgstr ""
+
+#: src/prefs.js:182
+msgid "Set the overlay icon opacity."
+msgstr ""
+
+#: src/prefs.js:185
 #, fuzzy
 msgid "Application Icon Style"
 msgstr "Pictogramstijl"
 
-#: src/prefs.js:182
-msgid "Overlay Icon Size"
-msgstr ""
-
-#: src/prefs.js:182
-msgid "Set the overlay icon size in pixels."
-msgstr ""
-
-#: src/prefs.js:183
-msgid "Overlay Icon Opacity"
-msgstr ""
-
-#: src/prefs.js:183
-msgid "Set the overlay icon opacity."
-msgstr ""
-
-#: src/prefs.js:184
+#: src/prefs.js:188
 msgid "Icon Shadow"
 msgstr ""
 
-#: src/prefs.js:187
+#: src/prefs.js:191
 msgid "Window Size"
 msgstr ""
 
-#: src/prefs.js:189
+#: src/prefs.js:193
 msgid "Window Preview Size to Monintor Size Ratio"
 msgstr ""
 
-#: src/prefs.js:189
+#: src/prefs.js:193
 msgid "Maximum ratio of window preview size to monitor size."
 msgstr ""
 
-#: src/prefs.js:190
+#: src/prefs.js:194
 msgid "Off-center Size Factor"
 msgstr ""
 
-#: src/prefs.js:190
+#: src/prefs.js:194
 msgid "Factor by which to successively shrink previews off to the side"
 msgstr ""
 
-#: src/prefs.js:193
+#: src/prefs.js:197
 msgid "Background"
 msgstr ""
 
-#: src/prefs.js:195
+#: src/prefs.js:199
 #, fuzzy
 msgid "Background Dim-factor"
 msgstr "Dimfactor van achtergrond (lager = donkerder)"
 
-#: src/prefs.js:195
+#: src/prefs.js:199
 msgid "Smaller means darker."
 msgstr ""
 
-#: src/prefs.js:198
+#: src/prefs.js:202
 msgid "Keybindings"
 msgstr ""
 
-#: src/prefs.js:200
+#: src/prefs.js:204
 msgid "Bind to 'switch-windows'"
 msgstr ""
 
-#: src/prefs.js:201
+#: src/prefs.js:205
 msgid "Bind to 'switch-applications'"
 msgstr ""
 
-#: src/prefs.js:214 src/prefs.js:220
+#: src/prefs.js:218 src/prefs.js:224
 msgid "Perspective Correction"
 msgstr ""
 
-#: src/prefs.js:217
+#: src/prefs.js:221
 msgid "None"
 msgstr ""
 
-#: src/prefs.js:218
+#: src/prefs.js:222
 msgid "Move Camera"
 msgstr ""
 
-#: src/prefs.js:219
+#: src/prefs.js:223
 msgid "Adjust Angles"
 msgstr ""
 
-#: src/prefs.js:223 src/prefs.js:225
+#: src/prefs.js:227 src/prefs.js:229
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:225
+#: src/prefs.js:229
 msgid ""
 "Draw embelishment on window under the mouse to know the effects of clicking."
 msgstr ""
 
-#: src/prefs.js:226
+#: src/prefs.js:230
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:226
+#: src/prefs.js:230
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:229
+#: src/prefs.js:233
 msgid "Tweaks"
 msgstr ""
 
-#: src/prefs.js:236
+#: src/prefs.js:240
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:241
+#: src/prefs.js:245
 msgid "Contribute"
 msgstr ""
 
-#: src/prefs.js:277
+#: src/prefs.js:281
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:284
+#: src/prefs.js:288
 msgid "Support me with a Donation"
 msgstr ""
 
