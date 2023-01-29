@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-29 17:05+0000\n"
+"POT-Creation-Date: 2023-01-29 17:11+0000\n"
 "PO-Revision-Date: 2020-05-24 15:50+0800\n"
 "Last-Translator: Yi-Jyun Pan <pan93412@gmail.com>\n"
 "Language-Team: \n"
@@ -194,7 +194,7 @@ msgid "Window Size"
 msgstr ""
 
 #: src/prefs.js:193
-msgid "Window Preview Size to Monintor Size Ratio"
+msgid "Window Preview Size to Monitor Size Ratio"
 msgstr ""
 
 #: src/prefs.js:193
@@ -256,7 +256,7 @@ msgstr ""
 
 #: src/prefs.js:229
 msgid ""
-"Draw embelishment on window under the mouse to know the effects of clicking."
+"Draw embellishment on window under the mouse to show the effects of clicking."
 msgstr ""
 
 #: src/prefs.js:230

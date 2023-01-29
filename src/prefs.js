@@ -190,7 +190,7 @@ function fillPreferencesWindow(window) {
 	let window_size_pref_group = new Adw.PreferencesGroup({
 		title: _("Window Size")
 	});
-	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monintor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
+	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side"), true));
 
 	let background_pref_group = new Adw.PreferencesGroup({
@@ -226,7 +226,7 @@ function fillPreferencesWindow(window) {
 	let highlight_mouse_over_pref_group = new Adw.PreferencesGroup({
 		title: _("Highlight Window Under Mouse"),
 	});
-	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
+	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", _("Highlight Window Under Mouse"), _("Draw embellishment on window under the mouse to show the effects of clicking.")));
 	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
 
 	let tweaks_page = new Adw.PreferencesPage({

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-29 17:05+0000\n"
+"POT-Creation-Date: 2023-01-29 17:11+0000\n"
 "PO-Revision-Date: 2019-06-17 17:27+0200\n"
 "Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
@@ -196,7 +196,7 @@ msgid "Window Size"
 msgstr ""
 
 #: src/prefs.js:193
-msgid "Window Preview Size to Monintor Size Ratio"
+msgid "Window Preview Size to Monitor Size Ratio"
 msgstr ""
 
 #: src/prefs.js:193
@@ -258,7 +258,7 @@ msgstr ""
 
 #: src/prefs.js:229
 msgid ""
-"Draw embelishment on window under the mouse to know the effects of clicking."
+"Draw embellishment on window under the mouse to show the effects of clicking."
 msgstr ""
 
 #: src/prefs.js:230
