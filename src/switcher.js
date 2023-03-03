@@ -52,7 +52,7 @@ DestroyReason.ACTIVATE_SELECTED = 1;
 DestroyReason.NO_ACTIVATION = 2;
 
 var Switcher = class Switcher {
-    constructor(windows, mask, currentIndex, manager, appSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
+    constructor(windows, mask, currentIndex, manager, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -68,7 +68,7 @@ var Switcher = class Switcher {
         this._requiresUpdate = false;
         this._previews = [];
         this._numPreviewsComplete = 0;
-        this._appSwitcher = appSwitcher;
+        this._isAppSwitcher = isAppSwitcher;
         this._appWindowsMap = new Map();
         this._x = x_in;
         this._y = y_in;
@@ -87,7 +87,6 @@ var Switcher = class Switcher {
         this.actor.hide();
         this.previewActor = new widgetClass({ visible: true, reactive: true});
         this.actor.add_actor(this.previewActor);
-
         Main.uiGroup.add_actor(this.actor);
 
         this.grab = Main.pushModal(this.actor)
@@ -98,7 +97,7 @@ var Switcher = class Switcher {
 
         this._haveModal = true;
 
-        if (this._appSwitcher) {
+        if (this._isAppSwitcher) {
             // Find all the apps and associated windows
             for (let metaWin of this._windows) {
                 let app = this._tracker.get_window_app(metaWin);
@@ -108,10 +107,16 @@ var Switcher = class Switcher {
                     this._appWindowsMap.set(app, [metaWin]);
                 }
             }
-            // For each app, display the first window only
-            this._windows = [];
-            for (let app of this._appWindowsMap.keys()) {
-                this._windows.push(this._appWindowsMap.get(app)[0]);
+            /* If only one app, then just switch between the windows of
+               that app. */
+            if (Array.from(this._appWindowsMap.keys()).length === 1) {
+                this._isAppSwitcher = false;
+            } else {
+                // For each app, display the first window only
+                this._windows = [];
+                for (let app of this._appWindowsMap.keys()) {
+                    this._windows.push(this._appWindowsMap.get(app)[0]);
+                }
             }
         }
 
@@ -197,7 +202,7 @@ var Switcher = class Switcher {
     }
 
     _showSubswitcher(direction) {
-        if (this._appSwitcher) {
+        if (this._isAppSwitcher) {
             let wins = this._appWindowsMap.get(this._tracker.get_window_app(this._windows[this._currentIndex]))
             if (wins.length > 1) {
                 let switcher_class = this._manager.platform.getSettings().switcher_class;
