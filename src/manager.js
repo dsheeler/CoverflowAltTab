@@ -84,7 +84,7 @@ var Manager = class Manager {
     _startWindowSwitcher(display, window, binding) {
         let windows = [];
         let currentWorkspace = this.workspace_manager.get_active_workspace();
-        let applicationSwitcher = false;
+        let isApplicationSwitcher = false;
 
         // Construct a list with all windows
         let windowActors = global.get_window_actors();
@@ -105,7 +105,7 @@ var Manager = class Manager {
 
             case 'switch-applications':
             case 'switch-applications-backward':
-                applicationSwitcher = true;
+                isApplicationSwitcher = true;
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
               	if (currentOnly === 'all-currentfirst') {
@@ -143,7 +143,7 @@ var Manager = class Manager {
             let currentIndex = windows.indexOf(display.focus_window);
 
             let switcher_class = this.platform.getSettings().switcher_class;
-            let switcher = new switcher_class(windows, mask, currentIndex, this, applicationSwitcher, null);
+            let switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
         }
     }
 }

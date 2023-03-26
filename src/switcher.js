@@ -52,7 +52,7 @@ DestroyReason.ACTIVATE_SELECTED = 1;
 DestroyReason.NO_ACTIVATION = 2;
 
 var Switcher = class Switcher {
-    constructor(windows, mask, currentIndex, manager, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
+    constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = windows;
@@ -75,6 +75,9 @@ var Switcher = class Switcher {
         this._width = width_in;
         this._height = height_in;
         this._parent = parent;
+
+        if (activeMonitor !== null)
+            this._activeMonitor = activeMonitor;
 
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
@@ -207,7 +210,7 @@ var Switcher = class Switcher {
             if (wins.length > 1) {
                 let switcher_class = this._manager.platform.getSettings().switcher_class;
                 let current_index = direction == Direction.TO_RIGHT ? 0 : wins.length - 1;
-                this._subSwitcher = new switcher_class(wins, this._modifierMask, current_index, this._manager, false, this,
+                this._subSwitcher = new switcher_class(wins, this._modifierMask, current_index, this._manager, this._activeMonitor, false, this,
                     this.actor.x + this.actor.width/4,
                     this.actor.height/4, this.actor.width/2, this.actor.height/2);
             }
