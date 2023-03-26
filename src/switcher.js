@@ -578,6 +578,10 @@ var Switcher = class Switcher {
                 preview.remove_effect_by_name('desaturate-effect');
                 preview.remove_effect_by_name('blur-effect')
             }
+            if (this._haveModal) {
+                Main.popModal(this.grab);
+                this._haveModal = false;
+            }
         }
         let monitor = this._updateActiveMonitor();
         if (this._initialDelayTimeoutId === 0) {
