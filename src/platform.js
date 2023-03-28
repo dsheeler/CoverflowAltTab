@@ -123,6 +123,8 @@ class AbstractPlatform {
             perspective_correction_method: "None",
             highlight_mouse_over: false,
             raise_mouse_over: true,
+            blur_sigma: 7,
+            desaturation_factor: 0.75,
         };
     }
 
@@ -191,6 +193,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "perspective-correction-method",
             "highlight-mouse-over",
             "raise-mouse-over",
+            "desaturation-factor",
+            "blur-sigma",
         ];
 
         let dkeys = [
@@ -288,6 +292,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 perspective_correction_method: settings.get_string("perspective-correction-method"),
                 highlight_mouse_over: settings.get_boolean("highlight-mouse-over"),
                 raise_mouse_over: settings.get_boolean("raise-mouse-over"),
+                desaturation_factor: settings.get_double("desaturation-factor"),
+                blur_sigma: settings.get_int("blur-sigma"),
             };
         } catch (e) {
             global.log(e);

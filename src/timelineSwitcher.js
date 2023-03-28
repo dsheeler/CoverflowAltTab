@@ -50,8 +50,8 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
         let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
 
         this._previewsCenterPosition = {
-            x: monitor.width / 2,
-            y: monitor.height / 2 + this._settings.offset
+            x: this.actor.width / 2,
+            y: this.actor.height / 2 + this._settings.offset
         };
 
         for (let metaWin of this._windows) {
@@ -68,8 +68,8 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
                 let previewScale = this._settings.preview_to_monitor_ratio;
                 let scale = 1.0;
-                let previewWidth = monitor.width * previewScale;
-                let previewHeight = monitor.height * previewScale;
+                let previewWidth = this.actor.width * previewScale;
+                let previewHeight = this.actor.height * previewScale;
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
