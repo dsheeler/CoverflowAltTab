@@ -1,0 +1,293 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# hasecilu <hasecilu@tuta.io>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CoverflowAltTab\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-29 17:11+0000\n"
+"PO-Revision-Date: 2023-04-02 16:21-0600\n"
+"Last-Translator: hasecilu <hasecilu@tuta.io>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: src/prefs.js:115 src/prefs.js:147
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: src/prefs.js:116 src/prefs.js:147
+msgid "Timeline"
+msgstr "Línea de tiempo"
+
+#: src/prefs.js:117 src/prefs.js:149
+msgid "Bottom"
+msgstr "Inferior"
+
+#: src/prefs.js:118 src/prefs.js:149
+msgid "Top"
+msgstr "Superior"
+
+#: src/prefs.js:119 src/prefs.js:184
+msgid "Classic"
+msgstr "Clásico"
+
+#: src/prefs.js:120 src/prefs.js:184
+msgid "Overlay"
+msgstr "Sobreposición"
+
+#: src/prefs.js:128
+msgid "Reset to default value"
+msgstr "Reiniciar al valor predeterminado"
+
+#: src/prefs.js:134
+#, javascript-format
+msgid "Version %d"
+msgstr "Versión %d"
+
+#: src/prefs.js:140
+msgid "General"
+msgstr "General"
+
+#: src/prefs.js:145
+msgid "Switcher"
+msgstr "Conmutador"
+
+#: src/prefs.js:147
+msgid "Style"
+msgstr "Estilo"
+
+#: src/prefs.js:147
+msgid "Pick the type of switcher."
+msgstr "Elegir el tipo de conmutador."
+
+#: src/prefs.js:148
+msgid "Vertical Offset"
+msgstr "Desplazamiento vertical"
+
+#: src/prefs.js:148
+msgid "Positive value moves everything down, negative up."
+msgstr "Un valor positivo mueve todo hacia abajo, negativo hacia arriba."
+
+#: src/prefs.js:149
+msgid "Window Title Position"
+msgstr "Posición del título de ventana"
+
+#: src/prefs.js:149
+msgid "Place window title above or below the switcher."
+msgstr "Coloque el título de la ventana arriba o debajo del conmutador."
+
+#: src/prefs.js:150
+msgid "Enforce Primary Monitor"
+msgstr "Forzar el monitor primario"
+
+#: src/prefs.js:150
+msgid "Always show on the primary monitor, otherwise, show on the active monitor."
+msgstr "Siempre mostrar en el monitor primario, de otra manera, mostrar en el monitor activo."
+
+#: src/prefs.js:153
+msgid "Behavior"
+msgstr "Comportamiento"
+
+#: src/prefs.js:155
+msgid "Hide Panel"
+msgstr "Ocultar panel"
+
+#: src/prefs.js:155
+msgid "Hide panel when switching windows."
+msgstr "Ocultar el panel cuando se estén cambiando las ventanas."
+
+#: src/prefs.js:158
+msgid "Animation"
+msgstr "Animación"
+
+#: src/prefs.js:162
+msgid "Duration [s]"
+msgstr "Duración [s]"
+
+#: src/prefs.js:163
+msgid "Randomize Durations"
+msgstr "Aleatorizar las duraciones"
+
+#: src/prefs.js:163
+msgid "Each animation duration assigned randomly between 0 and configured duration"
+msgstr "Cada duración de animación es asignada al azar entre 0 y la duración configurada"
+
+#: src/prefs.js:166
+msgid "Switcher Windows"
+msgstr "Ventanas para el conmutador"
+
+#: src/prefs.js:169
+msgid "Current workspace only"
+msgstr "Solamente para el área de trabajo actual"
+
+#: src/prefs.js:171
+msgid "All workspaces"
+msgstr "Todas las áreas de trabajo"
+
+#: src/prefs.js:173
+msgid "All workspaces, current first"
+msgstr "Todas las áreas de trabajo, con prioridad en la actual"
+
+#: src/prefs.js:175
+msgid "Workspaces"
+msgstr "Áreas de trabajo"
+
+#: src/prefs.js:175
+msgid "Switch between windows on current or on all workspaces"
+msgstr "Cambiar entre ventanas en el espacio de trabajo actual o en todos"
+
+#: src/prefs.js:176
+msgid "Current Monitor"
+msgstr "Monitor actual"
+
+#: src/prefs.js:176
+msgid "Switch between windows on current monitor"
+msgstr "Cambiar entre ventanas del monitor actual"
+
+#: src/prefs.js:179
+msgid "Icon"
+msgstr "Icono"
+
+#: src/prefs.js:181
+msgid "Overlay Icon Size"
+msgstr "Tamaño de icono sobrepuesto"
+
+#: src/prefs.js:181
+msgid "Set the overlay icon size in pixels."
+msgstr "Establecer el tamaño del icono sobrepuesto en pixeles."
+
+#: src/prefs.js:182
+msgid "Overlay Icon Opacity"
+msgstr "Opacidad del icono sobrepuesto"
+
+#: src/prefs.js:182
+msgid "Set the overlay icon opacity."
+msgstr "Establecer la opacidad del icono sobrepuesto."
+
+#: src/prefs.js:185
+msgid "Application Icon Style"
+msgstr "Estilo de icono de aplicación"
+
+#: src/prefs.js:188
+msgid "Icon Shadow"
+msgstr "Sombra de icono"
+
+#: src/prefs.js:191
+msgid "Window Size"
+msgstr "Tamaño de ventana"
+
+#: src/prefs.js:193
+msgid "Window Preview Size to Monitor Size Ratio"
+msgstr "Relación entre el tamaño de la vista previa de la ventana y el tamaño del monitor"
+
+#: src/prefs.js:193
+msgid "Maximum ratio of window preview size to monitor size."
+msgstr "Relación máxima entre el tamaño de la vista previa de la ventana y el tamaño del monitor."
+
+#: src/prefs.js:194
+#, fuzzy
+msgid "Off-center Size Factor"
+msgstr "Factor de tamaño fuera del centro"
+
+#: src/prefs.js:194
+msgid "Factor by which to successively shrink previews off to the side"
+msgstr "Factor con el cual reducir sucesivamente las vistas previas a un lado"
+
+#: src/prefs.js:197
+msgid "Background"
+msgstr "Fondo"
+
+#: src/prefs.js:199
+msgid "Background Dim-factor"
+msgstr "Factor de intensidad de fondo"
+
+#: src/prefs.js:199
+msgid "Smaller means darker."
+msgstr "Menor significa más obscuro."
+
+#: src/prefs.js:202
+msgid "Keybindings"
+msgstr "Atajos de teclado"
+
+#: src/prefs.js:204
+msgid "Bind to 'switch-windows'"
+msgstr "Enlazar a 'switch-windows'"
+
+#: src/prefs.js:205
+msgid "Bind to 'switch-applications'"
+msgstr "Enlazar a 'switch-applications'"
+
+#: src/prefs.js:218 src/prefs.js:224
+msgid "Perspective Correction"
+msgstr "Corrección de perspectiva"
+
+#: src/prefs.js:221
+msgid "None"
+msgstr "Ninguno"
+
+#: src/prefs.js:222
+msgid "Move Camera"
+msgstr "Mover cámara"
+
+#: src/prefs.js:223
+msgid "Adjust Angles"
+msgstr "Ajustar ángulos"
+
+#: src/prefs.js:227 src/prefs.js:229
+msgid "Highlight Window Under Mouse"
+msgstr "Resaltar ventana debajo del cursor"
+
+#: src/prefs.js:229
+msgid "Draw embellishment on window under the mouse to show the effects of clicking."
+msgstr "Dibujar un adorno en la ventana debajo del cursor para mostrar los efectos de hacer clic."
+
+#: src/prefs.js:230
+msgid "Raise Window Under Mouse"
+msgstr "Alzar la ventana debajo del cursor"
+
+#: src/prefs.js:230
+msgid "Raise the window under the mouse above all others."
+msgstr "Alzar la ventana debajo del cursor por encima de todas las demás."
+
+#: src/prefs.js:233
+msgid "Tweaks"
+msgstr "Ajustes"
+
+#: src/prefs.js:240
+msgid "Appearance"
+msgstr "Apariencia"
+
+#: src/prefs.js:245
+msgid "Contribute"
+msgstr "Contribuir"
+
+#: src/prefs.js:281
+msgid "Code (create pull requests, report issues, etc.)"
+msgstr "Código (crear pull request, reportar problemas, etc)"
+
+#: src/prefs.js:288
+msgid "Support me with a Donation"
+msgstr "Apóyame con una donación"
+
+#~ msgid ""
+#~ "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and press Enter)\n"
+#~ "</b>"
+#~ msgstr ""
+#~ "<b>¡Por favor reinicie Gnome-Shell para aplicar los cambios! (Presione Alt+F2, escriba 'r' y presione Enter)\n"
+#~ "</b>"
+
+#~ msgid "Hide panel during Coverflow"
+#~ msgstr "Ocultar el panel durante el Coverflow"
+
+#~ msgid "Animation speed (smaller means faster)"
+#~ msgstr "Velocidad de animación (menor significa más rápido)"
+
+#~ msgid "Elastic animations"
+#~ msgstr "Animaciones elásticas"
