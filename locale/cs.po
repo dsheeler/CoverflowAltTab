@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-29 17:11+0000\n"
+"POT-Creation-Date: 2023-05-23 02:20-0500\n"
 "PO-Revision-Date: 2016-05-14 17:42+0200\n"
 "Last-Translator: Jiří Doubravský <jiri.doubravsky@gmail.com>\n"
 "Language-Team: CZECH <jiri.doubravsky@gmail.com>\n"
@@ -29,11 +29,11 @@ msgstr "Dole"
 msgid "Top"
 msgstr "Nahoře"
 
-#: src/prefs.js:119 src/prefs.js:184
+#: src/prefs.js:119 src/prefs.js:185
 msgid "Classic"
 msgstr "Mimo okno"
 
-#: src/prefs.js:120 src/prefs.js:184
+#: src/prefs.js:120 src/prefs.js:185
 msgid "Overlay"
 msgstr "Uprostřed okna"
 
@@ -95,188 +95,205 @@ msgstr "Přepínání aplikací zobrazovat vždy na primárním monitoru"
 msgid "Behavior"
 msgstr ""
 
-#: src/prefs.js:155
+#: src/prefs.js:156
 msgid "Hide Panel"
 msgstr ""
 
-#: src/prefs.js:155
+#: src/prefs.js:156
 msgid "Hide panel when switching windows."
 msgstr ""
 
-#: src/prefs.js:158
+#: src/prefs.js:159
 msgid "Animation"
 msgstr ""
 
-#: src/prefs.js:162
+#: src/prefs.js:163
 msgid "Duration [s]"
 msgstr ""
 
-#: src/prefs.js:163
+#: src/prefs.js:164
 msgid "Randomize Durations"
 msgstr ""
 
-#: src/prefs.js:163
+#: src/prefs.js:164
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration"
 msgstr ""
 
-#: src/prefs.js:166
+#: src/prefs.js:167
 #, fuzzy
 msgid "Switcher Windows"
 msgstr "Styl přepínače aplikací"
 
-#: src/prefs.js:169
+#: src/prefs.js:170
 msgid "Current workspace only"
 msgstr ""
 
-#: src/prefs.js:171
+#: src/prefs.js:172
 msgid "All workspaces"
 msgstr ""
 
-#: src/prefs.js:173
+#: src/prefs.js:174
 msgid "All workspaces, current first"
 msgstr ""
 
-#: src/prefs.js:175
+#: src/prefs.js:176
 msgid "Workspaces"
 msgstr ""
 
-#: src/prefs.js:175
+#: src/prefs.js:176
 msgid "Switch between windows on current or on all workspaces"
 msgstr ""
 
-#: src/prefs.js:176
+#: src/prefs.js:177
 msgid "Current Monitor"
 msgstr ""
 
-#: src/prefs.js:176
+#: src/prefs.js:177
 msgid "Switch between windows on current monitor"
 msgstr ""
 
-#: src/prefs.js:179
+#: src/prefs.js:180
 msgid "Icon"
 msgstr ""
 
-#: src/prefs.js:181
+#: src/prefs.js:182
 msgid "Overlay Icon Size"
 msgstr ""
 
-#: src/prefs.js:181
+#: src/prefs.js:182
 msgid "Set the overlay icon size in pixels."
 msgstr ""
 
-#: src/prefs.js:182
+#: src/prefs.js:183
 msgid "Overlay Icon Opacity"
 msgstr ""
 
-#: src/prefs.js:182
+#: src/prefs.js:183
 msgid "Set the overlay icon opacity."
 msgstr ""
 
-#: src/prefs.js:185
+#: src/prefs.js:186
 #, fuzzy
 msgid "Application Icon Style"
 msgstr "Styl zobrazení ikon aplikací"
 
-#: src/prefs.js:188
+#: src/prefs.js:189
 msgid "Icon Shadow"
 msgstr ""
 
-#: src/prefs.js:191
+#: src/prefs.js:192
 msgid "Window Size"
 msgstr ""
 
-#: src/prefs.js:193
+#: src/prefs.js:194
 msgid "Window Preview Size to Monitor Size Ratio"
 msgstr ""
 
-#: src/prefs.js:193
+#: src/prefs.js:194
 msgid "Maximum ratio of window preview size to monitor size."
 msgstr ""
 
-#: src/prefs.js:194
+#: src/prefs.js:195
 msgid "Off-center Size Factor"
 msgstr ""
 
-#: src/prefs.js:194
+#: src/prefs.js:195
 msgid "Factor by which to successively shrink previews off to the side"
 msgstr ""
 
-#: src/prefs.js:197
+#: src/prefs.js:198
+#, fuzzy
+msgid "Application Switcher"
+msgstr "Styl zobrazení ikon aplikací"
+
+#: src/prefs.js:200
+msgid "Background Switcher Desaturation"
+msgstr ""
+
+#: src/prefs.js:200
+msgid "Larger means more desaturation."
+msgstr ""
+
+#: src/prefs.js:201
+msgid "Background Switcher Blur Sigma"
+msgstr ""
+
+#: src/prefs.js:201
+msgid "Bigger means blurrier."
+msgstr ""
+
+#: src/prefs.js:204
 msgid "Background"
 msgstr ""
 
-#: src/prefs.js:199
+#: src/prefs.js:206
 #, fuzzy
 msgid "Background Dim-factor"
 msgstr "Světlost pozadí (méně je tmavší)"
 
-#: src/prefs.js:199
+#: src/prefs.js:206
 msgid "Smaller means darker."
 msgstr ""
 
-#: src/prefs.js:202
+#: src/prefs.js:209
 msgid "Keybindings"
 msgstr ""
 
-#: src/prefs.js:204
+#: src/prefs.js:211
 msgid "Bind to 'switch-windows'"
 msgstr ""
 
-#: src/prefs.js:205
+#: src/prefs.js:212
 msgid "Bind to 'switch-applications'"
 msgstr ""
 
-#: src/prefs.js:218 src/prefs.js:224
+#: src/prefs.js:226 src/prefs.js:232
 msgid "Perspective Correction"
 msgstr ""
 
-#: src/prefs.js:221
+#: src/prefs.js:229
 msgid "None"
 msgstr ""
 
-#: src/prefs.js:222
+#: src/prefs.js:230
 msgid "Move Camera"
 msgstr ""
 
-#: src/prefs.js:223
+#: src/prefs.js:231
 msgid "Adjust Angles"
 msgstr ""
 
-#: src/prefs.js:227 src/prefs.js:229
+#: src/prefs.js:235 src/prefs.js:237
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:229
+#: src/prefs.js:237
 msgid ""
 "Draw embellishment on window under the mouse to show the effects of clicking."
 msgstr ""
 
-#: src/prefs.js:230
+#: src/prefs.js:238
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:230
+#: src/prefs.js:238
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:233
+#: src/prefs.js:241
 msgid "Tweaks"
 msgstr ""
 
-#: src/prefs.js:240
-msgid "Appearance"
-msgstr ""
-
-#: src/prefs.js:245
+#: src/prefs.js:248
 msgid "Contribute"
 msgstr ""
 
-#: src/prefs.js:281
+#: src/prefs.js:284
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:288
+#: src/prefs.js:291
 msgid "Support me with a Donation"
 msgstr ""
 
