@@ -186,5 +186,13 @@
         <summary>Sigma of Blur Applied to the Application Switcher</summary>
         <description>The bigger, the blurrier</description>
     </key>
+    <key type="s" name="switcher-looping-method">
+        <choices>
+            <choice value="Flip Stack"/>
+            <choice value="Carousel"/>
+        </choices>
+        <default>"Flip Stack"</default>
+        <summary>How the windows cycle through the coverflow</summary>
+    </key>
   </schema>
 </schemalist>

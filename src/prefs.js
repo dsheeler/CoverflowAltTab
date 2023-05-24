@@ -149,6 +149,9 @@ function fillPreferencesWindow(window) {
 	switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), []], [_("Top"), []]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
 	switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
+	let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), []], [_("Carousel"), []]]);
+	switcher_pref_group.add(buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows.")));
+	
 	let behavior_pref_group = new Adw.PreferencesGroup({
 		title: _("Behavior"),
 	});

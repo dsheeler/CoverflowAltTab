@@ -125,6 +125,7 @@ class AbstractPlatform {
             raise_mouse_over: true,
             blur_sigma: 7,
             desaturation_factor: 0.75,
+            switcher_looping_method: 'Flip Stack',
         };
     }
 
@@ -195,6 +196,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "raise-mouse-over",
             "desaturation-factor",
             "blur-sigma",
+            "switcher-looping-method",
         ];
 
         let dkeys = [
@@ -294,6 +296,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 raise_mouse_over: settings.get_boolean("raise-mouse-over"),
                 desaturation_factor: settings.get_double("desaturation-factor"),
                 blur_sigma: settings.get_int("blur-sigma"),
+                switcher_looping_method: settings.get_string("switcher-looping-method"),
             };
         } catch (e) {
             global.log(e);
