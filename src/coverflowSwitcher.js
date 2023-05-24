@@ -254,14 +254,15 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     _animatePreviewToSide(preview, index, xOffset, extraParams, toChangePivotPoint = true) {
         let [x, y] = preview.get_pivot_point();
         let pivot_point = new Graphene.Point({ x: x, y: y });
+        let half_length = Math.floor(this._previews.length / 2);
         if (toChangePivotPoint) {
-            if (index < this._previews.length/2) {
+            if (index < half_length) {
                 pivot_point = preview.get_pivot_point_placement(Placement.LEFT);
             } else {
                 pivot_point = preview.get_pivot_point_placement(Placement.RIGHT);
             }
         }
-        let scale = Math.pow(this._settings.preview_scaling_factor, Math.abs(index - Math.trunc(this._previews.length/2)));
+        let scale = Math.pow(this._settings.preview_scaling_factor, Math.abs(index - half_length));
         scale = scale * preview.scale;
         let tweenParams = {
             time: this._settings.animation_time,
@@ -272,12 +273,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             scale_z: scale,
             pivot_point: pivot_point,
         };
-        if (index < this._previews.length/2) {
+        if (index < half_length) {
             tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                - preview.width / 2) + 50 * (index - this._previews.length/2);
+                - preview.width / 2) + 50 * (index - half_length);
         } else {
             tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                + preview.width / 2) + 50 * (index - this._previews.length/2);
+                + preview.width / 2) + 50 * (index - half_length);
         }
         appendParams(tweenParams, extraParams);
         this._manager.platform.tween(preview, tweenParams);
