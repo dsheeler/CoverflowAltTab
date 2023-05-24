@@ -117,7 +117,11 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     _previewNext() {
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = 0;
-            this._updatePreviews(false)
+            if (this._settings.switcher_looping_method == "Carousel") {
+                this._updatePreviews(false)
+            } else {
+                this._flipStack(Direction.TO_LEFT);
+            }
         } else {
             this._currentIndex = this._currentIndex + 1;
             this._updatePreviews(false);
@@ -127,7 +131,11 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     _previewPrevious() {
         if (this._currentIndex == 0) {
             this._currentIndex = this._windows.length-1;
-            this._updatePreviews(false);
+            if (this._settings.switcher_looping_method == "Carousel") {
+                this._updatePreviews(false)
+            } else {
+                this._flipStack(Direction.TO_RIGHT);
+            }
         } else {
             this._currentIndex = this._currentIndex - 1;
             this._updatePreviews(false);
@@ -255,14 +263,17 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let [x, y] = preview.get_pivot_point();
         let pivot_point = new Graphene.Point({ x: x, y: y });
         let half_length = Math.floor(this._previews.length / 2);
+        let pivot_index = (this._settings.switcher_looping_method == "Carousel") ?
+                           half_length : this._currentIndex; 
         if (toChangePivotPoint) {
-            if (index < half_length) {
+            if (index < pivot_index) {
                 pivot_point = preview.get_pivot_point_placement(Placement.LEFT);
             } else {
                 pivot_point = preview.get_pivot_point_placement(Placement.RIGHT);
             }
         }
-        let scale = Math.pow(this._settings.preview_scaling_factor, Math.abs(index - half_length));
+
+        let scale = Math.pow(this._settings.preview_scaling_factor, Math.abs(index - pivot_index));
         scale = scale * preview.scale;
         let tweenParams = {
             time: this._settings.animation_time,
@@ -273,12 +284,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             scale_z: scale,
             pivot_point: pivot_point,
         };
-        if (index < half_length) {
+        if (index < pivot_index) {
             tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                - preview.width / 2) + 50 * (index - half_length);
+                - preview.width / 2) + 50 * (index - pivot_index);
         } else {
             tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                + preview.width / 2) + 50 * (index - half_length);
+                + preview.width / 2) + 50 * (index - pivot_index);
         }
         appendParams(tweenParams, extraParams);
         this._manager.platform.tween(preview, tweenParams);
@@ -319,12 +330,18 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         if (this._previews == null) return;
    
         let previews = [];
+        let half_length = Math.floor(this._previews.length / 2);
         for (let [i, preview] of this._previews.entries()) {
-            let idx = (i - this._currentIndex + Math.trunc(this._previews.length/2) + this._previews.length) % this._previews.length;
+            let idx = (this._settings.switcher_looping_method == "Carousel") ?
+             (i - this._currentIndex + half_length + this._previews.length) % this._previews.length :
+             i;
             previews.push([i, idx, preview]);
         }
-
         previews.sort((a, b) => a[1] - b[1]);
+        
+        let pivot_index = (this._settings.switcher_looping_method == "Carousel") ?
+         half_length : this._currentIndex;
+
         for (let item of previews) {
             let preview = item[2]; 
             let i = item[0];
@@ -335,7 +352,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 if (!reorder_only) {
                     this._animatePreviewToMid(preview, this._settings.animation_time);
                 }
-            } else if (idx < this._previews.length/2) {
+            } else if (idx < pivot_index) {
                 preview.make_top_layer(this.previewActor);
                 if (!reorder_only) {
                     this._animatePreviewToSide(preview, idx, this._xOffsetLeft, {
