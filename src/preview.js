@@ -182,7 +182,7 @@ var Preview = GObject.registerClass({
         if (crossingEvent.source == null) return Clutter.EVENT_PROPAGATE;
         this.remove_highlight();
         this._entered = false;
-        if (this.switcher._settings.raise_mouse_over) this.switcher._updatePreviews(true, 0);
+        if (this.switcher._settings.raise_mouse_over && !this.switcher._destroying) this.switcher._updatePreviews(true, 0);
         return Clutter.EVENT_PROPAGATE;
     }
 

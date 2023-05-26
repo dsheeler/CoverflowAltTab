@@ -67,6 +67,7 @@ var Switcher = class Switcher {
         this._checkDestroyedTimeoutId = 0;
         this._requiresUpdate = false;
         this._previews = [];
+        this._allPreviews = [];
         this._numPreviewsComplete = 0;
         this._isAppSwitcher = isAppSwitcher;
         this._appWindowsMap = new Map();
@@ -166,7 +167,7 @@ var Switcher = class Switcher {
         // create previews
         this._createPreviews();
 
-        for (let preview of this._previews) {
+        for (let preview of this._allPreviews) {
             preview.switcher = this;
             preview.set_reactive(false);
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
@@ -603,15 +604,10 @@ var Switcher = class Switcher {
             this._destroying = true;
             if (reason === DestroyReason.ACTIVATE_SELECTED) {
                 for (let [i, preview] of this._previews.entries()) {
-                    let metaWin = this._windows[i],
-                    compositor = metaWin.get_compositor_private();
+                    let metaWin = this._windows[i];
 
                     let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
-                    // Move all non-activated windows behind the activated one
                     if (i !== this._currentIndex) {
-                        preview.make_bottom_layer(this.previewActor);
-                    } else {
-                        preview.make_top_layer(this.previewActor);
                         animation_time = this._settings.animation_time;
                     }
                     if (!metaWin.minimized && metaWin.get_workspace().active) {
@@ -646,6 +642,17 @@ var Switcher = class Switcher {
                         });
                     }
                 }
+                for (let preview of this._allPreviews) {
+                    preview.make_top_layer(this.previewActor);
+                    if (!this._previews.includes(preview) && preview.metaWin.get_workspace().active) {
+                        this._manager.platform.tween(preview, {
+                            opacity: 255,
+                            time: this._settings.animation_time,
+                            transition: 'easeInOutQuint',
+                        });
+                    }
+                }
+                this._previews[this._currentIndex].make_top_layer(this.previewActor);
             } else {
                 this._manager.platform.tween(this.actor, {
                     opacity: 0,
@@ -680,6 +687,7 @@ var Switcher = class Switcher {
             this._icon = null;
             this._applicationIconBox = null;
             this._previews = null;
+            this._allPreviews = null;
             this._initialDelayTimeoutId = null;
             this._checkDestroyedTimeoutId = null;
             this._windowManager.disconnect(this._dcid);

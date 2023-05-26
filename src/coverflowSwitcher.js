@@ -62,7 +62,8 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         this._xOffsetLeft = this.actor.width * 0.1;
         this._xOffsetRight = this.actor.width - this._xOffsetLeft;
 
-        for (let metaWin of this._windows) {
+        for (let windowActor of global.get_window_actors()) {
+            let metaWin = windowActor.get_meta_window();
             let compositor = metaWin.get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
@@ -108,7 +109,11 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                         this._previewsCenterPosition.y)
                 };
 
-                this._previews.push(preview);
+                if (this._windows.includes(metaWin)) {
+                    this._previews[this._windows.indexOf(metaWin)] = preview;
+                }
+                this._allPreviews.push(preview);
+                
                 this.previewActor.add_actor(preview);
             }
         }
@@ -342,11 +347,15 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let pivot_index = (this._settings.switcher_looping_method == "Carousel") ?
          half_length : this._currentIndex;
 
+        let zeroIndexPreview = null;
         for (let item of previews) {
             let preview = item[2]; 
             let i = item[0];
             let idx = item[1];
             let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
+            if (this._settings.switcher_looping_method == "Carousel" && idx == 0) {
+                zeroIndexPreview = preview;
+            }
             if (i == this._currentIndex) {
                 preview.make_top_layer(this.previewActor);
                 if (!reorder_only) {
@@ -379,6 +388,16 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                     preview.set_reactive(true);
                 }
             });
+        }
+        if (zeroIndexPreview != null) zeroIndexPreview.make_bottom_layer(this.previewActor);
+        for (let preview of this._allPreviews) {
+            if (!this._previews.includes(preview)) {
+                this._manager.platform.tween(preview, {
+                    opacity: 0,
+                    time: this._settings.animation_time,
+                    transition: 'easeInOutQuint',
+                });
+            }
         }
     }
 };
