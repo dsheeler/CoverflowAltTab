@@ -32,9 +32,7 @@ const Pango = imports.gi.Pango;
 const INITIAL_DELAY_TIMEOUT = 150;
 const CHECK_DESTROYED_TIMEOUT = 100;
 const ICON_SIZE = 64;
-const ICON_SIZE_BIG = 128;
 const ICON_TITLE_SPACING = 10;
-const DESATURATION_EFFECT_DURATION = 150;
 
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
