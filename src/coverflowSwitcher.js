@@ -318,13 +318,13 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             }
         } else if (this.num_monitors == 3) {
             if (this.monitor_number == this.monitors_ltr[0].index) {
-                if (side == 0) return (644)/1000 * 90;
-                else return 815/1000 * 90;
+                if (side == 0) return (666)/1000 * 90;
+                else return 750/1000 * 90;
             } else if (this.monitor_number == this.monitors_ltr[1].index) {
                 return 0;
             } else {
-                if (side == 0) return (-815)/1000 * 90;
-                else return -644/1000 * 90;
+                if (side == 0) return (-750)/1000 * 90;
+                else return -666/1000 * 90;
             }
         }
     }
