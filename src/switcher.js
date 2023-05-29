@@ -742,6 +742,7 @@ var Switcher = class Switcher {
     // all monitors...
     _enablePerspectiveCorrection() {
         if (this._settings.perspective_correction_method != "Move Camera") return;
+        if (this._parent != null) return;
         this._stageBeforeUpdateID = global.stage.connect('before-update', (stage, view) => {
             // Do nothing if neither overview or desktop switcher are shown.
             if (!this.actor.visible) {
