@@ -612,16 +612,25 @@ var Switcher = class Switcher {
 
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-            this._destroying = true;
             if (reason === DestroyReason.ACTIVATE_SELECTED) {
+                for (let preview of this._allPreviews) {
+                    preview.make_top_layer(this.previewActor);
+                    if (!this._previews.includes(preview) && preview.metaWin.get_workspace() == currentWorkspace && this._parent === null) {
+                        this._manager.platform.tween(preview, {
+                            opacity: 255,
+                            time: this._settings.animation_time,
+                            transition: 'easeInOutQuint',
+                        });
+                    }
+                }
                 for (let [i, preview] of this._previews.entries()) {
                     let metaWin = this._windows[i];
 
                     let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
-                    if (i !== this._currentIndex) {
+                    if (i == this._currentIndex) {
                         animation_time = this._settings.animation_time;
                     }
-                    if (!metaWin.minimized && metaWin.get_workspace().active) {
+                    if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace && (this._parent === null || (i != 0 && i == this._currentIndex))) {
                         let rect = metaWin.get_buffer_rect();
                         this._manager.platform.tween(preview, {
                             x: rect.x - this.actor.x,
@@ -637,6 +646,7 @@ var Switcher = class Switcher {
                         });
                     } else {
                         let pivot_point = preview.get_pivot_point_placement(Placement.CENTER);
+                        preview.make_bottom_layer(this.previewActor);
                         this._manager.platform.tween(preview, {
                             x: 0,
                             y: 0,
@@ -653,24 +663,15 @@ var Switcher = class Switcher {
                         });
                     }
                 }
-                for (let preview of this._allPreviews) {
-                    preview.make_top_layer(this.previewActor);
-                    if (!this._previews.includes(preview) && preview.metaWin.get_workspace().active) {
-                        this._manager.platform.tween(preview, {
-                            opacity: 255,
-                            time: this._settings.animation_time,
-                            transition: 'easeInOutQuint',
-                        });
-                    }
-                }
+ 
                 this._previews[this._currentIndex].make_top_layer(this.previewActor);
             } else {
-                this._manager.platform.tween(this.actor, {
+               this._manager.platform.tween(this.actor, {
                     opacity: 0,
                     time: 0.5 * this._settings.animation_time,
                     transition: 'easeInOutQuint',
                     onComplete: this._onPreviewDestroyComplete.bind(this, true),
-                })
+                });
             }
         } else {
             this._onPreviewDestroyComplete(true);
@@ -681,7 +682,7 @@ var Switcher = class Switcher {
         if (!force) this._numPreviewsComplete += 1;
         if (this._previews !== null && this._numPreviewsComplete >= this._previews.length || force) {
             if (this._haveModal) {
-               Main.popModal(this.grab);
+                Main.popModal(this.grab);
                 this._haveModal = false;
             }
 
