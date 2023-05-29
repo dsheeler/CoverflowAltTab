@@ -173,11 +173,24 @@ var Switcher = class Switcher {
 
         // hide windows and showcd  Coverflow actors
         if (this._parent === null) global.window_group.hide();
+        
         this.actor.show();
+
         this._enablePerspectiveCorrection();
-
         this._initialDelayTimeoutId = 0;
-
+        for (let preview of this._allPreviews) {
+            if (!this._previews.includes(preview)) {
+                if (this._parent === null) {
+                    this._manager.platform.tween(preview, {
+                        opacity: 0,
+                        time: this._settings.animation_time,
+                        transition: 'easeInOutQuint',
+                    });
+                } else {
+                    preview.opacity = 0;
+                }
+            }
+        }
         if (this._parent !== null) {
             this._updatePreviews(false);
             this._setCurrentWindowTitle(this._windows[this._currentIndex]);

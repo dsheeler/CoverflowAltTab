@@ -394,14 +394,5 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             });
         }
         if (zeroIndexPreview != null) zeroIndexPreview.make_bottom_layer(this.previewActor);
-        for (let preview of this._allPreviews) {
-            if (!this._previews.includes(preview)) {
-                this._manager.platform.tween(preview, {
-                    opacity: 0,
-                    time: this._settings.animation_time,
-                    transition: 'easeInOutQuint',
-                });
-            }
-        }
     }
 };
