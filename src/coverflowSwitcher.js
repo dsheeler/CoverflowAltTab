@@ -119,10 +119,14 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         }
     }
 
+    _usingCarousel() {
+        return (this._parent === null && this._settings.switcher_looping_method == "Carousel");
+    }
+
     _previewNext() {
         if (this._currentIndex == this._windows.length - 1) {
             this._currentIndex = 0;
-            if (this._settings.switcher_looping_method == "Carousel") {
+            if (this._usingCarousel()) {
                 this._updatePreviews(false)
             } else {
                 this._flipStack(Direction.TO_LEFT);
@@ -136,7 +140,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     _previewPrevious() {
         if (this._currentIndex == 0) {
             this._currentIndex = this._windows.length-1;
-            if (this._settings.switcher_looping_method == "Carousel") {
+            if (this._usingCarousel()) {
                 this._updatePreviews(false)
             } else {
                 this._flipStack(Direction.TO_RIGHT);
@@ -268,7 +272,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let [x, y] = preview.get_pivot_point();
         let pivot_point = new Graphene.Point({ x: x, y: y });
         let half_length = Math.floor(this._previews.length / 2);
-        let pivot_index = (this._settings.switcher_looping_method == "Carousel") ?
+        let pivot_index = (this._usingCarousel()) ?
                            half_length : this._currentIndex; 
         if (toChangePivotPoint) {
             if (index < pivot_index) {
@@ -337,14 +341,14 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         let previews = [];
         let half_length = Math.floor(this._previews.length / 2);
         for (let [i, preview] of this._previews.entries()) {
-            let idx = (this._settings.switcher_looping_method == "Carousel") ?
+            let idx = (this._usingCarousel()) ?
              (i - this._currentIndex + half_length + this._previews.length) % this._previews.length :
              i;
             previews.push([i, idx, preview]);
         }
         previews.sort((a, b) => a[1] - b[1]);
         
-        let pivot_index = (this._settings.switcher_looping_method == "Carousel") ?
+        let pivot_index = (this._usingCarousel()) ?
          half_length : this._currentIndex;
 
         let zeroIndexPreview = null;
@@ -353,7 +357,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             let i = item[0];
             let idx = item[1];
             let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
-            if (this._settings.switcher_looping_method == "Carousel" && idx == 0) {
+            if (this._usingCarousel() && idx == 0) {
                 zeroIndexPreview = preview;
             }
             if (i == this._currentIndex) {
