@@ -54,7 +54,8 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
             y: this.actor.height / 2 + this._settings.offset
         };
 
-        for (let metaWin of this._windows) {
+        for (let windowActor of global.get_window_actors()) {
+            let metaWin = windowActor.get_meta_window();
             let compositor = metaWin.get_compositor_private();
             if (compositor) {
                 let texture = compositor.get_texture();
@@ -99,7 +100,10 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
 
                 preview.set_pivot_point_placement(Placement.LEFT);
 
-                this._previews.push(preview);
+                if (this._windows.includes(metaWin)) {
+                    this._previews[this._windows.indexOf(metaWin)] = preview;
+                }
+                this._allPreviews.push(preview);
                 this.previewActor.add_actor(preview);
 
                 preview.make_bottom_layer(this.previewActor);
@@ -147,7 +151,7 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
             });
             return;
         }
-
+ 
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
             preview.make_bottom_layer(this.previewActor);
@@ -271,10 +275,5 @@ var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
             }
             preview.__finalTween = null;
         }
-    }
-
-    destroy() {
-        this.destroying = true;
-        this._onDestroy(TRANSITION_TYPE);
     }
 };
