@@ -34,9 +34,8 @@ const {
     Direction,
     findUpperLeftFromCenter,
 } = ExtensionImports.preview;
-
 const SIDE_ANGLE = 90;
-const BLEND_OUT_ANGLE = 0;
+const BLEND_OUT_ANGLE = 30;
 const ALPHA = 1;
 
 function appendParams(base, extra) {
@@ -239,14 +238,12 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
                 appendParams(extraParams, lastExtraParams);
             this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
         }
+        super._updatePreviews();
     }
 
     _onFlipComplete(direction) {
         this._looping = false;
-        if (this._requiresUpdate === true) {
-            this._requiresUpdate = false;
-            this._updatePreviews(false);
-        }
+        this._updatePreviews(true);
     }
 
     // TODO: Remove unused direction variable
@@ -394,5 +391,6 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             });
         }
         if (zeroIndexPreview != null) zeroIndexPreview.make_bottom_layer(this.previewActor);
+        super._updatePreviews();
     }
 };

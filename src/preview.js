@@ -133,7 +133,10 @@ var Preview = GObject.registerClass({
     vfunc_enter_event(crossingEvent) {
         if (this.switcher._destroying || this._entered == true) return Clutter.EVENT_PROPAGATE;
         this._entered = true;
-        if (this.switcher._settings.raise_mouse_over) this.make_top_layer(this.switcher.previewActor);
+        if (this.switcher._settings.raise_mouse_over) {
+            this.make_top_layer(this.switcher.previewActor);
+            this.switcher._raiseIcons();
+        }
         if (this.switcher._settings.highlight_mouse_over) {
             let window_actor = this.metaWin.get_compositor_private();
             if (this._highlight == null) {
