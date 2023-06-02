@@ -740,6 +740,11 @@ var Switcher = class Switcher {
             } else {
                 this._manager.platform.tween(this.actor, {
                     opacity: 0,
+                    x: 0,
+                    y: 0,
+                    scale_x: 0,
+                    scale_y: 0,
+                    scale_z: 0,
                     time: this._settings.animation_time,
                     transition: 'easeInOutQuint',
                     onComplete: this._onPreviewDestroyComplete.bind(this, true),
