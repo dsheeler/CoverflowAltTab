@@ -745,7 +745,7 @@ var Switcher = class Switcher {
                     scale_x: 0,
                     scale_y: 0,
                     scale_z: 0,
-                    time: this._settings.animation_time,
+                    time: 0.95*this._settings.animation_time,
                     transition: 'easeInOutQuint',
                     onComplete: this._onPreviewDestroyComplete.bind(this, true),
                 });
@@ -782,12 +782,12 @@ var Switcher = class Switcher {
             this._windowManager.disconnect(this._dcid);
             this._windowManager.disconnect(this._mcid);
 
+            if (this._parent === null) global.window_group.show();
             if (this._parent === null) this._manager.platform.removeBackground();
 
             this._disablePerspectiveCorrection();
             Main.uiGroup.remove_actor(this.actor);
             // show all window actors
-            if (this._parent === null) global.window_group.show();
             this._numPreviewsComplete = 0
         }
     }
