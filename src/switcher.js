@@ -738,10 +738,10 @@ var Switcher = class Switcher {
                 this._previews[this._currentIndex].make_top_layer(this.previewActor);
                 this._raiseIcons();
             } else {
+                let monitor = this._updateActiveMonitor();
                 this._manager.platform.tween(this.actor, {
-                    opacity: 0,
-                    x: 0,
-                    y: 0,
+                    x: monitor.x,
+                    y: monitor.y,
                     scale_x: 0,
                     scale_y: 0,
                     scale_z: 0,
