@@ -106,7 +106,7 @@ var Manager = class Manager {
 
             case 'switch-applications':
             case 'switch-applications-backward':
-                isApplicationSwitcher = true;
+                isApplicationSwitcher = !this.platform.getSettings().switch_application_behaves_like_switch_windows
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
               	if (currentOnly === 'all-currentfirst') {

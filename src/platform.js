@@ -126,6 +126,7 @@ class AbstractPlatform {
             blur_sigma: 7,
             desaturation_factor: 0.75,
             switcher_looping_method: 'Flip Stack',
+            switch_application_behaves_like_switch_windows: false,
         };
     }
 
@@ -197,6 +198,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             "desaturation-factor",
             "blur-sigma",
             "switcher-looping-method",
+            "switch-application-behaves-like-switch-windows",
         ];
 
         let dkeys = [
@@ -297,6 +299,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
                 desaturation_factor: settings.get_double("desaturation-factor"),
                 blur_sigma: settings.get_int("blur-sigma"),
                 switcher_looping_method: settings.get_string("switcher-looping-method"),
+                switch_application_behaves_like_switch_windows: settings.get_boolean("switch-application-behaves-like-switch-windows",)
             };
         } catch (e) {
             global.log(e);

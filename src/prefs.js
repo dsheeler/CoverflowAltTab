@@ -157,13 +157,14 @@ function fillPreferencesWindow(window) {
 	});
 
 	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching windows.")));
+	behavior_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], _("Make the application switcher behave like the traditional window switcher")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),
 	});
 
     animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
-    animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration [s]"),  "", true));
+    animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 20, 0.001, [0.5, 1, 1.5]], _("Duration [s]"),  "", true));
 	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration")));
 
 	let windows_pref_group = new Adw.PreferencesGroup({

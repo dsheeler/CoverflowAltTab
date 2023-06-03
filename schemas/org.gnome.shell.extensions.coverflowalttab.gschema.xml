@@ -194,5 +194,9 @@
         <default>"Flip Stack"</default>
         <summary>How the windows cycle through the coverflow</summary>
     </key>
+    <key type="b" name="switch-application-behaves-like-switch-windows">
+        <default>false</default>
+        <summary>The application-switcher keybinding action behaves the same as the window-switcher</summary>
+    </key>
   </schema>
 </schemalist>
