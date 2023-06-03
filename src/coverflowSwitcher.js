@@ -243,7 +243,7 @@ var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
 
     _onFlipComplete(direction) {
         this._looping = false;
-        this._updatePreviews(true);
+        this._updatePreviews(false);
     }
 
     // TODO: Remove unused direction variable
