@@ -528,13 +528,14 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
             opacity: 0,
             onComplete: this._lightbox.lightOff.bind(this._lightbox),
         });
+
     }
 
     removeBackground() {
         Lightbox.VIGNETTE_SHARPNESS = this._vignette_sharpness_backup;
         Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
-        Main.layoutManager.uiGroup.remove_child(this._backgroundGroup);
-	}
+        this._backgroundGroup.destroy();
+    }
 
     getPanels() {
         let panels = [Main.panel];
