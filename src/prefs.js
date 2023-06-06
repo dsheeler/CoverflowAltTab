@@ -157,7 +157,6 @@ function fillPreferencesWindow(window) {
 	});
 
 	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching windows.")));
-	behavior_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], _("Make the application switcher behave like the traditional window switcher")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),
@@ -165,7 +164,7 @@ function fillPreferencesWindow(window) {
 
     animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
     animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 20, 0.001, [0.5, 1, 1.5]], _("Duration [s]"),  "", true));
-	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration")));
+	animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration.")));
 
 	let windows_pref_group = new Adw.PreferencesGroup({
 		title: _('Switcher Windows'),
@@ -177,8 +176,8 @@ function fillPreferencesWindow(window) {
 	}, {
 	    id: 'all-currentfirst', name: _("All workspaces, current first")
 	}];
-	windows_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", options, _("Workspaces"), _("Switch between windows on current or on all workspaces")));
-	windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], _("Current Monitor"), _("Switch between windows on current monitor")));
+	windows_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
+	windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], _("Current Monitor"), _("Switch between windows on current monitor.")));
 
 	let icon_pref_group = new Adw.PreferencesGroup({
 		title: _("Icon"),
@@ -196,11 +195,12 @@ function fillPreferencesWindow(window) {
 		title: _("Window Size")
 	});
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
-	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side"), true));
+	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side."), true));
 
 	let background_application_switcher_pref_group = new Adw.PreferencesGroup({
 		title: _('Application Switcher'),
 	});
+	background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
 	background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturation-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Switcher Desaturation"), _("Larger means more desaturation."), true));
 	background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Background Switcher Blur Sigma"), _("Bigger means blurrier.")));
 
