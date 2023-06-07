@@ -153,10 +153,10 @@ function fillPreferencesWindow(window) {
 	switcher_pref_group.add(buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows.")));
 	
 	let behavior_pref_group = new Adw.PreferencesGroup({
-		title: _("Behavior"),
+		title: _("Panel"),
 	});
 
-	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching windows.")));
+	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide"), _("Hide panel when switching windows.")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),
