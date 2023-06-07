@@ -421,7 +421,8 @@ var Switcher = class Switcher {
                 time: animation_time,
                 transition: 'easeInOutQuint',
                 onComplete: () => {
-                    this.previewActor.remove_actor(this._prevApplicationIconBox);                 
+                    this._prevApplicationIconBox.destroy();        
+                    this._prevApplicationIconBox = null;         
                 }
             });
         }
