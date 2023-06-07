@@ -76,6 +76,10 @@ var Switcher = class Switcher {
         this._width = width_in;
         this._height = height_in;
         this._parent = parent;
+        this._numPreviousScrollEvents = 0;
+        this._numNextScrollEvents = 0;
+        this._lastPreviousScrollTime = 0;
+        this._lastNextScrollTime = 0;
 
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
@@ -586,15 +590,26 @@ var Switcher = class Switcher {
 
     // allow navigating by mouse-wheel scrolling
     _scrollEvent(actor, event) {
+        let num_events = 4;
+        let ms_between_events = 25;
+        let time = event.get_time();
         switch (event.get_scroll_direction()) {
         	case Clutter.ScrollDirection.LEFT:
         	case Clutter.ScrollDirection.UP:
-              this._previous();
+              if (time - this._lastPreviousScrollTime > ms_between_events) {
+                this._numPreviousScrollEvents = 0;
+              }
+              if (++this._numPreviousScrollEvents % num_events == 0) this._previous();
+              this._lastPreviousScrollTime = time;
               return true;
 
         	case Clutter.ScrollDirection.RIGHT:
         	case Clutter.ScrollDirection.DOWN:
-              this._next();
+              if (time - this._lastNextScrollTime > ms_between_events) {
+                  this._numNextScrollEvents = 0;
+              }
+              if (++this._numNextScrollEvents % num_events == 0) this._next();
+              this._lastNextScrollTime = time
               return true;
         }
         return true;
