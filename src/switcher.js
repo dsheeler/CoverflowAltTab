@@ -754,6 +754,14 @@ var Switcher = class Switcher {
                 }
                 for (let preview of this._allPreviews) {
                     preview.make_top_layer(this.previewActor);
+                    let transient_for_window = preview.metaWin.get_transient_for();
+                    if (transient_for_window !== null) {
+                        for (let p of this._allPreviews) {
+                            if (p.metaWin == transient_for_window) {
+                                this.previewActor.set_child_above_sibling(preview, p);
+                            }
+                        }
+                    }
                     if (!this._previews.includes(preview) && preview.metaWin.get_workspace() == currentWorkspace && !preview.metaWin.minimized) {
                         let rect = preview.metaWin.get_buffer_rect();
                         this._manager.platform.tween(preview, {
@@ -768,6 +776,14 @@ var Switcher = class Switcher {
                             transition: 'easeInOutQuint',
                         });
                         preview.opacity = 255;
+                       
+                    }
+                }
+                let current_preview = this._previews[this._currentIndex];
+                current_preview.make_top_layer(this.previewActor);
+                for (let p of this._allPreviews) {
+                    if (p.metaWin.get_transient_for() == current_preview.metaWin) {
+                        this.previewActor.set_child_above_sibling(p, current_preview);
                     }
                 }
                 this._previews[this._currentIndex].make_top_layer(this.previewActor);
