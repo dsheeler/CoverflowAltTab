@@ -697,7 +697,7 @@ var Switcher = class Switcher {
         }
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
-            this._windowTitle.hide();
+            if (this._windowTitle) this._windowTitle.hide();
             if (this._settings.icon_style == 'Classic') {
                 this._applicationIconBox.hide();
             } else {
