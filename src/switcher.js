@@ -193,13 +193,15 @@ var Switcher = class Switcher {
         for (let preview of this._allPreviews) {
             if (!this._previews.includes(preview)) {
                 if (this._parent === null) {
+                    let monitor = Main.layoutManager.monitors[preview.metaWin.get_monitor()];
+                    preview.set_pivot_point_placement(Placement.TOP_LEFT);
                     this._manager.platform.tween(preview, {
-                        x: 0,
-                        y: 0,
+                        x: monitor.x - this.actor.x,
+                        y: monitor.y - this.actor.y,
                         scale_x: 0,
                         scale_y: 0,
                         scale_z: 0,
-                        time: this._settings.animation_time,
+                        time: this._getRandomTime(),
                         transition: 'easeInOutQuint',
                     });
                 } else {
@@ -217,6 +219,34 @@ var Switcher = class Switcher {
             this._setCurrentWindowTitle(this._windows[this._currentIndex]);
         } else {
             this._next();
+        }
+    }
+
+    _stopDestroying() {
+        this._destroying = false;
+        for (let preview of this._allPreviews) {
+            if (!this._previews.includes(preview)) {
+                if (this._parent === null) {
+                    let monitor = Main.layoutManager.monitors[preview.metaWin.get_monitor()];
+                    preview.set_pivot_point_placement(Placement.TOP_LEFT);
+                    this._manager.platform.tween(preview, {
+                        x: monitor.x - this.actor.x,
+                        y: monitor.y - this.actor.y,
+                        scale_x: 0,
+                        scale_y: 0,
+                        scale_z: 0,
+                        time: this._getRandomTime(),
+                        transition: 'easeInOutQuint',
+                    });
+                } else {
+                    preview.opacity = 0;
+                    preview.x = 0;
+                    preview.y = 0;
+                    preview.scale_x = 0;
+                    preview.scale_y = 0;
+                    preview.scale_z = 0;
+                }
+            }
         }
     }
 
@@ -260,7 +290,7 @@ var Switcher = class Switcher {
 
     _next() {
         if (this._parent === null) this._manager.platform.dimBackground();
-        this._destroying = false;
+        this._stopDestroying();
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(false, 1);
@@ -280,7 +310,7 @@ var Switcher = class Switcher {
 
     _previous() {
         if (this._parent === null) this._manager.platform.dimBackground();
-        this._destroying = false;
+        this._stopDestroying();
         if (this._windows.length <= 1) {
             this._currentIndex = 0;
             this._updatePreviews(false, -1);
@@ -636,6 +666,10 @@ var Switcher = class Switcher {
         return Math.random() * (max - min) + min;
     }
 
+    _getRandomTime() {
+        return this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
+    }
+
     _onDestroy(reason, transition) {
         this._destroying = true;
         if (this._parent) {
@@ -680,7 +714,7 @@ var Switcher = class Switcher {
                 for (let [i, preview] of this._previews.entries()) {
                     let metaWin = preview.metaWin;
 
-                    let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1)
+                    let animation_time = this._getRandomTime();
                     if (i == this._currentIndex) {
                         animation_time = this._settings.animation_time;
                     }
@@ -699,12 +733,12 @@ var Switcher = class Switcher {
                             transition: transition,
                         });
                     } else {
-                        let pivot_point = preview.get_pivot_point_placement(Placement.CENTER);
+                        let monitor = Main.layoutManager.monitors[preview.metaWin.get_monitor()];
+                        let pivot_point = preview.get_pivot_point_placement(Placement.TOP_LEFT);
                         preview.make_bottom_layer(this.previewActor);
                         this._manager.platform.tween(preview, {
-                            x: 0,
-                            y: 0,
-                            opacity:  0,
+                            x: monitor.x - this.actor.x,
+                            y: monitor.y - this.actor.y,
                             translation_x: 0,
                             scale_x: 0,
                             scale_y: 0,
@@ -712,8 +746,8 @@ var Switcher = class Switcher {
                             pivot_point: pivot_point,
                             rotation_angle_y: 0.0,
                             onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                            time: this._settings.animation_time,
-                            transition: 'easeInOutExpo'
+                            time: this._getRandomTime(),
+                            transition: 'easeInOutQuint'
                         });
                     }
                 }
@@ -729,8 +763,8 @@ var Switcher = class Switcher {
                             scale_y: 1,
                             scale_z: 1,
                             rotation_angle_y: 0.0,
-                            time: this._settings.animation_time,
-                            transition: transition,
+                            time: this._getRandomTime(),
+                            transition: 'easeInOutQuint',
                         });
                         preview.opacity = 255;
                     }
