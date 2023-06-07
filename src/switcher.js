@@ -801,7 +801,6 @@ var Switcher = class Switcher {
                         this.previewActor.set_child_above_sibling(p, current_preview);
                     }
                 }
-                this._previews[this._currentIndex].make_top_layer(this.previewActor);
                 this._raiseIcons();
             } else {
                 let monitor = this._updateActiveMonitor();
