@@ -36,6 +36,9 @@ const ICON_TITLE_SPACING = 10;
 
 const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
 
+const ColorEffect = ExtensionImports.effects.color_effect.ColorEffect;
+const GlitchEffect = ExtensionImports.effects.glitch_effect.GlitchEffect;
+
 const {
     Preview,
     Placement,
@@ -80,6 +83,8 @@ var Switcher = class Switcher {
         this._numNextScrollEvents = 0;
         this._lastPreviousScrollTime = 0;
         this._lastNextScrollTime = 0;
+        this._backgroundColor = null;
+        this._colorEffect = null;
 
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
@@ -148,6 +153,72 @@ var Switcher = class Switcher {
         this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
 
+    _addBackgroundEffects() {
+        for (let preview of this._parent._previews) {
+            if (this._settings.use_glitch_effect) {
+                if (preview.get_effect('glitch-effect') === null) {
+                    let glitchEffect = new GlitchEffect({});
+                    preview.add_effect_with_name('glitch-effect', glitchEffect);
+                }
+                preview.get_effect('glitch-effect').set_enabled(true);
+                preview._effectCounts['glitch'] += 1;
+            }
+            if (this._settings.use_tint) {
+                let c = null;
+                if (this._settings.use_theme_color_for_tint_color) {
+                    let bgcolor = this._getSwitcherBackgroundColor();
+                    log('Coverflow', bgcolor.to_string());
+                    c = [bgcolor.red / 255., bgcolor.green / 255., bgcolor.blue / 255., 0.75];
+                } else {
+                    c = this._settings.tint_color;
+                }
+                preview.addEffect(ColorEffect, { color: [c[0], c[1], c[2], 0] }, 'tint', 'blend', 0.0, c[3], this._settings.animation_time);
+            }
+            preview.addEffect(Clutter.DesaturateEffect, { factor:  0.0 }, 'desaturate', 'factor', 0.0, this._settings.desaturate_factor, this._settings.animation_time);
+            preview.addEffect(Shell.BlurEffect, { sigma: 0.0 }, 'blur', 'sigma', 0.0,  this._settings.blur_sigma, this._settings.animation_time);
+        }
+    }
+
+
+    _removeBackgroundEffects() {
+        if (this._parent !== null && this._parent._previews !== null) {
+            for (let preview of this._parent._previews) {
+                preview.removeEffect('blur', 'sigma', 0.0, this._settings.animation_time);
+                preview.removeEffect('desaturate', 'factor', 0.0, this._settings.animation_time);
+                preview.removeEffect('tint', 'blend', 0.0, this._settings.animation_time);
+                if (preview._effectCounts['glitch'] > 0) {
+                    preview._effectCounts['glitch'] -= 1;
+                    if (preview._effectCounts['glitch'] == 0) {
+                        preview.get_effect('glitch-effect').set_enabled(false);
+                    }
+                }
+            }
+        }
+    }
+    activateUiInspector() {
+        imports.gi.GLib.timeout_add(0, 10000, () => {
+            if (Main.lookingGlass === null)
+                Main.createLookingGlass();
+            const lg = Main.lookingGlass;
+            const Inspector = imports.ui.lookingGlass.Inspector;
+            lg.open();
+            lg.openInspector = () => {
+                let inspector = new Inspector(lg);
+                inspector.connect('target', (i, target, stageX, stageY) => {
+                    lg._pushResult(`inspect(${Math.round(stageX)}, ${Math.round(stageY)})`, target);
+                });
+                inspector.connect('closed', () => {
+                    lg.show();
+                    global.stage.set_key_focus(lg._entry);
+                });
+                //lg.hide();
+                return Clutter.EVENT_STOP;
+            };
+
+            lg.openInspector();
+        });
+    }
+
     show() {
         let monitor = this._updateActiveMonitor();
         if (this._parent === null) {
@@ -156,18 +227,8 @@ var Switcher = class Switcher {
         } else {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
-            for (let preview of this._parent._previews) {
-                let desaturateEffect = new Clutter.DesaturateEffect({ factor: this._settings.desaturation_factor, });
-                let effectName = 'desaturate-effect';
-                preview.add_effect_with_name(effectName, desaturateEffect);
-
-                let blurEffect = new Shell.BlurEffect({ sigma: this._settings.blur_sigma, brightness: 1 });
-                effectName = 'blur-effect';
-                preview.add_effect_with_name(effectName, blurEffect);
-
-            }
+            this._addBackgroundEffects();
         }
-
         // create previews
         this._createPreviews();
 
@@ -330,6 +391,22 @@ var Switcher = class Switcher {
             this.actor.set_reactive(true);
         }
         this._setCurrentWindowTitle(this._windows[this._currentIndex]);
+    }
+
+    _getSwitcherBackgroundColor() {
+        if (this._backgroundColor === null) {
+            let widgetClass = this._manager.platform.getWidgetClass();
+            let parent = new widgetClass({ visible: false, reactive: false, style_class: 'switcher-list'});
+            let actor = new widgetClass({ visible: false, reactive: false, style_class: 'item-box' });
+            parent.add_actor(actor);
+            actor.add_style_pseudo_class('selected');
+            Main.uiGroup.add_actor(parent);
+            this._backgroundColor = actor.get_theme_node().get_background_color();
+            Main.uiGroup.remove_actor(parent);
+            log("Coverflow", this._backgroundColor.to_string());
+            parent = null;
+        }
+        return this._backgroundColor;
     }
 
     _updateActiveMonitor() {
@@ -699,12 +776,6 @@ var Switcher = class Switcher {
                     transition: 'easeInOutQuint',
                 });
             }
-            if (this._parent._previews) {
-                for (let preview of this._parent._previews) {
-                    preview.remove_effect_by_name('desaturate-effect');
-                    preview.remove_effect_by_name('blur-effect')
-                }
-            }
             if (this._haveModal) {
                 Main.popModal(this.grab);
                 this._haveModal = false;
@@ -716,12 +787,17 @@ var Switcher = class Switcher {
             if (this._settings.icon_style == 'Classic') {
                 this._applicationIconBox.hide();
             } else {
-                this._manager.platform.tween(this._applicationIconBox, {
-                    time: this._settings.animation_time,
-                    opacity: 0,
-                    transition: 'easeInOutQuint',
-                });
+                if (this._applicationIconBox) {
+                    this._manager.platform.tween(this._applicationIconBox, {
+                        time: this._settings.animation_time,
+                        opacity: 0,
+                        transition: 'easeInOutQuint',
+                    });
+                }
             }
+
+            this._removeBackgroundEffects();
+
             if (this._parent === null) this._manager.platform.lightenBackground();
 
             // preview windows

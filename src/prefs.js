@@ -23,7 +23,7 @@
  * Based on preferences in the following extensions: JustPerfection, dash2doc-lite, night theme switcher, and desktop cube
  *
  */
-const { Adw, Gdk, GLib, Gtk } = imports.gi;
+const { Adw, Gdk, GLib, Gtk, Gio, GObject} = imports.gi;
 
 const Config = imports.misc.config;
 
@@ -192,7 +192,7 @@ function fillPreferencesWindow(window) {
 	icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], _("Icon Shadow")));
 
 	let window_size_pref_group = new Adw.PreferencesGroup({
-		title: _("Window Size")
+		title: _("Window Properties")
 	});
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side."), true));
@@ -201,8 +201,67 @@ function fillPreferencesWindow(window) {
 		title: _('Application Switcher'),
 	});
 	background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
-	background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturation-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Switcher Desaturation"), _("Larger means more desaturation."), true));
-	background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Background Switcher Blur Sigma"), _("Bigger means blurrier.")));
+	background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturate-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Desaturate"), _("Larger means more desaturation."), true));
+	background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Blur"), _("Larger means more blurry.")));
+
+	let color_row = new Adw.ActionRow({
+		title: _("Tint"),
+		subtitle: _("The opacity of the color controls how much it is blended. The theme color is blended at 0.75."),
+	});
+	background_application_switcher_pref_group.add(color_row);
+
+	let use_tint_switch = new Gtk.Switch({
+		valign: Gtk.Align.CENTER,
+		active: settings.get_boolean("use-tint"),
+	});
+	settings.bind("use-tint", use_tint_switch, "active", Gio.SettingsBindFlags.DEFAULT);
+	color_row.add_suffix(use_tint_switch);
+
+	let choose_tint_box = new Gtk.Box({
+	 	orientation: Gtk.Orientation.HORIZONTAL,
+	 	spacing: 10,
+	 	valign: Gtk.Align.CENTER,
+ 	});
+	color_row.add_suffix(choose_tint_box);
+	settings.bind("use-tint", choose_tint_box, "sensitive", Gio.SettingsBindFlags.GET);
+
+	let color_button = new Gtk.ColorButton({
+		valign: Gtk.Align.CENTER,
+		use_alpha: true,
+	});
+
+	let use_theme_color_button = new Gtk.ToggleButton({
+		label: "Use Theme Color",
+		valign: Gtk.Align.CENTER,
+	});
+	use_theme_color_button.bind_property("active", color_button, "sensitive", GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.SYNC_CREATE);
+	settings.bind("use-theme-color-for-tint-color", use_theme_color_button, "active", Gio.SettingsBindFlags.DEFAULT);
+	choose_tint_box.append(use_theme_color_button);
+	choose_tint_box.append(color_button);
+
+	let c = settings.get_value("tint-color").deep_unpack();
+	let rgba = color_button.rgba;
+	rgba.red = c[0];
+	rgba.green = c[1];
+	rgba.blue = c[2];
+	rgba.alpha = c[3];
+	color_button.set_rgba(rgba);
+	color_button.connect('color-set', _ => {
+        let c = color_button.rgba;
+        let val = new GLib.Variant("(dddd)", [c.red, c.green, c.blue, c.alpha]);
+        settings.set_value("tint-color", val);
+    });
+
+	color_row.set_activatable_widget(use_tint_switch);
+
+	reset_button = makeResetButton();
+	reset_button.connect("clicked", function(widget) {
+		settings.reset("use-tint");
+		settings.reset("use-theme-color-for-tint-color");
+	});
+	color_row.add_suffix(reset_button);
+
+	background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "use-glitch-effect", [], _("Glitch")));
 
 	let background_pref_group = new Adw.PreferencesGroup({
 		title: _('Background'),
@@ -214,17 +273,6 @@ function fillPreferencesWindow(window) {
 	});
 	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], _("Bind to 'switch-windows'")));
 	keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [background_application_switcher_pref_group], _("Bind to 'switch-applications'")));
-
-	general_page.add(switcher_pref_group);
-	general_page.add(animation_pref_group);
-	general_page.add(icon_pref_group);
-	general_page.add(windows_pref_group);
-	general_page.add(window_size_pref_group);
-	general_page.add(behavior_pref_group);
-	general_page.add(background_pref_group);
-	general_page.add(background_application_switcher_pref_group);
-	general_page.add(keybinding_pref_group);
-
 
 	let pcorrection_pref_group = new Adw.PreferencesGroup({
 		title: _("Perspective Correction")
@@ -238,15 +286,26 @@ function fillPreferencesWindow(window) {
 	let highlight_mouse_over_pref_group = new Adw.PreferencesGroup({
 		title: _("Highlight Window Under Mouse"),
 	});
-	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], _("Highlight Window Under Mouse"), _("Draw embellishment on window under the mouse to show the effects of clicking.")));
-	highlight_mouse_over_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
+	window_size_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
+	window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
 
-	let tweaks_page = new Adw.PreferencesPage({
+	/*let tweaks_page = new Adw.PreferencesPage({
 		title: _('Tweaks'),
 		icon_name: 'applications-symbolic',
 	});
 	tweaks_page.add(pcorrection_pref_group);
-	tweaks_page.add(highlight_mouse_over_pref_group);
+	tweaks_page.add(highlight_mouse_over_pref_group);*/
+
+	general_page.add(switcher_pref_group);
+	general_page.add(animation_pref_group);
+	general_page.add(icon_pref_group);
+	general_page.add(windows_pref_group);
+	general_page.add(window_size_pref_group);
+	general_page.add(behavior_pref_group);
+	general_page.add(background_pref_group);
+	general_page.add(background_application_switcher_pref_group);
+	general_page.add(pcorrection_pref_group);
+	general_page.add(keybinding_pref_group);
 
 	let contribution_page = new Adw.PreferencesPage({
 		title: _("Contribute"),
@@ -318,7 +377,6 @@ function fillPreferencesWindow(window) {
 
 	window.add(general_page);
 	// window.add(appearance_page);
-	window.add(tweaks_page)
 	window.add(contribution_page);
 
 	window.set_search_enabled(true);

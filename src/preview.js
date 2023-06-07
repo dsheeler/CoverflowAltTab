@@ -25,6 +25,7 @@ const {
 const Lightbox = imports.ui.lightbox;
 const Main = imports.ui.main;
 
+
 /**
  * Direction and Placement properties values are set to be compatible with deprecated
  * Clutter.Gravity.
@@ -55,6 +56,11 @@ var Preview = GObject.registerClass({
         this._highlight = null;
         this._flash = null;
         this._entered = false;
+        this._effectNames = ['blur', 'glitch', 'desaturate', 'tint']
+        this._effectCounts = {};
+        for (let effect_name of this._effectNames) {
+            this._effectCounts[effect_name] = 0;
+        }
     }
 
     /**
@@ -90,6 +96,74 @@ var Preview = GObject.registerClass({
         } else {
             // Don't throw anything here, it may cause unstabilities
             logError("No method found for making preview the bottom layer");
+        }
+    }
+
+    addEffect(effect_class, constructor_argument, name, parameter_name, from_param_value, param_value, duration) {
+        duration = 0.99 * 1000.0 * duration;
+        let effect_name = name + "-effect";
+        let add_transition_name = effect_name + "-add";
+        let remove_transition_name = effect_name + "-remove";
+        let property_transition_name = `@effects.${effect_name}.${parameter_name}`;
+        if (this.get_transition(remove_transition_name) !== null) {
+            this.remove_transition(remove_transition_name);
+            let transition = Clutter.PropertyTransition.new(property_transition_name);
+            transition.progress_mode = Clutter.AnimationMode.LINEAR;
+            transition.duration = duration;
+            transition.remove_on_complete = true;
+            transition.set_from(this.get_effect(effect_name)[parameter_name]);
+            transition.set_to(param_value);
+            this.get_effect(effect_name)[parameter_name] = 1.0;
+            this.add_transition(add_transition_name, transition);
+        } else if (this._effectCounts[name] == 0) {
+            if (this.get_transition(add_transition_name) === null) {
+                let transition = Clutter.PropertyTransition.new(property_transition_name);
+                transition.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+                transition.duration = duration;
+                transition.remove_on_complete = true;
+                transition.set_to(param_value);
+                transition.set_from(from_param_value);
+                this._newFrameCount = 0;
+                transition.connect("new-frame", () => {
+                    log("Coverflow fps", 1000.0 * this._newFrameCount / transition.get_elapsed_time(), name);
+                    this._newFrameCount += 1;
+                });
+                this.add_effect_with_name(effect_name, new effect_class(constructor_argument));
+                //this.get_effect(effect_name)[parameter_name] = 1.0;
+                this.add_transition(add_transition_name, transition);
+                this._effectCounts[name] = 1;
+            }
+        } else {
+            this._effectCounts[name] += 1;
+        }
+    }
+
+    removeEffect(name, parameter_name, value, duration) {
+        duration = 0.99 * 1000.0 * duration;
+        let effect_name = name + "-effect";
+        let add_transition_name = effect_name + "-add";
+        let remove_transition_name = effect_name + "-remove";
+        let property_transition_name = `@effects.${effect_name}.${parameter_name}`;
+        if (this._effectCounts[name] > 0) {
+            if (this._effectCounts[name] == 1) {
+                this.remove_transition(add_transition_name);
+                if (this.get_transition(remove_transition_name) === null) {
+                    let transition = Clutter.PropertyTransition.new(property_transition_name);
+                    transition.progress_mode = Clutter.AnimationMode.LINEAR;
+                    transition.duration = duration;
+                    transition.remove_on_complete = true;
+                    transition.set_from(this.get_effect(effect_name)[parameter_name]);
+                    transition.set_to(value);
+                    this.get_effect(effect_name)[parameter_name] = 1.0;
+                    this.add_transition(remove_transition_name, transition);
+                    transition.connect("completed", (trans) => {
+                        this.remove_effect_by_name(effect_name);
+                        this._effectCounts[name] = 0;
+                    });
+                }
+            } else {
+                this._effecCounts[name] -= 1;
+            }
         }
     }
 

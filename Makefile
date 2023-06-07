@@ -53,6 +53,7 @@ build:
 		--extra-source ./timelineSwitcher.js \
 		--extra-source ../metadata.json \
 		--extra-source ../ui \
+		--extra-source ../src/effects \
 		--schema ../schemas/org.gnome.shell.extensions.coverflowalttab.gschema.xml \
 		--podir ../locale/ \
 		-o ../build/

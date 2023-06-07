@@ -170,21 +170,21 @@
             <choice value="Move Camera"/>
             <choice value="Adjust Angles"/>
         </choices>
-        <default>"None"</default>
+        <default>"Move Camera"</default>
         <summary>Method to correct off-center monitor perspective</summary>
         <description>Way to make off-center monitor switcher to look like centered.</description>
     </key>
-    <key type="d" name="desaturation-factor">
-        <default>0.75</default>
+    <key type="d" name="desaturate-factor">
+        <default>0.0</default>
         <range min="0" max="1"/>
-        <summary>Amount to Desaturate the Application Switcher</summary>
-        <description>0 for no desaturation, 1 for total desaturation</description>
+        <summary>Amount to Desaturate the Background Application Switcher</summary>
+        <description>0 for no desaturation, 1 for total desaturation.</description>
     </key>
     <key type="i" name="blur-sigma">
-        <default>7</default>
+        <default>4</default>
         <range min="0" max="20"/>
-        <summary>Sigma of Blur Applied to the Application Switcher</summary>
-        <description>The bigger, the blurrier</description>
+        <summary>Sigma of Blur Applied to the Background Application Switcher</summary>
+        <description>The bigger, the blurrier.</description>
     </key>
     <key type="s" name="switcher-looping-method">
         <choices>
@@ -197,6 +197,22 @@
     <key type="b" name="switch-application-behaves-like-switch-windows">
         <default>false</default>
         <summary>The application-switcher keybinding action behaves the same as the window-switcher</summary>
+    </key>
+    <key type="b" name="use-tint">
+        <default>true</default>
+        <summary>Whether to Use a Tint Color on the Background Application Switcher</summary>
+    </key>
+    <key type="(dddd)" name="tint-color">
+        <default>(0.,0.,0.,0.)</default>
+        <summary></summary>
+    </key>
+    <key type="b" name="use-theme-color-for-tint-color">
+        <default>true</default>
+        <summary>Use gnome-shell theme switcher-list background color to tint the Application Switcher</summary>
+    </key>
+    <key type="b" name="use-glitch-effect">
+        <default>false</default>
+        <summary>Use a "glitch effect" on the background application switcher</summary>
     </key>
   </schema>
 </schemalist>
