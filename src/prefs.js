@@ -151,12 +151,7 @@ function fillPreferencesWindow(window) {
 
 	let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), []], [_("Carousel"), []]]);
 	switcher_pref_group.add(buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows.")));
-	
-	let behavior_pref_group = new Adw.PreferencesGroup({
-		title: _("Panel"),
-	});
-
-	behavior_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide"), _("Hide panel when switching windows.")));
+	switcher_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching windows.")));
 
 	let animation_pref_group = new Adw.PreferencesGroup({
 		title: _('Animation'),
@@ -192,7 +187,7 @@ function fillPreferencesWindow(window) {
 	icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], _("Icon Shadow")));
 
 	let window_size_pref_group = new Adw.PreferencesGroup({
-		title: _("Window Properties")
+		title: _("Windows")
 	});
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
 	window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side."), true));
@@ -266,7 +261,7 @@ function fillPreferencesWindow(window) {
 	let background_pref_group = new Adw.PreferencesGroup({
 		title: _('Background'),
 	});
-	background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Dim-factor"), _("Smaller means darker."), true));
+	background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Smaller means darker."), true));
 
 	let keybinding_pref_group = new Adw.PreferencesGroup({
 		title: _("Keybindings"),
@@ -301,7 +296,6 @@ function fillPreferencesWindow(window) {
 	general_page.add(icon_pref_group);
 	general_page.add(windows_pref_group);
 	general_page.add(window_size_pref_group);
-	general_page.add(behavior_pref_group);
 	general_page.add(background_pref_group);
 	general_page.add(background_application_switcher_pref_group);
 	general_page.add(pcorrection_pref_group);

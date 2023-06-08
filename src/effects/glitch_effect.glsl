@@ -81,7 +81,7 @@ void main() {
   float t = time * 2.0;
 
   // Create large, incidental noise waves
-  float noise = max(0.0, snoise(vec2(t, uv.y * 0.666)) - 0.5) * (1.0 / 0.5);
+  float noise = max(0.0, snoise(vec2(t, uv.y * 0.3)) - 0.3) * (1.0 / 0.7);
 
   // Offset by smaller, constant noise waves
   noise = noise + (snoise(vec2(t*10.0, uv.y * 2.4)) - 0.5) * 0.15;

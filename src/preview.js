@@ -124,12 +124,7 @@ var Preview = GObject.registerClass({
                 transition.set_to(param_value);
                 transition.set_from(from_param_value);
                 this._newFrameCount = 0;
-                transition.connect("new-frame", () => {
-                    log("Coverflow fps", 1000.0 * this._newFrameCount / transition.get_elapsed_time(), name);
-                    this._newFrameCount += 1;
-                });
                 this.add_effect_with_name(effect_name, new effect_class(constructor_argument));
-                //this.get_effect(effect_name)[parameter_name] = 1.0;
                 this.add_transition(add_transition_name, transition);
                 this._effectCounts[name] = 1;
             }
@@ -162,7 +157,7 @@ var Preview = GObject.registerClass({
                     });
                 }
             } else {
-                this._effecCounts[name] -= 1;
+                this._effectCounts[name] -= 1;
             }
         }
     }

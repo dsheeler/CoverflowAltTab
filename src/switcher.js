@@ -167,7 +167,6 @@ var Switcher = class Switcher {
                 let c = null;
                 if (this._settings.use_theme_color_for_tint_color) {
                     let bgcolor = this._getSwitcherBackgroundColor();
-                    log('Coverflow', bgcolor.to_string());
                     c = [bgcolor.red / 255., bgcolor.green / 255., bgcolor.blue / 255., 0.75];
                 } else {
                     c = this._settings.tint_color;
@@ -178,7 +177,6 @@ var Switcher = class Switcher {
             preview.addEffect(Shell.BlurEffect, { sigma: 0.0 }, 'blur', 'sigma', 0.0,  this._settings.blur_sigma, this._settings.animation_time);
         }
     }
-
 
     _removeBackgroundEffects() {
         if (this._parent !== null && this._parent._previews !== null) {
@@ -194,29 +192,6 @@ var Switcher = class Switcher {
                 }
             }
         }
-    }
-    activateUiInspector() {
-        imports.gi.GLib.timeout_add(0, 10000, () => {
-            if (Main.lookingGlass === null)
-                Main.createLookingGlass();
-            const lg = Main.lookingGlass;
-            const Inspector = imports.ui.lookingGlass.Inspector;
-            lg.open();
-            lg.openInspector = () => {
-                let inspector = new Inspector(lg);
-                inspector.connect('target', (i, target, stageX, stageY) => {
-                    lg._pushResult(`inspect(${Math.round(stageX)}, ${Math.round(stageY)})`, target);
-                });
-                inspector.connect('closed', () => {
-                    lg.show();
-                    global.stage.set_key_focus(lg._entry);
-                });
-                //lg.hide();
-                return Clutter.EVENT_STOP;
-            };
-
-            lg.openInspector();
-        });
     }
 
     show() {
