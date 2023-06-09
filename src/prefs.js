@@ -220,15 +220,20 @@ function fillPreferencesWindow(window) {
 	color_row.add_suffix(choose_tint_box);
 	settings.bind("use-tint", choose_tint_box, "sensitive", Gio.SettingsBindFlags.GET);
 
-	let color_button = new Gtk.ColorButton({
+	let color_dialog = new Gtk.ColorDialog({
+		with_alpha: true,
+	});
+
+	let color_button = new Gtk.ColorDialogButton({
 		valign: Gtk.Align.CENTER,
-		use_alpha: true,
+		dialog: color_dialog,
 	});
 
 	let use_theme_color_button = new Gtk.ToggleButton({
 		label: "Use Theme Color",
 		valign: Gtk.Align.CENTER,
 	});
+
 	use_theme_color_button.bind_property("active", color_button, "sensitive", GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.SYNC_CREATE);
 	settings.bind("use-theme-color-for-tint-color", use_theme_color_button, "active", Gio.SettingsBindFlags.DEFAULT);
 	choose_tint_box.append(use_theme_color_button);
@@ -241,7 +246,7 @@ function fillPreferencesWindow(window) {
 	rgba.blue = c[2];
 	rgba.alpha = c[3];
 	color_button.set_rgba(rgba);
-	color_button.connect('color-set', _ => {
+	color_button.connect('notify::rgba', _ => {
         let c = color_button.rgba;
         let val = new GLib.Variant("(dddd)", [c.red, c.green, c.blue, c.alpha]);
         settings.set_value("tint-color", val);
