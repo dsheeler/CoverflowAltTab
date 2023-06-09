@@ -378,7 +378,6 @@ var Switcher = class Switcher {
             Main.uiGroup.add_actor(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_actor(parent);
-            log("Coverflow", this._backgroundColor.to_string());
             parent = null;
         }
         return this._backgroundColor;
