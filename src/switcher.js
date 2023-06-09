@@ -846,6 +846,15 @@ var Switcher = class Switcher {
                     }
                 }
                 let current_preview = this._previews[this._currentIndex];
+                let current_preview_transient = current_preview.metaWin.get_transient_for() 
+                if (current_preview_transient !== null) {
+                    for (let p of this._allPreviews) {
+                        if (p.metaWin == current_preview_transient) {
+                            p.make_top_layer(this.previewActor);
+                            break;
+                        }
+                    }
+                }
                 current_preview.make_top_layer(this.previewActor);
                 for (let p of this._allPreviews) {
                     if (p.metaWin.get_transient_for() == current_preview.metaWin) {
