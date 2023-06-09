@@ -199,6 +199,13 @@ var Preview = GObject.registerClass({
         }
     }
 
+    _getHighlightStyle(alpha) {
+        let bgcolor = this.switcher._getSwitcherBackgroundColor();
+        let style =`background-color: rgba(${bgcolor.red}, ${bgcolor.green}, ${bgcolor.blue}, ${alpha})`;
+        log(style);
+        return style;
+    }
+
     vfunc_enter_event(crossingEvent) {
         if (this.switcher._destroying || this._entered == true) return Clutter.EVENT_PROPAGATE;
         this._entered = true;
@@ -210,7 +217,6 @@ var Preview = GObject.registerClass({
             let window_actor = this.metaWin.get_compositor_private();
             if (this._highlight == null) {
                     this._highlight = new St.Bin({
-                    style_class: 'highlight',
                     opacity: 0,
                     width: this.width,
                     height: this.height,
@@ -218,7 +224,7 @@ var Preview = GObject.registerClass({
                     y: 0,
                     reactive: false,
                 });
-                this._highlight.set_style('background-color: rgba(255, 255, 255, 0.3);');
+                this._highlight.set_style(this._getHighlightStyle(0.3));
                 let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
                 this._highlight.add_constraint(constraint);
                 window_actor.add_actor(this._highlight);
@@ -226,7 +232,6 @@ var Preview = GObject.registerClass({
             }
             if (this._flash == null) {
                 this._flash = new St.Bin({
-                    style_class: 'flashspot',
                     width: 1,
                     height: 1,
                     opacity: 255,
@@ -234,6 +239,7 @@ var Preview = GObject.registerClass({
                     x: 0,
                     y: 0,
                 });
+                this._flash.set_style(this._getHighlightStyle(1));
                 let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
                 this._flash.add_constraint(constraint);
                 window_actor.add_actor(this._flash);
