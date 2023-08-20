@@ -49,6 +49,7 @@ build:
 		--extra-source ./manager.js \
 		--extra-source ./platform.js \
 		--extra-source ./preview.js \
+		--extra-source ./swipeTracker.js \
 		--extra-source ./switcher.js \
 		--extra-source ./timelineSwitcher.js \
 		--extra-source ../metadata.json \

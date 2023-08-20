@@ -38,15 +38,31 @@ const INITIAL_DELAY_TIMEOUT = 150;
 const ICON_SIZE = 64;
 const ICON_TITLE_SPACING = 10;
 
+const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+
+const ColorEffect = ExtensionImports.effects.color_effect.ColorEffect;
+const GlitchEffect = ExtensionImports.effects.glitch_effect.GlitchEffect;
+
+const {
+    Preview,
+    Placement,
+    Direction,
+    findUpperLeftFromCenter
+} = ExtensionImports.preview;
+
+const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
+
 var DestroyReason = class DestroyReason {}
 DestroyReason.ACTIVATE_SELECTED = 1;
 DestroyReason.NO_ACTIVATION = 2;
+DestroyReason.REMOVE_SUBSWITCHER = 3;
+
 
 export var Switcher = class Switcher {
     constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
-        this._windows = windows;
+        this._windows = [...windows];
         this._windowTitle = null;
         this._icon = null;
         this._prevApplicationIconBox = null;
@@ -69,16 +85,23 @@ export var Switcher = class Switcher {
         this._width = width_in;
         this._height = height_in;
         this._parent = parent;
-        this._numPreviousScrollEvents = 0;
-        this._numNextScrollEvents = 0;
-        this._lastPreviousScrollTime = 0;
-        this._lastNextScrollTime = 0;
+        this._child = null;
+        this._subSwitchers = new Map();
         this._backgroundColor = null;
         this._colorEffect = null;
+        this._scrollTimeoutId = 0;
+        this._canScroll = true;
+        this._windowTitles = [];
+        this._lastProgress = null;
+        this._toSubSwitcher = null;
+        this._fromSubSwitcher = null;
+        this.grab = null;
 
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
 
+        let monitor = this._updateActiveMonitor();
+        
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
         manager.platform.switcher = this;
@@ -91,14 +114,45 @@ export var Switcher = class Switcher {
         this.previewActor = new widgetClass({ visible: true, reactive: true});
         this.actor.add_actor(this.previewActor);
         Main.uiGroup.add_actor(this.actor);
-
-        this.grab = Main.pushModal(this.actor)
-        if (!this.grab) {
-            this._activateSelected();
-            return;
+        
+        if (this._parent == null) {
+            this._grabModal();
+        }
+        
+        if (this._parent === null) {
+            this.actor.set_size(monitor.width, monitor.height);
+            this.actor.set_position(monitor.x, monitor.y);
+        } else {
+            this.actor.set_size(this._width, this._height);
+            this.actor.set_position(this._x, this._y);
         }
 
-        this._haveModal = true;
+        this._adjustment = new St.Adjustment({
+            actor: this.actor,
+            lower: 0,
+            upper: this._windows.length,
+            value: this._currentIndex,
+            page_size: 1,
+            page_increment: 1,
+            step_increment: 0,
+        });
+        this._adjustment.gestureInProgress = false;
+
+        this._adjustment.connect('notify::value', () => {
+            this._setTransitionProgress(this._adjustment.value);
+        });
+
+        const swipeTracker = new MySwipeTracker(this.actor,
+            Clutter.Orientation.HORIZONTAL,
+            0,
+            { allowDrag: true, allowScroll: true });
+        swipeTracker.allowLongSwipes = true;
+        swipeTracker.connect('begin', this._gestureBegin.bind(this));
+        swipeTracker.connect('update', this._gestureUpdate.bind(this));
+        swipeTracker.connect('end', this._gestureEnd.bind(this));
+        this._swipeTracker = swipeTracker;
+
+        this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         if (this._isAppSwitcher) {
             // Find all the apps and associated windows
@@ -118,33 +172,34 @@ export var Switcher = class Switcher {
                 // For each app, display the first window only
                 this._windows = [];
                 for (let app of this._appWindowsMap.keys()) {
-                    this._windows.push(this._appWindowsMap.get(app)[0]);
+                    debug(app)
+                    let window = this._appWindowsMap.get(app)[0]
+                    this._windows.push(window);
+                    if (this._appWindowsMap.get(app).length > 1) {
+                        let switcher_class = this._manager.platform.getSettings().switcher_class;
+                        this._subSwitchers.set(window, new switcher_class(this._appWindowsMap.get(app), this._modifierMask, 0, this._manager, this._activeMonitor, false, this,
+                            this.actor.x, this.actor.y, this.actor.width, this.actor.height));
+                    }
                 }
             }
         }
 
-        this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
-        this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
-        this.actor.connect('scroll-event', this._scrollEvent.bind(this));
-
-        this._modifierMask = manager.platform.getPrimaryModifier(mask);
-
         let [x, y, mods] = global.get_pointer();
-        if (!(mods & this._modifierMask)){
-    			// There's a race condition; if the user released Alt before
-    			// we got the grab, then we won't be notified. (See
-    			// https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
-    			// details) So we check now. (Have to do this after updating
-    			// selection.)
-    			this._activateSelected();
-    			return;
+        if (!(mods & this._modifierMask)) {
+            // There's a race condition; if the user released Alt before
+            // we got the grab, then we won't be notified. (See
+            // https://bugzilla.gnome.org/show_bug.cgi?id=596695 for
+            // details) So we check now. (Have to do this after updating
+            // selection.)
+            this._activateSelected();
+            return;
         }
 
-        this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
+        if (this._parent == null) this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
 
     _addBackgroundEffects() {
-        for (let preview of this._parent._previews) {
+        for (let preview of this._previews) {
             if (this._settings.use_glitch_effect) {
                 if (preview.get_effect('glitch-effect') === null) {
                     let glitchEffect = new GlitchEffect({});
@@ -169,8 +224,8 @@ export var Switcher = class Switcher {
     }
 
     _removeBackgroundEffects() {
-        if (this._parent !== null && this._parent._previews !== null) {
-            for (let preview of this._parent._previews) {
+        if (this._previews !== null) {
+            for (let preview of this._previews) {
                 preview.removeEffect('blur', 'sigma', 0.0, this._settings.animation_time);
                 preview.removeEffect('desaturate', 'factor', 0.0, this._settings.animation_time);
                 preview.removeEffect('tint', 'blend', 0.0, this._settings.animation_time);
@@ -186,37 +241,44 @@ export var Switcher = class Switcher {
 
     show() {
         let monitor = this._updateActiveMonitor();
-        if (this._parent === null) {
+        /* if (this._parent === null) {
             this.actor.set_size(monitor.width, monitor.height);
             this.actor.set_position(monitor.x, monitor.y);
         } else {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
-            this._addBackgroundEffects();
-        }
+        } */
         // create previews
         this._createPreviews();
+        for (let i = 0; i < this._windows.length; i++) {
+            this._windowTitles[i] = this._getWindowTitle(i);
+        }
 
         for (let preview of this._allPreviews) {
-            preview.switcher = this;
             preview.set_reactive(false);
+            if (this._isAppSwitcher) {
+                preview.addIcon();
+            }
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
         }
 
         // hide windows and showcd  Coverflow actors
         if (this._parent === null) global.window_group.hide();
         
-        this.actor.show();
+        if (this._parent === null) this.actor.show();
         if (this._parent !== null) {
             this.previewActor.set_scale(0, 0);
             this.previewActor.set_scale_z(0);
-            this._manager.platform.tween(this.previewActor, {
+
+            //this._parent._updateSubSwitcher();
+            this._updatePreviews(false);
+            /* this._manager.platform.tween(this.previewActor, {
                 scale_x: 1,
                 scale_y: 1,
                 scale_z: 1,
                 time: this._settings.animation_time,
                 transition: 'easeInOutQuint',
-            });
+            }); */
         }
         this._enablePerspectiveCorrection();
         this._initialDelayTimeoutId = 0;
@@ -231,6 +293,7 @@ export var Switcher = class Switcher {
                         scale_x: 0,
                         scale_y: 0,
                         scale_z: 0,
+                        opacity: 0,
                         time: this._getRandomTime(),
                         transition: 'easeInOutQuint',
                     });
@@ -245,9 +308,13 @@ export var Switcher = class Switcher {
             }
         }
         if (this._parent !== null) {
-            this._updatePreviews(false);
-            this._setCurrentWindowTitle(this._windows[this._currentIndex]);
+           // this._updatePreviews(false);
+           
+           // this._setCurrentWindowTitle(this._windows[this._currentIndex]);
         } else {
+            for (let switcher of this._subSwitchers.values()) {
+                switcher.show();
+            }
             this._next();
         }
     }
@@ -265,6 +332,7 @@ export var Switcher = class Switcher {
                         scale_x: 0,
                         scale_y: 0,
                         scale_z: 0,
+                        opacity: 0,
                         time: this._getRandomTime(),
                         transition: 'easeInOutQuint',
                     });
@@ -299,55 +367,154 @@ export var Switcher = class Switcher {
 
     _showSubswitcher(direction) {
         if (this._isAppSwitcher) {
-            let wins = this._appWindowsMap.get(this._tracker.get_window_app(this._windows[this._currentIndex]))
-            if (wins.length > 1) {
-                let switcher_class = this._manager.platform.getSettings().switcher_class;
-                let current_index = direction == Direction.TO_RIGHT ? 0 : wins.length - 1;
-                this._subSwitcher = new switcher_class(wins, this._modifierMask, current_index, this._manager, this._activeMonitor, false, this,
-                    this.actor.x, this.actor.y, this.actor.width, this.actor.height);
+            this._direction = direction;
             
-                this._manager.platform.tween(this.previewActor, {
-                    scale_x: 0.25,
-                    scale_y: 0.25,
-                    scale_z: 0.25,
-                    x: 0.375 * this.actor.width,
-                    time: this._settings.animation_time,
+            let from_index = Math.round(this._currentIndex);
+            let to_index = Math.round(this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? 1 : -1)) % this._windows.length;
+            if (!this._adjustment.gestureInProgress) {
+                to_index = this._currentIndex;
+                from_index = (this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? - 1 : 1)) % this._windows.length; 
+            }
+            debug(from_index + " -> " + to_index);
+            
+            this._fromIndex = from_index;
+            this._toIndex = to_index;
+
+            this._fromSubSwitcher = this._numberOfWindows(from_index) > 1 ? this._subSwitchers.get(this._windows[from_index]) : null;
+            this._toSubSwitcher = this._numberOfWindows(to_index) > 1 ? this._subSwitchers.get(this._windows[to_index]) : null;
+            
+            if (this._toSubSwitcher != null) {
+                this._toSubSwitcher.actor.show();
+                this._addBackgroundEffects();
+                let current_index = direction == Direction.TO_RIGHT ? 0 : this._toSubSwitcher._windows.length - 1;
+                this._toSubSwitcher._setCurrentIndex(current_index);
+                this._toSubSwitcher._updatePreviews(false);
+                if (!this._adjustment.gestureInProgress) {
+                    this._toSubSwitcher._grabModal();
+                }
+            } else {
+                this._removeBackgroundEffects();
+            }
+            if (this._fromSubSwitcher != null) {
+                this._fromSubSwitcher._ungrabModal();
+                this._removeBackgroundEffects();
+            }
+
+            this._updateSubSwitcher();
+        }
+    }
+
+    _getWindowsAtIndex(index) {
+        return this._appWindowsMap.get(this._tracker.get_window_app(this._windows[index]));
+    }
+
+    _numberOfWindows(index) {
+        return this._getWindowsAtIndex(index).length;
+    }
+
+    _updateSubSwitcher() {
+        if (this._isAppSwitcher) {        
+            let scale = 1, x = 0;
+            let progress = 1;
+            let to_index = this._toIndex;
+            let from_index = this._fromIndex;
+            progress = (this._currentIndex - from_index) / (to_index - from_index);
+            log('updateSubSwitcher progress: ' + progress);
+            let is_appswitcher_at_to_index = this._numberOfWindows(to_index) > 1;
+            let to_scale = is_appswitcher_at_to_index ? 0.25 : 1;
+            let is_appswitcher_at_from_index = this._numberOfWindows(from_index) > 1;
+            let from_scale = is_appswitcher_at_from_index ? 0.25 : 1;
+            scale = from_scale + progress * (to_scale - from_scale);
+            let from_x = is_appswitcher_at_from_index ? 0.375 * this.actor.width : 0;
+            let to_x = is_appswitcher_at_to_index ? 0.375 * this.actor.width : 0;
+            x = from_x + progress * (to_x - from_x);
+            
+            this._manager.platform.tween(this.previewActor, {
+                scale_x: scale,
+                scale_y: scale,
+                scale_z: scale,
+                opacity: 255, 
+                x: x,
+                time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                transition: 'easeInOutQuint',
+            });
+            for (let switcher of this._subSwitchers.values()) {
+                if (switcher !== this._toSubSwitcher && switcher !== this._fromSubSwitcher) {
+                    this._manager.platform.tween(switcher.previewActor, {
+                        scale_x: 0,
+                        scale_y: 0,
+                        scale_z: 0,
+                        opacity: 0,
+                        time: this._settings.animation_time,
+                        transition: 'easeInOutQuint',
+                    });
+                }
+            }
+            if (this._toSubSwitcher !== null && !this._toSubSwitcher._destroying) {
+                this._manager.platform.tween(this._toSubSwitcher.previewActor, {
+                    scale_x: this._adjustment.gestureInProgress ? progress : 1,
+                    scale_y: this._adjustment.gestureInProgress ? progress : 1,
+                    scale_z: this._adjustment.gestureInProgress ? progress : 1,
+                    opacity: this._adjustment.gestureInProgress ? 255 * progress : 255,
+                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
                     transition: 'easeInOutQuint',
+                });
+            }
+            if (this._fromSubSwitcher !== null && !this._fromSubSwitcher._destroying) {
+                this._manager.platform.tween(this._fromSubSwitcher.previewActor, {
+                    scale_x: this._adjustment.gestureInProgress ? 1-progress : 0,
+                    scale_y: this._adjustment.gestureInProgress ? 1-progress : 0,
+                    scale_z: this._adjustment.gestureInProgress ? 1-progress : 0,
+                    opacity: this._adjustment.gestureInProgress ? 255 * (1 - progress) : 0,
+                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                    transition: 'easeInOutQuint',
+                    onComplete: () => {
+                        if (!this._adjustment.gestureInProgress) this._fromSubSwitcher.actor.hide();
+                    },
                 });
             }
         }
     }
 
+    _setCurrentIndex(value) {
+        debug('setting current indext to ' + value);
+        this._currentIndex = value;
+        this._adjustment.set_value(value);
+    }
+
     _next() {
+        debug("NEXT")
         if (this._parent === null) this._manager.platform.dimBackground();
         this._stopDestroying();
         if (this._windows.length <= 1) {
-            this._currentIndex = 0;
+            this._setCurrentIndex(0);
             this._updatePreviews(false, 1);
         } else {
             this.actor.set_reactive(false);
             if (this._parent && this._currentIndex == this._previews.length - 1) {
-                this.destroy(DestroyReason.NO_ACTIVATION);
+                //this.destroy(DestroyReason.NO_ACTIVATION);
                 this._parent._next();
             } else {
                 this._previewNext();
             }
             this._showSubswitcher(Direction.TO_RIGHT);
+
             this.actor.set_reactive(true);
         }
-        this._setCurrentWindowTitle(this._windows[this._currentIndex]);
+        //this._setCurrentWindowTitle(this._windows[this._currentIndex]);
     }
 
     _previous() {
+        debug("PREVIOUS")
         if (this._parent === null) this._manager.platform.dimBackground();
         this._stopDestroying();
         if (this._windows.length <= 1) {
-            this._currentIndex = 0;
+            this._setCurrentIndex(0);
             this._updatePreviews(false, -1);
         } else {
             this.actor.set_reactive(false);
             if (this._parent && this._currentIndex == 0) {
-                this.destroy(DestroyReason.NO_ACTIVATION);
+                //this.destroy(DestroyReason.NO_ACTIVATION);
                 this._parent._previous();
             } else {
                 this._previewPrevious();
@@ -402,13 +569,19 @@ export var Switcher = class Switcher {
 
     _raiseIcons() {
         if (this._prevApplicationIconBox) this.previewActor.set_child_above_sibling(this._prevApplicationIconBox, null);
+        if (this._prevWindowTitle) this.previewActor.set_child_above_sibling(this._prevWindowTitle, null);
         if (this._applicationIconBox) this.previewActor.set_child_above_sibling(this._applicationIconBox, null);
+        if (this._windowTitle) this.previewActor.set_child_above_sibling(this._windowTitle, null);
     }
 
-    _setCurrentWindowTitle(window, initially_opaque=false) {
-        let animation_time = this._settings.animation_time;
+    _getWindowTitle(index) {
         let overlay_icon_size = this._settings.overlay_icon_size;
-
+        let window_title = new St.Label({
+            style_class: 'switcher-list',
+            text: this._windows[index].get_title(),
+            opacity: 0
+        });
+        this.previewActor.add_actor(window_title);
         let app_icon_size;
         let label_offset;
         if (this._settings.icon_style == "Classic") {
@@ -417,10 +590,39 @@ export var Switcher = class Switcher {
         } else {
             app_icon_size = this._settings.text_scaling_factor * overlay_icon_size;
             label_offset = 0;
-        }
+        } 
+        // ellipsize if title is too long
+        let font_size = 14 * this._settings.text_scaling_factor;
+        window_title.set_style("max-width:" + (this.actor.width - 200) + "px;font-size: " + font_size + "px;font-weight: bold; padding: " + font_size + "px;");
+        window_title.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+
+        let cx = Math.round((this.actor.width + label_offset) / 2);
+        let cy = Math.round(this.actor.height * this._settings.title_position / 8 + this._settings.offset);
+
+        window_title.x = cx - Math.round(window_title.get_width()/2);
+        window_title.y = cy - Math.round(window_title.get_height()/2);
+        return window_title;
+    }
+
+    _setCurrentWindowTitle(window, initially_opaque=false) {
+        return;
+        let animation_time = this._settings.animation_time;
+        let overlay_icon_size = this._settings.overlay_icon_size;
+
+        let idx_low = Math.floor(this._currentIndex);
+        let idx_high = Math.ceil(this._currentIndex);
+
+        let window_title_low = this._windowTitles[idx_low];
+        let window_title_high = this._windowTitles[idx_high];
+
+        let progress = this._currentIndex - idx_low;
+        window_title_low.opacity = 255 * (1 - progress);
+        window_title_high.opacity = 255 * progress;
+        
+        
 
         // window title label
-        if (this._windowTitle) {
+        /* if (this._windowTitleLow) {
             if (this._prevWindowTitle) this._prevWindowTitle.destroy();
             this._prevWindowTitle = this._windowTitle;
             this._manager.platform.tween(this._prevWindowTitle, {
@@ -433,7 +635,7 @@ export var Switcher = class Switcher {
             });
         }
 
-        this._windowTitle = new St.Label({
+        this._windowTitleLow = new St.Label({
             style_class: 'switcher-list',
             text: this._windows[this._currentIndex].get_title(),
             opacity: 0
@@ -517,7 +719,7 @@ export var Switcher = class Switcher {
             opacity: 255 * alpha,
             time: animation_time,
             transition: 'easeInOutQuint',
-        });
+        }); */
     }
 
     _keyPressEvent(actor, event) {
@@ -547,7 +749,7 @@ export var Switcher = class Switcher {
             case Clutter.KEY_Up:
             case Clutter.Up:
                 if (this._parent) {
-                    this.destroy(DestroyReason.NO_ACTIVATION);
+                    //this.destroy(DestroyReason.REMOVE_SUBSWITCHER);
                 }
                 return true;
 
@@ -584,15 +786,15 @@ export var Switcher = class Switcher {
                     // shift -> backwards
                     if (event_state & Clutter.ModifierType.SHIFT_MASK) {
                         if (this._parent) {
-                            this.destroy(DestroyReason.NO_ACTIVATION);
-                            this._parent._previous();
+                           // this.destroy(DestroyReason.NO_ACTIVATION);
+                            this._previous();
                         } else {
                            this._previous();
                         }
                     } else {
                         if (this._parent) {
-                            this.destroy(DestroyReason.NO_ACTIVATION);
-                            this._parent._next();
+                           // this.destroy(DestroyReason.NO_ACTIVATION);
+                            this._next();
                         } else {
                             this._next();
                         }
@@ -604,8 +806,8 @@ export var Switcher = class Switcher {
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
                 if (this._checkSwitchTime()) {
                     if (this._parent) {
-                        this.destroy(DestroyReason.NO_ACTIVATION);
-                        this._parent._previous();
+                        //this.destroy(DestroyReason.NO_ACTIVATION);
+                        this._previous();
                     } else {
                        this._previous();
                     }
@@ -619,40 +821,56 @@ export var Switcher = class Switcher {
     _keyReleaseEvent(actor, event) {
         let [x, y, mods] = global.get_pointer();
         let state = mods & this._modifierMask;
-
         if (state == 0 && !this._destroying) {
             if (this._initialDelayTimeoutId !== 0)
-                this._currentIndex = (this._currentIndex + 1) % this._windows.length;
+                this._setCurrentIndex((this._currentIndex + 1) % this._windows.length);
             this._activateSelected();
         }
 
         return true;
     }
 
+    _swipeEvent(action, actor, event) {
+        debug("Swiped!");
+        return true;
+    }
+
+
     // allow navigating by mouse-wheel scrolling
     _scrollEvent(actor, event) {
-        let num_events = 4;
-        let ms_between_events = 25;
-        let time = event.get_time();
+         if (this._swipeTracker.canHandleScrollEvent(event))
+            return Clutter.EVENT_PROPAGATE;
+
+        if (!this._canScroll)
+            return Clutter.EVENT_STOP;
         switch (event.get_scroll_direction()) {
-        	case Clutter.ScrollDirection.LEFT:
+            case Clutter.ScrollDirection.SMOOTH:
+                let [dx, dy] = event.get_scroll_delta();
+                if (dy > 0 || dx > 0) {
+                    this._next();
+                    return true;
+                } else {
+                    this._previous();
+                    return true;
+                }
+                break;
+            case Clutter.ScrollDirection.LEFT:
         	case Clutter.ScrollDirection.UP:
-              if (time - this._lastPreviousScrollTime > ms_between_events) {
-                this._numPreviousScrollEvents = 0;
-              }
-              if (++this._numPreviousScrollEvents % num_events == 0) this._previous();
-              this._lastPreviousScrollTime = time;
-              return true;
+                this._previous();
+                break;
 
         	case Clutter.ScrollDirection.RIGHT:
         	case Clutter.ScrollDirection.DOWN:
-              if (time - this._lastNextScrollTime > ms_between_events) {
-                  this._numNextScrollEvents = 0;
-              }
-              if (++this._numNextScrollEvents % num_events == 0) this._next();
-              this._lastNextScrollTime = time
-              return true;
+                this._next();
+                break;
         }
+        this._canScroll = false;
+        this._scrollTimeoutId = Mainloop.timeout_add(
+            1000*0.5 * this._settings.animation_time, () => {
+                this._canScroll = true;
+                this._scrollTimeoutId = 0;
+            });
+
         return true;
     }
 
@@ -674,8 +892,8 @@ export var Switcher = class Switcher {
                     this._windows.splice(i, 1);
                     this._previews[i].destroy();
                     this._previews.splice(i, 1);
-                    this._currentIndex = (i < this._currentIndex) ? this._currentIndex - 1 :
-                        this._currentIndex % this._windows.length;
+                    this._setCurrentIndex((i < this._currentIndex) ? this._currentIndex - 1 :
+                        this._currentIndex % this._windows.length);
                     this._updatePreviews(false, 0);
                     this._setCurrentWindowTitle(this._windows[this._currentIndex]);
                 }
@@ -687,7 +905,7 @@ export var Switcher = class Switcher {
     _previewButtonPressEvent(preview) {
         for (let [i, p] of this._previews.entries()) {
             if (preview == p) {
-                this._currentIndex = i;
+                this._setCurrentIndex(i);
                 this._activateSelected(true);
                 break;
             }
@@ -727,23 +945,31 @@ export var Switcher = class Switcher {
         return this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
     }
 
+    _hide(reason) {
+        this.actor.hide();
+    }
+
     _onDestroy(reason, transition) {
+        if (this._destroying) return;
         this._destroying = true;
+        if (this._isAppSwitcher) {
+            for (let switcher of this._subSwitchers.values()) {
+                switcher.destroy(DestroyReason.NO_ACTIVATION);
+            }
+        }
         if (this._parent) {
-            if (reason == DestroyReason.NO_ACTIVATION) {
+            if (reason == DestroyReason.REMOVE_SUBSWITCHER) {
                 this._manager.platform.tween(this._parent.previewActor, {
                     scale_x: 1,
                     scale_y: 1,
                     scale_z: 1,
+                    opacity: 255,
                     x: 0,
                     time: this._settings.animation_time,
                     transition: 'easeInOutQuint',
                 });
             }
-            if (this._haveModal) {
-                Main.popModal(this.grab);
-                this._haveModal = false;
-            }
+            this._ungrabModal();
         }
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
@@ -783,6 +1009,7 @@ export var Switcher = class Switcher {
                             scale_x: 1,
                             scale_y: 1,
                             scale_z: 1,
+                            opacity: 255,
                             rotation_angle_y: 0.0,
                             onComplete: this._onPreviewDestroyComplete.bind(this, false),
                             time: animation_time,
@@ -792,17 +1019,23 @@ export var Switcher = class Switcher {
                         let monitor = Main.layoutManager.monitors[preview.metaWin.get_monitor()];
                         let pivot_point = preview.get_pivot_point_placement(Placement.TOP_LEFT);
                         preview.make_bottom_layer(this.previewActor);
+                        let animation_time = this._getRandomTime();
                         this._manager.platform.tween(preview, {
                             x: monitor.x - this.actor.x,
                             y: monitor.y - this.actor.y,
                             translation_x: 0,
-                            scale_x: 0,
-                            scale_y: 0,
-                            scale_z: 0,
                             pivot_point: pivot_point,
                             rotation_angle_y: 0.0,
                             onComplete: this._onPreviewDestroyComplete.bind(this, false),
-                            time: this._getRandomTime(),
+                            time: animation_time,
+                            transition: transition,
+                        });
+                        this._manager.platform.tween(preview, {
+                            scale_x: 0,
+                            scale_y: 0,
+                            scale_z: 0,
+                            opacity: 0,
+                            time: 0.95 * animation_time,
                             transition: 'easeInOutQuint'
                         });
                     }
@@ -826,15 +1059,16 @@ export var Switcher = class Switcher {
                             scale_x: 1,
                             scale_y: 1,
                             scale_z: 1,
+                            opacity: 255,
                             rotation_angle_y: 0.0,
                             time: this._getRandomTime(),
                             transition: 'easeInOutQuint',
                         });
-                        preview.opacity = 255;
+                        //preview.opacity = 255;
                        
                     }
                 }
-                let current_preview = this._previews[this._currentIndex];
+                let current_preview = this._previews[Math.round(this._currentIndex)];
                 let current_preview_transient = current_preview.metaWin.get_transient_for() 
                 if (current_preview_transient !== null) {
                     for (let p of this._allPreviews) {
@@ -859,6 +1093,7 @@ export var Switcher = class Switcher {
                     scale_x: 0,
                     scale_y: 0,
                     scale_z: 0,
+                    opacity: 0,
                     time: 0.95*this._settings.animation_time,
                     transition: 'easeInOutQuint',
                     onComplete: this._onPreviewDestroyComplete.bind(this, true),
@@ -885,6 +1120,9 @@ export var Switcher = class Switcher {
                 GLib.Source.remove(this._checkDestroyedTimeoutId);
             }
 
+            if (this._scrollTimeoutId !== 0) {
+                Mainloop.source_remove(this._scrollTimeoutId);
+            }
             this._windows = null;
             this._windowTitle = null;
             this._icon = null;
@@ -893,6 +1131,7 @@ export var Switcher = class Switcher {
             this._allPreviews = null;
             this._initialDelayTimeoutId = null;
             this._checkDestroyedTimeoutId = null;
+            this._scrollTimeoutId = null;
             this._windowManager.disconnect(this._dcid);
             this._windowManager.disconnect(this._mcid);
 

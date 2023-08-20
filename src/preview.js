@@ -44,9 +44,11 @@ Placement.CENTER = 9;
 export var Preview = GObject.registerClass({
     GTypeName: "Preview"
 }, class Preview extends Clutter.Clone {
-    _init(window, ...args) {
+    _init(window, switcher, ...args) {
         super._init(...args);
         this.metaWin = window;
+        this.switcher = switcher;
+        this._icon = null;
         this._highlight = null;
         this._flash = null;
         this._entered = false;
@@ -193,6 +195,22 @@ export var Preview = GObject.registerClass({
         }
     }
 
+    addIcon() {
+        return;
+        let window_actor = this.metaWin.get_compositor_private();
+        let app = this.switcher._tracker.get_window_app(this.metaWin);
+        this._icon = app ? app.create_icon_texture(Math.min(window_actor.width, window_actor.height) * 0.9) : null;
+
+        if (!this._icon) {
+            this._icon = new St.Icon({
+                icon_name: 'applications-other',
+            });
+        }
+        let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
+        this._icon.add_constraint(constraint);
+        window_actor.add_actor(this._icon);
+    }
+
     _getHighlightStyle(alpha) {
         let bgcolor = this.switcher._getSwitcherBackgroundColor();
         let style =`background-color: rgba(${bgcolor.red}, ${bgcolor.green}, ${bgcolor.blue}, ${alpha})`;
@@ -200,7 +218,11 @@ export var Preview = GObject.registerClass({
     }
 
     vfunc_enter_event(crossingEvent) {
-        if (this.switcher._destroying || this._entered == true) return Clutter.EVENT_PROPAGATE;
+        if (this.switcher._destroying || this._entered == true) {
+            log("vfunc_enter_event destroying or entered");
+            return Clutter.EVENT_PROPAGATE;
+        } 
+        log("vfunc_enter_event NOT destroying and NOT entered")
         this._entered = true;
         if (this.switcher._settings.raise_mouse_over) {
             this.make_top_layer(this.switcher.previewActor);
