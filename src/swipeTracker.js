@@ -140,9 +140,6 @@ const TouchpadSwipeGesture = GObject.registerClass({
         const [x, y] = event.get_coords();
         const [dx, dy] = event.get_gesture_motion_delta_unaccelerated();
 
-        dx = -dx;
-        dy = -dy;
-        
         if (this._state === TouchpadState.NONE) {
             if (dx === 0 && dy === 0)
                 return Clutter.EVENT_PROPAGATE;
