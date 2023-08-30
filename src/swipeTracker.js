@@ -377,6 +377,7 @@ const ScrollGesture = GObject.registerClass({
 
         let time = event.get_time();
         let [dx, dy] = event.get_scroll_delta();
+        dx = -dx; dy = -dy;
         if (dx === 0 && dy === 0) {
             this.emit('end', time, distance);
             this._began = false;
