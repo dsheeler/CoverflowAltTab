@@ -2,22 +2,23 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Muha Aliss <muhaaliss@pm.me>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-23 02:20-0500\n"
-"PO-Revision-Date: 2020-10-29 15:00+0300\n"
+"PO-Revision-Date: 2023-09-02 18:52+0300\n"
 "Last-Translator: Muha Aliss <muhaaliss@pm.me>\n"
 "Language-Team: Turkish <muhaaliss@pm.me>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Gtranslator 42.0\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 #: src/prefs.js:115 src/prefs.js:147
 msgid "Coverflow"
@@ -41,97 +42,94 @@ msgstr "Klasik"
 
 #: src/prefs.js:120 src/prefs.js:185
 msgid "Overlay"
-msgstr "Kaplı"
+msgstr "Kapla"
 
 #: src/prefs.js:128
 msgid "Reset to default value"
-msgstr ""
+msgstr "Varsayılan değere sıfırla"
 
 #: src/prefs.js:134
 #, javascript-format
 msgid "Version %d"
-msgstr ""
+msgstr "Sürüm %d"
 
 #: src/prefs.js:140
 msgid "General"
-msgstr ""
+msgstr "Genel"
 
 #: src/prefs.js:145
-#, fuzzy
 msgid "Switcher"
-msgstr "Değiştirici stili"
+msgstr "Değiştirici"
 
 #: src/prefs.js:147
 msgid "Style"
-msgstr ""
+msgstr "Tarz"
 
 #: src/prefs.js:147
 msgid "Pick the type of switcher."
-msgstr ""
+msgstr "Değiştirici türünü seç."
 
 #: src/prefs.js:148
 msgid "Vertical Offset"
-msgstr ""
+msgstr "Dikey ofset"
 
 #: src/prefs.js:148
-#, fuzzy
 msgid "Positive value moves everything down, negative up."
 msgstr ""
-"Dikey uzaklık (pozitif değer her şeyi yukarı, negatif değer aşağı hareket "
-"ettirir)"
+"Pozitif değer her şeyi aşağıya, negatif değer ise her şeyi yukarıya hareket "
+"ettirir"
 
 #: src/prefs.js:149
-#, fuzzy
 msgid "Window Title Position"
 msgstr "Pencere başlığı konumu"
 
 #: src/prefs.js:149
 msgid "Place window title above or below the switcher."
-msgstr ""
+msgstr "Pencere başlığını değiştiricinin üstüne veya altına yerleştir."
 
 #: src/prefs.js:150
 msgid "Enforce Primary Monitor"
-msgstr ""
+msgstr "Birinci monitöre zorla"
 
 #: src/prefs.js:150
-#, fuzzy
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
-msgstr "Değiştiriciher zaman birincil monitörde göster"
+msgstr ""
+"Her zaman birincil monitörde göster, aksi takdirde aktif monitörde göster."
 
 #: src/prefs.js:153
 msgid "Behavior"
-msgstr ""
+msgstr "Davranış"
 
 #: src/prefs.js:156
 msgid "Hide Panel"
-msgstr ""
+msgstr "Paneli gizle"
 
 #: src/prefs.js:156
 msgid "Hide panel when switching windows."
-msgstr ""
+msgstr "Pencereleri değiştirirken paneli gizle."
 
 #: src/prefs.js:159
 msgid "Animation"
-msgstr ""
+msgstr "Animasyon"
 
 #: src/prefs.js:163
 msgid "Duration [s]"
-msgstr ""
+msgstr "Süre [s]"
 
 #: src/prefs.js:164
 msgid "Randomize Durations"
-msgstr ""
+msgstr "Süreleri rastgeleleştir"
 
 #: src/prefs.js:164
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration"
 msgstr ""
+"Her animasyon süresi 0 ile yapılandırılmış süre arasında rastgele atanır"
 
 #: src/prefs.js:167
-#, fuzzy
 msgid "Switcher Windows"
-msgstr "Değiştirici stili"
+msgstr "Değiştirici pencereleri"
 
 #: src/prefs.js:170
 msgid "Current workspace only"
@@ -143,66 +141,63 @@ msgstr "Tüm çalışma alanları"
 
 #: src/prefs.js:174
 msgid "All workspaces, current first"
-msgstr "Tüm çalışma alanları, önce geçerli"
+msgstr "Tüm çalışma alanları, önce mevcut"
 
 #: src/prefs.js:176
-#, fuzzy
 msgid "Workspaces"
-msgstr "Tüm çalışma alanları"
+msgstr "Çalışma alanları"
 
 #: src/prefs.js:176
-#, fuzzy
 msgid "Switch between windows on current or on all workspaces"
-msgstr "Mevcut veya tüm çalışma alanlarından pencereleri göster"
+msgstr "Mevcut veya tüm çalışma alanlarındaki pencereler arasında geçiş yap"
 
 #: src/prefs.js:177
 msgid "Current Monitor"
-msgstr ""
+msgstr "Mevcut monitör"
 
 #: src/prefs.js:177
 msgid "Switch between windows on current monitor"
-msgstr ""
+msgstr "Mevcut monitördeki pencereler arasında geçiş yap"
 
 #: src/prefs.js:180
 msgid "Icon"
-msgstr ""
+msgstr "Simge"
 
 #: src/prefs.js:182
 msgid "Overlay Icon Size"
-msgstr ""
+msgstr "Kaplama simge boyutu"
 
 #: src/prefs.js:182
 msgid "Set the overlay icon size in pixels."
-msgstr ""
+msgstr "Kaplama simgesi boyutunu piksel cinsinden ayarla."
 
 #: src/prefs.js:183
 msgid "Overlay Icon Opacity"
-msgstr ""
+msgstr "Kaplama simgesi saydamlığı"
 
 #: src/prefs.js:183
 msgid "Set the overlay icon opacity."
-msgstr ""
+msgstr "Kaplama simgesi saydamlığını ayarla."
 
 #: src/prefs.js:186
-#, fuzzy
 msgid "Application Icon Style"
-msgstr "Uygulama simge stili"
+msgstr "Uygulama simge tarzı"
 
 #: src/prefs.js:189
 msgid "Icon Shadow"
-msgstr ""
+msgstr "Simge gölgesi"
 
 #: src/prefs.js:192
 msgid "Window Size"
-msgstr ""
+msgstr "Pencere boyutu"
 
 #: src/prefs.js:194
 msgid "Window Preview Size to Monitor Size Ratio"
-msgstr ""
+msgstr "Pencere ön izleme boyutunun monitör boyutuna oranı"
 
 #: src/prefs.js:194
 msgid "Maximum ratio of window preview size to monitor size."
-msgstr ""
+msgstr "Pencere ön izleme boyutunun monitör boyutuna maksimum oranı."
 
 #: src/prefs.js:195
 msgid "Off-center Size Factor"
@@ -210,12 +205,11 @@ msgstr ""
 
 #: src/prefs.js:195
 msgid "Factor by which to successively shrink previews off to the side"
-msgstr ""
+msgstr "Ön izlemeleri ardı ardına küçültecek faktör"
 
 #: src/prefs.js:198
-#, fuzzy
 msgid "Application Switcher"
-msgstr "Uygulama simge stili"
+msgstr "Uygulama değiştirici"
 
 #: src/prefs.js:200
 msgid "Background Switcher Desaturation"
@@ -231,24 +225,23 @@ msgstr ""
 
 #: src/prefs.js:201
 msgid "Bigger means blurrier."
-msgstr ""
+msgstr "Daha büyük, daha bulanık anlamına gelir."
 
 #: src/prefs.js:204
 msgid "Background"
-msgstr ""
+msgstr "Arka plan"
 
 #: src/prefs.js:206
-#, fuzzy
 msgid "Background Dim-factor"
-msgstr "Arka plan karartma (daha az, daha koyu demektir)"
+msgstr ""
 
 #: src/prefs.js:206
 msgid "Smaller means darker."
-msgstr ""
+msgstr "Daha küçük, daha koyu anlamına gelir."
 
 #: src/prefs.js:209
 msgid "Keybindings"
-msgstr ""
+msgstr "Tuş atamaları"
 
 #: src/prefs.js:211
 msgid "Bind to 'switch-windows'"
@@ -260,52 +253,53 @@ msgstr ""
 
 #: src/prefs.js:226 src/prefs.js:232
 msgid "Perspective Correction"
-msgstr ""
+msgstr "Perspektif düzeltme"
 
 #: src/prefs.js:229
 msgid "None"
-msgstr ""
+msgstr "Hiçbiri"
 
 #: src/prefs.js:230
 msgid "Move Camera"
-msgstr ""
+msgstr "Kamerayı taşı"
 
 #: src/prefs.js:231
 msgid "Adjust Angles"
-msgstr ""
+msgstr "Açıları ayarla"
 
 #: src/prefs.js:235 src/prefs.js:237
 msgid "Highlight Window Under Mouse"
-msgstr ""
+msgstr "Farenin altındaki pencereyi vurgula"
 
 #: src/prefs.js:237
 msgid ""
 "Draw embellishment on window under the mouse to show the effects of clicking."
 msgstr ""
+"Tıklamanın etkilerini göstermek için farenin altındaki pencereye süsleme çiz."
 
 #: src/prefs.js:238
 msgid "Raise Window Under Mouse"
-msgstr ""
+msgstr "Farenin altındaki pencereyi belirginleştir"
 
 #: src/prefs.js:238
 msgid "Raise the window under the mouse above all others."
-msgstr ""
+msgstr "Farenin altındaki pencereyi diğerlerinin üzerine çıkar."
 
 #: src/prefs.js:241
 msgid "Tweaks"
-msgstr ""
+msgstr "İnce ayarlar"
 
 #: src/prefs.js:248
 msgid "Contribute"
-msgstr ""
+msgstr "Katkı"
 
 #: src/prefs.js:284
 msgid "Code (create pull requests, report issues, etc.)"
-msgstr ""
+msgstr "Kod (çekme istekleri oluşturma, sorunları bildirme vb.)"
 
 #: src/prefs.js:291
 msgid "Support me with a Donation"
-msgstr ""
+msgstr "Bağış yaparak beni destekleyin"
 
 #~ msgid ""
 #~ "<b>Please restart Gnome-Shell to apply changes! (Hit Alt+F2, type 'r' and "
