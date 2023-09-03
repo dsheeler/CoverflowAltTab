@@ -3,6 +3,7 @@ CoverflowAltTab contributors (sorted randomly)
 
 * [Daniel Sheeler (dsheeler)](https://github.com/dsheeler)
   * Current Maintainer
+  * All the easings
   * Fixes and some new features
   * Keybindings for Gnome 3.36
   * Support for Gnome 42
