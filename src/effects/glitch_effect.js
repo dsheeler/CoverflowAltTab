@@ -2,16 +2,18 @@
 
 //'use strict';
 
-const { GLib, GObject, Gio, Clutter, Shell } = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
+import Clutter from 'gi://Clutter';
+import Shell from 'gi://Shell';
+import GObject from 'gi://GObject';
+import GLib from 'gi://GLib';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js'
 
-const Me = ExtensionUtils.getCurrentExtension();
+const SHADER_PATH = './effects/glitch_effect.glsl';
 
-const SHADER_PATH = GLib.build_filenamev(
-    [Me.path, 'effects', 'glitch_effect.glsl']
-);
 
 const get_shader_source = _ => {
+    let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
+    let SHADER_PATH = GLib.build_filenamev([ExtensionObj.path, 'effects', 'glitch_effect.glsl']);
     try {
         return Shell.get_file_contents_utf8_sync(SHADER_PATH);
     } catch (e) {
@@ -29,7 +31,7 @@ const get_shader_source = _ => {
 ///
 /// GJS Doc:
 /// https://gjs-docs.gnome.org/clutter10~10_api/clutter.shadereffect
-var GlitchEffect = new GObject.registerClass({
+export var GlitchEffect = new GObject.registerClass({
     GTypeName: "CoverflowAltTabGlitchEffect",
 }, class CoverflowAltTabGlitchShader extends Clutter.ShaderEffect {
     _init(params) {

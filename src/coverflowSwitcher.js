@@ -20,20 +20,13 @@
  * Extends CoverflowAltTab::Switcher, switching tabs using a cover flow.
  */
 
-const Config = imports.misc.config;
 
-const Clutter = imports.gi.Clutter;
-const Graphene = imports.gi.Graphene;
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+import Graphene from 'gi://Graphene';
 
-const BaseSwitcher = ExtensionImports.switcher.Switcher;
+import {Switcher} from './switcher.js';
+const BaseSwitcher = Switcher;
+import {Preview, Placement, Direction, findUpperLeftFromCenter} from './preview.js'
 
-const {
-    Preview,
-    Placement,
-    Direction,
-    findUpperLeftFromCenter,
-} = ExtensionImports.preview;
 const SIDE_ANGLE = 90;
 const BLEND_OUT_ANGLE = 30;
 const ALPHA = 1;
@@ -44,7 +37,7 @@ function appendParams(base, extra) {
     }
 }
 
-var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
+export var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
     }

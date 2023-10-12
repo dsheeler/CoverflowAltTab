@@ -15,27 +15,21 @@
     along with CoverflowAltTab.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const {
-    Clutter,
-    GObject,
-    Graphene,
-    St,
-} = imports.gi;
-
-const Lightbox = imports.ui.lightbox;
-const Main = imports.ui.main;
-
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Graphene from 'gi://Graphene';
+import St from 'gi://St';
 
 /**
  * Direction and Placement properties values are set to be compatible with deprecated
  * Clutter.Gravity.
  */
 
-var Direction = class Direction {}
+export var Direction = class Direction {}
 Direction.TO_RIGHT = 3;
 Direction.TO_LEFT = 7;
 
-var Placement = class Placement {}
+export var Placement = class Placement {}
 Placement.TOP = 1;
 Placement.TOP_RIGHT = 2;
 Placement.RIGHT = 3;
@@ -47,7 +41,7 @@ Placement.TOP_LEFT = 8;
 Placement.CENTER = 9;
 
 
-var Preview = GObject.registerClass({
+export var Preview = GObject.registerClass({
     GTypeName: "Preview"
 }, class Preview extends Clutter.Clone {
     _init(window, ...args) {
@@ -202,7 +196,6 @@ var Preview = GObject.registerClass({
     _getHighlightStyle(alpha) {
         let bgcolor = this.switcher._getSwitcherBackgroundColor();
         let style =`background-color: rgba(${bgcolor.red}, ${bgcolor.green}, ${bgcolor.blue}, ${alpha})`;
-        log(style);
         return style;
     }
 
@@ -257,7 +250,7 @@ var Preview = GObject.registerClass({
     }
 
     vfunc_leave_event(crossingEvent) {
-        if (crossingEvent.source == null) return Clutter.EVENT_PROPAGATE;
+        //if (crossingEvent.source == null) return Clutter.EVENT_PROPAGATE;
         this.remove_highlight();
         this._entered = false;
         if (this.switcher._settings.raise_mouse_over && !this.switcher._destroying) this.switcher._updatePreviews(true, 0);
@@ -336,6 +329,6 @@ var Preview = GObject.registerClass({
     }
 });
 
-function findUpperLeftFromCenter(sideSize, position) {
+export function findUpperLeftFromCenter(sideSize, position) {
     return position - sideSize / 2;
 }

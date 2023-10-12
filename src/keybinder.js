@@ -22,20 +22,16 @@
  * Originally, created to be helper classes to handle the different keybinding APIs.
  */
 
-const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
-const Config = imports.misc.config;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
+import {__ABSTRACT_METHOD__} from './lib.js'
 
 class AbstractKeybinder {
     enable() { __ABSTRACT_METHOD__(this, this.enable) }
     disable() { __ABSTRACT_METHOD__(this, this.disable) }
 }
 
-var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
+export var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     constructor(...args) {
         super(...args);
 

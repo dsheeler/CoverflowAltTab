@@ -23,42 +23,45 @@
  * Create the correct manager and enable/disable it.
  */
 
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const Manager = ExtensionImports.manager;
-const Platform = ExtensionImports.platform;
-const Keybinder = ExtensionImports.keybinder;
+import * as Manager from './manager.js';
+import * as Platform from './platform.js';
+import * as Keybinder from './keybinder.js';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 let manager = null;
 
-function init() {
-}
-
-function enable() {
-    if (!manager) {
-        /*
-         * As there are restricted Gnome versions the current extension support (that
-         * are specified in metadata.json file), only the API related to those supported
-         * versions must be used, not anything else. As a result, performing checks for
-         * keeping backward-compatiblity with old unsupported versions is a wrong
-         * decision.
-         *
-         * To support older versions of Gnome, first, add the version to the metadata
-         * file, then, if needed, include backward-compatible API here for each
-         * version.
-         */
-        manager = new Manager.Manager(
-            new Platform.PlatformGnomeShell(),
-            new Keybinder.Keybinder330Api()
-        );
+export default class CoverflowAltTabExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
     }
 
-    manager.enable();
-}
 
-function disable() {
-    if (manager) {
-        manager.disable();
-        manager = null;
+    enable() {
+        if (!manager) {
+            /*  
+             * As there are restricted Gnome versions the current extension support (that
+             * are specified in metadata.json file), only the API related to those supported
+             * versions must be used, not anything else. As a result, performing checks for
+             * keeping backward-compatiblity with old unsupported versions is a wrong
+             * decision.
+             *
+             * To support older versions of Gnome, first, add the version to the metadata
+             * file, then, if needed, include backward-compatible API here for each
+             * version.
+             */
+            manager = new Manager.Manager(
+                new Platform.PlatformGnomeShell(),
+                new Keybinder.Keybinder330Api()
+            );
+        }   
+        manager.enable();
+    }
+
+
+    disable() {
+        if (manager) {
+            manager.disable();
+            manager = null;
+        }
     }
 }

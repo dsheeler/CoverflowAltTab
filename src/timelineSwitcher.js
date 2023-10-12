@@ -20,25 +20,14 @@
  * Extends CoverflowAltTab::Switcher, switching tabs using a timeline
  */
 
-const Config = imports.misc.config;
-const Clutter = imports.gi.Clutter;
-
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const BaseSwitcher = ExtensionImports.switcher.Switcher;
-
-const {
-    Preview,
-    Placement,
-    Direction,
-    findUpperLeftFromCenter
-} = ExtensionImports.preview;
+import {Switcher} from  './switcher.js';
+import {Preview, Placement, findUpperLeftFromCenter} from './preview.js'
 
 let TRANSITION_TYPE;
 let IN_BOUNDS_TRANSITION_TYPE;
 const TILT_ANGLE = 24;
 
-var TimelineSwitcher = class TimelineSwitcher extends BaseSwitcher {
+export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
     constructor(...args) {
         super(...args);
         TRANSITION_TYPE = 'userChoice';

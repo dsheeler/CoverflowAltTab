@@ -19,40 +19,30 @@
  *
  * The implementation of the switcher UI. Handles keyboard events.
  */
+import Clutter from 'gi://Clutter';
+import Shell from 'gi://Shell';
+import St from 'gi://St';
+import Meta from 'gi://Meta';
+import Pango from 'gi://Pango';
+import GLib from 'gi://GLib';
 
-const Clutter = imports.gi.Clutter;
-const Config = imports.misc.config;
-const Shell = imports.gi.Shell;
-const St = imports.gi.St;
-const Meta = imports.gi.Meta;
-const Mainloop = imports.mainloop;
-const Main = imports.ui.main;
-const Pango = imports.gi.Pango;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+
+import {ColorEffect} from './effects/color_effect.js';
+import {GlitchEffect} from './effects/glitch_effect.js';
+import {Placement, Direction} from './preview.js';
+
+import {__ABSTRACT_METHOD__} from './lib.js';
 
 const INITIAL_DELAY_TIMEOUT = 150;
-const CHECK_DESTROYED_TIMEOUT = 100;
 const ICON_SIZE = 64;
 const ICON_TITLE_SPACING = 10;
-
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const ColorEffect = ExtensionImports.effects.color_effect.ColorEffect;
-const GlitchEffect = ExtensionImports.effects.glitch_effect.GlitchEffect;
-
-const {
-    Preview,
-    Placement,
-    Direction,
-    findUpperLeftFromCenter
-} = ExtensionImports.preview;
-
-const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 var DestroyReason = class DestroyReason {}
 DestroyReason.ACTIVATE_SELECTED = 1;
 DestroyReason.NO_ACTIVATION = 2;
 
-var Switcher = class Switcher {
+export var Switcher = class Switcher {
     constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
@@ -150,7 +140,7 @@ var Switcher = class Switcher {
     			return;
         }
 
-        this._initialDelayTimeoutId = Mainloop.timeout_add(INITIAL_DELAY_TIMEOUT, this.show.bind(this));
+        this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
 
     _addBackgroundEffects() {
@@ -888,11 +878,11 @@ var Switcher = class Switcher {
             }
 
             if (this._initialDelayTimeoutId !== 0) {
-                Mainloop.source_remove(this._initialDelayTimeoutId);
+                GLib.Source.remove(this._initialDelayTimeoutId);
             }
 
             if (this._checkDestroyedTimeoutId !== 0) {
-                Mainloop.source_remove(this._checkDestroyedTimeoutId);
+                GLib.Source.remove(this._checkDestroyedTimeoutId);
             }
 
             this._windows = null;

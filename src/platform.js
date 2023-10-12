@@ -23,21 +23,21 @@
  * Originally, created to be helper classes to handle Gnome Shell and Cinnamon differences.
  */
 
-const St = imports.gi.St;
-const Gio = imports.gi.Gio;
-const Config = imports.misc.config;
-const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
-const Clutter = imports.gi.Clutter;
-const Lightbox = imports.ui.lightbox;
+import St from 'gi://St';
+import Gio from 'gi://Gio';
+import Meta from 'gi://Meta';
+import Clutter from 'gi://Clutter';
+import Shell from 'gi://Shell';
 
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Lightbox from 'resource:///org/gnome/shell/ui/lightbox.js';
+import * as Background from 'resource:///org/gnome/shell/ui/background.js';
+import {__ABSTRACT_METHOD__} from './lib.js'
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
-
-const {Switcher} = ExtensionImports.switcher;
-const {CoverflowSwitcher} = ExtensionImports.coverflowSwitcher;
-const {TimelineSwitcher} = ExtensionImports.timelineSwitcher;
+import {Switcher} from './switcher.js';
+import {CoverflowSwitcher} from './coverflowSwitcher.js';
+import {TimelineSwitcher} from './timelineSwitcher.js';
 
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
@@ -83,6 +83,41 @@ const modes = [
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+}
+/**
+ * getSettings:
+ * @schema: (optional): the GSettings schema id
+ *
+ * Builds and return a GSettings schema for @schema, using schema files
+ * in extensionsdir/schemas. If @schema is not provided, it is taken from
+ * metadata['settings-schema'].
+ */
+
+function getSettings(schema) {
+	let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
+	schema = schema || ExtensionObj.metadata['settings-schema'];
+
+	const GioSSS = Gio.SettingsSchemaSource;
+
+	// check if this extension was built with "make zip-file", and thus
+	// has the schema files in a subfolder
+	// otherwise assume that extension has been installed in the
+	// same prefix as gnome-shell (and therefore schemas are available
+	// in the standard folders)
+	let schemaDir = ExtensionObj.dir.get_child('schemas');
+	let schemaSource;
+	if (schemaDir.query_exists(null))
+		schemaSource = GioSSS.new_from_directory(schemaDir.get_path(),
+			GioSSS.get_default(), false);
+	else
+		schemaSource = GioSSS.get_default();
+
+	let schemaObj = schemaSource.lookup(schema, true);
+	if (!schemaObj)
+		throw new Error('Schema ' + schema + ' could not be found for extension '
+			+ ExtensionObj.metadata.uuid + '. Please check your installation.');
+
+	return new Gio.Settings({ settings_schema: schemaObj });
 }
 
 class AbstractPlatform {
@@ -154,7 +189,7 @@ class AbstractPlatform {
     }
 }
 
-var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
+export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     constructor(...args) {
         super(...args);
 
@@ -171,7 +206,7 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         this._settings_changed_callbacks = [];
 
         if (this._extensionSettings == null)
-            this._extensionSettings = ExtensionImports.lib.getSettings(SHELL_SCHEMA);
+            this._extensionSettings = getSettings(SHELL_SCHEMA);
 
         if (this._desktopSettings == null)
             this._desktopSettings = new Gio.Settings({ schema_id: DESKTOP_INTERFACE_SCHEMA });
@@ -248,11 +283,19 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     getWindowTracker() {
-        return imports.gi.Shell.WindowTracker.get_default();
+        return Shell.WindowTracker.get_default();
     }
 
     getPrimaryModifier(mask) {
-        return imports.ui.switcherPopup.primaryModifier(mask);
+        if (mask === 0)
+            return 0;
+    
+        let primary = 1;
+        while (mask > 1) {
+            mask >>= 1;
+            primary <<= 1;
+        }
+        return primary;
     }
 
     getSettings() {
@@ -444,10 +487,10 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
         this._vignette_sharpness_backup = Lightbox.VIGNETTE_SHARPNESS;
         this._vignette_brigtness_backup = Lightbox.VIGNETTE_BRIGHTNESS;
 
-        Lightbox.VIGNETTE_SHARPNESS = 1 - this._settings.dim_factor;
-        Lightbox.VIGNETTE_BRIGHTNESS = 1;
+        //Lightbox.VIGNETTE_SHARPNESS = 1 - this._settings.dim_factor;
+        //Lightbox.VIGNETTE_BRIGHTNESS = 1;
 
-    	let Background = imports.ui.background;
+    	
 
     	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
@@ -545,8 +588,8 @@ var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeBackground() {
-        Lightbox.VIGNETTE_SHARPNESS = this._vignette_sharpness_backup;
-        Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
+        //Lightbox.VIGNETTE_SHARPNESS = this._vignette_sharpness_backup;
+        //Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
         this._backgroundGroup.destroy();
     }
 

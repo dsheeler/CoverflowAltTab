@@ -22,8 +22,7 @@
  * This class is a helper class to start the actual switcher.
  */
 
-const Main = imports.ui.main;
-const Mainloop = imports.mainloop;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
@@ -47,7 +46,7 @@ function matchOtherWorkspace(win) {
     return win.get_workspace() != this && !win.is_skip_taskbar();
 }
 
-var Manager = class Manager {
+export var Manager = class Manager {
     constructor(platform, keybinder) {
         this.platform = platform;
         this.keybinder = keybinder;
