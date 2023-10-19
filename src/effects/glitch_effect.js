@@ -8,9 +8,6 @@ import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js'
 
-const SHADER_PATH = './effects/glitch_effect.glsl';
-
-
 const get_shader_source = _ => {
     let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
     let SHADER_PATH = GLib.build_filenamev([ExtensionObj.path, 'effects', 'glitch_effect.glsl']);

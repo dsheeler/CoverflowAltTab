@@ -31,26 +31,13 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {ColorEffect} from './effects/color_effect.js';
 import {GlitchEffect} from './effects/glitch_effect.js';
 import {Placement, Direction} from './preview.js';
+import {MySwipeTracker} from './swipeTracker.js';
 
-import {__ABSTRACT_METHOD__} from './lib.js';
+import {__ABSTRACT_METHOD__, debug} from './lib.js';
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const ICON_SIZE = 64;
 const ICON_TITLE_SPACING = 10;
-
-const ExtensionImports = imports.misc.extensionUtils.getCurrentExtension().imports;
-
-const ColorEffect = ExtensionImports.effects.color_effect.ColorEffect;
-const GlitchEffect = ExtensionImports.effects.glitch_effect.GlitchEffect;
-
-const {
-    Preview,
-    Placement,
-    Direction,
-    findUpperLeftFromCenter
-} = ExtensionImports.preview;
-
-const {__ABSTRACT_METHOD__} = ExtensionImports.lib;
 
 var DestroyReason = class DestroyReason {}
 DestroyReason.ACTIVATE_SELECTED = 1;
@@ -255,7 +242,6 @@ export var Switcher = class Switcher {
 
     _ungrabModal() {
         if (this._haveModal) {
-            debug("giving up modal")
             this.actor.disconnect(this._key_press_handler_id);
             this.actor.disconnect(this._key_release_handler_id);
             this.actor.disconnect(this._scroll_handler_id);
@@ -266,7 +252,6 @@ export var Switcher = class Switcher {
 
     _grabModal() {
         if (this._haveModal) return;
-        debug("connecting to key-press and release events")
         this._key_press_handler_id = this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
         this._key_release_handler_id = this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
         this._scroll_handler_id = this.actor.connect('scroll-event', this._scrollEvent.bind(this));
@@ -277,7 +262,7 @@ export var Switcher = class Switcher {
         }
         this._haveModal = true;
     }
-    
+
     _addBackgroundEffects() {
         for (let preview of this._previews) {
             if (this._settings.use_glitch_effect) {
@@ -565,7 +550,6 @@ export var Switcher = class Switcher {
     }
 
     _next() {
-        debug("NEXT")
         if (this._parent === null) this._manager.platform.dimBackground();
         this._stopDestroying();
         if (this._windows.length <= 1) {
@@ -587,7 +571,6 @@ export var Switcher = class Switcher {
     }
 
     _previous() {
-        debug("PREVIOUS")
         if (this._parent === null) this._manager.platform.dimBackground();
         this._stopDestroying();
         if (this._windows.length <= 1) {
@@ -719,16 +702,6 @@ export var Switcher = class Switcher {
         application_icon_box.add_actor(this._icon);
         this.previewActor.add_actor(application_icon_box);
         this._windowIconBoxes[index] = application_icon_box;
-        /* let alpha = 1;
-        if (this._settings.icon_style !== "Classic") {
-            alpha = this._settings.overlay_icon_opacity;
-        }
-
-        this._manager.platform.tween(application_icon_box, {
-            opacity: 255 * alpha,
-            time: animation_time,
-            transition: 'easeInOutQuint',
-        }); */
     }
 
     _updateWindowTitle() {

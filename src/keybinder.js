@@ -22,6 +22,7 @@
  * Originally, created to be helper classes to handle the different keybinding APIs.
  */
 
+import Shell from 'gi://Shell';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {__ABSTRACT_METHOD__} from './lib.js'
@@ -39,7 +40,6 @@ export var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     }
 
     enable(startAppSwitcherBind, platform) {
-        let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
 
         this._startAppSwitcherBind = startAppSwitcherBind;
@@ -51,7 +51,6 @@ export var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     }
 
     disable() {
-        let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
@@ -62,7 +61,6 @@ export var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     }
 
     _onSettingsChanged(settings, key=null) {
-        let Shell = imports.gi.Shell;
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
         if (key == null || key == 'bind-to-switch-applications') {
             if (settings.get_boolean('bind-to-switch-applications')) {

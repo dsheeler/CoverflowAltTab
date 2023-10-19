@@ -24,6 +24,7 @@
  */
 
 import St from 'gi://St';
+import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
 import Clutter from 'gi://Clutter';
@@ -484,14 +485,6 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
     }
 
     initBackground() {
-        this._vignette_sharpness_backup = Lightbox.VIGNETTE_SHARPNESS;
-        this._vignette_brigtness_backup = Lightbox.VIGNETTE_BRIGHTNESS;
-
-        //Lightbox.VIGNETTE_SHARPNESS = 1 - this._settings.dim_factor;
-        //Lightbox.VIGNETTE_BRIGHTNESS = 1;
-
-    	
-
     	this._backgroundGroup = new Meta.BackgroundGroup();
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
     	if (this._backgroundGroup.lower_bottom) {
@@ -499,11 +492,25 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
         } else {
 	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
         }
-         this._lightbox = new Lightbox.Lightbox(this._backgroundGroup, {
-             inhibitEvents: true,
-             radialEffect: true,
+        
+        this._backgroundShade = new Clutter.Actor({ 
+            opacity: 0, 
+            reactive: false
         });
-        this._lightbox.opacity = 0;
+
+        let constraint = Clutter.BindConstraint.new(this._backgroundGroup,
+            Clutter.BindCoordinate.ALL, 0);
+        this._backgroundShade.add_constraint(constraint);
+
+        let shade = new MyRadialShaderEffect({name: 'shade'});
+        shade.brightness = 1;
+        shade.sharpness = 1 - this._settings.dim_factor;
+
+        this._backgroundShade.add_effect(shade);
+        
+        this._backgroundGroup.add_actor(this._backgroundShade);
+        this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
+    
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
@@ -542,8 +549,7 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
             // ignore missing legacy tray
         }
         this._backgroundGroup.show();
-        this._lightbox.lightOn();
-        this.tween(this._lightbox, {
+        this.tween(this._backgroundShade, {
             opacity: 255,
             time: this._settings.animation_time,
             transition: 'easeInOutQuint',
@@ -578,18 +584,15 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
             //ignore missing legacy tray
         }
 
-        this.tween(this._lightbox, {
+        this.tween(this._backgroundShade, {
             time: this._settings.animation_time * 0.95,
             transition: 'easeInOutQuint',
             opacity: 0,
-            onComplete: this._lightbox.lightOff.bind(this._lightbox),
         });
 
     }
 
     removeBackground() {
-        //Lightbox.VIGNETTE_SHARPNESS = this._vignette_sharpness_backup;
-        //Lightbox.VIGNETTE_BRIGHTNESS = this._vignette_brigtness_backup;
         this._backgroundGroup.destroy();
     }
 
@@ -605,3 +608,76 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
 
 
 }
+
+const VIGNETTE_DECLARATIONS = '                                              \
+uniform float brightness;                                                  \n\
+uniform float vignette_sharpness;                                          \n\
+float rand(vec2 p) {                                                       \n\
+  return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453123);        \n\
+}                                                                          \n';
+
+const VIGNETTE_CODE = '                                                      \
+cogl_color_out.a = cogl_color_in.a;                                        \n\
+cogl_color_out.rgb = vec3(0.0, 0.0, 0.0);                                  \n\
+vec2 position = cogl_tex_coord_in[0].xy - 0.5;                             \n\
+float t = clamp(length(1.41421 * position), 0.0, 1.0);                     \n\
+float pixel_brightness = mix(1.0, 1.0 - vignette_sharpness, t);            \n\
+cogl_color_out.a *= 1.0 - pixel_brightness * brightness;                   \n\
+cogl_color_out.a += (rand(position) - 0.5) / 100.0;                        \n';
+
+const MyRadialShaderEffect = GObject.registerClass({
+    Properties: {
+        'brightness': GObject.ParamSpec.float(
+            'brightness', 'brightness', 'brightness',
+            GObject.ParamFlags.READWRITE,
+            0, 1, 1),
+        'sharpness': GObject.ParamSpec.float(
+            'sharpness', 'sharpness', 'sharpness',
+            GObject.ParamFlags.READWRITE,
+            0, 1, 0),
+    },
+}, class MyRadialShaderEffect extends Shell.GLSLEffect {
+    _init(params) {
+        this._brightness = undefined;
+        this._sharpness = undefined;
+
+        super._init(params);
+
+        this._brightnessLocation = this.get_uniform_location('brightness');
+        this._sharpnessLocation = this.get_uniform_location('vignette_sharpness');
+
+        this.brightness = 1.0;
+        this.sharpness = 0.0;
+    }
+
+    vfunc_build_pipeline() {
+        this.add_glsl_snippet(Shell.SnippetHook.FRAGMENT,
+            VIGNETTE_DECLARATIONS, VIGNETTE_CODE, true);
+    }
+
+    get brightness() {
+        return this._brightness;
+    }
+
+    set brightness(v) {
+        if (this._brightness === v)
+            return;
+        this._brightness = v;
+        this.set_uniform_float(this._brightnessLocation,
+            1, [this._brightness]);
+        this.notify('brightness');
+    }
+
+    get sharpness() {
+        return this._sharpness;
+    }
+
+    set sharpness(v) {
+        if (this._sharpness === v)
+            return;
+        this._sharpness = v;
+        this.set_uniform_float(this._sharpnessLocation,
+            1, [this._sharpness]);
+        this.notify('sharpness');
+    }
+});

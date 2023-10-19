@@ -27,8 +27,6 @@ import {Switcher} from './switcher.js';
 const BaseSwitcher = Switcher;
 import {Preview, Placement, Direction, findUpperLeftFromCenter} from './preview.js'
 
-import {debug} from './lib';
-
 const SIDE_ANGLE = 90;
 const BLEND_OUT_ANGLE = 30;
 const ALPHA = 1;
@@ -143,7 +141,7 @@ export var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
             this._setCurrentIndex(this._currentIndex - 1);
             this._updatePreviews(false);
         }
-    }flipStack
+    }
 
     _flipStack(direction) {
         //this._looping = true;

@@ -55,7 +55,6 @@ export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
                     let preferred_size_ok;
                     [preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
-
                 let previewScale = this._settings.preview_to_monitor_ratio;
                 let scale = 1.0;
                 let previewWidth = this.actor.width * previewScale;
@@ -63,7 +62,7 @@ export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
                 if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let preview = new Preview(metaWin, {
+                let preview = new Preview(metaWin, this, {
                     opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
@@ -73,18 +72,15 @@ export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
                     y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
                         compositor.y) - monitor.y,
                     rotation_angle_y: 0,
+                    width: width,
+                    height: height,
                 });
 
-                preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
-                preview.target_width = width;
-                preview.target_height = height;
                 preview.scale = scale;
-                preview.target_width_side = preview.target_width * 2/3;
-                preview.target_height_side = preview.target_height;
 
-                preview.target_x = findUpperLeftFromCenter(preview.target_width * preview.scale,
+                preview.target_x = findUpperLeftFromCenter(preview.width * preview.scale,
                     this._previewsCenterPosition.x);
-                preview.target_y = findUpperLeftFromCenter(preview.target_height,
+                preview.target_y = findUpperLeftFromCenter(preview.height,
                     this._previewsCenterPosition.y);
 
                 preview.set_pivot_point_placement(Placement.LEFT);
@@ -101,12 +97,12 @@ export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
     }
 
     _previewNext() {
-        this._currentIndex = (this._currentIndex + 1) % this._windows.length;
+        this._setCurrentIndex((this._currentIndex + 1) % this._windows.length);
         this._updatePreviews(false, 1);
     }
 
     _previewPrevious() {
-        this._currentIndex = (this._windows.length + this._currentIndex - 1) % this._windows.length;
+        this._setCurrentIndex((this._windows.length + this._currentIndex - 1) % this._windows.length);
         this._updatePreviews(false, -1);
     }
 
@@ -114,7 +110,6 @@ export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
         if (this._previews == null || this._previews.length == 0)
             return;
 
-        let monitor = this._updateActiveMonitor();
         let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
 
         if (this._previews.length == 1) {
