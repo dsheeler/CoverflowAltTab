@@ -50,7 +50,7 @@ export default class CoverflowAltTabExtension extends Extension {
              * version.
              */
             manager = new Manager.Manager(
-                new Platform.PlatformGnomeShell(),
+                new Platform.PlatformGnomeShell(this.getSettings()),
                 new Keybinder.Keybinder330Api()
             );
         }   

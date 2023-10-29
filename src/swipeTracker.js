@@ -3,10 +3,9 @@
 
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
-import Meta from 'gi://Meta';
+import Mtk from 'gi://Mtk';
 import GObject from 'gi://GObject';
 
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Params from 'resource:///org/gnome/shell/misc/params.js';
 
 // FIXME: ideally these values matches physical touchpad size. We can get the
@@ -327,7 +326,6 @@ const ScrollGesture = GObject.registerClass({
         this._allowedModes = allowedModes;
         this._began = false;
         this._enabled = true;
-        log("ScrollGesture" + allowedModes)
         actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
@@ -346,21 +344,16 @@ const ScrollGesture = GObject.registerClass({
     }
 
     canHandleEvent(event) {
-        //log("canHandleEvent")
         if (event.type() !== Clutter.EventType.SCROLL)
-           { log("NOT SCROLL"); return false;}
+           return false;
 
         if (event.get_scroll_source() !== Clutter.ScrollSource.FINGER &&
             event.get_source_device().get_device_type() !== Clutter.InputDeviceType.TOUCHPAD_DEVICE)
-            { log("NOT finger or touchpad"); return false; }
+            return false;
 
         if (!this.enabled)
-            { log("Not enabled"); return false; }
-
-      /*   if ((this._allowedModes & Main.actionMode) === 0)
-            { log("Wrong action mode " + this._allowedModes + " " + Main.actionMode);
             return false;
-    } */
+
         if (!this._began && this.scrollModifiers !== 0 &&
             (event.get_state() & this.scrollModifiers) === 0)
             return false;
@@ -432,7 +425,7 @@ const ScrollGesture = GObject.registerClass({
 //   instantly.
 
 /** A class for handling swipe gestures */
-export var MySwipeTracker = GObject.registerClass({
+export const MySwipeTracker = GObject.registerClass({
     Properties: {
         'enabled': GObject.ParamSpec.boolean(
             'enabled', 'enabled', 'enabled',
@@ -533,10 +526,7 @@ export var MySwipeTracker = GObject.registerClass({
      */
     canHandleScrollEvent(scrollEvent) {
         if (!this.enabled || this._scrollGesture === null) {
-            log("Can NOT handle scroll event")
             return false;
-        } else {
-            log("Can handle scroll event")
         }
 
         return this._scrollGesture.canHandleEvent(scrollEvent);
@@ -596,13 +586,12 @@ export var MySwipeTracker = GObject.registerClass({
     }
 
     _beginGesture(gesture, time, x, y) {
-        log("beginGesture")
         if (this._state === State.SCROLLING)
             return;
 
         this._history.append(time, 0);
 
-        let rect = new Meta.Rectangle({ x, y, width: 1, height: 1 });
+        let rect = new Mtk.Rectangle({ x, y, width: 1, height: 1 });
         let monitor = global.display.get_monitor_index_for_rect(rect);
 
         this.emit('begin', monitor);

@@ -1,7 +1,14 @@
 {
+    "donations": {
+        "github": "dsheeler",
+        "paypal": "DanielSheeler",
+        "liberapay": "dsheeler"
+    },
+    "gettext-domain": "coverflow",
+    "name": "Coverflow Alt-Tab",
+    "settings-schema": "org.gnome.shell.extensions.coverflowalttab",
     "shell-version": ["45"],
     "uuid": "CoverflowAltTab@palatis.blogspot.com",
-    "name": "Coverflow Alt-Tab",
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
     "url": "https://github.com/dmo60/CoverflowAltTab"
 }

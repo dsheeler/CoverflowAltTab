@@ -31,10 +31,8 @@ import Clutter from 'gi://Clutter';
 import Shell from 'gi://Shell';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as Lightbox from 'resource:///org/gnome/shell/ui/lightbox.js';
 import * as Background from 'resource:///org/gnome/shell/ui/background.js';
 import {__ABSTRACT_METHOD__} from './lib.js'
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {Switcher} from './switcher.js';
 import {CoverflowSwitcher} from './coverflowSwitcher.js';
@@ -42,7 +40,6 @@ import {TimelineSwitcher} from './timelineSwitcher.js';
 
 const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
-const SHELL_SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
 const DESKTOP_INTERFACE_SCHEMA = 'org.gnome.desktop.interface';
 const KEY_TEXT_SCALING_FACTOR = 'text-scaling-factor';
 
@@ -84,41 +81,6 @@ const modes = [
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
-}
-/**
- * getSettings:
- * @schema: (optional): the GSettings schema id
- *
- * Builds and return a GSettings schema for @schema, using schema files
- * in extensionsdir/schemas. If @schema is not provided, it is taken from
- * metadata['settings-schema'].
- */
-
-function getSettings(schema) {
-	let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
-	schema = schema || ExtensionObj.metadata['settings-schema'];
-
-	const GioSSS = Gio.SettingsSchemaSource;
-
-	// check if this extension was built with "make zip-file", and thus
-	// has the schema files in a subfolder
-	// otherwise assume that extension has been installed in the
-	// same prefix as gnome-shell (and therefore schemas are available
-	// in the standard folders)
-	let schemaDir = ExtensionObj.dir.get_child('schemas');
-	let schemaSource;
-	if (schemaDir.query_exists(null))
-		schemaSource = GioSSS.new_from_directory(schemaDir.get_path(),
-			GioSSS.get_default(), false);
-	else
-		schemaSource = GioSSS.get_default();
-
-	let schemaObj = schemaSource.lookup(schema, true);
-	if (!schemaObj)
-		throw new Error('Schema ' + schema + ' could not be found for extension '
-			+ ExtensionObj.metadata.uuid + '. Please check your installation.');
-
-	return new Gio.Settings({ settings_schema: schemaObj });
 }
 
 class AbstractPlatform {
@@ -190,13 +152,13 @@ class AbstractPlatform {
     }
 }
 
-export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatform {
-    constructor(...args) {
+export class PlatformGnomeShell extends AbstractPlatform {
+    constructor(settings, ...args) {
         super(...args);
 
         this._settings = null;
         this._connections = null;
-        this._extensionSettings = null;
+        this._extensionSettings = settings;
         this._desktopSettings = null;
         this._settings_changed_callbacks = null;
     }
@@ -205,9 +167,6 @@ export var PlatformGnomeShell = class PlatformGnomeShell extends AbstractPlatfor
         //this.disable();
 
         this._settings_changed_callbacks = [];
-
-        if (this._extensionSettings == null)
-            this._extensionSettings = getSettings(SHELL_SCHEMA);
 
         if (this._desktopSettings == null)
             this._desktopSettings = new Gio.Settings({ schema_id: DESKTOP_INTERFACE_SCHEMA });

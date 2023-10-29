@@ -6,11 +6,10 @@ import Clutter from 'gi://Clutter';
 import Shell from 'gi://Shell';
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js'
+
+const SHADER_PATH = GLib.filename_from_uri(GLib.uri_resolve_relative(import.meta.url, 'color_effect.glsl', GLib.UriFlags.NONE))[0];
 
 const get_shader_source = _ => {
-    let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
-    let SHADER_PATH = GLib.build_filenamev([ExtensionObj.path, 'effects', 'color_effect.glsl']);
     try {
         return Shell.get_file_contents_utf8_sync(SHADER_PATH);
     } catch (e) {
@@ -28,7 +27,7 @@ const get_shader_source = _ => {
 ///
 /// GJS Doc:
 /// https://gjs-docs.gnome.org/clutter10~10_api/clutter.shadereffect
-export var ColorEffect = new GObject.registerClass({
+export const ColorEffect = new GObject.registerClass({
     GTypeName: "CoverflowAltTabColorEffect",
     Properties: {
         'red': GObject.ParamSpec.double(

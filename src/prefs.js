@@ -130,7 +130,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let IconsPath = GLib.build_filenamev([this.path, 'ui', 'icons']);
         let iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
         iconTheme.add_search_path(IconsPath);
-        this.initTranslations("coverflow");
     }
     
     getVersionString(_page) {

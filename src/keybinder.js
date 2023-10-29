@@ -32,7 +32,7 @@ class AbstractKeybinder {
     disable() { __ABSTRACT_METHOD__(this, this.disable) }
 }
 
-export var Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
+export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
     constructor(...args) {
         super(...args);
 

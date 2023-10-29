@@ -46,7 +46,7 @@ function matchOtherWorkspace(win) {
     return win.get_workspace() != this && !win.is_skip_taskbar();
 }
 
-export var Manager = class Manager {
+export const Manager = class Manager {
     constructor(platform, keybinder) {
         this.platform = platform;
         this.keybinder = keybinder;

@@ -25,11 +25,11 @@ import St from 'gi://St';
  * Clutter.Gravity.
  */
 
-export var Direction = class Direction {}
+export class Direction {}
 Direction.TO_RIGHT = 3;
 Direction.TO_LEFT = 7;
 
-export var Placement = class Placement {}
+export class Placement {}
 Placement.TOP = 1;
 Placement.TOP_RIGHT = 2;
 Placement.RIGHT = 3;
@@ -40,8 +40,7 @@ Placement.LEFT = 7;
 Placement.TOP_LEFT = 8;
 Placement.CENTER = 9;
 
-
-export var Preview = GObject.registerClass({
+export const Preview = GObject.registerClass({
     GTypeName: "Preview"
 }, class Preview extends Clutter.Clone {
     _init(window, switcher, ...args) {

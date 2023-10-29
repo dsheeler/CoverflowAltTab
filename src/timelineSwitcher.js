@@ -27,7 +27,7 @@ let TRANSITION_TYPE;
 let IN_BOUNDS_TRANSITION_TYPE;
 const TILT_ANGLE = 24;
 
-export var TimelineSwitcher = class TimelineSwitcher extends Switcher {
+export class TimelineSwitcher extends Switcher {
     constructor(...args) {
         super(...args);
         TRANSITION_TYPE = 'userChoice';

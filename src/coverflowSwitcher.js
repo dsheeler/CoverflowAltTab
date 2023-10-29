@@ -37,7 +37,7 @@ function appendParams(base, extra) {
     }
 }
 
-export var CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
+export const CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
     }

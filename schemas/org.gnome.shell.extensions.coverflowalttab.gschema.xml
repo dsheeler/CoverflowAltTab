@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist>
+<schemalist gettext-domain="coverflow-alt-tab">
   <schema path="/org/gnome/shell/extensions/coverflowalttab/" id="org.gnome.shell.extensions.coverflowalttab">
     <key type="b" name="hide-panel">
         <default>true</default>
