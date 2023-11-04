@@ -129,6 +129,7 @@ class AbstractPlatform {
             use_theme_color_for_tint_color: false,
             use_glitch_effect: false,
             use_tint: false,
+            invert_swipes: false,
         };
     }
 
@@ -164,8 +165,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     enable() {
-        //this.disable();
-
         this._settings_changed_callbacks = [];
 
         if (this._desktopSettings == null)
@@ -202,6 +201,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "tint-color",
             "use-theme-color-for-tint-color",
             "use-glitch-effect",
+            "invert-swipes",
         ];
 
         let dkeys = [
@@ -316,6 +316,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 use_theme_color_for_tint_color: settings.get_boolean("use-theme-color-for-tint-color"),
                 use_glitch_effect: settings.get_boolean("use-glitch-effect"),
                 use_tint: settings.get_boolean("use-tint"),
+                invert_swipes: settings.get_boolean("invert-swipes"),
             };
         } catch (e) {
             global.log(e);

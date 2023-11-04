@@ -118,7 +118,8 @@ export class Switcher {
         const swipeTracker = new MySwipeTracker(this.actor,
             Clutter.Orientation.HORIZONTAL,
             0,
-            { allowDrag: true, allowScroll: true });
+            { allowDrag: true, allowScroll: true },
+            this._settings.invert_swipes);
         swipeTracker.allowLongSwipes = true;
         swipeTracker.connect('begin', this._gestureBegin.bind(this));
         swipeTracker.connect('update', this._gestureUpdate.bind(this));

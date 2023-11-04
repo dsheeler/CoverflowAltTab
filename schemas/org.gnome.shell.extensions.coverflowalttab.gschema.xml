@@ -214,5 +214,9 @@
         <default>false</default>
         <summary>Use a "glitch effect" on the background application switcher</summary>
     </key>
+    <key type="b" name="invert-swipes">
+        <default>false</default>
+        <summary>Swipe content instead of view</summary>
+    </key>
   </schema>
 </schemalist>

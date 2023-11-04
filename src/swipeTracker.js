@@ -321,8 +321,9 @@ const ScrollGesture = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class ScrollGesture extends GObject.Object {
-    _init(actor, allowedModes) {
+    _init(actor, allowedModes, inverted=false) {
         super._init();
+        this._inverted = inverted;
         this._allowedModes = allowedModes;
         this._began = false;
         this._enabled = true;
@@ -373,7 +374,10 @@ const ScrollGesture = GObject.registerClass({
 
         let time = event.get_time();
         let [dx, dy] = event.get_scroll_delta();
-        dx = -dx; dy = -dy;
+        if (this._inverted) {
+            dx = -dx; dy = -dy;
+        }
+
         if (dx === 0 && dy === 0) {
             this.emit('end', time, distance);
             this._began = false;
@@ -454,10 +458,11 @@ export const MySwipeTracker = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT64, GObject.TYPE_DOUBLE] },
     },
 }, class MySwipeTracker extends GObject.Object {
-    _init(actor, orientation, allowedModes, params) {
+    _init(actor, orientation, allowedModes, params, inverted=false) {
         super._init();
         params = Params.parse(params, { allowDrag: true, allowScroll: true });
         this.orientation = orientation;
+        this._inverted = inverted;
         this._allowedModes = allowedModes;
         this._enabled = true;
         this._distance = global.screen_height;
@@ -502,7 +507,7 @@ export const MySwipeTracker = GObject.registerClass({
         }
 
         if (params.allowScroll) {
-            this._scrollGesture = new ScrollGesture(actor, allowedModes);
+            this._scrollGesture = new ScrollGesture(actor, allowedModes, this._inverted);
             this._scrollGesture.connect('begin', this._beginGesture.bind(this));
             this._scrollGesture.connect('update', this._updateGesture.bind(this));
             this._scrollGesture.connect('end', this._endTouchpadGesture.bind(this));
