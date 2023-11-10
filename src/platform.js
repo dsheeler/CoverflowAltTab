@@ -224,6 +224,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     disable() {
+        this.showPanels(0);
         if (this._connections) {
             for (let connection of this._connections) {
                 this._extensionSettings.disconnect(connection);
@@ -481,25 +482,28 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
     }
 
-     dimBackground() {
+    hidePanels() {
         let panels = this.getPanels();
         for (let panel of panels) {
             try {
                 let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
-                if (this._settings.hide_panel) {
-                    this.tween(panelActor, {
-                        opacity: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint'
-                    });
-                }
+                this.tween(panelActor, {
+                    opacity: 0,
+                    time: this._settings.animation_time,
+                    transition: 'easeInOutQuint'
+                });
             } catch (e) {
                 log(e);
                 // ignore fake panels
             }
         }
+    }
 
+     dimBackground() {
+        if (this._settings.hide_panel) {
+            this.hidePanels();
+        }
         // hide gnome-shell legacy tray
         try {
             if (Main.legacyTray) {
@@ -516,7 +520,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         });
     }
 
-    lightenBackground() {
+    showPanels(time) {
         // panels
         let panels = this.getPanels();
         for (let panel of panels){
@@ -527,13 +531,19 @@ export class PlatformGnomeShell extends AbstractPlatform {
                     this.removeTweens(panelActor);
                     this.tween(panelActor, {
                         opacity: 255,
-                        time: this._settings.animation_time,
+                        time: time,
                         transition: 'easeInOutQuint'
                     });
                 }
             } catch (e) {
                 //ignore fake panels
             }
+        }
+    }
+
+    lightenBackground() {
+        if (this._settings.hide_panel) {
+            this.showPanels(this._settings.animation_time);
         }
         // show gnome-shell legacy trayconn
         try {

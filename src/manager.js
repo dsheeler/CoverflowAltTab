@@ -24,6 +24,8 @@
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+import {CoverflowSwitcher} from './coverflowSwitcher.js'
+
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
     let t2 = win2.get_user_time();
@@ -50,7 +52,7 @@ export const Manager = class Manager {
     constructor(platform, keybinder) {
         this.platform = platform;
         this.keybinder = keybinder;
-
+        this.switcher = null;
         if (global.workspace_manager && global.workspace_manager.get_active_workspace)
             this.workspace_manager = global.workspace_manager;
         else
@@ -68,6 +70,8 @@ export const Manager = class Manager {
     }
 
     disable() {
+        if (this.switcher != null)
+            this.switcher.destroy();
         this.platform.disable();
         this.keybinder.disable();
     }
@@ -140,8 +144,7 @@ export const Manager = class Manager {
             let mask = binding.get_mask();
             let currentIndex = windows.indexOf(display.focus_window);
 
-            let switcher_class = this.platform.getSettings().switcher_class;
-            let switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
+            this.switcher = new CoverflowSwitcher(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
         }
     }
 }

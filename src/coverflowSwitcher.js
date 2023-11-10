@@ -37,7 +37,7 @@ function appendParams(base, extra) {
     }
 }
 
-export const CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
+export class CoverflowSwitcher extends BaseSwitcher {
     constructor(...args) {
         super(...args);
     }
@@ -223,22 +223,6 @@ export const CoverflowSwitcher = class CoverflowSwitcher extends BaseSwitcher {
         //this._looping = false;
         //this._updatePreviews(false);
         return;
-        preview.make_top_layer(this.previewActor);
-        if (index == this._currentIndex) {
-            preview.make_top_layer(this.previewActor);
-            let extraParams = preview._cfIsLast ? lastExtraParams :  {transition: 'userChoice'};
-            this._animatePreviewToMid(preview, extraParams);
-        } else {
-            let extraParams = {
-                rotation_angle_y: angleEnd,
-                time: animation_time,
-                transition: 'userChoice'
-            };
-            if (preview._cfIsLast)
-                appendParams(extraParams, lastExtraParams);
-            this._animatePreviewToSide(preview, index, xOffsetEnd, extraParams);
-        }
-        super._updatePreviews();
     }
 
     _onFlipComplete(direction) {

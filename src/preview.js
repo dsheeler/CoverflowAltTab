@@ -201,7 +201,7 @@ export const Preview = GObject.registerClass({
     }
 
     vfunc_enter_event(crossingEvent) {
-        if (this.switcher._destroying || this._entered == true) {
+        if (this.switcher._animatingClosed || this._entered == true) {
             return Clutter.EVENT_PROPAGATE;
         } 
         this._entered = true;
@@ -255,7 +255,7 @@ export const Preview = GObject.registerClass({
     vfunc_leave_event(crossingEvent) {
         this.remove_highlight();
         this._entered = false;
-        if (this.switcher._settings.raise_mouse_over && !this.switcher._destroying) this.switcher._updatePreviews(true, 0);
+        if (this.switcher._settings.raise_mouse_over && !this.switcher._animatingClosed) this.switcher._updatePreviews(true, 0);
         return Clutter.EVENT_PROPAGATE;
     }
 
