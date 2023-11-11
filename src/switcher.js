@@ -1102,6 +1102,28 @@ export class Switcher {
         }
     }
 
+    /* Code that ensures redrawing even if the compositor thinks there 
+    should be clipping. Necessary because nmoving the camera does 
+    not move the clipping pov so the compositor thinks some things don't need
+    redrawing because they are blocked by other things, but that's only 
+    true from the perspective of the centered camera. For some reason this
+    works better than the inhibitCulling method which doesn't seem to work. 
+
+    Code stolen from the blur my shell extension, blur-my-shell@aunetx.*/
+    /// Add the Clutter debug flag.
+    _disable_clipped_redraws() {
+        Meta.add_clutter_debug_flags(
+            null, Clutter.DrawDebugFlag.DISABLE_CLIPPED_REDRAWS, null
+        );
+    }
+
+    /// Remove the Clutter debug flag.
+    _reenable_clipped_redraws() {
+        Meta.remove_clutter_debug_flags(
+            null, Clutter.DrawDebugFlag.DISABLE_CLIPPED_REDRAWS, null
+        );
+    }
+
     /*
      *
      * The following code that centers the camera on an off-center monitor
@@ -1208,7 +1230,7 @@ export class Switcher {
             view.get_framebuffer().translate(camOffsetX * width_scale,
                                              camOffsetY * height_scale, 0);
 
-            this._inhibitCulling(this.actor)
+            this._disable_clipped_redraws();
         });
 
         // Revert the matrix changes before the update,
@@ -1223,7 +1245,7 @@ export class Switcher {
                                                stage.perspective.z_near,
                                                stage.perspective.z_far);
 
-            this._uninhibitCulling(this.actor)
+            this._reenable_clipped_redraws();
         });
     }
 
