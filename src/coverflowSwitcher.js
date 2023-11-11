@@ -220,8 +220,6 @@ export class CoverflowSwitcher extends BaseSwitcher {
             time: animation_time,
         });
         this._raiseIcons();
-        //this._looping = false;
-        //this._updatePreviews(false);
         return;
     }
 

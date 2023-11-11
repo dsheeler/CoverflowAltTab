@@ -933,8 +933,10 @@ export class Switcher {
         }
 
         if (this._isAppSwitcher) {
-            for (let switcher of this._subSwitchers.values()) {
-                switcher.destroy();
+            if (this._subSwitchers != null) { 
+                for (let switcher of this._subSwitchers.values()) {
+                    switcher.destroy();
+                }
             }
         }
 
