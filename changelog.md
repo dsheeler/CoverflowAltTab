@@ -4,7 +4,7 @@
 
 **Release Date:** 2023-11-10
 
-#### Summary
+#### Summary of Changes
 
 - GNOME 45 support
 - Added sub-switchers when in application switcher mode
@@ -15,5 +15,7 @@
 - Added Polish translation
 - Added Optional carousel mode
 - Preferences reorganization
-- Added glitch and colorize effects on application switcher while subswitcher active
-- Added Spanish translation  
+- Added blur, desaturate, glitch, and colorize effects on application switcher while subswitcher active
+- Added Spanish translation
+- Updated Turkish translation
+- Adopting version numbering that matches those versions assigned by the official extension website
