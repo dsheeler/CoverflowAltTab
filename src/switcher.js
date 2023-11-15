@@ -1162,6 +1162,7 @@ export class Switcher {
     _enablePerspectiveCorrection() {
         if (this._settings.perspective_correction_method != "Move Camera") return;
         if (this._parent != null) return;
+        this._disable_clipped_redraws();
         this._stageBeforeUpdateID = global.stage.connect('before-update', (stage, view) => {
             // Do nothing if neither overview or desktop switcher are shown.
             if (!this.actor.visible) {
@@ -1230,7 +1231,7 @@ export class Switcher {
             view.get_framebuffer().translate(camOffsetX * width_scale,
                                              camOffsetY * height_scale, 0);
 
-            this._disable_clipped_redraws();
+            this._inhibitCulling(this.actor);
         });
 
         // Revert the matrix changes before the update,
@@ -1244,8 +1245,7 @@ export class Switcher {
             view.get_framebuffer().perspective(stage.perspective.fovy, stage.perspective.aspect,
                                                stage.perspective.z_near,
                                                stage.perspective.z_far);
-
-            this._reenable_clipped_redraws();
+            this._uninhibitCulling(this.actor);
         });
     }
 
@@ -1260,5 +1260,6 @@ export class Switcher {
             global.stage.disconnect(this._stageAfterUpdateID);
             this._stageAfterUpdateID = 0;
         }
+        this._reenable_clipped_redraws();
     }
 }
