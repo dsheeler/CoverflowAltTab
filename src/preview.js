@@ -68,8 +68,10 @@ export const Preview = GObject.registerClass({
     make_top_layer(parent) {
         if (this.raise_top) {
             this.raise_top()
+            if (this._icon) this._icon.raise_top();
         } else if (parent.set_child_above_sibling) {
             parent.set_child_above_sibling(this, null);
+            if (this._icon) parent.set_child_above_sibling(this._icon, this);
         } else {
             // Don't throw anything here, it may cause unstabilities
             logError("No method found for making preview the top layer");
@@ -85,9 +87,11 @@ export const Preview = GObject.registerClass({
      */
     make_bottom_layer(parent) {
         if (this.lower_bottom) {
+            if (this._icon) this._icon.lower_bottom();
             this.lower_bottom()
         } else if (parent.set_child_below_sibling) {
             parent.set_child_below_sibling(this, null);
+            if (this._icon) parent.set_child_above_sibling(this._icon, this);
         } else {
             // Don't throw anything here, it may cause unstabilities
             logError("No method found for making preview the bottom layer");
@@ -183,8 +187,10 @@ export const Preview = GObject.registerClass({
                 duration: 300,
                 mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
                 onComplete: () => {
-                    this._highlight.destroy()
-                    this._highlight = null;
+                    if (this._highlight != null) {
+                        this._highlight.destroy()
+                        this._highlight = null;
+                    }
                 },
             });
         }
@@ -250,6 +256,58 @@ export const Preview = GObject.registerClass({
             }
         }
         return Clutter.EVENT_PROPAGATE;
+    }
+    
+    addIcon() {
+        let window_actor = this.metaWin.get_compositor_private();
+        let app = this.switcher._tracker.get_window_app(this.metaWin);
+        this._icon = app ? app.create_icon_texture(Math.min(this.width, this.height) * 0.9) : null;
+
+        if (this._icon == null) {
+            this._icon = new St.Icon({
+                icon_name: 'applications-other',
+            });
+        }
+        let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
+        this._icon.add_constraint(constraint);
+        this.bind_property('rotation_angle_y', this._icon, 'rotation_angle_y',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('pivot_point', this._icon, 'pivot_point',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('translation_x', this._icon, 'translation_x',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('scale_x', this._icon, 'scale_x',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('scale_y', this._icon, 'scale_y',
+            GObject.BindingFlags.SYNC_CREATE);        
+        this.bind_property('scale_z', this._icon, 'scale_z',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('z_position', this._icon, 'z_position',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.switcher.previewActor.add_actor(this._icon);
+        this._icon.opacity = 0;
+
+        this._icon.ease({
+            opacity: 255,
+            duration: 5000,
+            mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+        });
+    }
+
+    removeIcon(animation_time) {
+        if (this._icon != null) {
+            this._icon.ease({
+                opacity: 0,
+                duration: 1000 * animation_time,
+                mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
+                onComplete: () => {
+                    if (this._icon != null) {
+                        this._icon.destroy()
+                        this._icon = null;
+                    }
+                },
+            });
+        }
     }
 
     vfunc_leave_event(crossingEvent) {

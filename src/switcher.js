@@ -288,9 +288,9 @@ export class Switcher {
 
         for (let preview of this._allPreviews) {
             preview.set_reactive(false);
-            /* if (this._isAppSwitcher) {
+            if (this._isAppSwitcher && this._previews.includes(preview)) {
                 preview.addIcon();
-            } */
+            }
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
         }
 
@@ -662,7 +662,7 @@ export class Switcher {
             for (let window_title of this._windowTitles) {
                 this._manager.platform.tween(window_title, {
                     opacity: 0,
-                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                    time: this.gestureInProgress ? 0 : this._settings.animation_time,
                     transition: 'easeInOutQuint',
                 });
             }
@@ -670,29 +670,34 @@ export class Switcher {
             let window_title = this._windowTitles[idx_low];
             this._manager.platform.tween(window_title, {
                 opacity: 255,
-                time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                time: this.gestureInProgress ? 0 : this._settings.animation_time,
                 transition: 'easeInOutQuint',
             });
             
             for (let icon_box of this._windowIconBoxes) {
                 this._manager.platform.tween(icon_box, {
                     opacity: 0,
-                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                    time: this.gestureInProgress ? 0 : this._settings.animation_time,
                     transition: 'easeInOutQuint',
                 });
             }
             let alpha = 1;
             if (this._settings.icon_style !== "Classic") {
-                alpha = this._settings.overlay_icon_opacity;
+                if (this._isAppSwitcher) {
+                    alpha = 0;
+                } else {
+                    alpha = this._settings.overlay_icon_opacity;
+                }
             }
 
-            let icon_box = this._windowIconBoxes[idx_low];
-            this._manager.platform.tween(icon_box, {
-                opacity: alpha * 255,
-                time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
-                transition: 'easeInOutQuint',
-            });
-
+            if (this._parent == null && !this._isAppSwitcher) {
+                let icon_box = this._windowIconBoxes[idx_low];
+                this._manager.platform.tween(icon_box, {
+                    opacity: alpha * 255,
+                    time: this.gestureInProgress ? 0 : this._settings.animation_time,
+                    transition: 'easeInOutQuint',
+                });
+            }
         } else {
 
             let window_title_low = this._windowTitles[idx_low];
@@ -707,10 +712,13 @@ export class Switcher {
 
             let alpha = 1;
             if (this._settings.icon_style !== "Classic") {
-                alpha = this._settings.overlay_icon_opacity;
+                if (this._isAppSwitcher || this._parent != null) {
+                    alpha = 0;
+                } else {
+                    alpha = this._settings.overlay_icon_opacity;
+                }
             }
 
-        
             icon_box_low.opacity = alpha * 255 * (1 - progress);
             icon_box_high.opacity = alpha * 255 * progress;
 
@@ -985,6 +993,7 @@ export class Switcher {
                     if (i == this._currentIndex) {
                         animation_time = this._settings.animation_time;
                     }
+                    preview.removeIcon(animation_time);
                     if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace) {
                         let rect = metaWin.get_buffer_rect();
                         this._manager.platform.tween(preview, {
