@@ -368,7 +368,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 let center_offset = (this._xOffsetLeft + this._xOffsetRight) / 2;
                 this._animatePreviewToSide(preview, idx, center_offset - preview.width / 2 - progress * (center_offset - preview.width / 2 - this._xOffsetLeft), {
                     rotation_angle_y: progress * final_angle,
-                    time: this._adjustment.gestureInProgress ? 0 : animation_time,
+                    time: this.gestureInProgress ? 0 : animation_time,
                     transition: 'userChoice',
                 });
             }
@@ -380,7 +380,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 let center_offset = (this._xOffsetLeft + this._xOffsetRight) / 2;
                 this._animatePreviewToSide(preview, idx, center_offset + preview.width / 2 + progress * (this._xOffsetRight - center_offset - preview.width / 2), {
                     rotation_angle_y: progress * final_angle,
-                    time: this._adjustment.gestureInProgress ? 0 : animation_time,
+                    time: this.gestureInProgress ? 0 : animation_time,
                     transition: 'userChoice',
                 });
             }

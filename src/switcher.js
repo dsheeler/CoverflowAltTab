@@ -104,16 +104,7 @@ export class Switcher {
             this.actor.set_position(this._x, this._y);
         }
 
-        this._adjustment = new St.Adjustment({
-            actor: this.actor,
-            lower: 0,
-            upper: this._windows.length,
-            value: this._currentIndex,
-            page_size: 1,
-            page_increment: 1,
-            step_increment: 0,
-        });
-        this._adjustment.gestureInProgress = false;
+        this.gestureInProgress = false;
 
         const swipeTracker = new MySwipeTracker(this.actor,
             Clutter.Orientation.HORIZONTAL,
@@ -173,24 +164,19 @@ export class Switcher {
 
     _gestureBegin(tracker) {
         const baseDistance = 400;
-        const progress = this._adjustment.value/this._adjustment.page_size;
+        const progress = this._currentIndex;
         this._beginProgress = progress;
         const points = [];
         for (let i = 0; i < this._previews.length; i++) {
             points.push(i);
         }
 
-        const transition = this._adjustment.get_transition('value');
-        const cancelProgress = transition
-            ? transition.get_interval().peek_final_value()
-            : Math.round(progress);
-        this._adjustment.remove_transition('value');
+        const cancelProgress = Math.round(progress);
         tracker.confirmSwipe(baseDistance, points, progress, cancelProgress);
-        this._adjustment.gestureInProgress = true;
+        this.gestureInProgress = true;
     }
 
     _gestureUpdate(tracker, progress) {
-        this._adjustment.set_value(progress * this._adjustment.page_size);
         if (this._currentIndex <= Math.round(this._currentIndex) && Math.round(this._currentIndex) < progress) {
             this._showSubswitcher(Direction.TO_RIGHT);
         } else if (this._currentIndex >= Math.round(this._currentIndex) && Math.round(this._currentIndex) > progress) {
@@ -205,7 +191,7 @@ export class Switcher {
     }
 
     _gestureEnd(tracker, duration, endProgress) {
-        this._adjustment.gestureInProgress = false;
+        this.gestureInProgress = false;
         this._setCurrentIndex(endProgress);
         if (endProgress != this._toIndex) {
             if (this._direction == Direction.TO_RIGHT) {
@@ -403,7 +389,7 @@ export class Switcher {
             
             let from_index = Math.round(this._currentIndex);
             let to_index = Math.round(this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? 1 : -1)) % this._windows.length;
-            if (!this._adjustment.gestureInProgress) {
+            if (!this.gestureInProgress) {
                 to_index = this._currentIndex;
                 from_index = (this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? - 1 : 1)) % this._windows.length; 
             }
@@ -466,7 +452,7 @@ export class Switcher {
                 scale_z: scale,
                 opacity: 255, 
                 x: x,
-                time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                time: this.gestureInProgress ? 0 : this._settings.animation_time,
                 transition: 'easeInOutQuint',
             });
             for (let switcher of this._subSwitchers.values()) {
@@ -483,24 +469,24 @@ export class Switcher {
             }
             if (this._toSubSwitcher !== null && !this._toSubSwitcher._animatingClosed) {
                 this._manager.platform.tween(this._toSubSwitcher.previewActor, {
-                    scale_x: this._adjustment.gestureInProgress ? progress : 1,
-                    scale_y: this._adjustment.gestureInProgress ? progress : 1,
-                    scale_z: this._adjustment.gestureInProgress ? progress : 1,
-                    opacity: this._adjustment.gestureInProgress ? 255 * progress : 255,
-                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                    scale_x: this.gestureInProgress ? progress : 1,
+                    scale_y: this.gestureInProgress ? progress : 1,
+                    scale_z: this.gestureInProgress ? progress : 1,
+                    opacity: this.gestureInProgress ? 255 * progress : 255,
+                    time: this.gestureInProgress ? 0 : this._settings.animation_time,
                     transition: 'easeInOutQuint',
                 });
             }
             if (this._fromSubSwitcher !== null && !this._fromSubSwitcher._animatingClosed) {
                 this._manager.platform.tween(this._fromSubSwitcher.previewActor, {
-                    scale_x: this._adjustment.gestureInProgress ? 1-progress : 0,
-                    scale_y: this._adjustment.gestureInProgress ? 1-progress : 0,
-                    scale_z: this._adjustment.gestureInProgress ? 1-progress : 0,
-                    opacity: this._adjustment.gestureInProgress ? 255 * (1 - progress) : 0,
-                    time: this._adjustment.gestureInProgress ? 0 : this._settings.animation_time,
+                    scale_x: this.gestureInProgress ? 1-progress : 0,
+                    scale_y: this.gestureInProgress ? 1-progress : 0,
+                    scale_z: this.gestureInProgress ? 1-progress : 0,
+                    opacity: this.gestureInProgress ? 255 * (1 - progress) : 0,
+                    time: this.gestureInProgress ? 0 : this._settings.animation_time,
                     transition: 'easeInOutQuint',
                     onComplete: () => {
-                        if (!this._adjustment.gestureInProgress) this._fromSubSwitcher.actor.hide();
+                        if (!this.gestureInProgress) this._fromSubSwitcher.actor.hide();
                     },
                 });
             }
@@ -509,7 +495,6 @@ export class Switcher {
 
     _setCurrentIndex(value) {
         this._currentIndex = value;
-        this._adjustment.set_value(value);
     }
 
     _next() {
