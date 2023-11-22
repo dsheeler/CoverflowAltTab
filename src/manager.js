@@ -143,8 +143,8 @@ export const Manager = class Manager {
         if (windows.length) {
             let mask = binding.get_mask();
             let currentIndex = windows.indexOf(display.focus_window);
-
-            this.switcher = new CoverflowSwitcher(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
+            let switcher_class = this.platform.getSettings().switcher_class;
+            this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
         }
     }
 }

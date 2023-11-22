@@ -130,6 +130,9 @@ class AbstractPlatform {
             use_glitch_effect: false,
             use_tint: false,
             invert_swipes: false,
+            use_application_switcher_icons: true,
+            app_switcher_icon_opacity: 1,
+            app_switcher_icon_size_ratio: 0.9,
         };
     }
 
@@ -202,6 +205,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "use-theme-color-for-tint-color",
             "use-glitch-effect",
             "invert-swipes",
+            "use-application-switcher-icons",
+            "app-switcher-icon-opacity",
+            "app-switcher-icon-size-ratio",
         ];
 
         let dkeys = [
@@ -318,6 +324,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 use_glitch_effect: settings.get_boolean("use-glitch-effect"),
                 use_tint: settings.get_boolean("use-tint"),
                 invert_swipes: settings.get_boolean("invert-swipes"),
+                use_application_switcher_icons: settings.get_boolean("use-application-switcher-icons"),
+                app_switcher_icon_opacity: settings.get_double("app-switcher-icon-opacity"),
+                app_switcher_icon_size_ratio: settings.get_double("app-switcher-icon-size-ratio"),
             };
         } catch (e) {
             global.log(e);
@@ -465,7 +474,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
         let shade = new MyRadialShaderEffect({name: 'shade'});
         shade.brightness = 1;
-        shade.sharpness = 1 - this._settings.dim_factor;
+        shade.sharpness = this._settings.dim_factor;
 
         this._backgroundShade.add_effect(shade);
         

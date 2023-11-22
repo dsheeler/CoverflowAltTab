@@ -288,7 +288,7 @@ export class Switcher {
 
         for (let preview of this._allPreviews) {
             preview.set_reactive(false);
-            if (this._isAppSwitcher && this._previews.includes(preview)) {
+            if (this._isAppSwitcher && this._settings.use_application_switcher_icons && this._previews.includes(preview)) {
                 preview.addIcon();
             }
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
@@ -407,7 +407,7 @@ export class Switcher {
                 this._toSubSwitcher._setCurrentIndex(current_index);
                 this._toSubSwitcher._updateWindowTitle();
                 this._toSubSwitcher._updatePreviews(false);
-                if (!this._adjustment.gestureInProgress) {
+                if (!this.gestureInProgress) {
                     this._toSubSwitcher._grabModal();
                 }
             } else {
@@ -651,14 +651,10 @@ export class Switcher {
     }
 
     _updateWindowTitle() {
-        let animation_time = this._settings.animation_time;
-        let overlay_icon_size = this._settings.overlay_icon_size;
-
         let idx_low = Math.floor(this._currentIndex);
         let idx_high = Math.ceil(this._currentIndex);
 
         if (idx_low == idx_high) {
-            
             for (let window_title of this._windowTitles) {
                 this._manager.platform.tween(window_title, {
                     opacity: 0,
@@ -683,14 +679,14 @@ export class Switcher {
             }
             let alpha = 1;
             if (this._settings.icon_style !== "Classic") {
-                if (this._isAppSwitcher) {
+                if (this._isAppSwitcher && this._settings.use_application_switcher_icons) {
                     alpha = 0;
                 } else {
                     alpha = this._settings.overlay_icon_opacity;
                 }
             }
 
-            if (this._parent == null && !this._isAppSwitcher) {
+            if ((this._parent == null && !this._isAppSwitcher) || (!this._settings.use_application_switcher_icons && this._parent == null)) {
                 let icon_box = this._windowIconBoxes[idx_low];
                 this._manager.platform.tween(icon_box, {
                     opacity: alpha * 255,
@@ -712,7 +708,7 @@ export class Switcher {
 
             let alpha = 1;
             if (this._settings.icon_style !== "Classic") {
-                if (this._isAppSwitcher || this._parent != null) {
+                if ((this._isAppSwitcher || this._parent != null) && this._settings.use_application_switcher_icons) {
                     alpha = 0;
                 } else {
                     alpha = this._settings.overlay_icon_opacity;

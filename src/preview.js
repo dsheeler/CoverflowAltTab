@@ -259,15 +259,16 @@ export const Preview = GObject.registerClass({
     }
     
     addIcon() {
-        let window_actor = this.metaWin.get_compositor_private();
         let app = this.switcher._tracker.get_window_app(this.metaWin);
-        this._icon = app ? app.create_icon_texture(Math.min(this.width, this.height) * 0.9) : null;
+        this._icon = app ? app.create_icon_texture(Math.min(this.width, this.height) * this.switcher._settings.app_switcher_icon_size_ratio) : null;
 
         if (this._icon == null) {
             this._icon = new St.Icon({
                 icon_name: 'applications-other',
             });
         }
+        /*this.bind_property_full('x', this._icon, 'x',
+            GObject.BindingFlags.SYNC_CREATE),zZ*/
         let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
         this._icon.add_constraint(constraint);
         this.bind_property('rotation_angle_y', this._icon, 'rotation_angle_y',
@@ -287,8 +288,12 @@ export const Preview = GObject.registerClass({
         this.switcher.previewActor.add_actor(this._icon);
         this._icon.opacity = 0;
 
+        if (this.switcher._settings.icon_has_shadow) {
+            this._icon.add_style_class_name("icon-dropshadow");
+        }
+
         this._icon.ease({
-            opacity: 255,
+            opacity: 255 * this.switcher._settings.app_switcher_icon_opacity,
             duration: 5000,
             mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
         });

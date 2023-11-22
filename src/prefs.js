@@ -149,20 +149,21 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 		let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), []], [_("Carousel"), []]]);
 
 		let switcher_looping_method_row = buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows."));
+		switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), [switcher_looping_method_row]], [_("Timeline"), []] ]), _("Style"), _("Pick the type of switcher.")))
 		switcher_pref_group.add(buildSpinAdw(settings, "offset", [-500, 500, 1, 10], _("Vertical Offset"), _("Positive value moves everything down, negative up.")));
 		switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), []], [_("Top"), []]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
-		switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
+		switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
 		switcher_pref_group.add(switcher_looping_method_row);
-		switcher_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], _("Hide Panel"), _("Hide panel when switching windows.")));
-		switcher_pref_group.add(buildSwitcherAdw(settings, "invert-swipes", [], _("Invert Swipes"), _("Swipe content instead of view.")));
+		switcher_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], [], _("Hide Panel"), _("Hide panel when switching windows.")));
+		switcher_pref_group.add(buildSwitcherAdw(settings, "invert-swipes", [], [], _("Invert Swipes"), _("Swipe content instead of view.")));
         let animation_pref_group = new Adw.PreferencesGroup({
             title: _('Animation'),
         });
 
         animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
         animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 20, 0.001, [0.5, 1, 1.5]], _("Duration [s]"), "", true));
-        animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration.")));
+        animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration.")));
 
         let windows_pref_group = new Adw.PreferencesGroup({
             title: _('Switcher Windows'),
@@ -175,19 +176,28 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             id: 'all-currentfirst', name: _("All workspaces, current first")
         }];
         windows_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
-        windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], _("Current Monitor"), _("Switch between windows on current monitor.")));
+        windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
 
         let icon_pref_group = new Adw.PreferencesGroup({
             title: _("Icon"),
         });
-        let size_row = buildRangeAdw(settings, "overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
-        let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
 
-        let buttons = new Map([[_("Classic"), []], [_("Overlay"), [size_row, opacity_row]]]);
-        icon_pref_group.add(buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style")));
+        
+		let size_row = buildRangeAdw(settings, "overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
+        let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
+		let buttons = new Map([[_("Classic"), []], [_("Overlay"), [size_row, opacity_row]]]);
+		let style_row = buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style"));
+		let app_switcher_icon_size_row = buildRangeAdw(settings, "app-switcher-icon-size-ratio", [0.1, 5, 0.005, []], _("Application Switcher Icon Size Ratio"), _("Set the ratio of the size of application switcher icons to the size of their respective windows."), true);
+        let app_switcher_icon_opacity_row = buildRangeAdw(settings, "app-switcher-icon-opacity", [0.1, 1, 0.001, []], _("Application Switcher Icon Opacity"), _("Set the application switcher icons opacity."), true);
+
+        icon_pref_group.add(style_row);
         icon_pref_group.add(size_row);
         icon_pref_group.add(opacity_row);
-        icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], _("Icon Shadow")));
+        icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], [], _("Icon Shadow")));
+
+		icon_pref_group.add(buildSwitcherAdw(settings, "use-application-switcher-icons", [app_switcher_icon_size_row, app_switcher_icon_opacity_row], [], _("Use Application Switcher Icons"), _("Whether to place icons over the application switcher windows.")))
+		icon_pref_group.add(app_switcher_icon_size_row);
+		icon_pref_group.add(app_switcher_icon_opacity_row);
 
         let window_size_pref_group = new Adw.PreferencesGroup({
             title: _("Windows")
@@ -198,13 +208,13 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let background_application_switcher_pref_group = new Adw.PreferencesGroup({
             title: _('Application Switcher'),
         });
-        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
+        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
         background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturate-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Desaturate"), _("Larger means more desaturation."), true));
         background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Blur"), _("Larger means more blurry.")));
 
         let color_row = new Adw.ActionRow({
             title: _("Tint"),
-            subtitle: _("The opacity of the color controls how much it is blended. The theme color is blended at 0.75."),
+            subtitle: _("The opacity of the color controls how much it is blended. The theme color is blended at 0.666."),
         });
         background_application_switcher_pref_group.add(color_row);
 
@@ -264,7 +274,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         color_row.add_suffix(reset_button);
 
-        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "use-glitch-effect", [], _("Glitch")));
+        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "use-glitch-effect", [], [], _("Glitch")));
 
         let background_pref_group = new Adw.PreferencesGroup({
             title: _('Background'),
@@ -274,8 +284,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let keybinding_pref_group = new Adw.PreferencesGroup({
             title: _("Keybindings"),
         });
-        keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], _("Bind to 'switch-windows'")));
-        keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [background_application_switcher_pref_group], _("Bind to 'switch-applications'")));
+        keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], [], _("Bind to 'switch-windows'")));
+        keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [background_application_switcher_pref_group], [], _("Bind to 'switch-applications'")));
 
         let pcorrection_pref_group = new Adw.PreferencesGroup({
             title: _("Perspective Correction")
@@ -289,8 +299,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let highlight_mouse_over_pref_group = new Adw.PreferencesGroup({
             title: _("Highlight Window Under Mouse"),
         });
-        window_size_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
-        window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
+        window_size_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], [], _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
+        window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
 
         /*let tweaks_page = new Adw.PreferencesPage({
             title: _('Tweaks'),
@@ -385,7 +395,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
     }
 }
 
-function buildSwitcherAdw(settings, key, dependant_widgets, title, subtitle=null) {
+function buildSwitcherAdw(settings, key, dependant_widgets, inverse_dependant_widgets, title, subtitle=null) {
 	let pref = new Adw.ActionRow({
 		title: title,
 	});
@@ -412,8 +422,20 @@ function buildSwitcherAdw(settings, key, dependant_widgets, title, subtitle=null
 		}
 	});
 
+	
+
 	for (let widget of dependant_widgets) {
 		widget.set_sensitive(switcher.get_active());
+	}
+
+	switcher.connect('notify::active', function(widget) {
+		for (let inv_dep of inverse_dependant_widgets) {
+			inv_dep.set_sensitive(!widget.get_active());
+		}
+	});
+
+	for (let widget of inverse_dependant_widgets) {
+		widget.set_sensitive(!switcher.get_active());
 	}
 
 	let reset_button = makeResetButton();
