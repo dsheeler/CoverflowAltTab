@@ -279,7 +279,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let background_pref_group = new Adw.PreferencesGroup({
             title: _('Background'),
         });
-        background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Smaller means darker."), true));
+        background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Bigger means darker."), true));
 
         let keybinding_pref_group = new Adw.PreferencesGroup({
             title: _("Keybindings"),
