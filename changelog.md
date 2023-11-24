@@ -1,5 +1,17 @@
 # Changelog of the Coverflow Alt-Tab Extension
 
+## [Coverflow Alt-Tab 69](https://github.com/dmo60/CoverflowAltTab/releases/tag/v69)
+
+**Release Date:** 2023-11-23
+
+#### Summary of Changes
+
+- Found a trick to make off-center monitor windows redraw without artifacts.
+- Re-introduced the timeline switcher.
+- Added optional icons over the previews in application switcher mode.
+
+**Full Changelog**: https://github.com/dmo60/CoverflowAltTab/compare/v68...v69
+
 ## [Coverflow Alt-Tab 68](https://github.com/dmo60/CoverflowAltTab/releases/tag/v68)
 
 **Release Date:** 2023-11-10
