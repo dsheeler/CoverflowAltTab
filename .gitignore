@@ -1,2 +1,3 @@
-/build/
-/locale/*.mo
+*.mo
+schemas/gschemas.compiled
+*.zip
