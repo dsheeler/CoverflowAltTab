@@ -208,7 +208,7 @@ export class TimelineSwitcher extends Switcher {
     _onFadeBackwardsComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_top_layer(this.previewActor);
-
+        this._raiseIcons();
         preview.x = preview.target_x + 200;
         preview.y =  preview.target_y + 100;
         preview.scale_x = preview.scale;

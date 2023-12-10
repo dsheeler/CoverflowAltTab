@@ -28,12 +28,8 @@ import Gdk from 'gi://Gdk';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
-import GObject from 'gi://GObject';
 
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
-
-
-const SCHEMA = "org.gnome.shell.extensions.coverflowalttab";
 
 const easing_options = [
 	{
@@ -137,7 +133,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
     }
     
 	fillPreferencesWindow(window) {
-		let settings = this.getSettings(SCHEMA);
+		let settings = this.getSettings();
 		let general_page = new Adw.PreferencesPage({
 			title: _('General'),
 			icon_name: 'general-symbolic',
@@ -146,12 +142,12 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 		let switcher_pref_group = new Adw.PreferencesGroup({
 			title: _('Switcher'),
 		});
-		let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), []], [_("Carousel"), []]]);
+		let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), [[],[]]], [_("Carousel"), [[],[]]]]);
 
 		let switcher_looping_method_row = buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows."));
-		switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), [switcher_looping_method_row]], [_("Timeline"), []] ]), _("Style"), _("Pick the type of switcher.")))
+		switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), [[switcher_looping_method_row], []]], [_("Timeline"), [[],[switcher_looping_method_row]] ]]), _("Style"), _("Pick the type of switcher.")))
 		switcher_pref_group.add(buildSpinAdw(settings, "offset", [-500, 500, 1, 10], _("Vertical Offset"), _("Positive value moves everything down, negative up.")));
-		switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), []], [_("Top"), []]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
+		switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), [[], []]], [_("Top"), [[],[]]]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
 		switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
 		switcher_pref_group.add(switcher_looping_method_row);
@@ -179,28 +175,21 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
 
         let icon_pref_group = new Adw.PreferencesGroup({
-            title: _("Icon"),
+            title: _("Icons"),
         });
 
         
-		let size_row = buildRangeAdw(settings, "overlay-icon-size", [0, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
+		let size_row = buildRangeAdw(settings, "overlay-icon-size", [16, 1024, 1, [32, 64, 128, 256, 512]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
         let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
-		let buttons = new Map([[_("Classic"), []], [_("Overlay"), [size_row, opacity_row]]]);
+		let buttons = new Map([[_("Classic"), [[],[size_row, opacity_row]]], [_("Overlay"), [[size_row, opacity_row], []]], [_("Attached"), [[size_row, opacity_row], []]]]);
 		let style_row = buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style"));
-		let app_switcher_icon_size_row = buildRangeAdw(settings, "app-switcher-icon-size-ratio", [0.1, 5, 0.005, []], _("Application Switcher Icon Size Ratio"), _("Set the ratio of the size of application switcher icons to the size of their respective windows."), true);
-        let app_switcher_icon_opacity_row = buildRangeAdw(settings, "app-switcher-icon-opacity", [0.1, 1, 0.001, []], _("Application Switcher Icon Opacity"), _("Set the application switcher icons opacity."), true);
-
         icon_pref_group.add(style_row);
         icon_pref_group.add(size_row);
         icon_pref_group.add(opacity_row);
         icon_pref_group.add(buildSwitcherAdw(settings, "icon-has-shadow", [], [], _("Icon Shadow")));
 
-		icon_pref_group.add(buildSwitcherAdw(settings, "use-application-switcher-icons", [app_switcher_icon_size_row, app_switcher_icon_opacity_row], [], _("Use Application Switcher Icons"), _("Whether to place icons over the application switcher windows.")))
-		icon_pref_group.add(app_switcher_icon_size_row);
-		icon_pref_group.add(app_switcher_icon_opacity_row);
-
         let window_size_pref_group = new Adw.PreferencesGroup({
-            title: _("Windows")
+            title: _("Window Properties")
         });
         window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
         window_size_pref_group.add(buildRangeAdw(settings, "preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Off-center Size Factor"), _("Factor by which to successively shrink previews off to the side."), true));
@@ -212,9 +201,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturate-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Desaturate"), _("Larger means more desaturation."), true));
         background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-sigma", [0, 20, 1, 1], _("Blur"), _("Larger means more blurry.")));
 
-        let color_row = new Adw.ActionRow({
+        let color_row = new Adw.ExpanderRow({
             title: _("Tint"),
-            subtitle: _("The opacity of the color controls how much it is blended. The theme color is blended at 0.666."),
         });
         background_application_switcher_pref_group.add(color_row);
 
@@ -225,16 +213,20 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         settings.bind("use-tint", use_tint_switch, "active", Gio.SettingsBindFlags.DEFAULT);
         color_row.add_suffix(use_tint_switch);
 
+		let tint_chooser_row = new Adw.ActionRow({
+			title: _("Color")
+		});
         let choose_tint_box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             spacing: 10,
             valign: Gtk.Align.CENTER,
         });
-        color_row.add_suffix(choose_tint_box);
-        settings.bind("use-tint", choose_tint_box, "sensitive", Gio.SettingsBindFlags.GET);
+
+		tint_chooser_row.add_suffix(choose_tint_box);
+        color_row.add_row(tint_chooser_row);
 
         let color_dialog = new Gtk.ColorDialog({
-            with_alpha: true,
+            with_alpha: false,
         });
 
         let color_button = new Gtk.ColorDialogButton({
@@ -242,38 +234,45 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             dialog: color_dialog,
         });
 
-        let use_theme_color_button = new Gtk.ToggleButton({
-            label: "Use Theme Color",
+        let use_theme_color_button = new Gtk.Button({
+            label: _("Set to Theme Color"),
             valign: Gtk.Align.CENTER,
         });
 
-        use_theme_color_button.bind_property("active", color_button, "sensitive", GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.SYNC_CREATE);
-        settings.bind("use-theme-color-for-tint-color", use_theme_color_button, "active", Gio.SettingsBindFlags.DEFAULT);
+		use_theme_color_button.connect('clicked', () => {
+			let c = settings.get_value("switcher-background-color").deep_unpack();
+			let rgba = color_button.rgba;
+			rgba.red = c[0];
+			rgba.green = c[1];
+			rgba.blue = c[2];
+			rgba.alpha = 1
+			color_button.set_rgba(rgba);
+		});
+
         choose_tint_box.append(use_theme_color_button);
         choose_tint_box.append(color_button);
-
         let c = settings.get_value("tint-color").deep_unpack();
         let rgba = color_button.rgba;
         rgba.red = c[0];
         rgba.green = c[1];
         rgba.blue = c[2];
-        rgba.alpha = c[3];
+        rgba.alpha = 1
         color_button.set_rgba(rgba);
         color_button.connect('notify::rgba', _ => {
             let c = color_button.rgba;
-            let val = new GLib.Variant("(dddd)", [c.red, c.green, c.blue, c.alpha]);
+            let val = new GLib.Variant("(ddd)", [c.red, c.green, c.blue]);
             settings.set_value("tint-color", val);
         });
-
-        color_row.set_activatable_widget(use_tint_switch);
+		use_tint_switch.connect('notify::active', function(widget) {
+			color_row.set_expanded(widget.get_active());
+		});
 
         let reset_button = makeResetButton();
         reset_button.connect("clicked", function (widget) {
             settings.reset("use-tint");
-            settings.reset("use-theme-color-for-tint-color");
         });
         color_row.add_suffix(reset_button);
-
+		color_row.add_row(buildRangeAdw(settings, "tint-blend", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Blend"), _("How much to blend the tint color; bigger means more tint color."), true));
         background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "use-glitch-effect", [], [], _("Glitch")));
 
         let background_pref_group = new Adw.PreferencesGroup({
@@ -500,24 +499,30 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
 	let radio_for_button = {};
 	for (let button_name of buttons.keys()) {
 		radio = new Gtk.ToggleButton({group: radio, label: button_name});
+		radio_for_button[button_name] = radio;
 		if (getBaseString(button_name) == settings.get_string(key)) {
 			radio.set_active(true);
+			for (let pref_row of buttons.get(button_name)[0]) {
+				pref_row.set_sensitive(radio_for_button[button_name].get_active());
+			}
+			for (let pref_row of buttons.get(button_name)[1]) {
+				pref_row.set_sensitive(!radio_for_button[button_name].get_active());
+			}
 		}
-		radio_for_button[button_name] = radio;
 		radio.connect('toggled', function(widget) {
 			if (widget.get_active()) {
 				settings.set_string(key, getBaseString(widget.get_label()));
 			}
-			for (let pref_row of buttons.get(button_name)) {
+			for (let pref_row of buttons.get(button_name)[0]) {
 				pref_row.set_sensitive(widget.get_active());
 			}
+			for (let pref_row of buttons.get(button_name)[1]) {
+				pref_row.set_sensitive(!widget.get_active());
+			}
 		});
-		for (let pref_row of buttons.get(button_name)) {
-			pref_row.set_sensitive(radio_for_button[button_name].get_active());
-		}
 		hbox.append(radio);
 	};
-
+	
 	let reset_button = makeResetButton();
 	reset_button.connect("clicked", function(widget) {
 		settings.reset(key);

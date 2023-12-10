@@ -68,7 +68,6 @@ export class Switcher {
         this._backgroundColor = null;
         this._windowTitles = [];
         this._windowIconBoxes = [];
-        this._lastProgress = null;
         this._toSubSwitcher = null;
         this._fromSubSwitcher = null;
         this._grab = null;
@@ -165,7 +164,6 @@ export class Switcher {
     _gestureBegin(tracker) {
         const baseDistance = 400;
         const progress = this._currentIndex;
-        this._beginProgress = progress;
         const points = [];
         for (let i = 0; i < this._previews.length; i++) {
             points.push(i);
@@ -182,7 +180,6 @@ export class Switcher {
         } else if (this._currentIndex >= Math.round(this._currentIndex) && Math.round(this._currentIndex) > progress) {
             this._showSubswitcher(Direction.TO_LEFT);
         }
-        this._lastProgress = this._currentIndex;
         this._setCurrentIndex(progress);
 
         this._updateSubSwitcher();
@@ -240,14 +237,9 @@ export class Switcher {
                 preview._effectCounts['glitch'] += 1;
             }
             if (this._settings.use_tint) {
-                let c = null;
-                if (this._settings.use_theme_color_for_tint_color) {
-                    let bgcolor = this._getSwitcherBackgroundColor();
-                    c = [bgcolor.red / 255., bgcolor.green / 255., bgcolor.blue / 255., 0.75];
-                } else {
-                    c = this._settings.tint_color;
-                }
-                preview.addEffect(ColorEffect, { color: [c[0], c[1], c[2], 0] }, 'tint', 'blend', 0.0, c[3], this._settings.animation_time);
+                let c = this._settings.tint_color;
+                let b = this._settings.tint_blend;
+                preview.addEffect(ColorEffect, { color: [c[0], c[1], c[2], 0] }, 'tint', 'blend', 0.0, b, this._settings.animation_time);
             }
             
             preview.addEffect(Clutter.DesaturateEffect, { factor:  0.0 }, 'desaturate', 'factor', 0.0, this._settings.desaturate_factor, this._settings.animation_time);
@@ -288,7 +280,7 @@ export class Switcher {
 
         for (let preview of this._allPreviews) {
             preview.set_reactive(false);
-            if (this._isAppSwitcher && this._settings.use_application_switcher_icons && this._previews.includes(preview)) {
+            if (this._parent === null && this._settings.icon_style == "Attached" && this._previews.includes(preview)) {
                 preview.addIcon();
             }
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
@@ -317,20 +309,7 @@ export class Switcher {
         this._initialDelayTimeoutId = 0;
         for (let preview of this._allPreviews) {
             if (!this._previews.includes(preview)) {
-                if (this._parent === null) {
-                    let monitor = Main.layoutManager.monitors[preview.metaWin.get_monitor()];
-                    preview.set_pivot_point_placement(Placement.TOP_LEFT);
-                    this._manager.platform.tween(preview, {
-                        x: monitor.x - this.actor.x,
-                        y: monitor.y - this.actor.y,
-                        scale_x: 0,
-                        scale_y: 0,
-                        scale_z: 0,
-                        opacity: 0,
-                        time: this._getRandomTime(),
-                        transition: 'easeInOutQuint',
-                    });
-                } else {
+                if (this._parent !== null) {
                     preview.opacity = 0;
                     preview.x = 0;
                     preview.y = 0;
@@ -346,6 +325,8 @@ export class Switcher {
             }
             this._next();
         }
+        this._getSwitcherBackgroundColor();
+
     }
 
     _stopClosing() {
@@ -547,6 +528,8 @@ export class Switcher {
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_actor(parent);
             parent = null;
+            let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
+            this._manager.platform._extensionSettings.set_value("switcher-background-color", color);
         }
         return this._backgroundColor;
     }
@@ -678,15 +661,13 @@ export class Switcher {
                 });
             }
             let alpha = 1;
-            if (this._settings.icon_style !== "Classic") {
-                if (this._isAppSwitcher && this._settings.use_application_switcher_icons) {
-                    alpha = 0;
-                } else {
-                    alpha = this._settings.overlay_icon_opacity;
-                }
+            if (this._settings.icon_style === "Attached") {
+                alpha = 0;
+            } else if (this._settings.icon_style === "Overlay") {
+                alpha = this._settings.overlay_icon_opacity;
             }
 
-            if ((this._parent == null && !this._isAppSwitcher) || (!this._settings.use_application_switcher_icons && this._parent == null)) {
+            if ((this._parent == null && !this._isAppSwitcher) || (!this._settings.attach_overlay_icons && this._parent == null)) {
                 let icon_box = this._windowIconBoxes[idx_low];
                 this._manager.platform.tween(icon_box, {
                     opacity: alpha * 255,
@@ -707,12 +688,10 @@ export class Switcher {
             let icon_box_high = this._windowIconBoxes[idx_high];
 
             let alpha = 1;
-            if (this._settings.icon_style !== "Classic") {
-                if ((this._isAppSwitcher || this._parent != null) && this._settings.use_application_switcher_icons) {
-                    alpha = 0;
-                } else {
-                    alpha = this._settings.overlay_icon_opacity;
-                }
+            if (this._settings.icon_style === "Attached") {
+                alpha = 0;
+            } else if (this._settings.icon_style === "Overlay") {
+                alpha = this._settings.overlay_icon_opacity;
             }
 
             icon_box_low.opacity = alpha * 255 * (1 - progress);
@@ -1042,16 +1021,21 @@ export class Switcher {
                     }
                     if (!this._previews.includes(preview) && preview.metaWin.get_workspace() == currentWorkspace && !preview.metaWin.minimized) {
                         let rect = preview.metaWin.get_buffer_rect();
+                        let atime = this._getRandomTime();
                         this._manager.platform.tween(preview, {
                             x: rect.x - this.actor.x,
                             y: rect.y - this.actor.y,
                             translation_x: 0,
+                            rotation_angle_y: 0.0,
+                            time: atime,
+                            transition: 'userChoice',
+                        });
+                        this._manager.platform.tween(preview, {
                             scale_x: 1,
                             scale_y: 1,
                             scale_z: 1,
                             opacity: 255,
-                            rotation_angle_y: 0.0,
-                            time: this._getRandomTime(),
+                            time: 0.5 * atime,
                             transition: 'easeInOutQuint',
                         });
                     }

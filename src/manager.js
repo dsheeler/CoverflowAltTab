@@ -24,8 +24,6 @@
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-import {CoverflowSwitcher} from './coverflowSwitcher.js'
-
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
     let t2 = win2.get_user_time();
@@ -63,7 +61,7 @@ export const Manager = class Manager {
         else
             this.display = global.screen;
     }
-
+    
     enable() {
         this.platform.enable();
         this.keybinder.enable(this._startWindowSwitcher.bind(this), this.platform);

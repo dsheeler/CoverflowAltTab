@@ -117,7 +117,7 @@ export const Preview = GObject.registerClass({
         } else if (this._effectCounts[name] == 0) {
             if (this.get_transition(add_transition_name) === null) {
                 let transition = Clutter.PropertyTransition.new(property_transition_name);
-                transition.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
+                transition.progress_mode = Clutter.AnimationMode.LINEAR;
                 transition.duration = duration;
                 transition.remove_on_complete = true;
                 transition.set_to(param_value);
@@ -260,17 +260,19 @@ export const Preview = GObject.registerClass({
     
     addIcon() {
         let app = this.switcher._tracker.get_window_app(this.metaWin);
-        this._icon = app ? app.create_icon_texture(Math.min(this.width, this.height) * this.switcher._settings.app_switcher_icon_size_ratio) : null;
+        let icon_size = this.switcher._settings.overlay_icon_size;
+        this._icon = app ? app.create_icon_texture(Math.min(icon_size, this.width, this.height) / this.scale) : null;
 
         if (this._icon == null) {
             this._icon = new St.Icon({
                 icon_name: 'applications-other',
             });
         }
-        /*this.bind_property_full('x', this._icon, 'x',
-            GObject.BindingFlags.SYNC_CREATE),zZ*/
+       
         let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
         this._icon.add_constraint(constraint);
+
+        
         this.bind_property('rotation_angle_y', this._icon, 'rotation_angle_y',
             GObject.BindingFlags.SYNC_CREATE);
         this.bind_property('pivot_point', this._icon, 'pivot_point',
@@ -283,20 +285,14 @@ export const Preview = GObject.registerClass({
             GObject.BindingFlags.SYNC_CREATE);        
         this.bind_property('scale_z', this._icon, 'scale_z',
             GObject.BindingFlags.SYNC_CREATE);
-        this.bind_property('z_position', this._icon, 'z_position',
-            GObject.BindingFlags.SYNC_CREATE);
         this.switcher.previewActor.add_actor(this._icon);
-        this._icon.opacity = 0;
 
         if (this.switcher._settings.icon_has_shadow) {
             this._icon.add_style_class_name("icon-dropshadow");
         }
 
-        this._icon.ease({
-            opacity: 255 * this.switcher._settings.app_switcher_icon_opacity,
-            duration: 5000,
-            mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
-        });
+        this._icon.opacity = 255 * this.switcher._settings.overlay_icon_opacity;
+     
     }
 
     removeIcon(animation_time) {

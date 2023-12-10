@@ -51,7 +51,8 @@ export class CoverflowSwitcher extends BaseSwitcher {
             x: this.actor.width / 2,
             y: this.actor.height / 2 + this._settings.offset
         };
-        this._xOffsetLeft = this.actor.width * 0.1;
+        let ratio = this._settings.preview_to_monitor_ratio;
+        this._xOffsetLeft = this.actor.width * (0.5 * (1 - ratio) - 0.1 * ratio)
         this._xOffsetRight = this.actor.width - this._xOffsetLeft;
 
         for (let windowActor of global.get_window_actors()) {

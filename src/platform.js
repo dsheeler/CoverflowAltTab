@@ -29,6 +29,7 @@ import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
 import Clutter from 'gi://Clutter';
 import Shell from 'gi://Shell';
+import GLib from 'gi://GLib';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Background from 'resource:///org/gnome/shell/ui/background.js';
@@ -104,7 +105,6 @@ class AbstractPlatform {
             title_position: POSITION_BOTTOM,
             icon_style: 'Classic',
             icon_has_shadow: false,
-            overlay_icon_size: 128,
             overlay_icon_opacity: 1,
             text_scaling_factor: 1,
             offset: 0,
@@ -125,14 +125,14 @@ class AbstractPlatform {
             switch_application_behaves_like_switch_windows: false,
             blur_sigma: 4,
             desaturate_factor: 0.0,
-            tint_color: (0., 0., 0., 0.),
+            tint_color: (0., 0., 0.),
+            switcher_background_color: (0., 0., 0.),
+            tint_blend: 0.0,
             use_theme_color_for_tint_color: false,
             use_glitch_effect: false,
             use_tint: false,
             invert_swipes: false,
-            use_application_switcher_icons: true,
-            app_switcher_icon_opacity: 1,
-            app_switcher_icon_size_ratio: 0.9,
+            overlay_icon_size: 128,
         };
     }
 
@@ -164,10 +164,35 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._connections = null;
         this._extensionSettings = settings;
         this._desktopSettings = null;
+        this._backgroundColor = null;
         this._settings_changed_callbacks = null;
+        this._themeContext = null;
     }
 
+    _getSwitcherBackgroundColor() {
+        if (this._backgroundColor === null) {
+            let widgetClass = this.getWidgetClass();
+            let parent = new widgetClass({ visible: false, reactive: false, style_class: 'switcher-list'});
+            let actor = new widgetClass({ visible: false, reactive: false, style_class: 'item-box' });
+            parent.add_actor(actor);
+            actor.add_style_pseudo_class('selected');
+            Main.uiGroup.add_actor(parent);
+            this._backgroundColor = actor.get_theme_node().get_background_color();
+            Main.uiGroup.remove_actor(parent);
+            parent = null;
+            let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
+            this._extensionSettings.set_value("switcher-background-color", color);
+        }
+        return this._backgroundColor;
+    }
+    
     enable() {
+        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+        this._themeContextChangedID = this._themeContext.connect("changed", (themeContext) => {
+            this._backgroundColor = null;
+            this._getSwitcherBackgroundColor();
+        });
+
         this._settings_changed_callbacks = [];
 
         if (this._desktopSettings == null)
@@ -202,12 +227,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "switch-application-behaves-like-switch-windows",
             "use-tint",
             "tint-color",
+            "tint-blend",
+            "switcher-background-color",
             "use-theme-color-for-tint-color",
             "use-glitch-effect",
             "invert-swipes",
-            "use-application-switcher-icons",
-            "app-switcher-icon-opacity",
-            "app-switcher-icon-size-ratio",
         ];
 
         let dkeys = [
@@ -242,6 +266,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 this._desktopSettings.disconnect(dconnection);
             }
         }
+        this._themeContext.disconnect(this._themeContextChangedID);
+        this._themeContext = null;
+
         this._settings = null;
     }
 
@@ -289,15 +316,15 @@ export class PlatformGnomeShell extends AbstractPlatform {
         try {
             let settings = this._extensionSettings;
             let dsettings = this._desktopSettings;
-            let tint_color = settings.get_value("tint-color").deep_unpack();
+
             return {
                 animation_time: settings.get_double("animation-time"),
                 randomize_animation_times: settings.get_boolean("randomize-animation-times"),
                 dim_factor: clamp(settings.get_double("dim-factor"), 0, 1),
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
-                icon_style: (settings.get_string("icon-style") == 'Overlay' ? 'Overlay' : 'Classic'),
+                icon_style: (settings.get_string("icon-style")),
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
-                overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 0, 1024),
+                overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 16, 1024),
                 overlay_icon_opacity: clamp(settings.get_double("overlay-icon-opacity"), 0, 1),
                 text_scaling_factor: dsettings.get_double(KEY_TEXT_SCALING_FACTOR),
                 offset: settings.get_int("offset"),
@@ -320,13 +347,12 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 switcher_looping_method: settings.get_string("switcher-looping-method"),
                 switch_application_behaves_like_switch_windows: settings.get_boolean("switch-application-behaves-like-switch-windows"),
                 tint_color: settings.get_value("tint-color").deep_unpack(),
+                tint_blend: settings.get_double("tint-blend"),
+                switcher_background_color: settings.get_value("switcher-background-color").deep_unpack(),
                 use_theme_color_for_tint_color: settings.get_boolean("use-theme-color-for-tint-color"),
                 use_glitch_effect: settings.get_boolean("use-glitch-effect"),
                 use_tint: settings.get_boolean("use-tint"),
                 invert_swipes: settings.get_boolean("invert-swipes"),
-                use_application_switcher_icons: settings.get_boolean("use-application-switcher-icons"),
-                app_switcher_icon_opacity: settings.get_double("app-switcher-icon-opacity"),
-                app_switcher_icon_size_ratio: settings.get_double("app-switcher-icon-size-ratio"),
             };
         } catch (e) {
             global.log(e);
