@@ -362,7 +362,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             uri: "https://github.com/dmo60/CoverflowAltTab",
         });
         let donate_row = new Adw.ActionRow({
-            title: _("Support me with a Donation"),
+            title: _("Donate"),
             icon_name: "support-symbolic",
         })
         let donate_link = new Gtk.LinkButton({
@@ -370,14 +370,28 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             uri: "https://liberapay.com/dsheeler/donate",
         });
 
+        let donate_link_paypal = new Gtk.LinkButton({
+            label: "PayPal",
+
+            uri: "https://paypal.me/DanielSheeler?country.x=US&locale.x=en_US",
+        });
+		
+		let donate_link_github = new Gtk.LinkButton({
+            label: "Github",
+
+            uri: "https://github.com/sponsors/dsheeler",
+        });
+		https://github.com/sponsors/dsheeler
         code_row.add_suffix(github_link);
         code_row.set_activatable_widget(github_link);
         donate_row.add_suffix(donate_link);
-        donate_row.set_activatable_widget(donate_link);
-        links_pref_group.add(code_row);
+		donate_row.add_suffix(donate_link_paypal);
+		donate_row.add_suffix(donate_link_github);
+		
+		links_pref_group.add(code_row);
         links_pref_group.add(donate_row);
 
-        label_box.append(label);
+		label_box.append(label);
         label_box.append(another_label);
         icon_box.append(icon_image);
         icon_box.append(label_box);
