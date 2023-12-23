@@ -63,7 +63,6 @@ export class Switcher {
         this._width = width_in;
         this._height = height_in;
         this._parent = parent;
-        this._child = null;
         this._subSwitchers = new Map();
         this._backgroundColor = null;
         this._windowTitles = [];
@@ -265,13 +264,7 @@ export class Switcher {
 
     show() {
         let monitor = this._updateActiveMonitor();
-        /* if (this._parent === null) {
-            this.actor.set_size(monitor.width, monitor.height);
-            this.actor.set_position(monitor.x, monitor.y);
-        } else {
-            this.actor.set_size(this._width, this._height);
-            this.actor.set_position(this._x, this._y);
-        } */
+
         // create previews
         this._createPreviews();
         for (let i = 0; i < this._windows.length; i++) {
@@ -294,16 +287,9 @@ export class Switcher {
             this.previewActor.set_scale(0, 0);
             this.previewActor.set_scale_z(0);
 
-            //this._parent._updateSubSwitcher();
             this._updateWindowTitle();
             this._updatePreviews(false);
-            /* this._manager.platform.tween(this.previewActor, {
-                scale_x: 1,
-                scale_y: 1,
-                scale_z: 1,
-                time: this._settings.animation_time,
-                transition: 'easeInOutQuint',
-            }); */
+           
         }
         this._enablePerspectiveCorrection();
         this._initialDelayTimeoutId = 0;
