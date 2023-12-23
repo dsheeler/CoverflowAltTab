@@ -148,6 +148,7 @@ export class TimelineSwitcher extends Switcher {
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;
                 preview.make_top_layer(this.previewActor);
+                this._raiseIcons();
                 this._manager.platform.tween(preview, {
                     x: preview.target_x + 200,
                     y: preview.target_y + 100,
