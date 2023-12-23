@@ -33,7 +33,7 @@ import {GlitchEffect} from './effects/glitch_effect.js';
 import {Placement, Direction} from './preview.js';
 import {MySwipeTracker} from './swipeTracker.js';
 
-import {__ABSTRACT_METHOD__, debug} from './lib.js';
+import {__ABSTRACT_METHOD__} from './lib.js';
 
 const INITIAL_DELAY_TIMEOUT = 150;
 const ICON_SIZE = 64;

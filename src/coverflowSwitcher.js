@@ -160,24 +160,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
         let animation_time = this._settings.animation_time * 2/3;
 
         for (let [i, preview] of this._previews.entries()) {
-            this._onFlipIn(preview, i, direction); continue;
-            preview._cfIsLast = (i === this._windows.length - 1);
-            let params = {
-                onComplete: this._onFlipIn,
-                onCompleteScope: this,
-                onCompleteParams: [preview, i, direction],
-                transition: 'easeInOutQuint',
-                opacity: 0,
-                x: 0,
-                y: 0,
-                scale_x: 0,
-                scale_y: 0,
-                scale_z: 0,
-                rotation_angle_y: 0,
-                time: animation_time * (direction === Direction.TO_RIGHT ? (i / this._previews.length) : (1 - i / this._previews.length)),
-            };
-
-            this._manager.platform.tween(preview, params);
+            this._onFlipIn(preview, i, direction);
         }
     }
 
@@ -310,13 +293,6 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _updatePreviews(reorder_only=false) {
-        this._looping = false;
-        if(this._looping) {
-            this._requiresUpdate = true;
-            return;
-        }
-        this._updateActiveMonitor();
-        // preview windows
         if (this._previews == null) return;
         let half_length = Math.floor(this._previews.length / 2);
         let previews = [];
@@ -346,7 +322,6 @@ export class CoverflowSwitcher extends BaseSwitcher {
         }
         if (zeroIndexPreview != null) zeroIndexPreview.make_bottom_layer(this.previewActor);
         this._raiseIcons();
-        //this._setCurrentWindowTitle();
     }
 
     _updatePreview(idx, zeroIndexPreview, preview, i, reorder_only, animation_time) {
