@@ -41,7 +41,17 @@ Placement.TOP_LEFT = 8;
 Placement.CENTER = 9;
 
 export const Preview = GObject.registerClass({
-    GTypeName: "Preview"
+    GTypeName: "Preview",
+    Properties: {
+        'remove_icon_opacity': GObject.ParamSpec.double(
+            `remove_icon_opacity`,
+            `Revmove Icon Opacity`,
+            `Icon opacity when `,
+            GObject.ParamFlags.READWRITE,
+            0.0, 1.0,
+            1.0,
+        )
+    }
 }, class Preview extends Clutter.Clone {
     _init(window, switcher, ...args) {
         super._init(...args);
@@ -272,7 +282,20 @@ export const Preview = GObject.registerClass({
         let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
         this._icon.add_constraint(constraint);
 
-        
+        this.bind_property_full('opacity',
+            this._icon, 'opacity',
+            GObject.BindingFlags.SYNC_CREATE,
+            (bind, source) => {
+                /* So that the icon fades out 1) when the preview fades
+                    out, such as in the timeline switcher, and 
+                    2) when the icon is being removed, 
+                    but also ensure the icon only goes as high as the setting
+                    opacity, we take the minimum of those three as our opacity.
+                    Seems there might be a better way, but I'm not sure. 
+                    */
+                return [true, Math.min(source, 255 * this.remove_icon_opacity,  255 * this.switcher._settings.overlay_icon_opacity)];
+            },
+            null);
         this.bind_property('rotation_angle_y', this._icon, 'rotation_angle_y',
             GObject.BindingFlags.SYNC_CREATE);
         this.bind_property('pivot_point', this._icon, 'pivot_point',
@@ -291,23 +314,28 @@ export const Preview = GObject.registerClass({
             this._icon.add_style_class_name("icon-dropshadow");
         }
 
-        this._icon.opacity = 255 * this.switcher._settings.overlay_icon_opacity;
-     
     }
 
     removeIcon(animation_time) {
         if (this._icon != null) {
-            this._icon.ease({
-                opacity: 0,
-                duration: 1000 * animation_time,
-                mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
-                onComplete: () => {
-                    if (this._icon != null) {
-                        this._icon.destroy()
-                        this._icon = null;
-                    }
-                },
+            let transition = Clutter.PropertyTransition.new('remove_icon_opacity');
+            transition.duration = 1000.0 * animation_time;
+            this._icon.remove_icon_opacity_start = this._icon.opacity / 255.;
+            transition.set_from(this._icon.remove_icon_opacity_start);
+            transition.set_to(0);
+            transition.remove_on_complete = true;
+            transition.connect('new-frame', (timeline, msecs) => {
+                this._icon.opacity = 255 * this._icon.remove_icon_opacity_start * (1 - 
+                    timeline.get_progress());//(1 - msecs / transition.duration);
+                this._icon.queue_redraw();
+            })
+            transition.connect('completed', (timeline) => {
+                if (this._icon != null) {
+                    this._icon.destroy()
+                    this._icon = null;
+                }
             });
+            this.add_transition('remove_icon_opacity_transition', transition);
         }
     }
 
