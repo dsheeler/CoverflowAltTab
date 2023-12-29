@@ -124,6 +124,9 @@ export const Preview = GObject.registerClass({
             transition.set_to(param_value);
             this.get_effect(effect_name)[parameter_name] = 1.0;
             this.add_transition(add_transition_name, transition);
+            transition.connect('new-frame', (timeline, msecs) => {
+                this.queue_redraw();
+            });
         } else if (this._effectCounts[name] == 0) {
             if (this.get_transition(add_transition_name) === null) {
                 let transition = Clutter.PropertyTransition.new(property_transition_name);
@@ -136,6 +139,9 @@ export const Preview = GObject.registerClass({
                 this.add_effect_with_name(effect_name, new effect_class(constructor_argument));
                 this.add_transition(add_transition_name, transition);
                 this._effectCounts[name] = 1;
+                transition.connect('new-frame', (timeline, msecs) => {
+                    this.queue_redraw();
+                });
             }
         } else {
             this._effectCounts[name] += 1;
