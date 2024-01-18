@@ -89,7 +89,7 @@ export class TimelineSwitcher extends Switcher {
                     this._previews[this._windows.indexOf(metaWin)] = preview;
                 }
                 this._allPreviews.push(preview);
-                this.previewActor.add_actor(preview);
+                this.previewActor.add_child(preview);
 
                 preview.make_bottom_layer(this.previewActor);
             }

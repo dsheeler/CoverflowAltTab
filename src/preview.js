@@ -245,7 +245,7 @@ export const Preview = GObject.registerClass({
                 this._highlight.set_style(this._getHighlightStyle(0.3));
                 let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
                 this._highlight.add_constraint(constraint);
-                window_actor.add_actor(this._highlight);
+                window_actor.add_child(this._highlight);
 
             }
             if (this._flash == null) {
@@ -260,7 +260,7 @@ export const Preview = GObject.registerClass({
                 this._flash.set_style(this._getHighlightStyle(1));
                 let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
                 this._flash.add_constraint(constraint);
-                window_actor.add_actor(this._flash);
+                window_actor.add_child(this._flash);
                 this._flash.ease({
                     opacity: 0,
                     duration: 500,
@@ -314,7 +314,7 @@ export const Preview = GObject.registerClass({
             GObject.BindingFlags.SYNC_CREATE);        
         this.bind_property('scale_z', this._icon, 'scale_z',
             GObject.BindingFlags.SYNC_CREATE);
-        this.switcher.previewActor.add_actor(this._icon);
+        this.switcher.previewActor.add_child(this._icon);
 
         if (this.switcher._settings.icon_has_shadow) {
             this._icon.add_style_class_name("icon-dropshadow");

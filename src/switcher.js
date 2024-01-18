@@ -87,8 +87,8 @@ export class Switcher {
         this.actor = new widgetClass({ visible: true, reactive: true, });
         this.actor.hide();
         this.previewActor = new widgetClass({ visible: true, reactive: true});
-        this.actor.add_actor(this.previewActor);
-        Main.uiGroup.add_actor(this.actor);
+        this.actor.add_child(this.previewActor);
+        Main.uiGroup.add_child(this.actor);
         
         if (this._parent == null) {
             this._grabModal();
@@ -510,9 +510,9 @@ export class Switcher {
             let widgetClass = this._manager.platform.getWidgetClass();
             let parent = new widgetClass({ visible: false, reactive: false, style_class: 'switcher-list'});
             let actor = new widgetClass({ visible: false, reactive: false, style_class: 'item-box' });
-            parent.add_actor(actor);
+            parent.add_child(actor);
             actor.add_style_pseudo_class('selected');
-            Main.uiGroup.add_actor(parent);
+            Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_actor(parent);
             parent = null;
@@ -560,7 +560,7 @@ export class Switcher {
             text: this._windows[index].get_title(),
             opacity: 0
         });
-        this.previewActor.add_actor(window_title);
+        this.previewActor.add_child(window_title);
         let app_icon_size;
         let label_offset;
         if (this._settings.icon_style == "Classic") {
@@ -616,8 +616,8 @@ export class Switcher {
             });
         }
 
-        application_icon_box.add_actor(icon);
-        this.previewActor.add_actor(application_icon_box);
+        application_icon_box.add_child(icon);
+        this.previewActor.add_child(application_icon_box);
         this._windowIconBoxes[index] = application_icon_box;
     }
 

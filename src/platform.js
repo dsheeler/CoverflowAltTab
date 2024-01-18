@@ -139,7 +139,7 @@ class AbstractPlatform {
     initBackground() {
     	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
 		this._background.hide();
-        global.overlay_group.add_actor(this._background);
+        global.overlay_group.add_child(this._background);
     }
 
     dimBackground() {
@@ -174,9 +174,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
             let widgetClass = this.getWidgetClass();
             let parent = new widgetClass({ visible: false, reactive: false, style_class: 'switcher-list'});
             let actor = new widgetClass({ visible: false, reactive: false, style_class: 'item-box' });
-            parent.add_actor(actor);
+            parent.add_child(actor);
             actor.add_style_pseudo_class('selected');
-            Main.uiGroup.add_actor(parent);
+            Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_actor(parent);
             parent = null;
@@ -504,7 +504,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
         this._backgroundShade.add_effect(shade);
         
-        this._backgroundGroup.add_actor(this._backgroundShade);
+        this._backgroundGroup.add_child(this._backgroundShade);
         this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
     
         this._backgroundGroup.hide();

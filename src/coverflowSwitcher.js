@@ -107,7 +107,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 }
                 this._allPreviews.push(preview);
                 
-                this.previewActor.add_actor(preview);
+                this.previewActor.add_child(preview);
             }
         }
     }
