@@ -160,6 +160,59 @@ export class Switcher {
         if (this._parent == null) this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
 
+    show() {
+        let monitor = this._updateActiveMonitor();
+
+        // create previews
+        this._createPreviews();
+        for (let i = 0; i < this._windows.length; i++) {
+            this._getWindowTitle(i);
+        }
+
+        for (let preview of this._allPreviews) {
+            preview.set_reactive(false);
+            if (this._parent === null && this._settings.icon_style == "Attached" && this._previews.includes(preview)) {
+                preview.addIcon();
+            }
+            preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
+        }
+
+        // hide windows and showcd  Coverflow actors
+        if (this._parent === null) global.window_group.hide();
+        
+        if (this._parent === null) this.actor.show();
+        if (this._parent !== null) {
+            this.previewActor.set_scale(0, 0);
+            this.previewActor.set_scale_z(0);
+
+            this._updateWindowTitle();
+            this._updatePreviews(false);
+           
+        }
+        this._enablePerspectiveCorrection();
+        this._initialDelayTimeoutId = 0;
+        for (let preview of this._allPreviews) {
+            if (!this._previews.includes(preview)) {
+                if (this._parent !== null) {
+                    preview.opacity = 0;
+                    preview.x = 0;
+                    preview.y = 0;
+                    preview.scale_x = 0;
+                    preview.scale_y = 0;
+                    preview.scale_z = 0;
+                }
+            }
+        }
+        if (this._parent == null) {
+            for (let switcher of this._subSwitchers.values()) {
+                switcher.show();
+            }
+            this._next();
+        }
+        this._getSwitcherBackgroundColor();
+
+    }
+    
     _gestureBegin(tracker) {
         const baseDistance = 400;
         const progress = this._currentIndex;
@@ -262,58 +315,7 @@ export class Switcher {
         }
     }
 
-    show() {
-        let monitor = this._updateActiveMonitor();
 
-        // create previews
-        this._createPreviews();
-        for (let i = 0; i < this._windows.length; i++) {
-            this._getWindowTitle(i);
-        }
-
-        for (let preview of this._allPreviews) {
-            preview.set_reactive(false);
-            if (this._parent === null && this._settings.icon_style == "Attached" && this._previews.includes(preview)) {
-                preview.addIcon();
-            }
-            preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
-        }
-
-        // hide windows and showcd  Coverflow actors
-        if (this._parent === null) global.window_group.hide();
-        
-        if (this._parent === null) this.actor.show();
-        if (this._parent !== null) {
-            this.previewActor.set_scale(0, 0);
-            this.previewActor.set_scale_z(0);
-
-            this._updateWindowTitle();
-            this._updatePreviews(false);
-           
-        }
-        this._enablePerspectiveCorrection();
-        this._initialDelayTimeoutId = 0;
-        for (let preview of this._allPreviews) {
-            if (!this._previews.includes(preview)) {
-                if (this._parent !== null) {
-                    preview.opacity = 0;
-                    preview.x = 0;
-                    preview.y = 0;
-                    preview.scale_x = 0;
-                    preview.scale_y = 0;
-                    preview.scale_z = 0;
-                }
-            }
-        }
-        if (this._parent == null) {
-            for (let switcher of this._subSwitchers.values()) {
-                switcher.show();
-            }
-            this._next();
-        }
-        this._getSwitcherBackgroundColor();
-
-    }
 
     _stopClosing() {
         this._animatingClosed = false;
