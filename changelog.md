@@ -1,5 +1,39 @@
 # Changelog of the Coverflow Alt-Tab Extension
 
+## [Coverflow Alt-Tab 70](https://github.com/dmo60/CoverflowAltTab/releases/tag/v70)
+
+**Release Date:** 2023-12-27
+
+#### Summary of Changes
+* Ignore built files by @QuentiumYT in https://github.com/dmo60/CoverflowAltTab/pull/211
+
+* Allow attached icons in any mode as an option, not just on app switcher.
+
+* Broke up app switcher tint color into a color and a blend setting
+instead of a color with alpha.
+
+* Saved background color in a setting so it can be used in prefs.js to set
+the tint color.
+
+* Just one size for attached and overlay icons instead of sizes for each.
+
+* Maybe better placement of coverflow side previews when
+preview_to_monitor_ratio gets small. Scale the distance from the
+middle preview based on it.
+
+* Listen for gnome-shell theme changes and update the background
+color setting to match the new theme.
+
+* Reorganized preferences. Fixed some subtle bugs.
+
+* Some code cleanup.
+
+* Added github and paypal to preferences donation page.
+* Added some logic to get attached icons to fade in / out correctly in timeline switcher.
+* Minor fix for overlay icon going  behind previews in timeline switcher.
+ 
+**Full Changelog**: https://github.com/dmo60/CoverflowAltTab/compare/v69...v70
+
 ## [Coverflow Alt-Tab 69](https://github.com/dmo60/CoverflowAltTab/releases/tag/v69)
 
 **Release Date:** 2023-11-23
