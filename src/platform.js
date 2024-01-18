@@ -396,7 +396,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quad" ||
             params.transition == 'easeInQuad') {
             params.mode = Clutter.AnimationMode.EASE_IN_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out_quad" ||
+        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quad" ||
             params.transition == 'easeOutQuad') {
             params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
         } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quad" ||
@@ -460,7 +460,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             params.transition == 'easeLinear') {
             params.mode = Clutter.AnimationMode.LINEAR;
         } else {
-            global.log("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);
+            log("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);
         }
 
         if (params.onComplete) {
