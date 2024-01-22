@@ -514,7 +514,7 @@ export class Switcher {
             actor.add_style_pseudo_class('selected');
             Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
-            Main.uiGroup.remove_actor(parent);
+            Main.uiGroup.remove_child(parent);
             parent = null;
             let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
             this._manager.platform._extensionSettings.set_value("switcher-background-color", color);
@@ -616,7 +616,7 @@ export class Switcher {
             });
         }
 
-        application_icon_box.add_child(icon);
+        application_icon_box.set_child(icon);
         this.previewActor.add_child(application_icon_box);
         this._windowIconBoxes[index] = application_icon_box;
     }
@@ -915,7 +915,7 @@ export class Switcher {
         if (this._parent === null) this._manager.platform.removeBackground();
 
         this._disablePerspectiveCorrection();
-        Main.uiGroup.remove_actor(this.actor);
+        Main.uiGroup.remove_child(this.actor);
     }
 
     animateClosed(reason=CloseReason.ACTIVATE_SELECTED) {

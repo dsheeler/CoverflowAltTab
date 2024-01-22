@@ -151,7 +151,7 @@ class AbstractPlatform {
     }
 
     removeBackground() {
-    	global.overlay_group.remove_actor(this._background);
+    	global.overlay_group.remove_child(this._background);
     }
 }
 
@@ -177,7 +177,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             actor.add_style_pseudo_class('selected');
             Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
-            Main.uiGroup.remove_actor(parent);
+            Main.uiGroup.remove_child(parent);
             parent = null;
             let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
             this._extensionSettings.set_value("switcher-background-color", color);
