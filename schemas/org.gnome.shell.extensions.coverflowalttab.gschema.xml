@@ -216,10 +216,6 @@
         <range min="0" max="1"/>
         <summary>Amount to Blend Tint Color</summary>
     </key>
-    <key type="b" name="use-theme-color-for-tint-color">
-        <default>true</default>
-        <summary>Use gnome-shell theme switcher-list background color to tint the Application Switcher</summary>
-    </key>
     <key type="b" name="use-glitch-effect">
         <default>false</default>
         <summary>Use a "glitch effect" on the background application switcher</summary>

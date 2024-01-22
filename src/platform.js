@@ -128,7 +128,6 @@ class AbstractPlatform {
             tint_color: (0., 0., 0.),
             switcher_background_color: (0., 0., 0.),
             tint_blend: 0.0,
-            use_theme_color_for_tint_color: false,
             use_glitch_effect: false,
             use_tint: false,
             invert_swipes: false,
@@ -229,7 +228,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "tint-color",
             "tint-blend",
             "switcher-background-color",
-            "use-theme-color-for-tint-color",
             "use-glitch-effect",
             "invert-swipes",
         ];
@@ -349,7 +347,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 tint_color: settings.get_value("tint-color").deep_unpack(),
                 tint_blend: settings.get_double("tint-blend"),
                 switcher_background_color: settings.get_value("switcher-background-color").deep_unpack(),
-                use_theme_color_for_tint_color: settings.get_boolean("use-theme-color-for-tint-color"),
                 use_glitch_effect: settings.get_boolean("use-glitch-effect"),
                 use_tint: settings.get_boolean("use-tint"),
                 invert_swipes: settings.get_boolean("invert-swipes"),
