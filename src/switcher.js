@@ -295,14 +295,14 @@ export class Switcher {
             }
             
             preview.addEffect(Clutter.DesaturateEffect, { factor:  0.0 }, 'desaturate', 'factor', 0.0, this._settings.desaturate_factor, this._settings.animation_time);
-            preview.addEffect(Shell.BlurEffect, { sigma: 0.0 }, 'blur', 'sigma', 0.0,  this._settings.blur_sigma, this._settings.animation_time);
+            preview.addEffect(Shell.BlurEffect, { radius: 0.0 }, 'blur', 'raduis', 0.0,  this._settings.blur_radius, this._settings.animation_time);
         }
     }
 
     _removeBackgroundEffects() {
         if (this._previews !== null) {
             for (let preview of this._previews) {
-                preview.removeEffect('blur', 'sigma', 0.0, this._settings.animation_time);
+                preview.removeEffect('blur', 'radius', 0.0, this._settings.animation_time);
                 preview.removeEffect('desaturate', 'factor', 0.0, this._settings.animation_time);
                 preview.removeEffect('tint', 'blend', 0.0, this._settings.animation_time);
                 if (preview._effectCounts['glitch'] > 0) {
