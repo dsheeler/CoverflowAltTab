@@ -6,16 +6,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2024-01-18 17:02-0600\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Andus <anduse@andus.dev>\n"
-"Language-Team: Polish\n"
+"PO-Revision-Date: 2024-01-23 11:42+0000\n"
+"Last-Translator: Eryk Michalak <gnu.ewm@protonmail.com>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/coverflow-alt-tab/"
+"source/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.4-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/prefs.js:103 src/prefs.js:148
@@ -56,7 +59,6 @@ msgid "General"
 msgstr "Generalne"
 
 #: src/prefs.js:143
-#, fuzzy
 msgid "Switcher"
 msgstr "Przełącznik"
 
@@ -66,11 +68,11 @@ msgstr ""
 
 #: src/prefs.js:145
 msgid "Carousel"
-msgstr ""
+msgstr "Karuzela"
 
 #: src/prefs.js:147
 msgid "Looping Method"
-msgstr ""
+msgstr "Metoda zapętlenia"
 
 #: src/prefs.js:147
 msgid "How to cycle through windows."
@@ -136,9 +138,8 @@ msgid "Animation"
 msgstr "Animacja"
 
 #: src/prefs.js:161
-#, fuzzy
 msgid "Duration [s]"
-msgstr "Czas trwania"
+msgstr "Czas trwania [s]"
 
 #: src/prefs.js:162
 msgid "Randomize Durations"
@@ -170,7 +171,6 @@ msgid "All workspaces, current first"
 msgstr "Wszystkie obszary robocze, aktualny jako pierwszy"
 
 #: src/prefs.js:174
-#, fuzzy
 msgid "Workspaces"
 msgstr "Obszary robocze"
 
@@ -190,9 +190,8 @@ msgid "Switch between windows on current monitor."
 msgstr "Przełączaj pomiędzy oknami na głównym monitorze"
 
 #: src/prefs.js:178
-#, fuzzy
 msgid "Icons"
-msgstr "Ikona"
+msgstr "Ikony"
 
 #: src/prefs.js:182
 msgid "Overlay Icon Size"
@@ -212,7 +211,7 @@ msgstr "Ustaw przezroczystość ikony nakładki"
 
 #: src/prefs.js:184
 msgid "Attached"
-msgstr ""
+msgstr "Dołączone"
 
 #: src/prefs.js:185
 #, fuzzy
@@ -268,7 +267,7 @@ msgstr ""
 
 #: src/prefs.js:202
 msgid "Blur"
-msgstr ""
+msgstr "Rozmycie"
 
 #: src/prefs.js:202
 #, fuzzy
@@ -281,7 +280,7 @@ msgstr ""
 
 #: src/prefs.js:217
 msgid "Color"
-msgstr ""
+msgstr "Kolor"
 
 #: src/prefs.js:238
 msgid "Set to Theme Color"
@@ -297,7 +296,7 @@ msgstr ""
 
 #: src/prefs.js:276
 msgid "Glitch"
-msgstr ""
+msgstr "Zakłócenia"
 
 #: src/prefs.js:279
 msgid "Background"
@@ -369,7 +368,7 @@ msgstr "Kod (twórz pull requesty, zgłaszaj problemy, itd.)"
 
 #: src/prefs.js:365
 msgid "Donate"
-msgstr ""
+msgstr "Przekaż darowiznę"
 
 #, fuzzy
 #~ msgid "Windows"
