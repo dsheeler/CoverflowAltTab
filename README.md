@@ -1,7 +1,7 @@
 # CoverflowAltTab
 
 <a href="https://extensions.gnome.org/extension/97/coverflow-alt-tab/"><img src="https://img.shields.io/badge/Download-extensions.gnome.org-4a86cf.svg?logo=gnome&style=plastic" /></a>
-<a href="https://hosted.weblate.org/engage/coverflow-alt-tab/"><img src="https://img.shields.io/weblate/progress/coverflow-alt-tab?style=plastic&logo=weblate&color=2ECCAA&label=Use%20Weblate%20for%20translation/">
+<a href="https://hosted.weblate.org/engage/coverflow-alt-tab/"><img src="https://img.shields.io/weblate/progress/coverflow-alt-tab?style=plastic&logo=weblate&color=2ECCAA&label=Use%20Weblate%20for%20translation">
 </a>
 
 
