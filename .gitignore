@@ -1,3 +1,4 @@
 *.mo
 schemas/gschemas.compiled
 *.zip
+build
