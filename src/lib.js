@@ -25,8 +25,6 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
-
 // This method can be used to write a message to GNOME Shell's log. This is enhances
 // the standard log() functionality by prepending the extension's name and the location
 // where the message was logged. As the extensions name is part of the location, you
@@ -42,13 +40,10 @@ export function debug(message) {
 
   // Find the index of the extension directory (e.g. desktopcube@schneegans.github.com)
   // in the stack entry. We do not want to print the entire absolute file path.
-  let ExtensionObj = Extension.lookupByUUID('CoverflowAltTab@palatis.blogspot.com');
-
-  const extensionRoot = stack[0].indexOf(ExtensionObj.metadata.uuid);
+  const extensionRoot = stack[0].indexOf('CoverflowAltTab@palatis.blogspot.com');
 
   log('[' + stack[0].slice(extensionRoot) + '] ' + message);
   log(new Error().stack);
-
 }
 
 /**
