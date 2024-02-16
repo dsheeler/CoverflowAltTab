@@ -361,6 +361,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             label: "Github",
             uri: "https://github.com/dmo60/CoverflowAltTab",
         });
+
         let donate_row = new Adw.ActionRow({
             title: _("Donate"),
             icon_name: "support-symbolic",
@@ -381,14 +382,25 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 
             uri: "https://github.com/sponsors/dsheeler",
         });
-		https://github.com/sponsors/dsheeler
+
+		let translate_row = new Adw.ActionRow({
+            title: _("Translate"),
+            icon_name: "translate-symbolic",
+        })
+        let translate_link = new Gtk.LinkButton({
+            label: "Weblate",
+            uri: "https://hosted.weblate.org/engage/coverflow-alt-tab/",
+        });
         code_row.add_suffix(github_link);
         code_row.set_activatable_widget(github_link);
+		translate_row.add_suffix(translate_link);
+		translate_row.set_activatable_widget(translate_link);
         donate_row.add_suffix(donate_link);
 		donate_row.add_suffix(donate_link_paypal);
 		donate_row.add_suffix(donate_link_github);
 		
 		links_pref_group.add(code_row);
+		links_pref_group.add(translate_row);
         links_pref_group.add(donate_row);
 
 		label_box.append(label);
