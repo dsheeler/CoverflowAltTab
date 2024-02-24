@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2024-01-09 11:27+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
@@ -259,7 +259,7 @@ msgstr "Tilsløring"
 
 #: src/prefs.js:202
 #, fuzzy
-msgid "Larger means more blurry."
+msgid "Larger means blurrier."
 msgstr "Høyere verdi tilslører mer."
 
 #: src/prefs.js:205

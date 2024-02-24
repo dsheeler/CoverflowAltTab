@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2024-01-23 11:42+0000\n"
 "Last-Translator: Eryk Michalak <gnu.ewm@protonmail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/coverflow-alt-tab/"
@@ -271,7 +271,7 @@ msgstr "Rozmycie"
 
 #: src/prefs.js:202
 #, fuzzy
-msgid "Larger means more blurry."
+msgid "Larger means blurrier."
 msgstr "Mniejsze znaczy ciemniejsze."
 
 #: src/prefs.js:205

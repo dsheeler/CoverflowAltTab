@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2022-11-19 10:41+0100\n"
 "Last-Translator: DAEM Q.\n"
 "Language-Team: \n"
@@ -261,7 +261,7 @@ msgid "Blur"
 msgstr ""
 
 #: src/prefs.js:202
-msgid "Larger means more blurry."
+msgid "Larger means blurrier."
 msgstr ""
 
 #: src/prefs.js:205

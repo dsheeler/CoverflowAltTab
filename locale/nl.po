@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2021-07-11 19:01+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <kde-i18n-doc@kde.org>\n"
@@ -261,7 +261,7 @@ msgid "Blur"
 msgstr ""
 
 #: src/prefs.js:202
-msgid "Larger means more blurry."
+msgid "Larger means blurrier."
 msgstr ""
 
 #: src/prefs.js:205

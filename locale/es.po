@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2024-01-22 18:48+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/coverflow-alt-"
@@ -263,7 +263,8 @@ msgid "Blur"
 msgstr "Difuminar"
 
 #: src/prefs.js:202
-msgid "Larger means more blurry."
+#, fuzzy
+msgid "Larger means blurrier."
 msgstr "Más grande significa más borroso."
 
 #: src/prefs.js:205

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:40-0600\n"
+"POT-Creation-Date: 2024-02-24 05:50-0600\n"
 "PO-Revision-Date: 2023-09-02 18:52+0300\n"
 "Last-Translator: Muha Aliss <muhaaliss@pm.me>\n"
 "Language-Team: Turkish <muhaaliss@pm.me>\n"
@@ -262,7 +262,7 @@ msgstr ""
 
 #: src/prefs.js:202
 #, fuzzy
-msgid "Larger means more blurry."
+msgid "Larger means blurrier."
 msgstr "Daha büyük, daha bulanık anlamına gelir."
 
 #: src/prefs.js:205
