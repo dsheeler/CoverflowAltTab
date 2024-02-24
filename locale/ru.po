@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 17:02-0600\n"
+"POT-Creation-Date: 2024-02-24 05:40-0600\n"
 "PO-Revision-Date: 2020-05-07 20:21+0300\n"
 "Last-Translator: Roman Kaverin <roman.kaverin@gmail.com>\n"
 "Language-Team: \n"
@@ -354,8 +354,12 @@ msgstr ""
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:365
+#: src/prefs.js:366
 msgid "Donate"
+msgstr ""
+
+#: src/prefs.js:387
+msgid "Translate"
 msgstr ""
 
 #, fuzzy

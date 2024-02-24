@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-01-18 17:02-0600\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-24 05:40-0600\n"
 "PO-Revision-Date: 2024-02-06 20:06+0000\n"
 "Last-Translator: Iago Emanuel <iagoemanuel@live.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -356,8 +356,12 @@ msgstr ""
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:365
+#: src/prefs.js:366
 msgid "Donate"
+msgstr ""
+
+#: src/prefs.js:387
+msgid "Translate"
 msgstr ""
 
 #, fuzzy

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 17:02-0600\n"
+"POT-Creation-Date: 2024-02-24 05:40-0600\n"
 "PO-Revision-Date: 2023-09-02 18:52+0300\n"
 "Last-Translator: Muha Aliss <muhaaliss@pm.me>\n"
 "Language-Team: Turkish <muhaaliss@pm.me>\n"
@@ -357,8 +357,12 @@ msgstr "Katkı"
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Kod (çekme istekleri oluşturma, sorunları bildirme vb.)"
 
-#: src/prefs.js:365
+#: src/prefs.js:366
 msgid "Donate"
+msgstr ""
+
+#: src/prefs.js:387
+msgid "Translate"
 msgstr ""
 
 #, fuzzy

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-01-18 17:02-0600\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-24 05:40-0600\n"
 "PO-Revision-Date: 2024-01-23 11:42+0000\n"
 "Last-Translator: Eryk Michalak <gnu.ewm@protonmail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/coverflow-alt-tab/"
@@ -366,9 +366,13 @@ msgstr "Przyczynianie się"
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Kod (twórz pull requesty, zgłaszaj problemy, itd.)"
 
-#: src/prefs.js:365
+#: src/prefs.js:366
 msgid "Donate"
 msgstr "Przekaż darowiznę"
+
+#: src/prefs.js:387
+msgid "Translate"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Windows"
