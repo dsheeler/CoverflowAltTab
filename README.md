@@ -26,10 +26,6 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
 
     - `make all`
 
-### Cinnamon
-
-Not maintained anymore, unfortunately. However, pull requests are always welcomed.
-
 ## Usage
 
 This extension uses the following key bindings (you can change or disable them in your system settings):
