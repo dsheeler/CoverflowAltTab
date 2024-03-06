@@ -34,9 +34,18 @@ Not maintained anymore, unfortunately. However, pull requests are always welcome
 
 This extension uses the following key bindings (you can change or disable them in your system settings):
 
--   "Switch applications" (usually **Alt+Tab**): Cycle through all windows from the current workspace
-
+-   "Switch applications" (usually **Alt+Tab**): Cycle through windows grouped by application
+-   "Switch windows" (usually undefined): Cycle through windows 
 -   "Switch windows of an application" (usually **Alt+\`**): Cycle through all windows from the current application from all workspaces
+
+Many users prefer a flat list of windows over a list grouped by application and so prefer the **Alt+Tab** key combination for "Switch windows". 
+Such a user could change the keybindings as in the table:
+
+| Action              | Default Shortcut | Recommended Shortcut |
+|---------------------|------------------|----------------------|
+| Switch applications | **Alt+Tab**      | **Super+Tab**        |
+| Switch windows      | None             | **Alt+Tab**          |
+
 
 All of the shortcuts with **Shift** key pressed cycles backward.
 
