@@ -110,7 +110,7 @@ export class TimelineSwitcher extends Switcher {
         if (this._previews == null || this._previews.length == 0)
             return;
 
-        let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.25, 1) : 1);
+        let animation_time = this._getRandomTime();
 
         if (this._previews.length == 1) {
             if (reorder_only) return;
@@ -142,7 +142,7 @@ export class TimelineSwitcher extends Switcher {
         if (reorder_only) return;
         // preview windows
         for (let [i, preview] of this._previews.entries()) {
-            animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
+            animation_time = this._getRandomTime();
             let distance = (this._currentIndex > i) ? this._previews.length - this._currentIndex + i : i - this._currentIndex;
             if (distance === this._previews.length - 1 && direction > 0) {
                 preview.__looping = true;

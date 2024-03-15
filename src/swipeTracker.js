@@ -5,6 +5,7 @@ import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import Mtk from 'gi://Mtk';
 import GObject from 'gi://GObject';
+import GLib from 'gi://GLib';
 
 import * as Params from 'resource:///org/gnome/shell/misc/params.js';
 
@@ -398,6 +399,108 @@ const ScrollGesture = GObject.registerClass({
     }
 });
 
+const MouseScroll = GObject.registerClass({
+    Properties: {
+        'enabled': GObject.ParamSpec.boolean(
+            'enabled', 'enabled', 'enabled',
+            GObject.ParamFlags.READWRITE,
+            true),
+        },
+    Signals: {
+        'begin':  { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
+        'update': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
+        'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
+    },
+}, class MouseScroll extends GObject.Object {
+    _init(actor, inverted=false) {
+        super._init();
+        this._inverted = inverted;
+        this._began = false;
+        this._enabled = true;
+        this._gestureTimeoutId = 0;
+        actor.connect('scroll-event', this._handleEvent.bind(this));
+    }
+
+    get enabled() {
+        return this._enabled;
+    }
+
+    set enabled(enabled) {
+        if (this._enabled === enabled)
+            return;
+        const distance = TOUCHPAD_BASE_HEIGHT;
+        this._enabled = enabled;
+        this._began = false;
+        if (enabled == false && this.gestureTimeoutId !== 0) {
+            GLib.Source.remove(this._gestureTimeoutId)
+            this.emit('end', Clutter.get_current_event_time(), distance);
+
+
+        }
+        this.notify('enabled');
+    }
+
+    canHandleEvent(event) {
+        if (event.type() !== Clutter.EventType.SCROLL)
+           return false;
+
+        if (event.get_scroll_source() == Clutter.ScrollSource.FINGER ||
+            event.get_source_device().get_device_type() == Clutter.InputDeviceType.TOUCHPAD_DEVICE)
+            return false;
+
+        if (!this.enabled)
+            return false;
+
+        return true;
+    }
+
+    _handleEvent(actor, event) {
+        if (!this.canHandleEvent(event))
+            return Clutter.EVENT_PROPAGATE;
+
+        if (event.get_scroll_direction() !== Clutter.ScrollDirection.SMOOTH)
+            return Clutter.EVENT_PROPAGATE;
+
+        const distance = TOUCHPAD_BASE_HEIGHT;
+
+        let time = event.get_time();
+        this._lastTime = time;
+        let [dx, dy] = event.get_scroll_delta();
+        if (this._inverted) {
+            dx = -dx;
+            dy = -dy;
+        }
+
+        if (!this._began) {
+            let [x, y] = event.get_coords();
+            this.emit('begin', time, x, y);
+            this._began = true;
+        }
+
+        const delta = dx * 2* SCROLL_MULTIPLIER + dy * SCROLL_MULTIPLIER;
+        if (this._gestureTimeoutId !== 0) {
+            GLib.Source.remove(this._gestureTimeoutId);
+            this._gestureTimeoutId = 0;
+        }
+        this._gestureTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 400, () => {
+            this.emit('end', Clutter.get_current_event_time(), distance);
+            this._began = false;
+            this._gestureTimeoutId = 0;
+            return false;
+        });
+
+        this.emit('update', time, delta, distance);
+
+        return Clutter.EVENT_STOP;
+    }
+
+    destroy() {
+        if (this.gestureTimeoutId !== 0) {
+            GLib.Source.remove(this._gestureTimeoutId)
+        }
+    }
+
+});
 // USAGE:
 //
 // To correctly implement the gesture, there must be handlers for the following
@@ -516,8 +619,15 @@ export const MySwipeTracker = GObject.registerClass({
                 GObject.BindingFlags.SYNC_CREATE);
             this.bind_property('scroll-modifiers',
                 this._scrollGesture, 'scroll-modifiers', 0);
+
+            this._mouseScroll = new MouseScroll(actor, this._inverted);
+            this._mouseScroll.connect('begin', this._beginGesture.bind(this));
+            this._mouseScroll.connect('update', this._updateGesture.bind(this));
+            this._mouseScroll.connect('end', this._endTouchpadGesture.bind(this));
+            this.bind_property('enabled', this._mouseScroll, 'enabled', 0);
         } else {
             this._scrollGesture = null;
+            this._mouseScroll = null;
         }
     }
 
@@ -530,11 +640,11 @@ export const MySwipeTracker = GObject.registerClass({
      * scrolling.
      */
     canHandleScrollEvent(scrollEvent) {
-        if (!this.enabled || this._scrollGesture === null) {
+        if (!this.enabled || (this._scrollGesture === null && this._mouseScroll === null)) {
             return false;
         }
 
-        return this._scrollGesture.canHandleEvent(scrollEvent);
+        return this._scrollGesture.canHandleEvent(scrollEvent) || this.MouseScroll.canHandleEvent(scrollEvent);
     }
 
     get enabled() {
@@ -546,8 +656,8 @@ export const MySwipeTracker = GObject.registerClass({
             return;
 
         this._enabled = enabled;
-        if (!enabled && this._state === State.SCROLLING)
-            this._interrupt();
+        /* if (!enabled && this._state === State.SCROLLING)
+            this._interrupt(); */
         this.notify('enabled');
     }
 
@@ -781,6 +891,11 @@ export const MySwipeTracker = GObject.registerClass({
         if (this._touchGesture) {
             global.stage.remove_action(this._touchGesture);
             delete this._touchGesture;
+        }
+
+        if (this._mouseScroll) {
+            this._mouseScroll.destroy();
+            delete this._mouseScroll;
         }
     }
 });
