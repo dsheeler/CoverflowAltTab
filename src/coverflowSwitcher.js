@@ -184,20 +184,6 @@ export class CoverflowSwitcher extends BaseSwitcher {
         //let animation_time = this._settings.animation_time * 2;
         let animation_time = this._settings.animation_time * 2 * (direction === Direction.TO_RIGHT ? ((index + 1) / this._previews.length) : (1 - index / this._previews.length));
         this._updatePreview(index, zeroIndexPreview, preview, index, false, animation_time);
-        let translation_x;
-        if (direction === Direction.TO_RIGHT) {
-            translation_x = xOffsetStart - (this._previewsCenterPosition.x
-                - preview.width / 2) + 50 * (index - this._currentIndex);
-        } else {
-            translation_x = xOffsetStart - (this._previewsCenterPosition.x
-                + preview.width / 2) + 50 * (index - this._currentIndex);
-        }
-        let lastExtraParams = {
-            transition: 'userChoice',
-            onCompleteParams: [direction],
-            onComplete: this._onFlipComplete,
-            onCompleteScope: this
-        };
         this._manager.platform.tween(preview, {
             transition: 'easeInOutQuint',
             opacity: ALPHA * 255,
@@ -309,7 +295,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
             let preview = item[2]; 
             let i = item[0];
             let idx = item[1];
-            let animation_time = this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
+            let animation_time = this._getRandomTime();
             zeroIndexPreview = this._updatePreview(idx, zeroIndexPreview, preview, i, reorder_only, animation_time);
             this._manager.platform.tween(preview, {
                 opacity: ALPHA * 255,
