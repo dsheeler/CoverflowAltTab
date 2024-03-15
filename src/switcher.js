@@ -44,6 +44,12 @@ CloseReason.ACTIVATE_SELECTED = 1;
 CloseReason.NO_ACTIVATION = 2;
 
 export class Switcher {
+    _createPreviews() { __ABSTRACT_METHOD__(this, this._createPreviews) }
+    _updatePreviews() { __ABSTRACT_METHOD__(this, this._updatePreviews) }
+
+    _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
+    _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
+
     constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
@@ -90,18 +96,6 @@ export class Switcher {
         this.actor.add_child(this.previewActor);
         Main.uiGroup.add_child(this.actor);
         
-        if (this._parent == null) {
-            this._grabModal();
-        }
-        
-        if (this._parent === null) {
-            this.actor.set_size(monitor.width, monitor.height);
-            this.actor.set_position(monitor.x, monitor.y);
-        } else {
-            this.actor.set_size(this._width, this._height);
-            this.actor.set_position(this._x, this._y);
-        }
-
         this.gestureInProgress = false;
 
         const swipeTracker = new MySwipeTracker(this.actor,
@@ -114,6 +108,20 @@ export class Switcher {
         swipeTracker.connect('update', this._gestureUpdate.bind(this));
         swipeTracker.connect('end', this._gestureEnd.bind(this));
         this._swipeTracker = swipeTracker;
+
+        if (this._parent == null) {
+            this._grabModal();
+        }
+        
+        if (this._parent === null) {
+            this.actor.set_size(monitor.width, monitor.height);
+            this.actor.set_position(monitor.x, monitor.y);
+        } else {
+            this.actor.set_size(this._width, this._height);
+            this.actor.set_position(this._x, this._y);
+        }
+
+
 
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
@@ -244,7 +252,7 @@ export class Switcher {
         this._setCurrentIndex(endProgress);
         if (endProgress != this._toIndex) {
             if (this._direction == Direction.TO_RIGHT) {
-                this._showSubswitcher(Direction.TO_LEFT);                
+                this._showSubswitcher(Direction.TO_LEFT);
             } else {
                 this._showSubswitcher(Direction.TO_RIGHT);
             }
@@ -259,7 +267,6 @@ export class Switcher {
         if (this._haveModal) {
             this.actor.disconnect(this._key_press_handler_id);
             this.actor.disconnect(this._key_release_handler_id);
-            this.actor.disconnect(this._scroll_handler_id);
             Main.popModal(this._grab);
             this._haveModal = false;
         }
@@ -269,7 +276,6 @@ export class Switcher {
         if (this._haveModal) return;
         this._key_press_handler_id = this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
         this._key_release_handler_id = this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
-        this._scroll_handler_id = this.actor.connect('scroll-event', this._scrollEvent.bind(this));
         this._grab = Main.pushModal(this.actor)
         if (!this._grab) {
             this._activateSelected();
@@ -319,6 +325,7 @@ export class Switcher {
 
     _stopClosing() {
         this._animatingClosed = false;
+        this._swipeTracker.enabled = true;
         for (let preview of this._allPreviews) {
             if (!this._previews.includes(preview)) {
                 if (this._parent === null) {
@@ -345,12 +352,6 @@ export class Switcher {
             }
         }
     }
-
-    _createPreviews() { __ABSTRACT_METHOD__(this, this._createPreviews) }
-    _updatePreviews() { __ABSTRACT_METHOD__(this, this._updatePreviews) }
-
-    _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
-    _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
     _showSubswitcher(direction) {
         if (this._isAppSwitcher) {
@@ -769,37 +770,6 @@ export class Switcher {
 
         return true;
     }
-
-    // allow navigating by mouse-wheel scrolling
-    _scrollEvent(actor, event) {
-        if (this._swipeTracker.canHandleScrollEvent(event))
-            return Clutter.EVENT_PROPAGATE;
-
-        switch (event.get_scroll_direction()) {
-            case Clutter.ScrollDirection.SMOOTH:
-                let [dx, dy] = event.get_scroll_delta();
-                if (dy > 0 || dx > 0) {
-                    this._next();
-                    return true;
-                } else {
-                    this._previous();
-                    return true;
-                }
-                break;
-            case Clutter.ScrollDirection.LEFT:
-        	case Clutter.ScrollDirection.UP:
-                this._previous();
-                break;
-
-        	case Clutter.ScrollDirection.RIGHT:
-        	case Clutter.ScrollDirection.DOWN:
-                this._next();
-                break;
-        }
-
-        return true;
-    }
-
     _windowDestroyed(wm, actor) {
 		this._removeDestroyedWindow(actor.meta_window);
     }
@@ -838,6 +808,7 @@ export class Switcher {
     }
 
     _activateSelected(reset_current_window_title) {
+        this._swipeTracker.enabled = false;
         let preview = this._previews[this._currentIndex];
         if (preview) {
             preview.remove_highlight();
@@ -867,7 +838,7 @@ export class Switcher {
     }
 
     _getRandomTime() {
-        return this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.0001, 1) : 1);
+        return this._settings.animation_time * (this._settings.randomize_animation_times ? this._getRandomArbitrary(0.5, 1) : 1);
     }
 
     _hide(reason) {
@@ -900,6 +871,10 @@ export class Switcher {
             GLib.Source.remove(this._initialDelayTimeoutId);
         }
 
+        if (this._swipeTracker) {
+            this._swipeTracker.destroy();
+        }
+        this._swipeTracker = null;
         this._windows = null;
         this._appWindowsMap = null;
         this._subSwitchers = null;
