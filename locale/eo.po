@@ -6,15 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2024-02-24 05:50-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-04-25 19:07+0000\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/"
+"coverflow-alt-tab/source/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5.1-dev\n"
 
 #: src/prefs.js:103 src/prefs.js:148
 msgid "Coverflow"
@@ -26,15 +29,15 @@ msgstr ""
 
 #: src/prefs.js:105 src/prefs.js:150
 msgid "Bottom"
-msgstr ""
+msgstr "Malsupro"
 
 #: src/prefs.js:106 src/prefs.js:150
 msgid "Top"
-msgstr ""
+msgstr "Supro"
 
 #: src/prefs.js:107 src/prefs.js:184
 msgid "Classic"
-msgstr ""
+msgstr "Klasika"
 
 #: src/prefs.js:108 src/prefs.js:184
 msgid "Overlay"
@@ -42,16 +45,16 @@ msgstr ""
 
 #: src/prefs.js:116
 msgid "Reset to default value"
-msgstr ""
+msgstr "Uzi implicitan valoron"
 
 #: src/prefs.js:132
 #, javascript-format
 msgid "Version %d"
-msgstr ""
+msgstr "Versio %d"
 
 #: src/prefs.js:138
 msgid "General"
-msgstr ""
+msgstr "Ĝenerala"
 
 #: src/prefs.js:143
 msgid "Switcher"
@@ -63,7 +66,7 @@ msgstr ""
 
 #: src/prefs.js:145
 msgid "Carousel"
-msgstr ""
+msgstr "Karuselo"
 
 #: src/prefs.js:147
 msgid "Looping Method"
@@ -75,7 +78,7 @@ msgstr ""
 
 #: src/prefs.js:148
 msgid "Style"
-msgstr ""
+msgstr "Stilo"
 
 #: src/prefs.js:148
 msgid "Pick the type of switcher."
@@ -91,7 +94,7 @@ msgstr ""
 
 #: src/prefs.js:150
 msgid "Window Title Position"
-msgstr ""
+msgstr "Pozicio de fenestra titolo"
 
 #: src/prefs.js:150
 msgid "Place window title above or below the switcher."
@@ -108,7 +111,7 @@ msgstr ""
 
 #: src/prefs.js:154
 msgid "Hide Panel"
-msgstr ""
+msgstr "Kaŝi panelon"
 
 #: src/prefs.js:154
 msgid "Hide panel when switching windows."
@@ -128,7 +131,7 @@ msgstr ""
 
 #: src/prefs.js:161
 msgid "Duration [s]"
-msgstr ""
+msgstr "Daŭro [s]"
 
 #: src/prefs.js:162
 msgid "Randomize Durations"
@@ -149,7 +152,7 @@ msgstr ""
 
 #: src/prefs.js:170
 msgid "All workspaces"
-msgstr ""
+msgstr "Ĉiuj laborspacoj"
 
 #: src/prefs.js:172
 msgid "All workspaces, current first"
@@ -173,7 +176,7 @@ msgstr ""
 
 #: src/prefs.js:178
 msgid "Icons"
-msgstr ""
+msgstr "Piktogramoj"
 
 #: src/prefs.js:182
 msgid "Overlay Icon Size"
@@ -201,7 +204,7 @@ msgstr ""
 
 #: src/prefs.js:189
 msgid "Icon Shadow"
-msgstr ""
+msgstr "Piktograma ombro"
 
 #: src/prefs.js:192
 msgid "Window Properties"
@@ -257,7 +260,7 @@ msgstr ""
 
 #: src/prefs.js:217
 msgid "Color"
-msgstr ""
+msgstr "Koloro"
 
 #: src/prefs.js:238
 msgid "Set to Theme Color"
@@ -277,7 +280,7 @@ msgstr ""
 
 #: src/prefs.js:279
 msgid "Background"
-msgstr ""
+msgstr "Fono"
 
 #: src/prefs.js:281
 msgid "Dim-factor"
@@ -305,15 +308,15 @@ msgstr ""
 
 #: src/prefs.js:293
 msgid "None"
-msgstr ""
+msgstr "Nenio"
 
 #: src/prefs.js:294
 msgid "Move Camera"
-msgstr ""
+msgstr "Movi kameraon"
 
 #: src/prefs.js:295
 msgid "Adjust Angles"
-msgstr ""
+msgstr "Modifi angulojn"
 
 #: src/prefs.js:299 src/prefs.js:301
 msgid "Highlight Window Under Mouse"
@@ -334,7 +337,7 @@ msgstr ""
 
 #: src/prefs.js:322
 msgid "Contribute"
-msgstr ""
+msgstr "Kontribui"
 
 #: src/prefs.js:358
 msgid "Code (create pull requests, report issues, etc.)"
@@ -342,8 +345,8 @@ msgstr ""
 
 #: src/prefs.js:366
 msgid "Donate"
-msgstr ""
+msgstr "Donaci"
 
 #: src/prefs.js:387
 msgid "Translate"
-msgstr ""
+msgstr "Traduki"
