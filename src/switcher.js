@@ -301,7 +301,7 @@ export class Switcher {
             }
             
             preview.addEffect(Clutter.DesaturateEffect, { factor:  0.0 }, 'desaturate', 'factor', 0.0, this._settings.desaturate_factor, this._settings.animation_time);
-            preview.addEffect(Shell.BlurEffect, { radius: 0.0 }, 'blur', 'raduis', 0.0,  this._settings.blur_radius, this._settings.animation_time);
+            preview.addEffect(Shell.BlurEffect, { radius: 0.0 }, 'blur', 'radius', 0.0,  this._settings.blur_radius, this._settings.animation_time);
         }
     }
 

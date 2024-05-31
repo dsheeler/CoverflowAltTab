@@ -199,7 +199,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
         background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturate-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Desaturate"), _("Larger means more desaturation."), true));
-        background_application_switcher_pref_group.add(buildSpinAdw(settings, "blur-radius", [0, 20, 1, 1], _("Blur"), _("Larger means blurrier.")));
+        background_application_switcher_pref_group.add(buildRangeAdw(settings, "blur-radius", [0, 20, 0.1, [5, 10, 15]], _("Blur"), _("Larger means blurrier."), true));
 
         let color_row = new Adw.ExpanderRow({
             title: _("Tint"),
@@ -295,11 +295,81 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             { id: "Adjust Angles", name: _("Adjust Angles") }],
             _("Perspective Correction"), ("Method to make off-center switcher look centered.")));
 
-        let highlight_mouse_over_pref_group = new Adw.PreferencesGroup({
+        let highlight_color_row = new Adw.ExpanderRow({
             title: _("Highlight Window Under Mouse"),
+            subtitle: _("Draw a colored highlight on window under the mouse to know the effects of clicking."),
         });
-        window_size_pref_group.add(buildSwitcherAdw(settings, "highlight-mouse-over", [], [], _("Highlight Window Under Mouse"), _("Draw embelishment on window under the mouse to know the effects of clicking.")));
-        window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
+        window_size_pref_group.add(highlight_color_row);
+
+        choose_tint_box.append(use_theme_color_button);
+        choose_tint_box.append(color_button);
+        let highlight_switch = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: settings.get_boolean("highlight-mouse-over"),
+        });
+        settings.bind("highlight-mouse-over", highlight_switch, "active", Gio.SettingsBindFlags.DEFAULT);
+        highlight_color_row.add_suffix(highlight_switch);
+
+		let highlight_chooser_row = new Adw.ActionRow({
+			title: _("Color")
+		});
+        let choose_highlight_box = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 10,
+            valign: Gtk.Align.CENTER,
+        });
+
+		highlight_chooser_row.add_suffix(choose_highlight_box);
+        highlight_color_row.add_row(highlight_chooser_row);
+
+        let highlight_color_dialog = new Gtk.ColorDialog({
+            with_alpha: false,
+        });
+
+        let highlight_color_button = new Gtk.ColorDialogButton({
+            valign: Gtk.Align.CENTER,
+            dialog: highlight_color_dialog,
+        });
+        
+        let highlight_use_theme_color_button = new Gtk.Button({
+            label: _("Set to Theme Color"),
+            valign: Gtk.Align.CENTER,
+        });
+        highlight_use_theme_color_button.connect('clicked', () => {
+			let c = settings.get_value("switcher-background-color").deep_unpack();
+			let rgba = highlight_color_button.rgba;
+			rgba.red = c[0];
+			rgba.green = c[1];
+			rgba.blue = c[2];
+			rgba.alpha = 1
+			highlight_color_button.set_rgba(rgba);
+		});
+
+        choose_highlight_box.append(highlight_use_theme_color_button);
+        choose_highlight_box.append(highlight_color_button);
+        let hc = settings.get_value("highlight-color").deep_unpack();
+        let hrgba = highlight_color_button.rgba;
+        hrgba.red = hc[0];
+        hrgba.green = hc[1];
+        hrgba.blue = hc[2];
+        hrgba.alpha = 1
+        highlight_color_button.set_rgba(hrgba);
+        highlight_color_button.connect('notify::rgba', _ => {
+            let c = highlight_color_button.rgba;
+            let val = new GLib.Variant("(ddd)", [c.red, c.green, c.blue]);
+            settings.set_value("highlight-color", val);
+        });
+		highlight_switch.connect('notify::active', function(widget) {
+			highlight_color_row.set_expanded(widget.get_active());
+		});
+
+        let highlight_reset_button = makeResetButton();
+        highlight_reset_button.connect("clicked", function (widget) {
+            settings.reset("highlight-mouse-over");
+        });
+        highlight_color_row.add_suffix(highlight_reset_button);
+
+		window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
 
         /*let tweaks_page = new Adw.PreferencesPage({
             title: _('Tweaks'),
@@ -333,7 +403,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 
         let icon_image = new Gtk.Image({
             icon_name: "coverflow-symbolic",
-            pixel_size: 128,
+            pixel_size: 256,
         });
 
         let label_box = new Gtk.Box({

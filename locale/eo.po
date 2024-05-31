@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-02-24 05:50-0600\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-16 20:53-0500\n"
 "PO-Revision-Date: 2024-04-25 19:07+0000\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
-"Language-Team: Esperanto <https://hosted.weblate.org/projects/"
-"coverflow-alt-tab/source/eo/>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/coverflow-alt-"
+"tab/source/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -258,11 +258,11 @@ msgstr ""
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:217
+#: src/prefs.js:217 src/prefs.js:314
 msgid "Color"
 msgstr "Koloro"
 
-#: src/prefs.js:238
+#: src/prefs.js:238 src/prefs.js:335
 msgid "Set to Theme Color"
 msgstr ""
 
@@ -318,35 +318,36 @@ msgstr "Movi kameraon"
 msgid "Adjust Angles"
 msgstr "Modifi angulojn"
 
-#: src/prefs.js:299 src/prefs.js:301
+#: src/prefs.js:299
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:301
+#: src/prefs.js:300
 msgid ""
-"Draw embelishment on window under the mouse to know the effects of clicking."
+"Draw a colored highlight on window under the mouse to know the effects of "
+"clicking."
 msgstr ""
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:322
+#: src/prefs.js:392
 msgid "Contribute"
 msgstr "Kontribui"
 
-#: src/prefs.js:358
+#: src/prefs.js:428
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:366
+#: src/prefs.js:436
 msgid "Donate"
 msgstr "Donaci"
 
-#: src/prefs.js:387
+#: src/prefs.js:457
 msgid "Translate"
 msgstr "Traduki"

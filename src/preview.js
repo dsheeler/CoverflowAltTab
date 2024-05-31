@@ -217,8 +217,8 @@ export const Preview = GObject.registerClass({
     }
 
     _getHighlightStyle(alpha) {
-        let bgcolor = this.switcher._getSwitcherBackgroundColor();
-        let style =`background-color: rgba(${bgcolor.red}, ${bgcolor.green}, ${bgcolor.blue}, ${alpha})`;
+        let color = this.switcher._settings.highlight_color;
+        let style =`background-color: rgba(${255*color[0]}, ${255*color[1]}, ${255*color[2]}, ${alpha})`;
         return style;
     }
 

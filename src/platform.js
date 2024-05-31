@@ -132,6 +132,7 @@ class AbstractPlatform {
             use_tint: false,
             invert_swipes: false,
             overlay_icon_size: 128,
+            highlihght_color:(1., 1., 1.),
         };
     }
 
@@ -230,6 +231,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "switcher-background-color",
             "use-glitch-effect",
             "invert-swipes",
+            "highlight-color",
         ];
 
         let dkeys = [
@@ -341,7 +343,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 highlight_mouse_over: settings.get_boolean("highlight-mouse-over"),
                 raise_mouse_over: settings.get_boolean("raise-mouse-over"),
                 desaturate_factor: settings.get_double("desaturate-factor") === 1.0 ? 0.999 : settings.get_double("desaturate-factor"),
-                blur_radius: settings.get_int("blur-radius"),
+                blur_radius: settings.get_double("blur-radius"),
                 switcher_looping_method: settings.get_string("switcher-looping-method"),
                 switch_application_behaves_like_switch_windows: settings.get_boolean("switch-application-behaves-like-switch-windows"),
                 tint_color: settings.get_value("tint-color").deep_unpack(),
@@ -350,9 +352,10 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 use_glitch_effect: settings.get_boolean("use-glitch-effect"),
                 use_tint: settings.get_boolean("use-tint"),
                 invert_swipes: settings.get_boolean("invert-swipes"),
+                highlight_color: settings.get_value("highlight-color").deep_unpack(),
             };
         } catch (e) {
-            global.log(e);
+            console.log(e);
         }
 
         return this.getDefaultSettings();

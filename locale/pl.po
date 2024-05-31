@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:50-0600\n"
+"POT-Creation-Date: 2024-05-16 20:53-0500\n"
 "PO-Revision-Date: 2024-01-23 11:42+0000\n"
 "Last-Translator: Eryk Michalak <gnu.ewm@protonmail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/coverflow-alt-tab/"
@@ -278,11 +278,11 @@ msgstr "Mniejsze znaczy ciemniejsze."
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:217
+#: src/prefs.js:217 src/prefs.js:314
 msgid "Color"
 msgstr "Kolor"
 
-#: src/prefs.js:238
+#: src/prefs.js:238 src/prefs.js:335
 msgid "Set to Theme Color"
 msgstr ""
 
@@ -341,36 +341,37 @@ msgstr "Przenieś kamerę"
 msgid "Adjust Angles"
 msgstr "Dopasuj kąty"
 
-#: src/prefs.js:299 src/prefs.js:301
+#: src/prefs.js:299
 msgid "Highlight Window Under Mouse"
 msgstr "Podświetl Okno Pod Myszką"
 
-#: src/prefs.js:301
+#: src/prefs.js:300
 msgid ""
-"Draw embelishment on window under the mouse to know the effects of clicking."
+"Draw a colored highlight on window under the mouse to know the effects of "
+"clicking."
 msgstr ""
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise Window Under Mouse"
 msgstr "Podnieś Okno Pod Myszką"
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise the window under the mouse above all others."
 msgstr "Podnieś okno pod myszką nad wszystkie"
 
-#: src/prefs.js:322
+#: src/prefs.js:392
 msgid "Contribute"
 msgstr "Przyczynianie się"
 
-#: src/prefs.js:358
+#: src/prefs.js:428
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Kod (twórz pull requesty, zgłaszaj problemy, itd.)"
 
-#: src/prefs.js:366
+#: src/prefs.js:436
 msgid "Donate"
 msgstr "Przekaż darowiznę"
 
-#: src/prefs.js:387
+#: src/prefs.js:457
 msgid "Translate"
 msgstr ""
 

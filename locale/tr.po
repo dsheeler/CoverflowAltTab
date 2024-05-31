@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-24 05:50-0600\n"
+"POT-Creation-Date: 2024-05-16 20:53-0500\n"
 "PO-Revision-Date: 2023-09-02 18:52+0300\n"
 "Last-Translator: Muha Aliss <muhaaliss@pm.me>\n"
 "Language-Team: Turkish <muhaaliss@pm.me>\n"
@@ -269,11 +269,11 @@ msgstr "Daha büyük, daha bulanık anlamına gelir."
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:217
+#: src/prefs.js:217 src/prefs.js:314
 msgid "Color"
 msgstr ""
 
-#: src/prefs.js:238
+#: src/prefs.js:238 src/prefs.js:335
 msgid "Set to Theme Color"
 msgstr ""
 
@@ -330,38 +330,39 @@ msgstr "Kamerayı taşı"
 msgid "Adjust Angles"
 msgstr "Açıları ayarla"
 
-#: src/prefs.js:299 src/prefs.js:301
+#: src/prefs.js:299
 msgid "Highlight Window Under Mouse"
 msgstr "Farenin altındaki pencereyi vurgula"
 
-#: src/prefs.js:301
+#: src/prefs.js:300
 #, fuzzy
 msgid ""
-"Draw embelishment on window under the mouse to know the effects of clicking."
+"Draw a colored highlight on window under the mouse to know the effects of "
+"clicking."
 msgstr ""
 "Tıklamanın etkilerini göstermek için farenin altındaki pencereye süsleme çiz."
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise Window Under Mouse"
 msgstr "Farenin altındaki pencereyi belirginleştir"
 
-#: src/prefs.js:302
+#: src/prefs.js:372
 msgid "Raise the window under the mouse above all others."
 msgstr "Farenin altındaki pencereyi diğerlerinin üzerine çıkar."
 
-#: src/prefs.js:322
+#: src/prefs.js:392
 msgid "Contribute"
 msgstr "Katkı"
 
-#: src/prefs.js:358
+#: src/prefs.js:428
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Kod (çekme istekleri oluşturma, sorunları bildirme vb.)"
 
-#: src/prefs.js:366
+#: src/prefs.js:436
 msgid "Donate"
 msgstr ""
 
-#: src/prefs.js:387
+#: src/prefs.js:457
 msgid "Translate"
 msgstr ""
 
