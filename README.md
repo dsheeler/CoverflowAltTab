@@ -49,7 +49,7 @@ All of the shortcuts with **Shift** key pressed cycles backward.
 -   Hit **q** to close highlighted window.
 -   Hit **d** to hide all windows and show the desktop.
 
-You can also use the **arrow keys** or your **mouse wheel** to cycle through the windows.
+You can also use the **arrow keys**, **mouse wheel**, or **trackpad** to cycle through the windows.
 
 ## Customization
 
