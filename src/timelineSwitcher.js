@@ -136,7 +136,7 @@ export class TimelineSwitcher extends Switcher {
             return;
         }
  
-        for (let i = this._currentIndex; i < this._currentIndex + this._previews.length; i++) {
+        for (let i = Math.round(this._currentIndex); i < this._currentIndex + this._previews.length; i++) {
             this._previews[i%this._previews.length].make_bottom_layer(this.previewActor);
         }
         if (reorder_only) return;
@@ -199,7 +199,7 @@ export class TimelineSwitcher extends Switcher {
                     scale_x: scale,
                     scale_y: scale,
                     scale_z: scale,
-                    time: animation_time,
+                    time: this.gestureInProgress ? 0 : animation_time,
                     rotation_angle_y: TILT_ANGLE,
                     transition: TRANSITION_TYPE,
                     onComplete: () => { preview.set_reactive(true); },
