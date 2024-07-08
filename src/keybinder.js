@@ -48,6 +48,10 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
 
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-windows", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-windows-backward", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-applications", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-applications-backward", mode.NORMAL, this._startAppSwitcherBind);
     }
 
     disable() {
@@ -62,6 +66,7 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
 
     _onSettingsChanged(settings, key=null) {
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
+       
         if (key == null || key == 'bind-to-switch-applications') {
             if (settings.get_boolean('bind-to-switch-applications')) {
                 Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._startAppSwitcherBind);

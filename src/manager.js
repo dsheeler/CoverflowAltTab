@@ -107,11 +107,13 @@ export const Manager = class Manager {
 
             case 'switch-applications':
             case 'switch-applications-backward':
+            case 'coverflow-switch-applications':
+            case 'coverflow-switch-applications-backward':
                 isApplicationSwitcher = !this.platform.getSettings().switch_application_behaves_like_switch_windows
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
               	if (currentOnly === 'all-currentfirst') {
-                      // Switch between windows of all workspaces, prefer
+                    // Switch between windows of all workspaces, prefer
               		// those from current workspace
               		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
               		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);

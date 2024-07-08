@@ -133,6 +133,8 @@ class AbstractPlatform {
             invert_swipes: false,
             overlay_icon_size: 128,
             highlihght_color:(1., 1., 1.),
+            coverflow_switch_windows: [""],
+            coverflow_switch_applications: [""],
         };
     }
 
@@ -167,6 +169,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._backgroundColor = null;
         this._settings_changed_callbacks = null;
         this._themeContext = null;
+        this._keybindingActions = new Map();
     }
 
     _getSwitcherBackgroundColor() {
@@ -232,6 +235,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "use-glitch-effect",
             "invert-swipes",
             "highlight-color",
+            "coverflow-switch-applications",
+            "coverflow-switch-windows"
         ];
 
         let dkeys = [
@@ -251,9 +256,15 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
 
         this._settings = this._loadSettings();
+        this.addKeybinding("coverflow-switch-windows");
+        this.addKeybinding("coverflow-switch-applications");
     }
 
+
     disable() {
+        this.removeKeybinding("coverflow-switch-windows");
+        this.removeKeybinding("coverflow-switch-applications");
+
         this.showPanels(0);
         if (this._connections) {
             for (let connection of this._connections) {
@@ -272,6 +283,40 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._settings = null;
     }
 
+
+    getAction(actionName) {
+        return this._keybindingActions.get(actionName);
+    }
+
+    addKeybinding(actionName) {
+        let action = Main.wm.addKeybinding(
+            actionName,
+            this._extensionSettings,
+            Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+            Shell.ActionMode.NORMAL,
+            () => {
+               console.log(actionName, "activated");
+            }
+        );
+        this._keybindingActions.set(actionName, action)
+
+        action = Main.wm.addKeybinding(
+            actionName + "-backward",
+            this._extensionSettings,
+            Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+            Shell.ActionMode.NORMAL,
+            () => {}
+        )
+        this._keybindingActions.set(actionName + "-backward", action)
+    }
+
+    removeKeybinding(actionName) {
+        Main.wm.removeKeybinding(actionName);
+        this._keybindingActions.delete(actionName);
+        Main.wm.removeKeybinding(actionName + "-backward");
+        this._keybindingActions.delete(actionName + "-backward");
+    }
+    
     getWidgetClass() {
         return St.Widget;
     }
@@ -353,6 +398,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 use_tint: settings.get_boolean("use-tint"),
                 invert_swipes: settings.get_boolean("invert-swipes"),
                 highlight_color: settings.get_value("highlight-color").deep_unpack(),
+                coverflow_switch_windows: settings.get_strv("coverflow-switch-windows")[0],
+                coverflow_switch_applications: settings.get_strv("coverflow-switch-applications")[0],
             };
         } catch (e) {
             console.log(e);

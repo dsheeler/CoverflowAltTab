@@ -740,6 +740,8 @@ export class Switcher {
             case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
+            case this._manager.platform.getAction("coverflow-switch-windows"):
+            case this._manager.platform.getAction("coverflow-switch-applications"):
                 
                 // shift -> backwards
                 if (event_state & Clutter.ModifierType.SHIFT_MASK) {
@@ -752,6 +754,9 @@ export class Switcher {
             case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+            case this._manager.platform.getAction("coverflow-switch-windows-backward"):
+            case this._manager.platform.getAction("coverflow-switch-applications-backward"):
+
                 this._previous();
                 return true;
         }
