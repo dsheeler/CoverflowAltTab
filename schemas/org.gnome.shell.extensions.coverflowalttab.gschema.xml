@@ -228,5 +228,25 @@
         <default>(1.,1.,1.)</default>
         <summary></summary>
     </key>
+    <key name="coverflow-switch-windows" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Windows Keyboard Shortcut</summary>
+        <description>Switch Windows Keyboard Shortcut Keybinding</description>
+    </key>
+    <key name="coverflow-switch-windows-backward" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Windows Keyboard Shortcut</summary>
+        <description>Switch Windows Keyboard Shortcut Keybinding</description>
+    </key>
+    <key name="coverflow-switch-applications" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Applications Keyboard Shortcut</summary>
+        <description>Switch Applications Keyboard Shortcut Keybinding</description>
+    </key>
+    <key name="coverflow-switch-applications-backward" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Applications Keyboard Shortcut</summary>
+        <description>Switch Applications Keyboard Shortcut Keybinding</description>
+    </key>
   </schema>
 </schemalist>

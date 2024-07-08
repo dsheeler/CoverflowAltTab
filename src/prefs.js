@@ -29,7 +29,8 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
 
-import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
+import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
+import { ShortcutButton } from './shortcutButton.js';
 
 const easing_options = [
 	{
@@ -285,7 +286,9 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], [], _("Bind to 'switch-windows'")));
         keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [background_application_switcher_pref_group], [], _("Bind to 'switch-applications'")));
-
+        keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", "Coverflow Switch Windows Shortcut", "Keybinding to activate winow switcher."));
+        keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", "Coverflow Switch Applications Shortcut", "Keybinding to activate application switcher."));
+        
         let pcorrection_pref_group = new Adw.PreferencesGroup({
             title: _("Perspective Correction")
         })
@@ -708,4 +711,28 @@ function buildDropDownAdw(settings, key, values, title, subtitle=null) {
 	});
 	pref.add_suffix(reset_button);
 	return pref;
+}
+
+function buildShortcutButtonAdw(settings, actionName, title, subtitle) {
+    let shortcutButton = new ShortcutButton(settings, {
+        hhomogeneous: false,
+    }, actionName);
+    settings.connect("changed::" + actionName, () => {
+        shortcutButton.keybinding = settings.get_strv(actionName)[0];
+    });
+    shortcutButton.keybinding = settings.get_strv(actionName)[0];
+
+    shortcutButton.connect("notify::keybinding", () => {
+        settings.set_strv(actionName, [shortcutButton.keybinding]);
+        settings.set_strv(actionName + "-backward", ["<Shift>" + shortcutButton.keybinding])
+    });
+
+    let shortcutActionRow = new Adw.ActionRow({
+        title: _(title),
+        subtitle: _(subtitle)
+    });
+
+    shortcutActionRow.set_activatable_widget(shortcutButton);
+    shortcutActionRow.add_suffix(shortcutButton);
+    return shortcutActionRow;
 }
