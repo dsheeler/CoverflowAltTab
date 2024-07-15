@@ -21,8 +21,17 @@
  *
  * This class is a helper class to start the actual switcher.
  */
-
+const interfaceXml = `
+<node>
+  <interface name="org.gnome.shell.extensions.coverflowalttab">
+    <method name="dBusLaunch"/>
+  </interface>
+</node>`;
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import Gio from 'gi://Gio';
+
+
+
 
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
@@ -65,6 +74,17 @@ export const Manager = class Manager {
     enable() {
         this.platform.enable();
         this.keybinder.enable(this._startWindowSwitcher.bind(this), this.platform);
+        // Just like a signal handler ID, the `Gio.bus_own_name()` function returns a
+        // unique ID we can use to unown the name when we're done with it.
+        this.ownerId = Gio.bus_own_name(
+            Gio.BusType.SESSION,
+            'org.gnome.shell.extensions.coverflowalttab',
+            Gio.BusNameOwnerFlags.NONE,
+            this.onBusAcquired.bind(this),
+            this.onNameAcquired.bind(this),
+            this.onNameLost.bind(this));
+
+
     }
 
     disable() {
@@ -72,6 +92,43 @@ export const Manager = class Manager {
             this.switcher.destroy();
         this.platform.disable();
         this.keybinder.disable();
+        // Note that `onNameLost()` is NOT invoked when manually unowning a name.
+        Gio.bus_unown_name(this.ownerId);
+    }
+
+    onBusAcquired(connection, name) {
+        console.log(`${name}: connection acquired`);
+        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(interfaceXml,
+        this);
+
+        this.exportedObject.export(connection, '/org/gnome/shell/extensions/coverflowalttab');
+    }
+
+    /**
+     * Invoked when the name is acquired.
+     *
+     * On the other hand, if you were using something like GDBusObjectManager to
+     * watch for interfaces, you could export your interfaces here.
+     *
+     * @param {Gio.DBusConnection} connection - the connection that acquired the name
+     * @param {string} name - the name being owned
+     */
+    onNameAcquired(connection, name) {
+        console.log(`${name}: name acquired`);
+    }
+
+    /**
+     * Invoked when the name is lost or @connection has been closed.
+     *
+     * Typically you won't see this callback invoked, but it might happen if you
+     * try to own a name that was already owned by someone else.
+     *
+     * @param {Gio.DBusConnection|null} connection - the connection on which to
+     *     acquire the name, or %null if the connection was disconnected
+     * @param {string} name - the name being owned
+     */
+    onNameLost(connection, name) {
+        console.log(`${name}: name lost`);
     }
 
     activateSelectedWindow(win) {
@@ -83,6 +140,10 @@ export const Manager = class Manager {
     }
 
     _startWindowSwitcher(display, window, binding) {
+        this._startWindowSwitcherInternal(display, window, binding.get_name(), binding.get_mask(), false);
+    }
+
+    _startWindowSwitcherInternal(display, window, bindingName, mask, dBus=false) {
         let windows = [];
         let currentWorkspace = this.workspace_manager.get_active_workspace();
         let isApplicationSwitcher = false;
@@ -97,7 +158,7 @@ export const Manager = class Manager {
 
         windowActors = null;
 
-        switch (binding.get_name()) {
+        switch (bindingName) {
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
                 let focused = display.focus_window ? display.focus_window : windows[0];
@@ -141,10 +202,16 @@ export const Manager = class Manager {
         }
 
         if (windows.length) {
-            let mask = binding.get_mask();
             let currentIndex = windows.indexOf(display.focus_window);
             let switcher_class = this.platform.getSettings().switcher_class;
             this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
         }
     }
+
+    dBusLaunch() {
+        this._startWindowSwitcherInternal(this.display, null, "coverflow-switch-windows", 8, true);
+    }
 }
+
+
+

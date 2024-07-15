@@ -50,7 +50,7 @@ export class Switcher {
     _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
     _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
-    constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, x_in, y_in, width_in, height_in) {
+    constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, dBus, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = [...windows];
@@ -77,7 +77,7 @@ export class Switcher {
         this._fromSubSwitcher = null;
         this._grab = null;
         this._animatingClosed = false;
-
+        this._dBus = dBus;
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
 
@@ -154,7 +154,7 @@ export class Switcher {
             }
         }
 
-        let [x, y, mods] = global.get_pointer();
+       /*  let [x, y, mods] = global.get_pointer();
         if (!(mods & this._modifierMask)) {
             // There's a race condition; if the user released Alt before
             // we got the grab, then we won't be notified. (See
@@ -163,7 +163,7 @@ export class Switcher {
             // selection.)
             this._activateSelected();
             return;
-        }
+        } */
 
         if (this._parent == null) this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
     }
@@ -766,13 +766,15 @@ export class Switcher {
 
     _keyReleaseEvent(actor, event) {
         let [x, y, mods] = global.get_pointer();
-        let state = mods & this._modifierMask;
-        if (state == 0 && !this._animatingClosed) {
-            if (this._initialDelayTimeoutId !== 0)
-                this._setCurrentIndex((this._currentIndex + 1) % this._windows.length);
-            this._activateSelected();
+        if (!this._dBus) {
+            let [x, y, mods] = global.get_pointer();
+            let state = mods & this._modifierMask;
+            if (state == 0 && !this._animatingClosed) {
+                if (this._initialDelayTimeoutId !== 0)
+                    this._setCurrentIndex((this._currentIndex + 1) % this._windows.length);
+                this._activateSelected();
+            }
         }
-
         return true;
     }
     _windowDestroyed(wm, actor) {
