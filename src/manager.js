@@ -21,17 +21,19 @@
  *
  * This class is a helper class to start the actual switcher.
  */
-const interfaceXml = `
-<node>
-  <interface name="org.gnome.shell.extensions.coverflowalttab">
-    <method name="dBusLaunch"/>
-  </interface>
-</node>`;
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import Gio from 'gi://Gio';
 
-
-
+const dBusInterfaceXml = `
+<node>
+  <interface name="org.gnome.Shell.Extensions.Coverflowalttab">
+    <method name="launch">
+        <arg type="s" direction="in" name="type"/>
+    </method>
+    <method name="next"/>
+    <method name="previous"/>
+  </interface>
+</node>`;
 
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
@@ -78,7 +80,7 @@ export const Manager = class Manager {
         // unique ID we can use to unown the name when we're done with it.
         this.ownerId = Gio.bus_own_name(
             Gio.BusType.SESSION,
-            'org.gnome.shell.extensions.coverflowalttab',
+            'org.gnome.Shell.Extensions.Coverflowalttab',
             Gio.BusNameOwnerFlags.NONE,
             this.onBusAcquired.bind(this),
             this.onNameAcquired.bind(this),
@@ -88,20 +90,18 @@ export const Manager = class Manager {
     }
 
     disable() {
-        if (this.switcher != null)
-            this.switcher.destroy();
-        this.platform.disable();
-        this.keybinder.disable();
         // Note that `onNameLost()` is NOT invoked when manually unowning a name.
         Gio.bus_unown_name(this.ownerId);
+        if (this.switcher != null)
+            this.switcher.destroy();
+        this.keybinder.disable();
+        this.platform.disable();
     }
 
     onBusAcquired(connection, name) {
         console.log(`${name}: connection acquired`);
-        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(interfaceXml,
-        this);
-
-        this.exportedObject.export(connection, '/org/gnome/shell/extensions/coverflowalttab');
+        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
+        this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
     }
 
     /**
@@ -204,12 +204,38 @@ export const Manager = class Manager {
         if (windows.length) {
             let currentIndex = windows.indexOf(display.focus_window);
             let switcher_class = this.platform.getSettings().switcher_class;
-            this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null);
+            this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null, dBus);
         }
     }
 
-    dBusLaunch() {
-        this._startWindowSwitcherInternal(this.display, null, "coverflow-switch-windows", 8, true);
+    // DBus interface impl
+    launch(type) {
+        let actionName = null;
+        const actionPrefix = "coverflow-switch-";
+        if (type === "windows") {
+            actionName = actionPrefix + "windows";
+        } else if (type === "applications") {
+            actionName = actionPrefix + "applications";
+        }
+        console.log(actionName);
+        if (actionName !== null) this._startWindowSwitcherInternal(this.display, null, actionName, 0, true);
+        else console.error(`Can not launch switcher: ivalid type: '${type}'`);
+    }
+
+    next() {
+        try {
+            this.switcher._next();
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    previous() {
+        try {
+            this.switcher._previous();
+        } catch(e) {
+            console.error(e);
+        }
     }
 }
 

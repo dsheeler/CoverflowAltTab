@@ -50,7 +50,7 @@ export class Switcher {
     _previewNext() { __ABSTRACT_METHOD__(this, this._previewNext) }
     _previewPrevious() { __ABSTRACT_METHOD__(this, this._previewPrevious) }
 
-    constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, dBus, x_in, y_in, width_in, height_in) {
+    constructor(windows, mask, currentIndex, manager, activeMonitor=null, isAppSwitcher=false, parent=null, dBus=false, x_in, y_in, width_in, height_in) {
         this._manager = manager;
         this._settings = manager.platform.getSettings();
         this._windows = [...windows];
@@ -148,7 +148,7 @@ export class Switcher {
                     if (this._appWindowsMap.get(app).length > 1) {
                         let switcher_class = this._manager.platform.getSettings().switcher_class;
                         this._subSwitchers.set(window, new switcher_class(this._appWindowsMap.get(app), this._modifierMask, 0, this._manager, this._activeMonitor, false, this,
-                            this.actor.x, this.actor.y, this.actor.width, this.actor.height));
+                            this._dBus, this.actor.x, this.actor.y, this.actor.width, this.actor.height));
                     }
                 }
             }
@@ -765,7 +765,7 @@ export class Switcher {
     }
 
     _keyReleaseEvent(actor, event) {
-        let [x, y, mods] = global.get_pointer();
+
         if (!this._dBus) {
             let [x, y, mods] = global.get_pointer();
             let state = mods & this._modifierMask;

@@ -42,8 +42,8 @@ export function debug(message) {
   // in the stack entry. We do not want to print the entire absolute file path.
   const extensionRoot = stack[0].indexOf('CoverflowAltTab@palatis.blogspot.com');
 
-  log('[' + stack[0].slice(extensionRoot) + '] ' + message);
-  log(new Error().stack);
+  console.log('[' + stack[0].slice(extensionRoot) + '] ' + message);
+  console.log(new Error().stack);
 }
 
 /**
