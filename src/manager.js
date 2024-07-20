@@ -32,6 +32,7 @@ const dBusInterfaceXml = `
     </method>
     <method name="next"/>
     <method name="previous"/>
+    <method name="select"/>
   </interface>
 </node>`;
 
@@ -236,6 +237,15 @@ export const Manager = class Manager {
         } catch(e) {
             console.error(e);
         }
+    }
+
+    select() {
+        try {
+            this.switcher._activateSelected(true);
+        } catch (e) {
+            console.error(e);
+        }
+
     }
 }
 
