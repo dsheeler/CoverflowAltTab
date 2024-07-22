@@ -110,6 +110,7 @@ class AbstractPlatform {
             offset: 0,
             hide_panel: true,
             enforce_primary_monitor: true,
+            switcher_style: "Coverflow",
             switcher_class: Switcher,
             easing_function: 'ease-out-cubic',
             current_workspace_only: '1',
@@ -376,6 +377,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 hide_panel: settings.get_boolean("hide-panel"),
                 enforce_primary_monitor: settings.get_boolean("enforce-primary-monitor"),
                 easing_function: settings.get_string("easing-function"),
+                switcher_style: settings.get_string("switcher-style"),
                 switcher_class: settings.get_string("switcher-style") === 'Timeline'
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),

@@ -26,6 +26,7 @@ import {Preview, Placement, findUpperLeftFromCenter} from './preview.js'
 let TRANSITION_TYPE;
 let IN_BOUNDS_TRANSITION_TYPE;
 const TILT_ANGLE = 45;
+const ALPHA = 1.0;
 
 export class TimelineSwitcher extends Switcher {
     constructor(...args) {
@@ -63,7 +64,7 @@ export class TimelineSwitcher extends Switcher {
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
                 let preview = new Preview(metaWin, this, {
-                    opacity: (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
+                    opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
                     name: metaWin.title,
@@ -126,7 +127,7 @@ export class TimelineSwitcher extends Switcher {
                 rotation_angle_y: TILT_ANGLE,
             });
             this._manager.platform.tween(preview, {
-                opacity: 255,
+                opacity: ALPHA * 255,
                 time: animation_time / 2,
                 transition: IN_BOUNDS_TRANSITION_TYPE,
                 onComplete: () => {
@@ -152,7 +153,7 @@ export class TimelineSwitcher extends Switcher {
                 let scale = preview.scale * Math.pow(this._settings.preview_scaling_factor, -1);
                 this._manager.platform.tween(preview, {
                     x: preview.target_x + 150,
-                    y: preview.target_y + 100,
+                    y: preview.target_y,
                     time: animation_time / 2,
                     transition: TRANSITION_TYPE,
                     rotation_angle_y: TILT_ANGLE,
@@ -176,7 +177,7 @@ export class TimelineSwitcher extends Switcher {
                 this._manager.platform.tween(preview, {
                     time: animation_time / 2,
                     x: preview.target_x - Math.sqrt(this._previews.length) * 150,
-                    y: preview.target_y - Math.sqrt(this._previews.length) * 100,
+                    y: preview.target_y,
                     transition: TRANSITION_TYPE,
                     rotation_angle_y: TILT_ANGLE,
                     onCompleteParams: [preview, distance, animation_time],
@@ -195,7 +196,7 @@ export class TimelineSwitcher extends Switcher {
                 let scale = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance);//Math.max(preview.scale * ((20 - 2 * distance) / 20), 0);
                 let tweenparams = {
                     x: preview.target_x - Math.sqrt(distance) * 150,
-                    y: preview.target_y - Math.sqrt(distance) * 100,
+                    y: preview.target_y,
                     scale_x: scale,
                     scale_y: scale,
                     scale_z: scale,
@@ -206,7 +207,7 @@ export class TimelineSwitcher extends Switcher {
 
                 };
                 let opacitytweenparams = {
-                    opacity: 255,
+                    opacity: ALPHA * 255,
                     time: animation_time,
                     transition: IN_BOUNDS_TRANSITION_TYPE,
                 };
@@ -224,7 +225,7 @@ export class TimelineSwitcher extends Switcher {
         preview.make_top_layer(this.previewActor);
         this._raiseIcons();
         preview.x = preview.target_x + 150;
-        preview.y =  preview.target_y + 100;
+        preview.y =  preview.target_y;
         let scale_start = preview.scale * Math.pow(this._settings.preview_scaling_factor, -1);
         preview.scale_x = scale_start;
         preview.scale_y = scale_start;
@@ -240,7 +241,7 @@ export class TimelineSwitcher extends Switcher {
             onCompleteScope: this,
         });
         this._manager.platform.tween(preview, {
-            opacity: 255,
+            opacity: ALPHA * 255,
             scale_x: preview.scale, 
             scale_y: preview.scale,
             scale_z: preview.scale,
@@ -252,17 +253,16 @@ export class TimelineSwitcher extends Switcher {
     _onFadeForwardComplete(preview, distance, animation_time) {
         preview.__looping = false;
         preview.make_bottom_layer(this.previewActor);
-        log(distance);
 
         preview.x = preview.target_x - Math.sqrt(distance + 1) * 150;
-        preview.y = preview.target_y - Math.sqrt(distance + 1) * 100;
+        preview.y = preview.target_y;
         let scale_start = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance + 1);
         preview.scale_x = scale_start;
         preview.scale_y = scale_start;
         preview.scale_z = scale_start;
         this._manager.platform.tween(preview, {
             x: preview.target_x - Math.sqrt(distance) * 150,
-            y: preview.target_y - Math.sqrt(distance) * 100,
+            y: preview.target_y,
             time: animation_time / 2,
             transition: TRANSITION_TYPE,
             onCompleteParams: [preview],
@@ -271,7 +271,7 @@ export class TimelineSwitcher extends Switcher {
         });
         let scale_end = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance); 
         this._manager.platform.tween(preview, {
-            opacity: 255,
+            opacity: ALPHA * 255,
             scale_x: scale_end,
             scale_y: scale_end,
             scale_z: scale_end,

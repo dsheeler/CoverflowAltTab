@@ -561,11 +561,11 @@ export const MySwipeTracker = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT64, GObject.TYPE_DOUBLE] },
     },
 }, class MySwipeTracker extends GObject.Object {
-    _init(actor, orientation, allowedModes, params, inverted=false) {
+    _init(actor, orientation, allowedModes, params, settings) {
         super._init();
         params = Params.parse(params, { allowDrag: true, allowScroll: true });
         this.orientation = orientation;
-        this._inverted = inverted;
+        this._settings = settings;
         this._allowedModes = allowedModes;
         this._enabled = true;
         this._distance = global.screen_height;
@@ -609,8 +609,10 @@ export const MySwipeTracker = GObject.registerClass({
             this._dragGesture = null;
         }
 
+        const inverted = this._settings.invert_swipes;
+
         if (params.allowScroll) {
-            this._scrollGesture = new ScrollGesture(actor, allowedModes, this._inverted);
+            this._scrollGesture = new ScrollGesture(actor, allowedModes, inverted);
             this._scrollGesture.connect('begin', this._beginGesture.bind(this));
             this._scrollGesture.connect('update', this._updateGesture.bind(this));
             this._scrollGesture.connect('end', this._endTouchpadGesture.bind(this));
@@ -620,7 +622,7 @@ export const MySwipeTracker = GObject.registerClass({
             this.bind_property('scroll-modifiers',
                 this._scrollGesture, 'scroll-modifiers', 0);
 
-            this._mouseScroll = new MouseScroll(actor, this._inverted);
+            this._mouseScroll = new MouseScroll(actor, inverted);
             this._mouseScroll.connect('begin', this._beginGesture.bind(this));
             this._mouseScroll.connect('update', this._updateGesture.bind(this));
             this._mouseScroll.connect('end', this._endTouchpadGesture.bind(this));
@@ -774,8 +776,12 @@ export const MySwipeTracker = GObject.registerClass({
         this._progress += delta / distance;
         this._history.append(time, delta);
 
-        this._progress = Math.clamp(this._progress, ...this._getBounds(this._initialProgress));
-
+        if (this._settings.switcher_style === "Timeline" || 
+            this._settings.switcher_looping_method === "Carousel") {
+            this._progress = (this._progress + this._snapPoints.length) % this._snapPoints.length;
+        } else {
+            this._progress = Math.clamp(this._progress, ...this._getBounds(this._initialProgress));
+        }
         this.emit('update', this._progress);
     }
 
@@ -804,7 +810,12 @@ export const MySwipeTracker = GObject.registerClass({
         }
 
         pos = pos * Math.sign(velocity) + this._progress;
-        pos = Math.clamp(pos, ...this._getBounds(this._initialProgress));
+        if (this._settings.switcher_style === "Timeline" || 
+            this._settings.switcher_looping_method === "Carousel") {
+            pos = (pos + this._snapPoints.length) % this._snapPoints.length;
+        } else {
+            pos = Math.clamp(pos, ...this._getBounds(this._initialProgress));
+        }
 
         const index = this._findPointForProjection(pos, velocity);
 

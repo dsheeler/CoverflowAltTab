@@ -78,6 +78,8 @@ export class Switcher {
         this._grab = null;
         this._animatingClosed = false;
         this._dBus = dBus;
+        this._fromIndex = this._toIndex = currentIndex;
+
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
 
@@ -102,7 +104,7 @@ export class Switcher {
             Clutter.Orientation.HORIZONTAL,
             0,
             { allowDrag: true, allowScroll: true },
-            this._settings.invert_swipes);
+            this._manager.platform.getSettings());
         swipeTracker.allowLongSwipes = true;
         swipeTracker.connect('begin', this._gestureBegin.bind(this));
         swipeTracker.connect('update', this._gestureUpdate.bind(this));
@@ -235,11 +237,24 @@ export class Switcher {
     }
 
     _gestureUpdate(tracker, progress) {
-        if (this._currentIndex <= Math.round(this._currentIndex) && Math.round(this._currentIndex) < progress) {
-            this._showSubswitcher(Direction.TO_RIGHT);
-        } else if (this._currentIndex >= Math.round(this._currentIndex) && Math.round(this._currentIndex) > progress) {
-            this._showSubswitcher(Direction.TO_LEFT);
-        }
+        const nearestCurrentIndextInteger = Math.round(this._currentIndex);
+        const nearestProgressIndexInteger = Math.round(progress);
+        if (Math.abs(nearestCurrentIndextInteger - nearestProgressIndexInteger) === (this._windows.length)) {
+            this._setCurrentIndex(progress);
+            if (nearestProgressIndexInteger < nearestCurrentIndextInteger) {
+                this._showSubswitcher(Direction.TO_RIGHT);
+            } else {
+                this._showSubswitcher(Direction.TO_LEFT);
+            }
+        } else {
+            if (this._currentIndex <= nearestCurrentIndextInteger && nearestCurrentIndextInteger < progress) {
+                this._setCurrentIndex(progress);
+                this._showSubswitcher(Direction.TO_RIGHT);
+            } else if (this._currentIndex >= nearestCurrentIndextInteger && nearestCurrentIndextInteger > progress) {
+                this._setCurrentIndex(progress);
+                this._showSubswitcher(Direction.TO_LEFT);
+            }
+        } 
         this._setCurrentIndex(progress);
 
         this._updateSubSwitcher();
@@ -356,19 +371,23 @@ export class Switcher {
     _showSubswitcher(direction) {
         if (this._isAppSwitcher) {
             this._direction = direction;
-            
+            const length = this._windows.length;
             let from_index = Math.round(this._currentIndex);
-            let to_index = Math.round(this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? 1 : -1)) % this._windows.length;
+            let to_index = Math.round((this._currentIndex + length + (direction == Direction.TO_RIGHT ? 1 : -1))) % length;
+            log(to_index, this._currentIndex, length, direction === Direction.TO_RIGHT);
+            
+            if (Math.abs(from_index - to_index) === (this._windows.length)) {
+                if (from_index === 0 && direction === Direction.TO_LEFT) from_index = this._windows.length;
+                if (to_index === 0 && direction === Direction.TO_RIGHT) to_index = this._windows.length;
+            }
             if (!this.gestureInProgress) {
                 to_index = this._currentIndex;
-                from_index = (this._currentIndex + this._windows.length + (direction == Direction.TO_RIGHT ? - 1 : 1)) % this._windows.length; 
+                from_index = (this._currentIndex + length + (direction == Direction.TO_RIGHT ? - 1 : 1)) % length; 
             }
-            
             this._fromIndex = from_index;
             this._toIndex = to_index;
-
-            this._fromSubSwitcher = this._numberOfWindows(from_index) > 1 ? this._subSwitchers.get(this._windows[from_index]) : null;
-            this._toSubSwitcher = this._numberOfWindows(to_index) > 1 ? this._subSwitchers.get(this._windows[to_index]) : null;
+            this._fromSubSwitcher = this._numberOfWindows(from_index) > 1 ? this._subSwitchers.get(this._windows[from_index % length]) : null;
+            this._toSubSwitcher = this._numberOfWindows(to_index) > 1 ? this._subSwitchers.get(this._windows[to_index % length]) : null;
             
             if (this._toSubSwitcher != null) {
                 this._toSubSwitcher.actor.show();
@@ -393,11 +412,11 @@ export class Switcher {
     }
 
     _getWindowsAtIndex(index) {
-        return this._appWindowsMap.get(this._tracker.get_window_app(this._windows[index]));
+        return this._appWindowsMap.get(this._tracker.get_window_app(this._windows[index % this._windows.length]));
     }
 
     _numberOfWindows(index) {
-        return this._getWindowsAtIndex(index).length;
+        return this._getWindowsAtIndex(index % this._windows.length).length;
     }
 
     _updateSubSwitcher() {
@@ -624,7 +643,7 @@ export class Switcher {
 
     _updateWindowTitle() {
         let idx_low = Math.floor(this._currentIndex);
-        let idx_high = Math.ceil(this._currentIndex);
+        let idx_high = Math.ceil(this._currentIndex) % this._windowTitles.length;
 
         if (idx_low == idx_high) {
             for (let window_title of this._windowTitles) {
@@ -696,21 +715,6 @@ export class Switcher {
             case Clutter.Escape:
                 // Esc -> close CoverFlow
                 this._activateSelected();
-                return true;
-
-            case Clutter.KEY_q:
-            case Clutter.KEY_Q:
-            case Clutter.KEY_F4:
-            case Clutter.q:
-            case Clutter.Q:
-            case Clutter.F4:
-                // Q -> Close window
-                this._manager.removeSelectedWindow(this._windows[this._currentIndex]);
-                return true;
-
-            case Clutter.KEY_Down:
-            case Clutter.Down:
-                this._showSubswitcher(Direction.TO_RIGHT);
                 return true;
 
             case Clutter.KEY_Right:

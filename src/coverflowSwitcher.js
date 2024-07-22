@@ -113,7 +113,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _usingCarousel() {
-        return (this._parent === null && this._settings.switcher_looping_method == "Carousel");
+        return (this._settings.switcher_looping_method == "Carousel");
     }
 
     _previewNext() {
