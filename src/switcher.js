@@ -379,7 +379,7 @@ export class Switcher {
             } 
             if (Math.abs(from_index - to_index) === (this._windows.length)) {
                 if (from_index === 0 && direction === Direction.TO_LEFT) from_index = this._windows.length;
-                if (to_index === 0 && direction === Direction.TO_RIGHT) to_index = this._windows.length;
+                else if (to_index === 0 && direction === Direction.TO_RIGHT) to_index = this._windows.length;
             }
             if (!this.gestureInProgress) {
                 to_index = this._currentIndex;
