@@ -374,7 +374,6 @@ export class Switcher {
             const length = this._windows.length;
             let from_index = Math.round(this._currentIndex);
             let to_index = (from_index + length + (direction == Direction.TO_RIGHT ? 1 : -1)) % length;
-            log(to_index, this._currentIndex, length, direction === Direction.TO_RIGHT);
             if (from_index === (this._windows.length - 1) && direction === Direction.TO_RIGHT) {
                 to_index = this._windows.length;
             } 
