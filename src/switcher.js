@@ -373,9 +373,11 @@ export class Switcher {
             this._direction = direction;
             const length = this._windows.length;
             let from_index = Math.round(this._currentIndex);
-            let to_index = Math.round((this._currentIndex + length + (direction == Direction.TO_RIGHT ? 1 : -1))) % length;
+            let to_index = (from_index + length + (direction == Direction.TO_RIGHT ? 1 : -1)) % length;
             log(to_index, this._currentIndex, length, direction === Direction.TO_RIGHT);
-            
+            if (from_index === (this._windows.length - 1) && direction === Direction.TO_RIGHT) {
+                to_index = this._windows.length;
+            } 
             if (Math.abs(from_index - to_index) === (this._windows.length)) {
                 if (from_index === 0 && direction === Direction.TO_LEFT) from_index = this._windows.length;
                 if (to_index === 0 && direction === Direction.TO_RIGHT) to_index = this._windows.length;
