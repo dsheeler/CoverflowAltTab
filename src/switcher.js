@@ -711,6 +711,7 @@ export class Switcher {
     }
 
     _keyPressEvent(actor, event) {
+        if (this.gestureInProgress) return false;
         switch(event.get_key_symbol()) {
 
             case Clutter.KEY_Escape:
