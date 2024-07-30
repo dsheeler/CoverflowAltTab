@@ -1,3 +1,7 @@
+/*This code is based on code in Night Theme Switcher:
+  https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension/-/blob/34aeb19fdc097a8c1be33476ddb49e176188a57e/src/data/ui/ShortcutButton.ui
+  https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension/-/blob/34aeb19fdc097a8c1be33476ddb49e176188a57e/src/preferences/ShortcutButton.js*/
+
 import Gtk from 'gi://Gtk';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
@@ -8,7 +12,7 @@ import Adw from 'gi://Adw';
 export class ShortcutButton extends Gtk.Stack {
     static {
         GObject.registerClass({
-            GTypeName: 'ShortcutButton',
+            GTypeName: 'CoverflowShortcutButton',
             Properties: {
                 keybinding: GObject.ParamSpec.string(
                     'keybinding',
