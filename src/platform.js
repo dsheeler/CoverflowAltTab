@@ -136,6 +136,8 @@ class AbstractPlatform {
             highlihght_color:(1., 1., 1.),
             coverflow_switch_windows: [""],
             coverflow_switch_applications: [""],
+            prefs_default_width: 700,
+            prefs_default_height: 600,
         };
     }
 
@@ -237,7 +239,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "invert-swipes",
             "highlight-color",
             "coverflow-switch-applications",
-            "coverflow-switch-windows"
+            "coverflow-switch-windows",
+            "prefs-default-width",
+            "prefs-default-height",
         ];
 
         let dkeys = [
@@ -402,11 +406,12 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 highlight_color: settings.get_value("highlight-color").deep_unpack(),
                 coverflow_switch_windows: settings.get_strv("coverflow-switch-windows")[0],
                 coverflow_switch_applications: settings.get_strv("coverflow-switch-applications")[0],
+                prefs_default_width: settings.get_double("prefs-default-width"),
+                prefs_default_height: settings.get_double("prefs-default-height"),
             };
         } catch (e) {
             console.log(e);
         }
-
         return this.getDefaultSettings();
     }
 
