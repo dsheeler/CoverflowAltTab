@@ -536,6 +536,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
     initBackground() {
     	this._backgroundGroup = new Meta.BackgroundGroup();
+        this._backgroundGroup.set_name("coverflow-alt-tab-background-group");
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
     	if (this._backgroundGroup.lower_bottom) {
 	        this._backgroundGroup.lower_bottom();
