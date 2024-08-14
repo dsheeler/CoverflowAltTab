@@ -61,7 +61,7 @@ export const Preview = GObject.registerClass({
         this._highlight = null;
         this._flash = null;
         this._entered = false;
-        this._effectNames = ['blur', 'glitch', 'desaturate', 'tint']
+        this._effectNames = ['glitch', 'desaturate', 'tint']
         this._effectCounts = {};
         for (let effect_name of this._effectNames) {
             this._effectCounts[effect_name] = 0;
