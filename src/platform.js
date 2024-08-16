@@ -657,9 +657,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     getPanels() {
-        let panels = [Main.panel];
-        if (Main.panel2)
-            panels.push(Main.panel2);
+        let panels = [];
+        for (let child of Main.layoutManager.uiGroup.get_children()) {
+            if (child.get_name() === "panelBox") {
+                panels.push(child);
+            }
+        }
+
         // gnome-shell dash
         if (Main.overview._dash)
             panels.push(Main.overview._dash);
