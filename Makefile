@@ -61,8 +61,8 @@ build:
 		--podir ../locale/ \
 		-o ../build/
 
-$(POT_FILE): $(SRC_DIR)/**/*.js
-	xgettext ${SRC_DIR}/**/*.js -L JavaScript -o $@ --package-name=${UUID}
+$(POT_FILE): $(SRC_DIR)/*.js
+	xgettext ${SRC_DIR}/*.js -L JavaScript -o $@ --package-name=${UUID}
 
 translations: $(MO_FILES)
 
