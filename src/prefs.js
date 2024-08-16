@@ -156,6 +156,12 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 		switcher_pref_group.add(buildSwitcherAdw(settings, "invert-swipes", [], [], _("Invert Swipes"), _("Swipe content instead of view.")));
         switcher_page.add(switcher_pref_group);
 
+        let background_pref_group = new Adw.PreferencesGroup({
+            title: _('Background'),
+        });
+        background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Bigger means darker."), true));
+        switcher_page.add(background_pref_group);
+        
         let animation_page = new Adw.PreferencesPage({
             title: _("Animation"),
             icon_name: 'animation-symbolic',
@@ -297,11 +303,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         color_row.add_suffix(reset_button);
         color_row.add_row(buildRangeAdw(settings, "tint-blend", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Blend"), _("How much to blend the tint color; bigger means more tint color."), true));
         background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "use-glitch-effect", [], [], _("Glitch")));
-
-        let background_pref_group = new Adw.PreferencesGroup({
-            title: _('Background'),
-        });
-        background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Bigger means darker."), true));
 
         let keybinding_page = new Adw.PreferencesPage({
             title: _("Keybindings"),
