@@ -870,13 +870,13 @@ export class Switcher {
             this._haveModal = false;
         }
 
-          if (this._isAppSwitcher) {
+        if (this._isAppSwitcher) {
             if (this._subSwitchers != null) { 
                 for (let switcher of this._subSwitchers.values()) {
                     switcher.destroy();
                 }
             }
-        }  
+        }
 
         if (this._initialDelayTimeoutId !== 0) {
             GLib.Source.remove(this._initialDelayTimeoutId);
