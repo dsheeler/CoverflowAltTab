@@ -431,11 +431,10 @@ const MouseScroll = GObject.registerClass({
         const distance = TOUCHPAD_BASE_HEIGHT;
         this._enabled = enabled;
         this._began = false;
-        if (enabled == false && this.gestureTimeoutId !== 0) {
+        if (enabled == false && this._gestureTimeoutId !== 0) {
             GLib.Source.remove(this._gestureTimeoutId)
+            this._gestureTimeoutId = 0;
             this.emit('end', Clutter.get_current_event_time(), distance);
-
-
         }
         this.notify('enabled');
     }
@@ -495,8 +494,9 @@ const MouseScroll = GObject.registerClass({
     }
 
     destroy() {
-        if (this.gestureTimeoutId !== 0) {
-            GLib.Source.remove(this._gestureTimeoutId)
+        if (this._gestureTimeoutId !== 0) {
+            GLib.Source.remove(this._gestureTimeoutId);
+            this._gestureTimeoutId = 0;
         }
     }
 
