@@ -769,7 +769,6 @@ export class Switcher {
     }
 
     _keyReleaseEvent(actor, event) {
-
         if (!this._dBus) {
             let [x, y, mods] = global.get_pointer();
             let state = mods & this._modifierMask;
@@ -860,7 +859,8 @@ export class Switcher {
     _onPreviewAnimationComplete() {
         this._numPreviewsComplete += 1;
         if (this._previews !== null && this._numPreviewsComplete >= this._previews.length) {
-            this.destroy();
+            if (this._parent === null)
+                this.destroy();
         }
     }
 
@@ -870,13 +870,13 @@ export class Switcher {
             this._haveModal = false;
         }
 
-        if (this._isAppSwitcher) {
+          if (this._isAppSwitcher) {
             if (this._subSwitchers != null) { 
                 for (let switcher of this._subSwitchers.values()) {
                     switcher.destroy();
                 }
             }
-        }
+        }  
 
         if (this._initialDelayTimeoutId !== 0) {
             GLib.Source.remove(this._initialDelayTimeoutId);
@@ -893,7 +893,7 @@ export class Switcher {
         this._windowIconBoxes = null;
         this._previews = null;
         this._allPreviews = null;
-        this._initialDelayTimeoutId = null;
+        this._initialDelayTimeoutId = 0;
         this._windowManager.disconnect(this._dcid);
         this._windowManager.disconnect(this._mcid);
 
