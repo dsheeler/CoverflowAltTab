@@ -79,6 +79,11 @@ export class Switcher {
         this._animatingClosed = false;
         this._dBus = dBus;
         this._fromIndex = this._toIndex = currentIndex;
+        this._destroyed = false;
+        this._logger = this._manager.logger;
+
+        this._logger.log(`Creating Switcher`);
+        this._logger.increaseIndent();
 
         if (activeMonitor !== null)
             this._activeMonitor = activeMonitor;
@@ -142,6 +147,8 @@ export class Switcher {
             if (Array.from(this._appWindowsMap.keys()).length === 1) {
                 this._isAppSwitcher = false;
             } else {
+                this._logger.log("Creating Sub-switchers")
+                this._logger.increaseIndent();
                 // For each app, display the first window only
                 this._windows = [];
                 for (let app of this._appWindowsMap.keys()) {
@@ -153,6 +160,8 @@ export class Switcher {
                             this._dBus, this.actor.x, this.actor.y, this.actor.width, this.actor.height));
                     }
                 }
+                this._logger.decreaseIndent();
+                this._logger.log("Creating Sub-switchers DONE")
             }
         }
 
@@ -168,6 +177,8 @@ export class Switcher {
         } */
 
         if (this._parent == null) this._initialDelayTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, INITIAL_DELAY_TIMEOUT, this.show.bind(this));
+        this._logger.decreaseIndent();
+        this._logger.log("Creating Switcher DONE");
     }
 
     show() {
@@ -855,7 +866,6 @@ export class Switcher {
         this.actor.hide();
     }
 
-
     _onPreviewAnimationComplete() {
         this._numPreviewsComplete += 1;
         if (this._previews !== null && this._numPreviewsComplete >= this._previews.length) {
@@ -864,18 +874,33 @@ export class Switcher {
         }
     }
 
+    isDestroyed() {
+        return this._destroyed;
+    }
+
     destroy() {
+        if (this.isDestroyed()) {
+            this._logger.log(`Switcher Already Destroyed`);
+            return;
+        }
+
+        this._logger.log(`Destroying Switcher`);
+        this._logger.increaseIndent();
         if (this._haveModal) {
             Main.popModal(this._grab);
             this._haveModal = false;
         }
 
         if (this._isAppSwitcher) {
+            this._logger.log("Destroying Sub-switchers");
+            this._logger.increaseIndent();
             if (this._subSwitchers != null) { 
                 for (let switcher of this._subSwitchers.values()) {
                     switcher.destroy();
                 }
             }
+            this._logger.decreaseIndent();
+            this._logger.log("Destroying Sub-switchers DONE");
         }
 
         if (this._initialDelayTimeoutId !== 0) {
@@ -885,6 +910,7 @@ export class Switcher {
         if (this._swipeTracker) {
             this._swipeTracker.destroy();
         }
+
         this._swipeTracker = null;
         this._windows = null;
         this._appWindowsMap = null;
@@ -902,6 +928,9 @@ export class Switcher {
 
         this._disablePerspectiveCorrection();
         Main.uiGroup.remove_child(this.actor);
+        this._destroyed = true;
+        this._logger.decreaseIndent();
+        this._logger.log("Destroying Switcher DONE");
     }
 
     animateClosed(reason=CloseReason.ACTIVATE_SELECTED) {

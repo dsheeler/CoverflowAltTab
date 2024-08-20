@@ -334,6 +334,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             { id: "Move Camera", name: _("Move Camera") },
             { id: "Adjust Angles", name: _("Adjust Angles") }],
             _("Perspective Correction"), ("Method to make off-center switcher look centered.")));
+
+        pcorrection_pref_group.add(buildSwitcherAdw(settings, "verbose-logging", [], [], _("Verbose Logging"), _("Log debug and normal messages.")));
         switcher_page.add(pcorrection_pref_group);
 
         let highlight_color_row = new Adw.ExpanderRow({

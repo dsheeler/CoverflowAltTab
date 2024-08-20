@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-08-16 14:18-0500\n"
-"PO-Revision-Date: 2024-08-17 23:30+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-20 00:40-0500\n"
+"PO-Revision-Date: 2024-06-01 00:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/"
 "coverflow-alt-tab/source/es/>\n"
@@ -278,11 +278,11 @@ msgstr "Más grande significa más desaturación."
 msgid "Tint"
 msgstr "Matiz"
 
-#: src/prefs.js:246 src/prefs.js:355
+#: src/prefs.js:246 src/prefs.js:357
 msgid "Color"
 msgstr "Color"
 
-#: src/prefs.js:267 src/prefs.js:376
+#: src/prefs.js:267 src/prefs.js:378
 msgid "Set to Theme Color"
 msgstr "Ajustar al color del tema"
 
@@ -353,11 +353,19 @@ msgstr "Ajustar ángulos"
 msgid "Perspective Correction"
 msgstr "Corrección de perspectiva"
 
-#: src/prefs.js:340
+#: src/prefs.js:338
+msgid "Verbose Logging"
+msgstr ""
+
+#: src/prefs.js:338
+msgid "Log debug and normal messages."
+msgstr ""
+
+#: src/prefs.js:342
 msgid "Highlight Window Under Mouse"
 msgstr "Resaltar ventana debajo del cursor"
 
-#: src/prefs.js:341
+#: src/prefs.js:343
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
@@ -365,27 +373,27 @@ msgstr ""
 "Dibuja un resalte de color en la ventana inferior al ratón para conocer los "
 "efectos del clic."
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise Window Under Mouse"
 msgstr "Alzar la ventana debajo del cursor"
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise the window under the mouse above all others."
 msgstr "Alzar la ventana debajo del cursor por encima de todas las demás."
 
-#: src/prefs.js:433
+#: src/prefs.js:435
 msgid "Contribute"
 msgstr "Contribuir"
 
-#: src/prefs.js:469
+#: src/prefs.js:471
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Código (crear pull request, reportar problemas, etc)"
 
-#: src/prefs.js:477
+#: src/prefs.js:479
 msgid "Donate"
 msgstr "Donar"
 
-#: src/prefs.js:498
+#: src/prefs.js:500
 msgid "Translate"
 msgstr "Traducir"
 

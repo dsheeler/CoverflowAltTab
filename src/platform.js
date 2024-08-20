@@ -138,6 +138,7 @@ class AbstractPlatform {
             coverflow_switch_applications: [""],
             prefs_default_width: 700,
             prefs_default_height: 600,
+            verbose_logging: false,
         };
     }
 
@@ -162,7 +163,7 @@ class AbstractPlatform {
 }
 
 export class PlatformGnomeShell extends AbstractPlatform {
-    constructor(settings, ...args) {
+    constructor(settings, logger,  ...args) {
         super(...args);
 
         this._settings = null;
@@ -173,6 +174,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._settings_changed_callbacks = null;
         this._themeContext = null;
         this._keybindingActions = new Map();
+        this._logger = logger;
     }
 
     _getSwitcherBackgroundColor() {
@@ -242,6 +244,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "coverflow-switch-windows",
             "prefs-default-width",
             "prefs-default-height",
+            "verbose-logging",
         ];
 
         let dkeys = [
@@ -284,7 +287,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
         this._themeContext.disconnect(this._themeContextChangedID);
         this._themeContext = null;
-
+        this._logger = null;
         this._settings = null;
     }
 
@@ -299,9 +302,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             this._extensionSettings,
             Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
             Shell.ActionMode.NORMAL,
-            () => {
-               console.log(actionName, "activated");
-            }
+            () => {}
         );
         this._keybindingActions.set(actionName, action)
 
@@ -408,9 +409,10 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 coverflow_switch_applications: settings.get_strv("coverflow-switch-applications")[0],
                 prefs_default_width: settings.get_double("prefs-default-width"),
                 prefs_default_height: settings.get_double("prefs-default-height"),
+                verbose_logging: settings.get_boolean("verbose-logging"),
             };
         } catch (e) {
-            console.log(e);
+            this._logger.log(e);
         }
         return this.getDefaultSettings();
     }

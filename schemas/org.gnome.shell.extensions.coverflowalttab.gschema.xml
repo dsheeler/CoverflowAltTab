@@ -248,7 +248,7 @@
         <summary>Switch Applications Keyboard Shortcut</summary>
         <description>Switch Applications Keyboard Shortcut Keybinding</description>
     </key>
-        <key name="prefs-default-width" type="d">
+    <key name="prefs-default-width" type="d">
         <default>700</default>
         <summary>Default width for the preferences window</summary>
     </key>
@@ -256,5 +256,9 @@
         <default>600</default>
         <summary>Default height for the preferences window</summary>
     </key>
+    <key name="verbose-logging" type="b">
+        <default>false</default>
+        <summary>Whether to log lots of messages or not</summary>
+    </key> 
   </schema>
 </schemalist>

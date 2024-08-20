@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-16 14:18-0500\n"
+"POT-Creation-Date: 2024-08-20 00:40-0500\n"
 "PO-Revision-Date: 2019-06-17 17:27+0200\n"
 "Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
@@ -279,11 +279,11 @@ msgstr "Größer bedeutet mehr Entsättigung."
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:246 src/prefs.js:355
+#: src/prefs.js:246 src/prefs.js:357
 msgid "Color"
 msgstr "Farbe"
 
-#: src/prefs.js:267 src/prefs.js:376
+#: src/prefs.js:267 src/prefs.js:378
 msgid "Set to Theme Color"
 msgstr "Auf Themenfarbe festlegen"
 
@@ -349,37 +349,45 @@ msgstr "Winkel anpassen"
 msgid "Perspective Correction"
 msgstr "Perspektivische Korrektur"
 
-#: src/prefs.js:340
+#: src/prefs.js:338
+msgid "Verbose Logging"
+msgstr ""
+
+#: src/prefs.js:338
+msgid "Log debug and normal messages."
+msgstr ""
+
+#: src/prefs.js:342
 msgid "Highlight Window Under Mouse"
 msgstr "Fenster unter der Maus hervorheben"
 
-#: src/prefs.js:341
+#: src/prefs.js:343
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise Window Under Mouse"
 msgstr "Fenster unter der Maus anheben"
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise the window under the mouse above all others."
 msgstr "Fenster unter der Maus über alle anderen anheben."
 
-#: src/prefs.js:433
+#: src/prefs.js:435
 msgid "Contribute"
 msgstr "Beitragen"
 
-#: src/prefs.js:469
+#: src/prefs.js:471
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:477
+#: src/prefs.js:479
 msgid "Donate"
 msgstr "Spenden"
 
-#: src/prefs.js:498
+#: src/prefs.js:500
 msgid "Translate"
 msgstr "Übersetzen"
 

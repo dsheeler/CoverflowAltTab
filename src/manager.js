@@ -24,6 +24,7 @@
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import Gio from 'gi://Gio';
 
+
 const dBusInterfaceXml = `
 <node>
   <interface name="org.gnome.Shell.Extensions.Coverflowalttab">
@@ -59,10 +60,13 @@ function matchOtherWorkspace(win) {
 }
 
 export const Manager = class Manager {
-    constructor(platform, keybinder) {
+    constructor(platform, keybinder, logger) {
         this.platform = platform;
         this.keybinder = keybinder;
+        this.logger = logger;
         this.switcher = null;
+        this.exportedObject = null;
+
         if (global.workspace_manager && global.workspace_manager.get_active_workspace)
             this.workspace_manager = global.workspace_manager;
         else
@@ -86,21 +90,27 @@ export const Manager = class Manager {
             this.onBusAcquired.bind(this),
             this.onNameAcquired.bind(this),
             this.onNameLost.bind(this));
-
-
     }
 
     disable() {
         // Note that `onNameLost()` is NOT invoked when manually unowning a name.
         Gio.bus_unown_name(this.ownerId);
-        if (this.switcher != null)
+        if (this.exportedObject) {
+            this.exportedObject.flush();
+            this.exportedObject.unexport();
+            this.exportedObject = null;
+        }
+
+        if (this.switcher && !this.switcher.isDestroyed()) {
             this.switcher.destroy();
+            this.switcher = null;
+        }
         this.keybinder.disable();
         this.platform.disable();
     }
 
     onBusAcquired(connection, name) {
-        console.log(`${name}: connection acquired`);
+        this.logger.log(`DBus Bus Acquired: ${name}`);
         this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
         this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
     }
@@ -115,7 +125,7 @@ export const Manager = class Manager {
      * @param {string} name - the name being owned
      */
     onNameAcquired(connection, name) {
-        console.log(`${name}: name acquired`);
+        this.logger.log(`DBus Name Acquired: ${name}`);
     }
 
     /**
@@ -129,7 +139,7 @@ export const Manager = class Manager {
      * @param {string} name - the name being owned
      */
     onNameLost(connection, name) {
-        console.log(`${name}: name lost`);
+        this.logger.log(`DBus Name Lost: ${name}`);
     }
 
     activateSelectedWindow(win) {
@@ -218,32 +228,35 @@ export const Manager = class Manager {
         } else if (type === "applications") {
             actionName = actionPrefix + "applications";
         }
-        console.log(actionName);
+        this.logger.log(`DBus Launch Action Name: ${actionName}`);
         if (actionName !== null) this._startWindowSwitcherInternal(this.display, null, actionName, 0, true);
-        else console.error(`Can not launch switcher: ivalid type: '${type}'`);
+        else cat_error(`DBus Can not Launch Switcher: Invalid Type: '${type}'`);
     }
 
     next() {
         try {
+            this.logger.log(`DBus Next`);
             this.switcher._next();
         } catch(e) {
-            console.error(e);
+            cat_error(e);
         }
     }
 
     previous() {
         try {
+            this.logger.log(`DBus Previous`);
             this.switcher._previous();
         } catch(e) {
-            console.error(e);
+            cat_error(e);
         }
     }
 
     select() {
         try {
+            this.logger.log(`DBus Select`);
             this.switcher._activateSelected(true);
         } catch (e) {
-            console.error(e);
+            cat_error(e);
         }
 
     }

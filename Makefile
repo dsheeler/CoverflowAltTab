@@ -55,6 +55,7 @@ build:
 		--extra-source ./swipeTracker.js \
 		--extra-source ./shortcutButton.js \
 		--extra-source ../metadata.json \
+		--extra-source ./logger.js \
 		--extra-source ../ui \
 		--extra-source ../src/effects \
 		--schema ../schemas/org.gnome.shell.extensions.coverflowalttab.gschema.xml \

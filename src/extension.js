@@ -28,40 +28,44 @@ import * as Platform from './platform.js';
 import * as Keybinder from './keybinder.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-let manager = null;
+import {CoverflowLogger} from './logger.js';
 
 export default class CoverflowAltTabExtension extends Extension {
     constructor(metadata) {
         super(metadata);
+        this.manager = null;
+        this.logger = null;
     }
-
 
     enable() {
-        if (!manager) {
-            /*  
-             * As there are restricted Gnome versions the current extension support (that
-             * are specified in metadata.json file), only the API related to those supported
-             * versions must be used, not anything else. As a result, performing checks for
-             * keeping backward-compatiblity with old unsupported versions is a wrong
-             * decision.
-             *
-             * To support older versions of Gnome, first, add the version to the metadata
-             * file, then, if needed, include backward-compatible API here for each
-             * version.
-             */
-            manager = new Manager.Manager(
-                new Platform.PlatformGnomeShell(this.getSettings()),
-                new Keybinder.Keybinder330Api()
+        if (this.logger === null) {
+            this.logger = new CoverflowLogger(this.getSettings());
+        }
+        this.logger.log("Enabling");
+        this.logger.increaseIndent();
+        if (!this.manager) {
+            this.logger.log("Creating New Manager");
+            this.manager = new Manager.Manager(
+                new Platform.PlatformGnomeShell(this.getSettings(), this.logger),
+                new Keybinder.Keybinder330Api(),
+                this.logger
             );
+            this.logger.log("Creating New Manager DONE");
         }   
-        manager.enable();
+        this.manager.enable();
+        this.logger.decreaseIndent();
+        this.logger.log("Enabling DONE");
     }
 
-
     disable() {
-        if (manager) {
-            manager.disable();
-            manager = null;
+        this.logger.log("Disabling");
+        this.logger.increaseIndent();
+        if (this.manager) {
+            this.manager.disable();
+            this.manager = null;
         }
+        this.logger.decreaseIndent();
+        this.logger.log("Disabling DONE");
+        this.logger = null;
     }
 }

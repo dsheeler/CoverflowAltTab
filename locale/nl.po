@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-16 14:18-0500\n"
+"POT-Creation-Date: 2024-08-20 00:40-0500\n"
 "PO-Revision-Date: 2021-07-11 19:01+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <kde-i18n-doc@kde.org>\n"
@@ -277,11 +277,11 @@ msgstr ""
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:246 src/prefs.js:355
+#: src/prefs.js:246 src/prefs.js:357
 msgid "Color"
 msgstr ""
 
-#: src/prefs.js:267 src/prefs.js:376
+#: src/prefs.js:267 src/prefs.js:378
 msgid "Set to Theme Color"
 msgstr ""
 
@@ -347,37 +347,45 @@ msgstr ""
 msgid "Perspective Correction"
 msgstr ""
 
-#: src/prefs.js:340
+#: src/prefs.js:338
+msgid "Verbose Logging"
+msgstr ""
+
+#: src/prefs.js:338
+msgid "Log debug and normal messages."
+msgstr ""
+
+#: src/prefs.js:342
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:341
+#: src/prefs.js:343
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:413
+#: src/prefs.js:415
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:433
+#: src/prefs.js:435
 msgid "Contribute"
 msgstr ""
 
-#: src/prefs.js:469
+#: src/prefs.js:471
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:477
+#: src/prefs.js:479
 msgid "Donate"
 msgstr ""
 
-#: src/prefs.js:498
+#: src/prefs.js:500
 msgid "Translate"
 msgstr ""
 
