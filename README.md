@@ -52,7 +52,7 @@ The extension exports a DBus interface. This can be used, for example, with the 
 
 The interface has four methods: 
 
-1. The `launch` method which takes a string that should be either `winows` or `applications`
+1. The `launch` method which takes a string that should be either `windows` or `applications`
 
 ```
 gdbus call --session --dest org.gnome.Shell.Extensions.Coverflowalttab --object-path /org/gnome/Shell/Extensions/Coverflowalttab --method org.gnome.Shell.Extensions.Coverflowalttab.launch "windows"
