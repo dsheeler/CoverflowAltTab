@@ -23,6 +23,7 @@
  */
 
 import Shell from 'gi://Shell';
+import Meta from 'gi://Meta';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {__ABSTRACT_METHOD__} from './lib.js'
@@ -33,18 +34,54 @@ class AbstractKeybinder {
 }
 
 export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
-    constructor(...args) {
+    constructor(settings, ...args) {
         super(...args);
 
+        this._settings = settings;
         this._startAppSwitcherBind = null;
+        this._keybindingActions = new Map();
     }
 
+    getAction(actionName) {
+        return this._keybindingActions.get(actionName);
+    }
+
+    addKeybinding(actionName) {
+        let action = Main.wm.addKeybinding(
+            actionName,
+            this._settings,
+            Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+            Shell.ActionMode.NORMAL,
+            () => {}
+        );
+        this._keybindingActions.set(actionName, action)
+
+        action = Main.wm.addKeybinding(
+            actionName + "-backward",
+            this._settings,
+            Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+            Shell.ActionMode.NORMAL,
+            () => {}
+        )
+        this._keybindingActions.set(actionName + "-backward", action)
+    }
+
+    removeKeybinding(actionName) {
+        Main.wm.removeKeybinding(actionName);
+        this._keybindingActions.delete(actionName);
+        Main.wm.removeKeybinding(actionName + "-backward");
+        this._keybindingActions.delete(actionName + "-backward");
+    }
+    
     enable(startAppSwitcherBind, platform) {
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
 
         this._startAppSwitcherBind = startAppSwitcherBind;
 
         platform.addSettingsChangedCallback(this._onSettingsChanged.bind(this));
+
+        this.addKeybinding("coverflow-switch-windows");
+        this.addKeybinding("coverflow-switch-applications");
 
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
@@ -62,6 +99,9 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+
+        this.removeKeybinding("coverflow-switch-windows");
+        this.removeKeybinding("coverflow-switch-applications");
     }
 
     _onSettingsChanged(settings, key=null) {
