@@ -10,5 +10,6 @@
     "shell-version": ["46"],
     "uuid": "CoverflowAltTab@palatis.blogspot.com",
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
-    "url": "https://github.com/dsheeler/CoverflowAltTab"
+    "url": "https://github.com/dsheeler/CoverflowAltTab",
+    "version": 74
 }
