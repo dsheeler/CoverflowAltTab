@@ -4,17 +4,11 @@
 <a href="https://hosted.weblate.org/engage/coverflow-alt-tab/"><img src="https://img.shields.io/weblate/progress/coverflow-alt-tab?style=plastic&logo=weblate&color=2ECCAA&label=Use%20Weblate%20for%20translation">
 </a>
 
-
-
 CoverflowAltTab is an Alt-Tab replacement available as an extension for [Gnome-Shell](https://www.gnome.org/). It lets you Alt-Tab through your windows in a cover-flow manner.
-
-Originally this was a port of the CoverflowAltTab extension for Gnome-Shell by [palatis](http://code.google.com/p/gnome-shell-extensions-coverflowalttab/) and the recent rewrite with lots of improvements was done by [Lusito](https://github.com/Lusito), so a big thanks and all the glory to them!
 
 ![Screenshot](img/screenshot.png)
 
 ## Installation
-
-### Gnome-Shell
 
 Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
 
@@ -27,6 +21,8 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
     - `make all`
 
 ## Usage
+
+### Manual
 
 This extension uses the following key bindings (you can change or disable them in your system settings):
 
@@ -46,18 +42,30 @@ Such a user could change the keybindings as in the table:
 All of the shortcuts with **Shift** key pressed cycles backward.
 
 -   Hit **Esc** to cancel.
--   Hit **q** to close highlighted window.
 -   Hit **d** to hide all windows and show the desktop.
 
 You can also use the **arrow keys**, **mouse wheel**, or **trackpad** to cycle through the windows.
 
+### DBus
+
+The extension exports a DBus interface. This can be used, for example, with the Custom Hot Corners - Extended extension to launch the switcher by moving to a corner.
+
+The interface has four methods: 
+
+1. The `launch` method which takes a string that should be either `winows` or `applications`
+
+```
+gdbus call --session --dest org.gnome.Shell.Extensions.Coverflowalttab --object-path /org/gnome/Shell/Extensions/Coverflowalttab --method org.gnome.Shell.Extensions.Coverflowalttab.launch "windows"
+```
+
+2. The `next` method which takes no arguments.
+3. The `previous` method which also takes no arguments.
+4. The `select` method breaks out of the switcher.
+
+
 ## Customization
 
 To change the keybindings, use your system keyboard settings! See above for the used keybindings and change them to your desire.
-
-Recently we have added a second Animation style you can use instead of the Coverflow one. It is called 'Timeline' and was inspired by the Windows 7 Super-Tab switcher. You can activate it in the extension preferences. Check it out!
-
-### Gnome-Shell
 
 To access preferences you can:
 
