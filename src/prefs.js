@@ -552,8 +552,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
               settings.set_double("prefs-default-width", currentWidth);
               settings.set_double("prefs-default-height", currentHeight);
             }
-            window.destroy();
-          });
+        });
     }
 }
 
