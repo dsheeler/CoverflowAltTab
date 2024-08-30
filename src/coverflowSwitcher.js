@@ -57,58 +57,55 @@ export class CoverflowSwitcher extends BaseSwitcher {
 
         for (let windowActor of global.get_window_actors()) {
             let metaWin = windowActor.get_meta_window();
-            let compositor = metaWin.get_compositor_private();
-            if (compositor) {
-                let texture = compositor.get_texture();
-                let width, height;
-                if (texture.get_size) {
-                    [width, height] = texture.get_size();
-                } else {
-                    // TODO: Check this OK!
-                    let preferred_size_ok;
-                    [preferred_size_ok, width, height] = texture.get_preferred_size();
-                }
-
-                let scale = 1.0;
-                let previewScale = this._settings.preview_to_monitor_ratio;
-                let previewWidth = this.actor.width * previewScale;
-                let previewHeight = this.actor.height * previewScale;
-                if (width > previewWidth || height > previewHeight)
-                     scale = Math.min(previewWidth / width, previewHeight / height);
-
-                let preview = new Preview(metaWin, this, {
-                    name: metaWin.title,
-                    opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-                    source: texture.get_size ? texture : compositor,
-                    reactive: true,
-                    x: metaWin.minimized ? 0 :
-                        compositor.x - monitor.x,
-                    y: metaWin.minimized ? 0 :
-                        compositor.y - monitor.y,
-                    translation_x: 0,
-                    width: width,
-                    height: height,
-                    scale_x: metaWin.minimized ? 0 : 1,
-                    scale_y: metaWin.minimized ? 0 : 1,
-                    scale_z: metaWin.minimized ? 0 : 1,
-                    rotation_angle_y: 0,
-                });
-                preview.scale = scale;
-                preview.set_pivot_point_placement(Placement.CENTER);
-                preview.center_position = {
-                    x: findUpperLeftFromCenter(width,
-                        this._previewsCenterPosition.x),
-                    y: findUpperLeftFromCenter(height,
-                        this._previewsCenterPosition.y)
-                };
-
-                if (this._windows.includes(metaWin)) {
-                    this._previews[this._windows.indexOf(metaWin)] = preview;
-                }
-                this._allPreviews.push(preview);
-                
-                this.previewActor.add_child(preview);
+            let texture = windowActor.get_texture();
+            let width, height;
+            if (texture.get_size) {
+                [width, height] = texture.get_size();
+            } else {
+                // TODO: Check this OK!
+                let preferred_size_ok;
+                [preferred_size_ok, width, height] = texture.get_preferred_size();
             }
+
+            let scale = 1.0;
+            let previewScale = this._settings.preview_to_monitor_ratio;
+            let previewWidth = this.actor.width * previewScale;
+            let previewHeight = this.actor.height * previewScale;
+            if (width > previewWidth || height > previewHeight)
+                    scale = Math.min(previewWidth / width, previewHeight / height);
+
+            let preview = new Preview(metaWin, this, {
+                name: metaWin.title,
+                opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
+                source: texture.get_size ? texture : windowActor,
+                reactive: true,
+                x: metaWin.minimized ? 0 :
+                    windowActor.x - monitor.x,
+                y: metaWin.minimized ? 0 :
+                    windowActor.y - monitor.y,
+                translation_x: 0,
+                width: width,
+                height: height,
+                scale_x: metaWin.minimized ? 0 : 1,
+                scale_y: metaWin.minimized ? 0 : 1,
+                scale_z: metaWin.minimized ? 0 : 1,
+                rotation_angle_y: 0,
+            });
+            preview.scale = scale;
+            preview.set_pivot_point_placement(Placement.CENTER);
+            preview.center_position = {
+                x: findUpperLeftFromCenter(width,
+                    this._previewsCenterPosition.x),
+                y: findUpperLeftFromCenter(height,
+                    this._previewsCenterPosition.y)
+            };
+
+            if (this._windows.includes(metaWin)) {
+                this._previews[this._windows.indexOf(metaWin)] = preview;
+            }
+            this._allPreviews.push(preview);
+            
+            this.previewActor.add_child(preview);
         }
     }
 
