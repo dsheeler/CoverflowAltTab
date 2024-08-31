@@ -222,7 +222,7 @@
     </key>
     <key type="b" name="invert-swipes">
         <default>false</default>
-        <summary>Swipe content instead of view</summary>
+        <summary>Invert System Scroll Direction Setting</summary>
     </key>
     <key type="(ddd)" name="highlight-color">
         <default>(1.,1.,1.)</default>

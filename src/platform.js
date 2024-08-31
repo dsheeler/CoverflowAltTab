@@ -43,6 +43,8 @@ const POSITION_TOP = 1;
 const POSITION_BOTTOM = 7;
 const DESKTOP_INTERFACE_SCHEMA = 'org.gnome.desktop.interface';
 const KEY_TEXT_SCALING_FACTOR = 'text-scaling-factor';
+const DESKTOP_TOUCHPAD_SCHEMA = 'org.gnome.desktop.peripherals.touchpad';
+const KEY_NATURAL_SCROLL = 'natural-scroll';
 
 const TRANSITION_TYPE = 'easeOutQuad';
 
@@ -139,6 +141,7 @@ class AbstractPlatform {
             prefs_default_width: 700,
             prefs_default_height: 600,
             verbose_logging: false,
+            natural_scrolling: true,
         };
     }
 
@@ -170,6 +173,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._connections = null;
         this._extensionSettings = settings;
         this._desktopSettings = null;
+        this._touchpadSettings = null;
         this._backgroundColor = null;
         this._settings_changed_callbacks = null;
         this._themeContext = null;
@@ -202,8 +206,12 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
         this._settings_changed_callbacks = [];
 
-        if (this._desktopSettings == null)
+        if (this._desktopSettings === null)
             this._desktopSettings = new Gio.Settings({ schema_id: DESKTOP_INTERFACE_SCHEMA });
+
+        if (this._touchpadSettings === null) {
+            this._touchpadSettings = new Gio.Settings({ schema_id: DESKTOP_TOUCHPAD_SCHEMA });
+        }
 
         let keys = [
             "animation-time",
@@ -250,6 +258,10 @@ export class PlatformGnomeShell extends AbstractPlatform {
             KEY_TEXT_SCALING_FACTOR,
         ];
 
+        let touchpadkeys = [
+            KEY_NATURAL_SCROLL,
+        ];
+
         this._connections = [];
         for (let key of keys) {
             let bind = this._onSettingsChanged.bind(this, key);
@@ -260,6 +272,12 @@ export class PlatformGnomeShell extends AbstractPlatform {
         for (let dkey of dkeys) {
             let bind = this._onSettingsChanged.bind(this, dkey);
             this._dconnections.push(this._desktopSettings.connect('changed::' + dkey, bind));
+        }
+
+        this._touchpadConnections = [];
+        for (let key of touchpadkeys) {
+            let bind = this._onSettingsChanged.bind(this, key);
+            this._touchpadConnections.push(this._touchpadSettings.connect('changed::' + key, bind));
         }
 
         this._settings = this._loadSettings();
@@ -279,6 +297,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
             for (let dconnection of this._dconnections) {
                 this._desktopSettings.disconnect(dconnection);
             }
+            this._dconnections = null;
+        }
+        if (this._touchpadConnections) {
+            for (let connection of this._touchpadConnections) {
+                this._desktopSettings.disconnect(connection);
+            }
+            this._touchpadConnections = null;
         }
         this._themeContext.disconnect(this._themeContextChangedID);
         this._themeContext = null;
@@ -331,6 +356,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         try {
             let settings = this._extensionSettings;
             let dsettings = this._desktopSettings;
+            let touchpadSettings = this._touchpadSettings;
 
             return {
                 animation_time: settings.get_double("animation-time"),
@@ -339,7 +365,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style")),
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
-                overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 16, 1024),
+                overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 16, 65536),
                 overlay_icon_opacity: clamp(settings.get_double("overlay-icon-opacity"), 0, 1),
                 text_scaling_factor: dsettings.get_double(KEY_TEXT_SCALING_FACTOR),
                 offset: settings.get_int("offset"),
@@ -374,6 +400,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 prefs_default_width: settings.get_double("prefs-default-width"),
                 prefs_default_height: settings.get_double("prefs-default-height"),
                 verbose_logging: settings.get_boolean("verbose-logging"),
+                natural_scrolling: touchpadSettings.get_boolean(KEY_NATURAL_SCROLL)
             };
         } catch (e) {
             this._logger.log(e);

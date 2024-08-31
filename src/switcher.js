@@ -105,10 +105,17 @@ export class Switcher {
         
         this.gestureInProgress = false;
 
+        let invert = false;
+        if (this._settings.switcher_style === "Timeline") {
+            invert = !this._settings.invert_swipes;
+        } else if (this._settings.switcher_style === "Coverflow") {
+            invert = this._settings.invert_swipes;
+        }
+
         const swipeTracker = new MySwipeTracker(this.actor,
             Clutter.Orientation.HORIZONTAL,
             0,
-            { allowDrag: true, allowScroll: true },
+            { allowDrag: true, allowScroll: true, inverted: invert },
             this._manager.platform.getSettings());
         swipeTracker.allowLongSwipes = true;
         swipeTracker.connect('begin', this._gestureBegin.bind(this));
@@ -119,7 +126,7 @@ export class Switcher {
         if (this._parent == null) {
             this._grabModal();
         }
-        
+
         if (this._parent === null) {
             this.actor.set_size(monitor.width, monitor.height);
             this.actor.set_position(monitor.x, monitor.y);
@@ -127,8 +134,6 @@ export class Switcher {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
         }
-
-
 
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 

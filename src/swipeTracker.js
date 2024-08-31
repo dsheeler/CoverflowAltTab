@@ -228,7 +228,7 @@ const TouchSwipeGesture = GObject.registerClass({
         'cancel': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class TouchSwipeGesture extends Clutter.GestureAction {
-    _init(allowedModes, nTouchPoints, thresholdTriggerEdge) {
+    _init(allowedModes, nTouchPoints, thresholdTriggerEdge, inverted=false) {
         super._init();
         this.set_n_touch_points(nTouchPoints);
         this.set_threshold_trigger_edge(thresholdTriggerEdge);
@@ -236,6 +236,7 @@ const TouchSwipeGesture = GObject.registerClass({
         this._allowedModes = allowedModes;
         this._distance = global.screen_height;
         this._lastPosition = 0;
+        this._inverted = inverted;
     }
 
     get distance() {
@@ -278,7 +279,8 @@ const TouchSwipeGesture = GObject.registerClass({
         let [x, y] = this.get_motion_coords(0);
         let pos = this.orientation === Clutter.Orientation.VERTICAL ? y : x;
 
-        let delta = pos - this._lastPosition;
+        let diff = pos - this._lastPosition;
+        let delta = this._inverted ? -diff : diff;
         this._lastPosition = pos;
 
         let time = this.get_last_event(0).get_time();
@@ -563,7 +565,7 @@ export const MySwipeTracker = GObject.registerClass({
 }, class MySwipeTracker extends GObject.Object {
     _init(actor, orientation, allowedModes, params, settings) {
         super._init();
-        params = Params.parse(params, { allowDrag: true, allowScroll: true });
+        params = Params.parse(params, { allowDrag: true, allowScroll: true, inverted: false });
         this.orientation = orientation;
         this._settings = settings;
         this._allowedModes = allowedModes;
@@ -571,6 +573,7 @@ export const MySwipeTracker = GObject.registerClass({
         this._distance = global.screen_height;
         this._history = new EventHistory();
         this._reset();
+        this._inverted = params.inverted;
 
         this._touchpadGesture = new TouchpadSwipeGesture(allowedModes);
         this._touchpadGesture.connect('begin', this._beginGesture.bind(this));
@@ -594,8 +597,10 @@ export const MySwipeTracker = GObject.registerClass({
         global.stage.add_action_full('swipe', Clutter.EventPhase.CAPTURE, this._touchGesture);
 
         if (params.allowDrag) {
+            const natural_scrolling = this._settings.natural_scrolling;
+            let inverted = natural_scrolling ? this._inverted : !this._inverted;
             this._dragGesture = new TouchSwipeGesture(allowedModes, 1,
-                Clutter.GestureTriggerEdge.AFTER);
+                Clutter.GestureTriggerEdge.AFTER, inverted);
             this._dragGesture.connect('begin', this._beginGesture.bind(this));
             this._dragGesture.connect('update', this._updateGesture.bind(this));
             this._dragGesture.connect('end', this._endTouchGesture.bind(this));
@@ -609,10 +614,8 @@ export const MySwipeTracker = GObject.registerClass({
             this._dragGesture = null;
         }
 
-        const inverted = this._settings.invert_swipes;
-
         if (params.allowScroll) {
-            this._scrollGesture = new ScrollGesture(actor, allowedModes, inverted);
+            this._scrollGesture = new ScrollGesture(actor, allowedModes, this._inverted);
             this._scrollGesture.connect('begin', this._beginGesture.bind(this));
             this._scrollGesture.connect('update', this._updateGesture.bind(this));
             this._scrollGesture.connect('end', this._endTouchpadGesture.bind(this));
@@ -622,7 +625,7 @@ export const MySwipeTracker = GObject.registerClass({
             this.bind_property('scroll-modifiers',
                 this._scrollGesture, 'scroll-modifiers', 0);
 
-            this._mouseScroll = new MouseScroll(actor, inverted);
+            this._mouseScroll = new MouseScroll(actor, this._inverted);
             this._mouseScroll.connect('begin', this._beginGesture.bind(this));
             this._mouseScroll.connect('update', this._updateGesture.bind(this));
             this._mouseScroll.connect('end', this._endTouchpadGesture.bind(this));
