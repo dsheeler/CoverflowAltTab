@@ -101,12 +101,15 @@ const easing_options = [
 
 function getBaseString(translatedString) {
     switch (translatedString) {
+        case _("Flip Stack"): return "Flip Stack";
+        case _("Carousel"): return "Carousel";
         case _("Coverflow"): return "Coverflow";
         case _("Timeline"): return "Timeline";
         case _("Bottom"): return "Bottom";
         case _("Top"): return "Top";
         case _("Classic"): return "Classic";
         case _("Overlay"): return "Overlay";
+        case _("Attached"): return "Attached";
         default: return translatedString;
     }
 }
