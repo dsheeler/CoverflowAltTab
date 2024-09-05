@@ -345,7 +345,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     _onSettingsChanged(key) {
-        this._settings = null;
+        this._settings = this._loadSettings();
         for (let cb of this._settings_changed_callbacks) {
             cb(this._extensionSettings, key);
         }
