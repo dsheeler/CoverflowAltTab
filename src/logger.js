@@ -17,7 +17,7 @@ export const CoverflowLogger = new GObject.registerClass({
         super();
         this.settings = settings;
         this.settings.bind('verbose-logging', this, 'verbose_logging', Gio.SettingsBindFlags.DEFAULT);
-        this.indent = "    ";
+        this.indent = "  ";
         this.depth = 0;
     }
 

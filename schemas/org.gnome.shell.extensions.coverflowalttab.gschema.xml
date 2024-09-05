@@ -55,7 +55,7 @@
         <description>Define the opacity of the overlay icon.</description>
     </key>
     <key type="d" name="overlay-icon-size">
-        <range min="16" max="1024"/>
+        <range min="16" max="65536"/>
         <default>128</default>
         <summary>The icon size.</summary>
         <description>Size in pixels.</description>
@@ -260,5 +260,14 @@
         <default>false</default>
         <summary>Whether to log lots of messages or not</summary>
     </key> 
+    <key name="icon-add-remove-effects" type="s">
+        <choices>
+            <choice value="Fade Only"/>
+            <choice value="Scale Only"/>
+            <choice value="Fade and Scale"/>
+        </choices>
+        <default>"Fade Only"</default>
+        <summary>Whether to fade, scale, or both fade and scale icons in and out</summary>
+    </key>
   </schema>
 </schemalist>
