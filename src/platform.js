@@ -303,7 +303,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
         if (this._touchpadConnections) {
             for (let connection of this._touchpadConnections) {
-                this._desktopSettings.disconnect(connection);
+                this._touchpadSettings.disconnect(connection);
             }
             this._touchpadConnections = null;
         }
