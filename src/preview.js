@@ -40,6 +40,8 @@ Placement.LEFT = 7;
 Placement.TOP_LEFT = 8;
 Placement.CENTER = 9;
 
+const BASE_ICON_SIZE = 8192
+
 export const Preview = GObject.registerClass({
     GTypeName: "Preview",
     Properties: {
@@ -275,70 +277,86 @@ export const Preview = GObject.registerClass({
     }
     
     addIcon() {
-        if (this._icon !== null) {
-            return;
-        }
-        let app = this.switcher._tracker.get_window_app(this.metaWin);
-        let icon_size = 8192; 
-        this._icon = app ? app.create_icon_texture(icon_size) : null;
-       
-        if (this._icon === null) {
-            this._icon = new St.Icon({
-                icon_name: 'applications-other',
-                icon_size: icon_size,
-            });
-        }
-
+        let icon_size = BASE_ICON_SIZE; 
         let target_size = this.switcher._settings.overlay_icon_size;
         let shortest_side_length = Math.min(this.width, this.height)
         let scale =  target_size / Math.min(shortest_side_length, icon_size) / this.scale;
-        this._application_icon_box = new St.Bin({
-            style_class: 'window-iconbox',
-            width: icon_size,
-            height: icon_size,
-            opacity: this.switcher._iconFadeInOut ? 0 : 255,
-        });
 
-        let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
-        this._application_icon_box.add_constraint(constraint); 
-        this._application_icon_box.set_child(this._icon);
+        if (this._icon === null) {
+            let app = this.switcher._tracker.get_window_app(this.metaWin);
+            this._icon = app ? app.create_icon_texture(icon_size) : null;
 
-        this._icon.set_pivot_point(0.5, 0.5);
-        this._icon.set_scale(this.switcher._iconScaleUpDown ? 0 : scale, this.switcher._iconScaleUpDown ? 0 : scale);
-        this._icon.opacity = 255 * this.switcher._settings.overlay_icon_opacity;
+            if (this._icon === null) {
+                this._icon = new St.Icon({
+                    icon_name: 'applications-other',
+                    icon_size: icon_size,
+                });
+            }
 
-        this.bind_property('rotation_angle_y', this._application_icon_box, 'rotation_angle_y',
-            GObject.BindingFlags.SYNC_CREATE);
-        this.bind_property('pivot_point', this._application_icon_box, 'pivot_point',
-            GObject.BindingFlags.SYNC_CREATE);
-        this.bind_property('translation_x', this._application_icon_box, 'translation_x',
-            GObject.BindingFlags.SYNC_CREATE); 
-        this.bind_property('scale_x', this._application_icon_box, 'scale_x',
-            GObject.BindingFlags.SYNC_CREATE);
-        this.bind_property('scale_y', this._application_icon_box, 'scale_y',
-            GObject.BindingFlags.SYNC_CREATE);        
-        this.bind_property('scale_z', this._application_icon_box, 'scale_z',
-            GObject.BindingFlags.SYNC_CREATE);
-        this.switcher.previewActor.add_child(this._application_icon_box);
+            this._application_icon_box = new St.Bin({
+                style_class: 'window-iconbox',
+                width: icon_size,
+                height: icon_size,
+                opacity: this.switcher._iconFadeInOut ? 0 : 255,
+            });
 
-        if (this.switcher._iconScaleUpDown) {
-            this.switcher._manager.platform.tween(this._icon, {
+            let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
+            this._application_icon_box.add_constraint(constraint); 
+            this._application_icon_box.set_child(this._icon);
+
+            this._icon.set_pivot_point(0.5, 0.5);
+            this._icon.set_scale(this.switcher._iconScaleUpDown ? 0 : scale, this.switcher._iconScaleUpDown ? 0 : scale);
+            this._icon.opacity = 255 * this.switcher._settings.overlay_icon_opacity;
+
+            this.bind_property('rotation_angle_y', this._application_icon_box, 'rotation_angle_y',
+                GObject.BindingFlags.SYNC_CREATE);
+            this.bind_property('pivot_point', this._application_icon_box, 'pivot_point',
+                GObject.BindingFlags.SYNC_CREATE);
+            this.bind_property('translation_x', this._application_icon_box, 'translation_x',
+                GObject.BindingFlags.SYNC_CREATE); 
+            this.bind_property('scale_x', this._application_icon_box, 'scale_x',
+                GObject.BindingFlags.SYNC_CREATE);
+            this.bind_property('scale_y', this._application_icon_box, 'scale_y',
+                GObject.BindingFlags.SYNC_CREATE);        
+            this.bind_property('scale_z', this._application_icon_box, 'scale_z',
+                GObject.BindingFlags.SYNC_CREATE);
+            this.switcher.previewActor.add_child(this._application_icon_box);
+
+            if (this.switcher._iconScaleUpDown) {
+                this.switcher._manager.platform.tween(this._icon, {
+                    transition: 'easeInOutQuint',
+                    scale_x: scale,
+                    scale_y: scale, 
+                    time: this.switcher._getRandomTime(),
+                });
+            }
+
+            this.switcher._manager.platform.tween(this._application_icon_box, {
                 transition: 'easeInOutQuint',
-                scale_x: scale,
-                scale_y: scale, 
+                opacity: 255, 
+                time: this.switcher._getRandomTime(),
+                onComplete:  () => { 
+                    this.bind_property('opacity', this._application_icon_box, 'opacity',
+                        GObject.BindingFlags.DEFAULT);
+                }
+            });
+        } else {
+            this._icon.removing = false;
+            if (this.switcher._iconScaleUpDown) {
+                this.switcher._manager.platform.tween(this._icon, {
+                    transition: 'easeInOutQuint',
+                    scale_x: scale,
+                    scale_y: scale, 
+                    time: this.switcher._getRandomTime(),
+                });
+            }
+
+            this.switcher._manager.platform.tween(this._application_icon_box, {
+                transition: 'easeInOutQuint',
+                opacity: 255, 
                 time: this.switcher._getRandomTime(),
             });
         }
-
-        this.switcher._manager.platform.tween(this._application_icon_box, {
-            transition: 'easeInOutQuint',
-            opacity: 255, 
-            time: this.switcher._getRandomTime(),
-            onComplete:  () => { 
-                this.bind_property('opacity', this._application_icon_box, 'opacity',
-                    GObject.BindingFlags.DEFAULT);
-            }
-        });
 
         if (this.switcher._settings.icon_has_shadow) {
             this._icon.add_style_class_name("icon-dropshadow");
@@ -347,7 +365,7 @@ export const Preview = GObject.registerClass({
     }
 
     removeIcon(animation_time) {
-        let icon_size = 8192; 
+        let icon_size = BASE_ICON_SIZE; 
         let target_size = this.switcher._settings.overlay_icon_size;
         let shortest_side_length = Math.min(this.width, this.height)
         let scale =  target_size / Math.min(shortest_side_length, icon_size) / this.scale;

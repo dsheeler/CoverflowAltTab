@@ -255,12 +255,11 @@ export class Switcher {
             points.push(i);
         }
 
-        const cancelProgress = Math.round(progress);
-        tracker.confirmSwipe(baseDistance, points, progress, cancelProgress);
+        tracker.confirmSwipe(baseDistance, points, progress, progress);
         this.gestureInProgress = true;
     }
 
-    _gestureUpdate(tracker, progress) {
+    _gestureUpdate(_tracker, progress) {
         const nearestCurrentIndextInteger = Math.round(this._currentIndex);
         const nearestProgressIndexInteger = Math.round(progress);
         if (Math.abs(nearestCurrentIndextInteger - nearestProgressIndexInteger) === (this._windows.length)) {
@@ -286,7 +285,7 @@ export class Switcher {
         this._updatePreviews(false);
     }
 
-    _gestureEnd(tracker, duration, endProgress) {
+    _gestureEnd(_tracker, _duration, endProgress) {
         this.gestureInProgress = false;
         this._setCurrentIndex(endProgress);
         if (endProgress != this._toIndex) {
@@ -385,6 +384,10 @@ export class Switcher {
                     preview.scale_x = 0;
                     preview.scale_y = 0;
                     preview.scale_z = 0;
+                }
+            } else {
+                if (this._settings.icon_style === "Attached") {
+                   preview.addIcon();
                 }
             }
         }
@@ -673,17 +676,22 @@ export class Switcher {
     _updateWindowTitle() {
         let idx_low = Math.floor(this._currentIndex);
         let idx_high = Math.ceil(this._currentIndex) % this._windowTitles.length;
-
-        if (idx_low == idx_high) {
-            for (let window_title of this._windowTitles) {
-                if (this._iconFadeInOut) {
+        /*Window titles:*/
+        for (let [i, window_title] of this._windowTitles.entries()) {
+            if (i === idx_low || i === idx_high) continue;
+            if (this._iconFadeInOut) {
+                let t = window_title.get_transition('opacity');
+                if (!t || t.get_interval().peek_final_value() !== 0) {
                     this._manager.platform.tween(window_title, {
                         opacity: 0,
                         time: this._settings.animation_time,
                         transition: 'easeInOutQuint',
                     });
                 }
-                if (this._iconScaleUpDown) {
+            }
+            if (this._iconScaleUpDown) {
+                let tx = window_title.get_transition('scale-x');
+                if (!tx || tx.get_interval().peek_final_value() !== 0) {
                     window_title.set_pivot_point(0.5, 0.5);
                     this._manager.platform.tween(window_title, {
                         scale_x: 0,
@@ -693,19 +701,12 @@ export class Switcher {
                     });
                 }
             }
-
-            let window_title = this._windowTitles[idx_low];
-            window_title.set_pivot_point(0.5, 0.5);
-            this._manager.platform.tween(window_title, {
-                opacity: 255,
-                scale_x: 1,
-                scale_y: 1,
-                time: this._settings.animation_time,
-                transition: 'easeInOutQuint',
-            });
-            
-            for (let icon_box of this._windowIconBoxes) {
-                if (this._iconScaleUpDown) {
+        }
+        /*Icons*/
+        for (let icon_box of this._windowIconBoxes) {
+            if (this._iconScaleUpDown) {
+                let tx = icon_box.get_transition('scale-x');
+                if (!tx || tx.get_interval().peek_final_value() !== 0) {
                     icon_box.set_pivot_point(0.5, 0.5);
                     this._manager.platform.tween(icon_box, {
                         scale_x: 0,
@@ -714,7 +715,10 @@ export class Switcher {
                         transition: 'easeInOutQuint',
                     });
                 }
-                if (this._iconFadeInOut) {
+            }
+            if (this._iconFadeInOut) {
+                let t = icon_box.get_transition('opacity');
+                if (!t || t.get_interval().peek_final_value() !== 0) {
                     this._manager.platform.tween(icon_box, {
                         opacity: 0,
                         time: this._settings.animation_time,
@@ -722,28 +726,50 @@ export class Switcher {
                     });
                 }
             }
-
+        }
+       
+        if (idx_low === idx_high) {
+            let window_title = this._windowTitles[this._currentIndex];
+            window_title.set_pivot_point(0.5, 0.5);
+            let t = window_title.get_transition('opacity');
+            if (!t || t.get_interval().peek_final_value() !== 255) {
+                this._manager.platform.tween(window_title, {
+                    opacity: 255,
+                    scale_x: 1,
+                    scale_y: 1,
+                    time: this._settings.animation_time,
+                    transition: 'easeInOutQuint',
+                });
+            }
             if (this._settings.icon_style !== "Attached") {
-                let icon_box = this._windowIconBoxes[idx_low];
+                let icon_box = this._windowIconBoxes[this._currentIndex];
 
                 if (this._iconScaleUpDown) {
                     icon_box.set_pivot_point(0.5, 0.5);
-                    this._manager.platform.tween(icon_box, {
-                        scale_x: 1,
-                        scale_y: 1,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
+                    let tx = icon_box.get_transition('scale-x');
+                    if (!tx || tx.get_interval().peek_final_value() !== 1) {
+                        this._manager.platform.tween(icon_box, {
+                            scale_x: 1,
+                            scale_y: 1,
+                            time: this._settings.animation_time,
+                            transition: 'easeInOutQuint',
+                        });
+                    }
                 }
                 if (this._iconFadeInOut) {
-                    this._manager.platform.tween(icon_box, {
-                        opacity: 255,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
+                    let t = icon_box.get_transition('opacity');
+                    if (!t || t.get_interval().peek_final_value() !== 255) {
+                        this._manager.platform.tween(icon_box, {
+                            opacity: 255,
+                            time: this._settings.animation_time,
+                            transition: 'easeInOutQuint',
+                        });
+                    }
                 }
             }
         } else {
+           
+        
             let window_title_low = this._windowTitles[idx_low];
             let window_title_high = this._windowTitles[idx_high];
 
@@ -918,7 +944,6 @@ export class Switcher {
                 for (let p of switcher._allPreviews) {
                     p.removeIcon(this._getRandomTime());
                 }   
-                //switcher.animateClosed(CloseReason.NO_ACTIVATION);
             }
         }
     }
