@@ -54,9 +54,9 @@ export function debug(message) {
  * @return {void}
  */
 export function __ABSTRACT_METHOD__(object, method) {
-	throw new Error(
-		"Abstract method " +
-		object.constructor.name + "." + method.name + "()" +
-		" not implemented"
-	);
+  throw new Error(
+    "Abstract method " +
+    object.constructor.name + "." + method.name + "()" +
+    " not implemented"
+  );
 }

@@ -881,7 +881,7 @@ export class Switcher {
         return true;
     }
     _windowDestroyed(wm, actor) {
-		this._removeDestroyedWindow(actor.meta_window);
+        this._removeDestroyedWindow(actor.meta_window);
     }
 
     _checkDestroyed(window) {
