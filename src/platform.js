@@ -147,8 +147,8 @@ class AbstractPlatform {
     }
 
     initBackground() {
-    	this._background = Meta.BackgroundActor.new_for_screen(global.screen);
-		this._background.hide();
+        this._background = Meta.BackgroundActor.new_for_screen(global.screen);
+        this._background.hide();
         global.overlay_group.add_child(this._background);
     }
 
@@ -162,7 +162,7 @@ class AbstractPlatform {
     }
 
     removeBackground() {
-    	global.overlay_group.remove_child(this._background);
+        global.overlay_group.remove_child(this._background);
     }
 }
 
@@ -531,13 +531,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     initBackground() {
-    	this._backgroundGroup = new Meta.BackgroundGroup();
+        this._backgroundGroup = new Meta.BackgroundGroup();
         this._backgroundGroup.set_name("coverflow-alt-tab-background-group");
         Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-    	if (this._backgroundGroup.lower_bottom) {
-	        this._backgroundGroup.lower_bottom();
+        if (this._backgroundGroup.lower_bottom) {
+            this._backgroundGroup.lower_bottom();
         } else {
-	        Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
+            Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
         }
         
         this._backgroundShade = new Clutter.Actor({ 

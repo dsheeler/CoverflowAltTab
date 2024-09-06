@@ -184,29 +184,29 @@ export const Manager = class Manager {
                 isApplicationSwitcher = !this.platform.getSettings().switch_application_behaves_like_switch_windows
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
-              	if (currentOnly === 'all-currentfirst') {
+                if (currentOnly === 'all-currentfirst') {
                     // Switch between windows of all workspaces, prefer
-              		// those from current workspace
-              		let wins1 = windows.filter(matchWorkspace, currentWorkspace);
-              		let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
+                    // those from current workspace
+                    let wins1 = windows.filter(matchWorkspace, currentWorkspace);
+                    let wins2 = windows.filter(matchOtherWorkspace, currentWorkspace);
                     // Sort by user time
                     wins1.sort(sortWindowsByUserTime);
                     wins2.sort(sortWindowsByUserTime);
                     windows = wins1.concat(wins2);
                     wins1 = [];
                     wins2 = [];
-              	} else {
-              	    let filter = currentOnly === 'current' ? matchWorkspace :
+                } else {
+                    let filter = currentOnly === 'current' ? matchWorkspace :
                           matchSkipTaskbar;
-            		// Switch between windows of current workspace
-               		windows = windows.filter(filter, currentWorkspace);
+                    // Switch between windows of current workspace
+                    windows = windows.filter(filter, currentWorkspace);
                     windows.sort(sortWindowsByUserTime);
                 }
                 break;
         }
 
         // filter by windows existing on the active monitor
-        if(this.platform.getSettings().switch_per_monitor)
+        if (this.platform.getSettings().switch_per_monitor)
         {
             windows = windows.filter ( (win) =>
               win.get_monitor() == Main.layoutManager.currentMonitor.index );
