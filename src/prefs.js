@@ -99,21 +99,6 @@ const easing_options = [
         id: 'random', name: "Random"
     }];
 
-function getBaseString(translatedString) {
-    switch (translatedString) {
-        case _("Flip Stack"): return "Flip Stack";
-        case _("Carousel"): return "Carousel";
-        case _("Coverflow"): return "Coverflow";
-        case _("Timeline"): return "Timeline";
-        case _("Bottom"): return "Bottom";
-        case _("Top"): return "Top";
-        case _("Classic"): return "Classic";
-        case _("Overlay"): return "Overlay";
-        case _("Attached"): return "Attached";
-        default: return translatedString;
-    }
-}
-
 function makeResetButton() {
     return new Gtk.Button({
         icon_name: "edit-clear-symbolic",
@@ -146,12 +131,53 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let switcher_pref_group = new Adw.PreferencesGroup({
             title: _('Switcher Properties'),
         });
-        let switcher_looping_method_buttons = new Map([ [_("Flip Stack"), [[],[]]], [_("Carousel"), [[],[]]]]);
+        const switcher_looping_method_buttons = [
+            {
+                choice: "Flip Stack",
+                label: _("Flip Stack"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Carousel",
+                label: _("Carousel"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+        ];
 
         let switcher_looping_method_row = buildRadioAdw(settings, "switcher-looping-method", switcher_looping_method_buttons, _("Looping Method"), _("How to cycle through windows."));
-        switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", new Map([ [_("Coverflow"), [[switcher_looping_method_row], []]], [_("Timeline"), [[],[switcher_looping_method_row]] ]]), _("Style"), _("Pick the type of switcher.")))
+        const switcher_style_buttons = [
+            {
+                choice: "Coverflow",
+                label: _("Coverflow"),
+                sensitive_widgets: [switcher_looping_method_row],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Timeline",
+                label: _("Timeline"),
+                sensitive_widgets: [],
+                insensitive_widgets: [switcher_looping_method_row],
+            },
+        ];
+        switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", switcher_style_buttons, _("Style"), _("Pick the type of switcher.")));
         switcher_pref_group.add(buildSpinAdw(settings, "offset", [-500, 500, 1, 10], _("Vertical Offset"), _("Positive value moves everything down, negative up.")));
-        switcher_pref_group.add(buildRadioAdw(settings, "position", new Map([ [_("Bottom"), [[], []]], [_("Top"), [[],[]]]]), _("Window Title Position"), _("Place window title above or below the switcher.")));
+        const position_buttons = [
+            {
+                choice: "Bottom",
+                label: _("Bottom"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Top",
+                label: _("Top"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+        ];
+        switcher_pref_group.add(buildRadioAdw(settings, "position", position_buttons, _("Window Title Position"), _("Place window title above or below the switcher.")));
         switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
         switcher_pref_group.add(switcher_looping_method_row);
@@ -203,10 +229,48 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         
         let size_row = buildRangeAdw(settings, "overlay-icon-size", [16, 4096, 1, [32, 64, 128, 256, 512, 768, 1024, 1536, 2048, 3072]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
         let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
-        let buttons = new Map([[_("Classic"), [[],[size_row, opacity_row]]], [_("Overlay"), [[size_row, opacity_row], []]], [_("Attached"), [[size_row, opacity_row], []]]]);
-        let style_row = buildRadioAdw(settings, "icon-style", buttons, _("Application Icon Style"));
-        let add_remove_effects_buttons = new Map([ [_("Fade Only"), [[],[]]], [_("Scale Only"), [[],[]]], [_("Fade and Scale"), [[],[]]]]);
+        const style_buttons = [
+            {
+                choice: "Classic",
+                label: _("Classic"),
+                sensitive_widgets: [],
+                insensitive_widgets: [size_row, opacity_row],
+            },
+            {
+                choice: "Overlay",
+                label: _("Overlay"),
+                sensitive_widgets: [size_row, opacity_row],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Attached",
+                label: _("Attached"),
+                sensitive_widgets: [size_row, opacity_row],
+                insensitive_widgets: [],
+            },
+        ];
+        let style_row = buildRadioAdw(settings, "icon-style", style_buttons, _("Application Icon Style"));
 
+        const add_remove_effects_buttons = [
+            {
+                choice: "Fade Only",
+                label: _("Fade Only"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Scale Only",
+                label: _("Scale Only"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Fade and Scale",
+                label: _("Fade and Scale"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+        ];
         let add_remove_effects_row = buildRadioAdw(settings, "icon-add-remove-effects", add_remove_effects_buttons, _("Add / Remove Effects"), _("How Icons and Labels ease in and out."));
         icon_pref_group.add(style_row);
         icon_pref_group.add(size_row);
@@ -667,27 +731,27 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
     let radio = new Gtk.ToggleButton();
 
     let radio_for_button = {};
-    for (let button_name of buttons.keys()) {
-        radio = new Gtk.ToggleButton({group: radio, label: button_name});
-        radio_for_button[button_name] = radio;
-        if (getBaseString(button_name) == settings.get_string(key)) {
+    for (let button of buttons) {
+        radio = new Gtk.ToggleButton({group: radio, label: button.label});
+        radio_for_button[button.choice] = radio;
+        if (button.choice == settings.get_string(key)) {
             radio.set_active(true);
-            for (let pref_row of buttons.get(button_name)[0]) {
-                pref_row.set_sensitive(radio_for_button[button_name].get_active());
+            for (let sensitive_widget of button.sensitive_widgets) {
+                sensitive_widget.set_sensitive(radio_for_button[button.choice].get_active());
             }
-            for (let pref_row of buttons.get(button_name)[1]) {
-                pref_row.set_sensitive(!radio_for_button[button_name].get_active());
+            for (let insensitive_widget of button.insensitive_widgets) {
+                insensitive_widget.set_sensitive(!radio_for_button[button.choice].get_active());
             }
         }
         radio.connect('toggled', function(widget) {
             if (widget.get_active()) {
-                settings.set_string(key, getBaseString(widget.get_label()));
+                settings.set_string(key, button.choice);
             }
-            for (let pref_row of buttons.get(button_name)[0]) {
-                pref_row.set_sensitive(widget.get_active());
+            for (let sensitive_widget of button.sensitive_widgets) {
+                sensitive_widget.set_sensitive(widget.get_active());
             }
-            for (let pref_row of buttons.get(button_name)[1]) {
-                pref_row.set_sensitive(!widget.get_active());
+            for (let insensitive_widget of button.insensitive_widgets) {
+                insensitive_widget.set_sensitive(!widget.get_active());
             }
         });
         hbox.append(radio);
@@ -696,9 +760,9 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
     let reset_button = makeResetButton();
     reset_button.connect("clicked", function(widget) {
         settings.reset(key);
-        for (let button of buttons.keys()) {
-            if (getBaseString(button) == settings.get_string(key)) {
-                radio_for_button[button].set_active(true);
+        for (let button of buttons) {
+            if (button.choice == settings.get_string(key)) {
+                radio_for_button[button.choice].set_active(true);
             }
         }
     });
