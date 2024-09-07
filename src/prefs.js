@@ -737,21 +737,21 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
         if (button.choice == settings.get_string(key)) {
             radio.set_active(true);
             for (let sensitive_widget of button.sensitive_widgets) {
-                sensitive_widget.set_sensitive(radio_for_button[button.choice].get_active());
+                sensitive_widget.set_sensitive(true);
             }
             for (let insensitive_widget of button.insensitive_widgets) {
-                insensitive_widget.set_sensitive(!radio_for_button[button.choice].get_active());
+                insensitive_widget.set_sensitive(false);
             }
         }
         radio.connect('toggled', function(widget) {
             if (widget.get_active()) {
                 settings.set_string(key, button.choice);
-            }
-            for (let sensitive_widget of button.sensitive_widgets) {
-                sensitive_widget.set_sensitive(widget.get_active());
-            }
-            for (let insensitive_widget of button.insensitive_widgets) {
-                insensitive_widget.set_sensitive(!widget.get_active());
+                for (let sensitive_widget of button.sensitive_widgets) {
+                    sensitive_widget.set_sensitive(true);
+                }
+                for (let insensitive_widget of button.insensitive_widgets) {
+                    insensitive_widget.set_sensitive(false);
+                }
             }
         });
         hbox.append(radio);
