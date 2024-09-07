@@ -351,8 +351,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         window_size_pref_group.add(highlight_color_row);
 
-        choose_tint_box.append(use_theme_color_button);
-        choose_tint_box.append(color_button);
         let highlight_switch = new Gtk.Switch({
             valign: Gtk.Align.CENTER,
             active: settings.get_boolean("highlight-mouse-over"),
