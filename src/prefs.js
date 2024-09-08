@@ -200,7 +200,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             title: _('Properties'),
         });
         animation_page.add(animation_pref_group);
-        animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, "Easing Function", "Determine how windows move."));
+        animation_pref_group.add(buildDropDownAdw(settings, "easing-function", easing_options, _("Easing Function"), _("Determine how windows move.")));
         animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration [s]"), "", true));
         animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration.")));
 
@@ -393,8 +393,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             description: _("Internal actions that will not conflict with other window switchers.")
         });
         keybinding_page.add(custom_keybinding_pref_group);
-        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", "Coverflow Switch Windows Shortcut", "Activate winow switcher."));
-        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", "Coverflow Switch Applications Shortcut", "Activate application switcher."));
+        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", _("Coverflow Switch Windows Shortcut"), _("Activate winow switcher.")));
+        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", _("Coverflow Switch Applications Shortcut"), _("Activate application switcher.")));
         
         let pcorrection_pref_group = new Adw.PreferencesGroup({
             title: _("Advanced Options"),
@@ -404,7 +404,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             { id: "None", name: _("None") },
             { id: "Move Camera", name: _("Move Camera") },
             { id: "Adjust Angles", name: _("Adjust Angles") }],
-            _("Perspective Correction"), ("Method to make off-center switcher look centered.")));
+            _("Perspective Correction"), _("Method to make off-center switcher look centered.")));
 
         pcorrection_pref_group.add(buildSwitcherAdw(settings, "verbose-logging", [], [], _("Verbose Logging"), _("Log debug and normal messages.")));
         switcher_page.add(pcorrection_pref_group);
