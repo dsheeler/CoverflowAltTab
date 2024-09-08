@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: coverflow\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2024-09-04 20:42-0500\n"
-"PO-Revision-Date: 2021-09-22 20:45+0900\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"PO-Revision-Date: 2024-09-09 00:09+0000\n"
+"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/"
+"coverflow-alt-tab/source/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: src/prefs.js:104 src/prefs.js:149
 msgid "Coverflow"
@@ -123,7 +125,7 @@ msgstr "スワイプを逆にする"
 
 #: src/prefs.js:156
 msgid "Invert system scroll direction setting."
-msgstr ""
+msgstr "システムのスクロール方向の設定を逆にします。"
 
 #: src/prefs.js:160
 msgid "Background"
@@ -224,23 +226,23 @@ msgstr "アプリケーションアイコンのスタイル"
 
 #: src/prefs.js:205
 msgid "Fade Only"
-msgstr ""
+msgstr "フェードのみ"
 
 #: src/prefs.js:205
 msgid "Scale Only"
-msgstr ""
+msgstr "拡大・縮小のみ"
 
 #: src/prefs.js:205
 msgid "Fade and Scale"
-msgstr ""
+msgstr "フェードと拡大・縮小"
 
 #: src/prefs.js:207
 msgid "Add / Remove Effects"
-msgstr ""
+msgstr "追加時/削除時の効果"
 
 #: src/prefs.js:207
 msgid "How Icons and Labels ease in and out."
-msgstr ""
+msgstr "アイコンとラベルのアニメーションのイージングを設定します。"
 
 #: src/prefs.js:208
 msgid "Icon Shadow"
@@ -281,11 +283,11 @@ msgstr ""
 
 #: src/prefs.js:235 src/prefs.js:231
 msgid "Desaturate"
-msgstr ""
+msgstr "モノクロ化"
 
 #: src/prefs.js:235 src/prefs.js:231
 msgid "Larger means more desaturation."
-msgstr ""
+msgstr "大きいほどモノクロになります。"
 
 #: src/prefs.js:238 src/prefs.js:234
 msgid "Tint"
