@@ -8,6 +8,7 @@ import Gio from 'gi://Gio';
 import Gdk from 'gi://Gdk';
 import Adw from 'gi://Adw';
 
+import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js'
 
 export class ShortcutButton extends Gtk.Stack {
     static {
@@ -33,7 +34,7 @@ export class ShortcutButton extends Gtk.Stack {
         this.actionName = actionName;
 
         this.chooseButton = new Gtk.Button({
-            label: "Choose...",
+            label: _("Choose..."),
         });
 
         this.editBox = new Gtk.Box({
@@ -42,11 +43,11 @@ export class ShortcutButton extends Gtk.Stack {
         this.editBox.add_css_class("linked");
 
         this.changeButton = new Gtk.Button({
-            tooltip_text: "Change keyboard shortcut",
+            tooltip_text: _("Change keyboard shortcut"),
         })
 
         this.clearButton = new Gtk.Button({
-            label: "Clear",
+            label: _("Clear"),
         })
         this.clearButton.add_css_class("destructive-action");
 
@@ -86,7 +87,7 @@ export class ShortcutButton extends Gtk.Stack {
     openDialog() {
         if (this.dialog === null) {
             this.statusPage = new Adw.StatusPage({
-                title: "Press your keyboard shortcut...",
+                title: _("Press your keyboard shortcut..."),
                 icon_name: "preferences-desktop-keyboard-shortcuts-symbolic",
                 vexpand: true,
             })
