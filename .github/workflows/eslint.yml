@@ -21,7 +21,7 @@ jobs:
 
       - name: Install
         run: |
-          npm install eslint@^8.0.0
+          npm install eslint
 
       - name: Lint
         run: npx eslint .
