@@ -84,7 +84,6 @@ export class Switcher {
         this._iconFadeInOut = this._settings.icon_add_remove_effects === "Fade Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
         this._iconScaleUpDown = this._settings.icon_add_remove_effects === "Scale Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
 
-        log ( "fadeInOut", this._iconFadeInOut, "scaleUpDown", this._iconScaleUpDown);
         this._logger.log(`Creating Switcher`);
         this._logger.increaseIndent();
 
@@ -394,7 +393,7 @@ export class Switcher {
     }
 
     _showSubswitcher(direction) {
-        if (this._isAppSwitcher) {
+        if (this._isAppSwitcher && !this._settings.switch_application_behaves_like_switch_windows) {
             this._direction = direction;
             const length = this._windows.length;
             let from_index = Math.round(this._currentIndex);
@@ -446,7 +445,7 @@ export class Switcher {
     }
 
     _updateSubSwitcher() {
-        if (this._isAppSwitcher) {        
+        if (this._isAppSwitcher && !this._settings.switch_application_behaves_like_switch_windows) {        
             let scale = 1, x = 0;
             let progress = 1;
             let to_index = this._toIndex;

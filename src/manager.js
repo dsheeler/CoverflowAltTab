@@ -181,7 +181,7 @@ export const Manager = class Manager {
             case 'switch-applications-backward':
             case 'coverflow-switch-applications':
             case 'coverflow-switch-applications-backward':
-                isApplicationSwitcher = !this.platform.getSettings().switch_application_behaves_like_switch_windows
+                isApplicationSwitcher = true;//!this.platform.getSettings().switch_application_behaves_like_switch_windows
             default:
                 let currentOnly = this.platform.getSettings().current_workspace_only;
                 if (currentOnly === 'all-currentfirst') {
