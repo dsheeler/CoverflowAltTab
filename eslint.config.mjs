@@ -15,6 +15,7 @@ export default [...compat.extends("eslint:recommended"), {
     languageOptions: {
         globals: {
             ARGV: "readonly",
+            global: "readonly",
             Debugger: "readonly",
             GIRepositoryGType: "readonly",
             globalThis: "readonly",
