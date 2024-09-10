@@ -53,8 +53,8 @@ export class TimelineSwitcher extends Switcher {
                 if (texture.get_size) {
                     [width, height] = texture.get_size()
                 } else {
-                    let preferred_size_ok;
-                    [preferred_size_ok, width, height] = texture.get_preferred_size();
+                    let _preferred_size_ok;
+                    [_preferred_size_ok, width, height] = texture.get_preferred_size();
                 }
                 let previewScale = this._settings.preview_to_monitor_ratio;
                 let scale = 1.0;
@@ -64,7 +64,7 @@ export class TimelineSwitcher extends Switcher {
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
                 let preview = new Preview(metaWin, this, {
-                    opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
+                    opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
                     source: texture.get_size ? texture : compositor,
                     reactive: true,
                     name: metaWin.title,
@@ -108,12 +108,12 @@ export class TimelineSwitcher extends Switcher {
     }
 
     _updatePreviews(reorder_only=false, direction=0) {
-        if (this._previews == null || this._previews.length == 0)
+        if (this._previews === null || this._previews.length === 0)
             return;
 
         let animation_time = this._getRandomTime();
 
-        if (this._previews.length == 1) {
+        if (this._previews.length === 1) {
             if (reorder_only) return;
             let preview = this._previews[0];
             this._manager.platform.tween(preview, {
@@ -136,7 +136,7 @@ export class TimelineSwitcher extends Switcher {
             });
             return;
         }
- 
+
         for (let i = Math.round(this._currentIndex); i < this._currentIndex + this._previews.length; i++) {
             this._previews[i%this._previews.length].make_bottom_layer(this.previewActor);
         }
@@ -189,7 +189,6 @@ export class TimelineSwitcher extends Switcher {
                     transition: IN_BOUNDS_TRANSITION_TYPE,
                     scale_x: scale,
                     scale_y: scale,
-                    scale_x: scale,
                     opacity: 0,
                 });
             } else {
@@ -242,7 +241,7 @@ export class TimelineSwitcher extends Switcher {
         });
         this._manager.platform.tween(preview, {
             opacity: ALPHA * 255,
-            scale_x: preview.scale, 
+            scale_x: preview.scale,
             scale_y: preview.scale,
             scale_z: preview.scale,
             time: animation_time / 2,
@@ -269,7 +268,7 @@ export class TimelineSwitcher extends Switcher {
             onComplete: this._onFinishMove,
             onCompleteScope: this,
         });
-        let scale_end = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance); 
+        let scale_end = preview.scale * Math.pow(this._settings.preview_scaling_factor, distance);
         this._manager.platform.tween(preview, {
             opacity: ALPHA * 255,
             scale_x: scale_end,

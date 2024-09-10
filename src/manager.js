@@ -48,15 +48,15 @@ function matchSkipTaskbar(win) {
 }
 
 function matchWmClass(win) {
-    return win.get_wm_class() == this && !win.is_skip_taskbar();
+    return win.get_wm_class() === this && !win.is_skip_taskbar();
 }
 
 function matchWorkspace(win) {
-    return win.get_workspace() == this && !win.is_skip_taskbar();
+    return win.get_workspace() === this && !win.is_skip_taskbar();
 }
 
 function matchOtherWorkspace(win) {
-    return win.get_workspace() != this && !win.is_skip_taskbar();
+    return win.get_workspace() !== this && !win.is_skip_taskbar();
 }
 
 export const Manager = class Manager {
@@ -77,7 +77,7 @@ export const Manager = class Manager {
         else
             this.display = global.screen;
     }
-    
+
     enable() {
         this.platform.enable();
         this.keybinder.enable(this._startWindowSwitcher.bind(this), this.platform);
@@ -169,10 +169,12 @@ export const Manager = class Manager {
 
         windowActors = null;
 
+        let currentOnly = this.platform.getSettings().current_workspace_only;
+        let focused = display.focus_window ? display.focus_window : windows[0];
+
         switch (bindingName) {
             case 'switch-group':
                 // Switch between windows of same application from all workspaces
-                let focused = display.focus_window ? display.focus_window : windows[0];
                 windows = windows.filter(matchWmClass, focused.get_wm_class());
                 windows.sort(sortWindowsByUserTime);
                 break;
@@ -181,9 +183,9 @@ export const Manager = class Manager {
             case 'switch-applications-backward':
             case 'coverflow-switch-applications':
             case 'coverflow-switch-applications-backward':
-                isApplicationSwitcher = true;//!this.platform.getSettings().switch_application_behaves_like_switch_windows
+                isApplicationSwitcher = true;
+            //eslint-disable-next-line no-fallthrough
             default:
-                let currentOnly = this.platform.getSettings().current_workspace_only;
                 if (currentOnly === 'all-currentfirst') {
                     // Switch between windows of all workspaces, prefer
                     // those from current workspace
@@ -209,7 +211,7 @@ export const Manager = class Manager {
         if (this.platform.getSettings().switch_per_monitor)
         {
             windows = windows.filter ( (win) =>
-              win.get_monitor() == Main.layoutManager.currentMonitor.index );
+              win.get_monitor() === Main.layoutManager.currentMonitor.index );
         }
 
         if (windows.length) {
@@ -230,7 +232,7 @@ export const Manager = class Manager {
         }
         this.logger.log(`DBus Launch Action Name: ${actionName}`);
         if (actionName !== null) this._startWindowSwitcherInternal(this.display, null, actionName, 0, true);
-        else cat_error(`DBus Can not Launch Switcher: Invalid Type: '${type}'`);
+        else this.logger.error(`DBus Can not Launch Switcher: Invalid Type: '${type}'`);
     }
 
     next() {
@@ -238,7 +240,7 @@ export const Manager = class Manager {
             this.logger.log(`DBus Next`);
             this.switcher._next();
         } catch(e) {
-            cat_error(e);
+            this.logger.error(e);
         }
     }
 
@@ -247,7 +249,7 @@ export const Manager = class Manager {
             this.logger.log(`DBus Previous`);
             this.switcher._previous();
         } catch(e) {
-            cat_error(e);
+            this.logger.error(e);
         }
     }
 
@@ -256,9 +258,8 @@ export const Manager = class Manager {
             this.logger.log(`DBus Select`);
             this.switcher._activateSelected(true);
         } catch (e) {
-            cat_error(e);
+            this.logger.error(e);
         }
-
     }
 }
 

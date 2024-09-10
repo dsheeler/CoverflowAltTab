@@ -55,8 +55,8 @@ export const Preview = GObject.registerClass({
         )
     }
 }, class Preview extends Clutter.Clone {
-    _init(window, switcher, ...args) {
-        super._init(...args);
+    constructor(window, switcher, ...args) {
+        super(...args);
         this.metaWin = window;
         this.switcher = switcher;
         this._icon = null;
@@ -86,7 +86,7 @@ export const Preview = GObject.registerClass({
             if (this._application_icon_box) parent.set_child_above_sibling(this._application_icon_box, this);
         } else {
             // Don't throw anything here, it may cause unstabilities
-            logError("No method found for making preview the top layer");
+            this.switcher._logger.error("No method found for making preview the top layer");
         }
     }
 
@@ -106,7 +106,7 @@ export const Preview = GObject.registerClass({
             if (this._application_icon_box) parent.set_child_above_sibling(this._application_icon_box, this);
         } else {
             // Don't throw anything here, it may cause unstabilities
-            logError("No method found for making preview the bottom layer");
+            this.switcher._logger.error("No method found for making preview the bottom layer");
         }
     }
 
@@ -126,10 +126,10 @@ export const Preview = GObject.registerClass({
             transition.set_to(param_value);
             this.get_effect(effect_name)[parameter_name] = 1.0;
             this.add_transition(add_transition_name, transition);
-            transition.connect('new-frame', (timeline, msecs) => {
+            transition.connect('new-frame', (_timeline, _msecs) => {
                 this.queue_redraw();
             });
-        } else if (this._effectCounts[name] == 0) {
+        } else if (this._effectCounts[name] === 0) {
             if (this.get_transition(add_transition_name) === null) {
                 let transition = Clutter.PropertyTransition.new(property_transition_name);
                 transition.progress_mode = Clutter.AnimationMode.LINEAR;
@@ -141,7 +141,7 @@ export const Preview = GObject.registerClass({
                 this.add_effect_with_name(effect_name, new effect_class(constructor_argument));
                 this.add_transition(add_transition_name, transition);
                 this._effectCounts[name] = 1;
-                transition.connect('new-frame', (timeline, msecs) => {
+                transition.connect('new-frame', (_timeline, _msecs) => {
                     this.queue_redraw();
                 });
             }
@@ -157,7 +157,7 @@ export const Preview = GObject.registerClass({
         let remove_transition_name = effect_name + "-remove";
         let property_transition_name = `@effects.${effect_name}.${parameter_name}`;
         if (this._effectCounts[name] > 0) {
-            if (this._effectCounts[name] == 1) {
+            if (this._effectCounts[name] === 1) {
                 this.remove_transition(add_transition_name);
                 if (this.get_transition(remove_transition_name) === null) {
                     let transition = Clutter.PropertyTransition.new(property_transition_name);
@@ -168,7 +168,7 @@ export const Preview = GObject.registerClass({
                     transition.set_to(value);
                     this.get_effect(effect_name)[parameter_name] = 1.0;
                     this.add_transition(remove_transition_name, transition);
-                    transition.connect("completed", (trans) => {
+                    transition.connect("completed", (_trans) => {
                         this.remove_effect_by_name(effect_name);
                         this._effectCounts[name] = 0;
                     });
@@ -180,7 +180,7 @@ export const Preview = GObject.registerClass({
     }
 
     _pulse_highlight() {
-        if (this._highlight == null) return;
+        if (this._highlight === null) return;
         this._highlight.ease({
             opacity: 255,
             duration: 2000,
@@ -199,20 +199,20 @@ export const Preview = GObject.registerClass({
     }
 
     remove_highlight() {
-        if (this._highlight != null) {
+        if (this._highlight !== null) {
             this._highlight.ease({
                 opacity: 0,
                 duration: 300,
                 mode: Clutter.AnimationMode.EASE_IN_OUT_QUINT,
                 onComplete: () => {
-                    if (this._highlight != null) {
+                    if (this._highlight !== null) {
                         this._highlight.destroy()
                         this._highlight = null;
                     }
                 },
             });
         }
-        if (this._flash != null) {
+        if (this._flash !== null) {
             this._flash.destroy();
             this._flash = null;
         }
@@ -225,7 +225,7 @@ export const Preview = GObject.registerClass({
     }
 
     vfunc_enter_event(_crossingEvent) {
-        if (this.switcher._animatingClosed || this._entered == true) {
+        if (this.switcher._animatingClosed || this._entered === true) {
             return Clutter.EVENT_PROPAGATE;
         }
         this._entered = true;
@@ -250,7 +250,7 @@ export const Preview = GObject.registerClass({
                 window_actor.add_child(this._highlight);
 
             }
-            if (this._flash == null) {
+            if (this._flash === null) {
                 this._flash = new St.Bin({
                     width: 1,
                     height: 1,
@@ -373,11 +373,6 @@ export const Preview = GObject.registerClass({
     }
 
     removeIcon(animation_time) {
-        let icon_size = BASE_ICON_SIZE;
-        let target_size = this.switcher._settings.overlay_icon_size;
-        let shortest_side_length = Math.min(this.width, this.height)
-        let scale =  target_size / Math.min(shortest_side_length, icon_size) / this.scale;
-
         if (this._icon !== null && !this._icon.removing) {
             this._icon.removing = true;
             if (this.switcher._iconFadeInOut) {

@@ -72,7 +72,7 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         Main.wm.removeKeybinding(actionName + "-backward");
         this._keybindingActions.delete(actionName + "-backward");
     }
-    
+
     enable(startAppSwitcherBind, platform) {
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
 
@@ -106,8 +106,8 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
 
     _onSettingsChanged(settings, key=null) {
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
-       
-        if (key == null || key == 'bind-to-switch-applications') {
+
+        if (key === null || key === 'bind-to-switch-applications') {
             if (settings.get_boolean('bind-to-switch-applications')) {
                 Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._startAppSwitcherBind);
                 Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, this._startAppSwitcherBind);
@@ -116,7 +116,7 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
                 Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
             }
         }
-        if (key == null || key == 'bind-to-switch-windows') {
+        if (key === null || key === 'bind-to-switch-windows') {
             if (settings.get_boolean('bind-to-switch-windows')) {
                 Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, this._startAppSwitcherBind);
                 Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, this._startAppSwitcherBind);

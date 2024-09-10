@@ -69,7 +69,7 @@ export class ShortcutButton extends Gtk.Stack {
         this.add_child(this.chooseButton);
         this.add_child(this.editBox);
         this.connect("notify::keybinding", this.onKeybindingChanged.bind(this));
-        log("shortcutbutton constructor", this.keybinding);
+        console.log("shortcutbutton constructor", this.keybinding);
         this.visible_child = this.keybinding ? this.editBox : this.chooseButton;
     }
 
@@ -129,7 +129,7 @@ export class ShortcutButton extends Gtk.Stack {
     }
 
     onChooseButtonClicked(_button) {
-        log("onchoosebutton");
+        console.log("onchoosebutton");
         this.openDialog();
     }
 

@@ -116,11 +116,11 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         let iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
         iconTheme.add_search_path(IconsPath);
     }
-    
+
     getVersionString(_page) {
         return _('Version %d').format(this.metadata.version);
     }
-    
+
     fillPreferencesWindow(window) {
         let settings = this.getSettings();
         let switcher_page = new Adw.PreferencesPage({
@@ -190,7 +190,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Bigger means darker."), true));
         switcher_page.add(background_pref_group);
-        
+
         let animation_page = new Adw.PreferencesPage({
             title: _("Animation"),
             icon_name: 'animation-symbolic',
@@ -226,7 +226,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             title: _("Properties"),
         });
         icon_page.add(icon_pref_group);
-        
+
         let size_row = buildRangeAdw(settings, "overlay-icon-size", [16, 4096, 1, [32, 64, 128, 256, 512, 768, 1024, 1536, 2048, 3072]], _("Overlay Icon Size"), _("Set the overlay icon size in pixels."), true);
         let opacity_row = buildRangeAdw(settings, "overlay-icon-opacity", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Overlay Icon Opacity"), _("Set the overlay icon opacity."), true);
         const style_buttons = [
@@ -358,7 +358,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         rgba.blue = c[2];
         rgba.alpha = 1
         color_button.set_rgba(rgba);
-        color_button.connect('notify::rgba', _ => {
+        color_button.connect('notify::rgba', _button => {
+            //eslint-disable-next-line no-shadow
             let c = color_button.rgba;
             let val = new GLib.Variant("(ddd)", [c.red, c.green, c.blue]);
             settings.set_value("tint-color", val);
@@ -368,7 +369,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
 
         let reset_button = makeResetButton();
-        reset_button.connect("clicked", function (widget) {
+        reset_button.connect("clicked", function (_widget) {
             settings.reset("use-tint");
         });
         color_row.add_suffix(reset_button);
@@ -387,7 +388,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         keybinding_page.add(keybinding_pref_group);
         keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-windows", [], [], _("Bind to 'switch-windows'")));
         keybinding_pref_group.add(buildSwitcherAdw(settings, "bind-to-switch-applications", [], [], _("Bind to 'switch-applications'")));
-        
+
         let custom_keybinding_pref_group = new Adw.PreferencesGroup({
             title: _("Internal Actions Keybindings"),
             description: _("Internal actions that will not conflict with other window switchers.")
@@ -395,7 +396,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         keybinding_page.add(custom_keybinding_pref_group);
         custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", _("Coverflow Switch Windows Shortcut"), _("Activate winow switcher.")));
         custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", _("Coverflow Switch Applications Shortcut"), _("Activate application switcher.")));
-        
+
         let pcorrection_pref_group = new Adw.PreferencesGroup({
             title: _("Advanced Options"),
         });
@@ -442,13 +443,15 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             valign: Gtk.Align.CENTER,
             dialog: highlight_color_dialog,
         });
-        
+
         let highlight_use_theme_color_button = new Gtk.Button({
             label: _("Set to Theme Color"),
             valign: Gtk.Align.CENTER,
         });
         highlight_use_theme_color_button.connect('clicked', () => {
+            //eslint-disable-next-line no-shadow
             let c = settings.get_value("switcher-background-color").deep_unpack();
+            //eslint-disable-next-line no-shadow
             let rgba = highlight_color_button.rgba;
             rgba.red = c[0];
             rgba.green = c[1];
@@ -466,7 +469,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         hrgba.blue = hc[2];
         hrgba.alpha = 1
         highlight_color_button.set_rgba(hrgba);
-        highlight_color_button.connect('notify::rgba', _ => {
+        highlight_color_button.connect('notify::rgba', _button => {
+            //eslint-disable-next-line no-shadow
             let c = highlight_color_button.rgba;
             let val = new GLib.Variant("(ddd)", [c.red, c.green, c.blue]);
             settings.set_value("highlight-color", val);
@@ -476,29 +480,12 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
 
         let highlight_reset_button = makeResetButton();
-        highlight_reset_button.connect("clicked", function (widget) {
+        highlight_reset_button.connect("clicked", function (_widget) {
             settings.reset("highlight-mouse-over");
         });
         highlight_color_row.add_suffix(highlight_reset_button);
 
         window_size_pref_group.add(buildSwitcherAdw(settings, "raise-mouse-over", [], [], _("Raise Window Under Mouse"), _("Raise the window under the mouse above all others.")));
-
-        /*let tweaks_page = new Adw.PreferencesPage({
-            title: _('Tweaks'),
-            icon_name: 'applications-symbolic',
-        });
-        tweaks_page.add(pcorrection_pref_group);
-        tweaks_page.add(highlight_mouse_over_pref_group);*/
-
- /*        general_page.add(switcher_pref_group);
-        general_page.add(animation_pref_group);
-        general_page.add(icon_pref_group);
-        general_page.add(windows_pref_group);
-        general_page.add(window_size_pref_group);
-        general_page.add(background_pref_group);
-        general_page.add(background_application_switcher_pref_group);
-        general_page.add(pcorrection_pref_group);
-        general_page.add(keybinding_pref_group); */
 
         let contribution_page = new Adw.PreferencesPage({
             title: _("Contribute"),
@@ -558,7 +545,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 
             uri: "https://paypal.me/DanielSheeler?country.x=US&locale.x=en_US",
         });
-        
+
         let donate_link_github = new Gtk.LinkButton({
             label: "Github",
 
@@ -580,7 +567,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         donate_row.add_suffix(donate_link);
         donate_row.add_suffix(donate_link_paypal);
         donate_row.add_suffix(donate_link_github);
-        
+
         links_pref_group.add(code_row);
         links_pref_group.add(translate_row);
         links_pref_group.add(donate_row);
@@ -629,7 +616,7 @@ function buildSwitcherAdw(settings, key, dependant_widgets, inverse_dependant_wi
     let pref = new Adw.ActionRow({
         title: title,
     });
-    if (subtitle != null) {
+    if (subtitle !== null) {
         pref.set_subtitle(subtitle);
     }
 
@@ -652,7 +639,7 @@ function buildSwitcherAdw(settings, key, dependant_widgets, inverse_dependant_wi
         }
     });
 
-    
+
 
     for (let widget of dependant_widgets) {
         widget.set_sensitive(switcher.get_active());
@@ -669,7 +656,7 @@ function buildSwitcherAdw(settings, key, dependant_widgets, inverse_dependant_wi
     }
 
     let reset_button = makeResetButton();
-    reset_button.connect("clicked", function(widget) {
+    reset_button.connect("clicked", function(_widget) {
         settings.reset(key);
         switcher.set_active(settings.get_boolean(key));
     })
@@ -705,7 +692,7 @@ function buildRangeAdw(settings, key, values, title, subtitle="", draw_value=fal
     pref.add_suffix(range)
 
     let reset_button = makeResetButton();
-    reset_button.connect("clicked", function(widget) {
+    reset_button.connect("clicked", function(_widget) {
         settings.reset(key);
         range.set_value(settings.get_double(key));
     });
@@ -717,7 +704,7 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
     let pref = new Adw.ActionRow({
         title: title,
     });
-    if (subtitle != null) {
+    if (subtitle !== null) {
         pref.set_subtitle(subtitle);
     }
     let hbox = new Gtk.Box({
@@ -732,7 +719,7 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
     for (let button of buttons) {
         radio = new Gtk.ToggleButton({group: radio, label: button.label});
         radio_for_button[button.choice] = radio;
-        if (button.choice == settings.get_string(key)) {
+        if (button.choice === settings.get_string(key)) {
             radio.set_active(true);
             for (let sensitive_widget of button.sensitive_widgets) {
                 sensitive_widget.set_sensitive(true);
@@ -754,12 +741,12 @@ function buildRadioAdw(settings, key, buttons, title, subtitle=null) {
         });
         hbox.append(radio);
     };
-    
+
     let reset_button = makeResetButton();
-    reset_button.connect("clicked", function(widget) {
+    reset_button.connect("clicked", function(_widget) {
         settings.reset(key);
         for (let button of buttons) {
-            if (button.choice == settings.get_string(key)) {
+            if (button.choice === settings.get_string(key)) {
                 radio_for_button[button.choice].set_active(true);
             }
         }
@@ -776,7 +763,7 @@ function buildSpinAdw(settings, key, values, title, subtitle=null) {
     let pref = new Adw.ActionRow({
         title: title,
     });
-    if (subtitle != null) {
+    if (subtitle !== null) {
         pref.set_subtitle(subtitle);
     }
     let spin = new Gtk.SpinButton({ valign: Gtk.Align.CENTER });
@@ -792,7 +779,7 @@ function buildSpinAdw(settings, key, values, title, subtitle=null) {
     pref.add_suffix(spin);
 
     let reset_button = makeResetButton();
-    reset_button.connect("clicked", function(widget) {
+    reset_button.connect("clicked", function(_widget) {
         settings.reset(key);
         spin.set_value(settings.get_int(key));
     });
@@ -806,7 +793,7 @@ function buildDropDownAdw(settings, key, values, title, subtitle=null) {
     let pref = new Adw.ActionRow({
         title: title,
     });
-    if (subtitle != null) {
+    if (subtitle !== null) {
         pref.set_subtitle(subtitle);
     }
     let model = new Gtk.StringList();
@@ -814,7 +801,7 @@ function buildDropDownAdw(settings, key, values, title, subtitle=null) {
     for (let i = 0; i < values.length; i++) {
         let item = values[i];
         model.append(item.name);
-        if (item.id == settings.get_string(key)) {
+        if (item.id === settings.get_string(key)) {
             chosen_idx = i;
         }
     }
@@ -832,11 +819,11 @@ function buildDropDownAdw(settings, key, values, title, subtitle=null) {
     pref.add_suffix(chooser);
 
     let reset_button = makeResetButton();
-    reset_button.connect("clicked", function(widget) {
+    reset_button.connect("clicked", function(_widget) {
         settings.reset(key);
         for (let i = 0; i < values.length; i++) {
             let item = values[i];
-            if (item.id == settings.get_string(key)) {
+            if (item.id === settings.get_string(key)) {
                 chooser.set_selected(i);
                 break;
             }

@@ -7,13 +7,14 @@ import Shell from 'gi://Shell';
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 
+
 const SHADER_PATH = GLib.filename_from_uri(GLib.uri_resolve_relative(import.meta.url, 'glitch_effect.glsl', GLib.UriFlags.NONE))[0];
 
 const get_shader_source = _ => {
     try {
         return Shell.get_file_contents_utf8_sync(SHADER_PATH);
     } catch (e) {
-        log(`[Coverflow Alt-Tab] error loading shader from ${SHADER_PATH}: ${e}`);
+        console.log(`[Coverflow Alt-Tab] error loading shader from ${SHADER_PATH}: ${e}`);
         return null;
     }
 };
@@ -30,8 +31,8 @@ const get_shader_source = _ => {
 export const GlitchEffect = new GObject.registerClass({
     GTypeName: "CoverflowAltTabGlitchEffect",
 }, class CoverflowAltTabGlitchShader extends Clutter.ShaderEffect {
-    _init(params) {
-        super._init(params);
+    constructor(params) {
+        super(params);
         this._timeOffset = Math.random() * 1000000;
         // set shader source
         this._source = get_shader_source();

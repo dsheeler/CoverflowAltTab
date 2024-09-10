@@ -105,8 +105,8 @@ const TouchpadSwipeGesture = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class TouchpadSwipeGesture extends GObject.Object {
-    _init(allowedModes) {
-        super._init();
+    constructor(allowedModes) {
+        super();
         this._allowedModes = allowedModes;
         this._state = TouchpadState.NONE;
         this._cumulativeX = 0;
@@ -119,6 +119,8 @@ const TouchpadSwipeGesture = GObject.registerClass({
             'captured-event::touchpad', this._handleEvent.bind(this), this);
     }
 
+
+    //eslint-disable-next-line complexity
     _handleEvent(actor, event) {
         if (event.type() !== Clutter.EventType.TOUCHPAD_SWIPE)
             return Clutter.EVENT_PROPAGATE;
@@ -228,8 +230,8 @@ const TouchSwipeGesture = GObject.registerClass({
         'cancel': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class TouchSwipeGesture extends Clutter.GestureAction {
-    _init(allowedModes, nTouchPoints, thresholdTriggerEdge, inverted=false) {
-        super._init();
+    constructor(allowedModes, nTouchPoints, thresholdTriggerEdge, inverted=false) {
+        super();
         this.set_n_touch_points(nTouchPoints);
         this.set_threshold_trigger_edge(thresholdTriggerEdge);
 
@@ -324,8 +326,8 @@ const ScrollGesture = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class ScrollGesture extends GObject.Object {
-    _init(actor, allowedModes, inverted=false) {
-        super._init();
+    constructor(actor, allowedModes, inverted=false) {
+        super();
         this._inverted = inverted;
         this._allowedModes = allowedModes;
         this._began = false;
@@ -414,8 +416,8 @@ const MouseScroll = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
     },
 }, class MouseScroll extends GObject.Object {
-    _init(actor, inverted=false) {
-        super._init();
+    constructor(actor, inverted=false) {
+        super();
         this._inverted = inverted;
         this._began = false;
         this._enabled = true;
@@ -433,7 +435,7 @@ const MouseScroll = GObject.registerClass({
         const distance = TOUCHPAD_BASE_HEIGHT;
         this._enabled = enabled;
         this._began = false;
-        if (enabled == false && this._gestureTimeoutId !== 0) {
+        if (enabled === false && this._gestureTimeoutId !== 0) {
             GLib.Source.remove(this._gestureTimeoutId)
             this._gestureTimeoutId = 0;
             this.emit('end', Clutter.get_current_event_time(), distance);
@@ -445,8 +447,8 @@ const MouseScroll = GObject.registerClass({
         if (event.type() !== Clutter.EventType.SCROLL)
            return false;
 
-        if (event.get_scroll_source() == Clutter.ScrollSource.FINGER ||
-            event.get_source_device().get_device_type() == Clutter.InputDeviceType.TOUCHPAD_DEVICE)
+        if (event.get_scroll_source() === Clutter.ScrollSource.FINGER ||
+            event.get_source_device().get_device_type() === Clutter.InputDeviceType.TOUCHPAD_DEVICE)
             return false;
 
         if (!this.enabled)
@@ -563,8 +565,8 @@ export const MySwipeTracker = GObject.registerClass({
         'end':    { param_types: [GObject.TYPE_UINT64, GObject.TYPE_DOUBLE] },
     },
 }, class MySwipeTracker extends GObject.Object {
-    _init(actor, orientation, allowedModes, params, settings) {
-        super._init();
+    constructor(actor, orientation, allowedModes, params, settings) {
+        super();
         params = Params.parse(params, { allowDrag: true, allowScroll: true, inverted: false });
         this.orientation = orientation;
         this._settings = settings;
@@ -751,7 +753,8 @@ export const MySwipeTracker = GObject.registerClass({
 
         let prev, next;
         if (Math.abs(this._snapPoints[closest] - pos) < EPSILON) {
-            prev = next = closest;
+            prev = closest;
+            next = closest;
         } else {
             prev = this._findPreviousPoint(pos);
             next = this._findNextPoint(pos);
@@ -779,7 +782,7 @@ export const MySwipeTracker = GObject.registerClass({
         this._progress += delta / distance;
         this._history.append(time, delta);
 
-        if (this._settings.switcher_style === "Timeline" || 
+        if (this._settings.switcher_style === "Timeline" ||
             this._settings.switcher_looping_method === "Carousel") {
             this._progress = (this._progress + this._snapPoints.length) % this._snapPoints.length;
         } else {
@@ -813,7 +816,7 @@ export const MySwipeTracker = GObject.registerClass({
         }
 
         pos = pos * Math.sign(velocity) + this._progress;
-        if (this._settings.switcher_style === "Timeline" || 
+        if (this._settings.switcher_style === "Timeline" ||
             this._settings.switcher_looping_method === "Carousel") {
             pos = (pos + this._snapPoints.length) % this._snapPoints.length;
         } else {

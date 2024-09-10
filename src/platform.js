@@ -24,7 +24,6 @@
  */
 
 import St from 'gi://St';
-import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
 import Clutter from 'gi://Clutter';
@@ -34,6 +33,7 @@ import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Background from 'resource:///org/gnome/shell/ui/background.js';
 import {__ABSTRACT_METHOD__} from './lib.js'
+import {MyRadialShaderEffect} from './effects/radialShader.js'
 
 import {Switcher} from './switcher.js';
 import {CoverflowSwitcher} from './coverflowSwitcher.js';
@@ -92,12 +92,12 @@ class AbstractPlatform {
 
     getWidgetClass() { __ABSTRACT_METHOD__(this, this.getWidgetClass) }
     getWindowTracker() { __ABSTRACT_METHOD__(this, this.getWindowTracker) }
-    getPrimaryModifier(mask) { __ABSTRACT_METHOD__(this, this.getPrimaryModifier) }
+    getPrimaryModifier(_mask) { __ABSTRACT_METHOD__(this, this.getPrimaryModifier) }
 
     getSettings() { __ABSTRACT_METHOD__(this, this.getSettings) }
 
-    tween(actor, params) { __ABSTRACT_METHOD__(this, this.tween) }
-    removeTweens(actor) { __ABSTRACT_METHOD__(this, this.removeTweens) }
+    tween(_actor, _params) { __ABSTRACT_METHOD__(this, this.tween) }
+    removeTweens(_actor) { __ABSTRACT_METHOD__(this, this.removeTweens) }
 
     getDefaultSettings() {
         return {
@@ -197,10 +197,10 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
         return this._backgroundColor;
     }
-    
+
     enable() {
         this._themeContext = St.ThemeContext.get_for_stage(global.stage);
-        this._themeContextChangedID = this._themeContext.connect("changed", (themeContext) => {
+        this._themeContextChangedID = this._themeContext.connect("changed", (_themeContext) => {
             this._backgroundColor = null;
             this._getSwitcherBackgroundColor();
         });
@@ -283,7 +283,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
 
         this._settings = this._loadSettings();
- 
+
     }
 
 
@@ -325,7 +325,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     getPrimaryModifier(mask) {
         if (mask === 0)
             return 0;
-    
+
         let primary = 1;
         while (mask > 1) {
             mask >>= 1;
@@ -364,7 +364,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 animation_time: settings.get_double("animation-time"),
                 randomize_animation_times: settings.get_boolean("randomize-animation-times"),
                 dim_factor: clamp(settings.get_double("dim-factor"), 0, 1),
-                title_position: (settings.get_string("position") == 'Top' ? POSITION_TOP : POSITION_BOTTOM),
+                title_position: (settings.get_string("position") === 'Top' ? POSITION_TOP : POSITION_BOTTOM),
                 icon_style: (settings.get_string("icon-style")),
                 icon_has_shadow: settings.get_boolean("icon-has-shadow"),
                 overlay_icon_size: clamp(settings.get_double("overlay-icon-size"), 16, 65536),
@@ -411,106 +411,107 @@ export class PlatformGnomeShell extends AbstractPlatform {
         return this.getDefaultSettings();
     }
 
+    //eslint-disable-next-line complexity
     tween(actor, params) {
         params.duration = params.time * 1000;
-        if (params.transition == 'userChoice' && this.getSettings().easing_function == 'random' ||
-            params.transition == 'Random') {
+        if (params.transition === 'userChoice' && this.getSettings().easing_function === 'random' ||
+            params.transition === 'Random') {
             params.mode = modes[Math.floor(Math.random()*modes.length)];
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-bounce" ||
-            params.transition == 'easeInBounce') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-bounce" ||
+            params.transition === 'easeInBounce') {
             params.mode = Clutter.AnimationMode.EASE_IN_BOUNCE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-bounce" ||
-            params.transition == 'easeOutBounce') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-bounce" ||
+            params.transition === 'easeOutBounce') {
             params.mode = Clutter.AnimationMode.EASE_OUT_BOUNCE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-bounce" ||
-            params.transition == 'easeInOutBounce') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-bounce" ||
+            params.transition === 'easeInOutBounce') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_BOUNCE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-back" ||
-            params.transition == 'easeInBack') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-back" ||
+            params.transition === 'easeInBack') {
             params.mode = Clutter.AnimationMode.EASE_IN_BACK;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-back" ||
-            params.transition == 'easeOutBack') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-back" ||
+            params.transition === 'easeOutBack') {
             params.mode = Clutter.AnimationMode.EASE_OUT_BACK;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-back" ||
-            params.transition == 'easeInOutBack') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-back" ||
+            params.transition === 'easeInOutBack') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_BACK;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-elastic" ||
-            params.transition == 'easeInElastic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-elastic" ||
+            params.transition === 'easeInElastic') {
             params.mode = Clutter.AnimationMode.EASE_IN_ELASTIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-elastic" ||
-            params.transition == 'easeOutElastic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-elastic" ||
+            params.transition === 'easeOutElastic') {
             params.mode = Clutter.AnimationMode.EASE_OUT_ELASTIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-elastic" ||
-            params.transition == 'easeInOutElastic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-elastic" ||
+            params.transition === 'easeInOutElastic') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_ELASTIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quad" ||
-            params.transition == 'easeInQuad') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-quad" ||
+            params.transition === 'easeInQuad') {
             params.mode = Clutter.AnimationMode.EASE_IN_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quad" ||
-            params.transition == 'easeOutQuad') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-quad" ||
+            params.transition === 'easeOutQuad') {
             params.mode = Clutter.AnimationMode.EASE_OUT_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quad" ||
-            params.transition == 'easeInOutQuad') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-quad" ||
+            params.transition === 'easeInOutQuad') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-cubic" ||
-            params.transition == 'easeInCubic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-cubic" ||
+            params.transition === 'easeInCubic') {
             params.mode = Clutter.AnimationMode.EASE_IN_CUBIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-cubic" ||
-            params.transition == 'easeOutCubic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-cubic" ||
+            params.transition === 'easeOutCubic') {
             params.mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-cubic" ||
-            params.transition == 'easeInOutCubic') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-cubic" ||
+            params.transition === 'easeInOutCubic') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_CUBIC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quart" ||
-            params.transition == 'easeInQuart') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-quart" ||
+            params.transition === 'easeInQuart') {
             params.mode = Clutter.AnimationMode.EASE_IN_QUART;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quart" ||
-            params.transition == 'easeOutQuart') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-quart" ||
+            params.transition === 'easeOutQuart') {
             params.mode = Clutter.AnimationMode.EASE_OUT_QUART;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quart" ||
-            params.transition == 'easeInOutQuart') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-quart" ||
+            params.transition === 'easeInOutQuart') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUART;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-quint" ||
-            params.transition == 'easeInQuint') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-quint" ||
+            params.transition === 'easeInQuint') {
             params.mode = Clutter.AnimationMode.EASE_IN_QUINT;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-quint" ||
-            params.transition == 'easeOutQuint') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-quint" ||
+            params.transition === 'easeOutQuint') {
             params.mode = Clutter.AnimationMode.EASE_OUT_QUINT;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-quint" ||
-            params.transition == 'easeInOutQuint') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-quint" ||
+            params.transition === 'easeInOutQuint') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_QUINT;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-sine" ||
-            params.transition == 'easeInSine') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-sine" ||
+            params.transition === 'easeInSine') {
             params.mode = Clutter.AnimationMode.EASE_IN_SINE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-sine" ||
-            params.transition == 'easeOutSine') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-sine" ||
+            params.transition === 'easeOutSine') {
             params.mode = Clutter.AnimationMode.EASE_OUT_SINE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-sine" ||
-            params.transition == 'easeInOutSine') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-sine" ||
+            params.transition === 'easeInOutSine') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_SINE;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-expo" ||
-            params.transition == 'easeInExpo') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-expo" ||
+            params.transition === 'easeInExpo') {
             params.mode = Clutter.AnimationMode.EASE_IN_EXPO;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-expo" ||
-            params.transition == 'easeOutExpo') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-expo" ||
+            params.transition === 'easeOutExpo') {
             params.mode = Clutter.AnimationMode.EASE_OUT_EXPO;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-expo" ||
-            params.transition == 'easeInOutExpo') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-expo" ||
+            params.transition === 'easeInOutExpo') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_EXPO;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-circ" ||
-            params.transition == 'easeInCirc') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-circ" ||
+            params.transition === 'easeInCirc') {
             params.mode = Clutter.AnimationMode.EASE_IN_CIRC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-out-circ" ||
-            params.transition == 'easeOutCirc') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-out-circ" ||
+            params.transition === 'easeOutCirc') {
             params.mode = Clutter.AnimationMode.EASE_OUT_CIRC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-in-out-circ" ||
-            params.transition == 'easeInOutCirc') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-in-out-circ" ||
+            params.transition === 'easeInOutCirc') {
             params.mode = Clutter.AnimationMode.EASE_IN_OUT_CIRC;
-        } else if (params.transition == 'userChoice' && this.getSettings().easing_function == "ease-linear" ||
-            params.transition == 'easeLinear') {
+        } else if (params.transition === 'userChoice' && this.getSettings().easing_function === "ease-linear" ||
+            params.transition === 'easeLinear') {
             params.mode = Clutter.AnimationMode.LINEAR;
         } else {
-            log("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);
+            this._logger.error("Could not find Clutter AnimationMode", params.transition, this.getSettings().easing_function);
         }
 
         if (params.onComplete) {
@@ -539,9 +540,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
         } else {
             Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
         }
-        
-        this._backgroundShade = new Clutter.Actor({ 
-            opacity: 0, 
+
+        this._backgroundShade = new Clutter.Actor({
+            opacity: 0,
             reactive: false
         });
 
@@ -554,10 +555,10 @@ export class PlatformGnomeShell extends AbstractPlatform {
         shade.sharpness = this._settings.dim_factor;
 
         this._backgroundShade.add_effect(shade);
-        
+
         this._backgroundGroup.add_child(this._backgroundShade);
         this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
-    
+
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
@@ -580,7 +581,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                     transition: 'easeInOutQuint'
                 });
             } catch (e) {
-                log(e);
+                this._logger.error(e);
                 // ignore fake panels
             }
         }
@@ -597,6 +598,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             }
         } catch (e) {
             // ignore missing legacy tray
+            this._logger.error(e);
         }
         this._backgroundGroup.show();
         this.tween(this._backgroundShade, {
@@ -623,6 +625,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 }
             } catch (e) {
                 //ignore fake panels
+                this._logger.error(e);
             }
         }
     }
@@ -638,6 +641,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             }
         } catch (e) {
             //ignore missing legacy tray
+            this._logger.error(e);
         }
 
         this.tween(this._backgroundShade, {
@@ -665,79 +669,4 @@ export class PlatformGnomeShell extends AbstractPlatform {
             panels.push(Main.overview._dash);
         return panels;
     }
-
-
 }
-
-const VIGNETTE_DECLARATIONS = '                                              \
-uniform float brightness;                                                  \n\
-uniform float vignette_sharpness;                                          \n\
-float rand(vec2 p) {                                                       \n\
-  return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453123);        \n\
-}                                                                          \n';
-
-const VIGNETTE_CODE = '                                                      \
-cogl_color_out.a = cogl_color_in.a;                                        \n\
-cogl_color_out.rgb = vec3(0.0, 0.0, 0.0);                                  \n\
-vec2 position = cogl_tex_coord_in[0].xy - 0.5;                             \n\
-float t = clamp(length(1.41421 * position), 0.0, 1.0);                     \n\
-float pixel_brightness = mix(1.0, 1.0 - vignette_sharpness, t);            \n\
-cogl_color_out.a *= 1.0 - pixel_brightness * brightness;                   \n\
-cogl_color_out.a += (rand(position) - 0.5) / 100.0;                        \n';
-
-const MyRadialShaderEffect = GObject.registerClass({
-    Properties: {
-        'brightness': GObject.ParamSpec.float(
-            'brightness', 'brightness', 'brightness',
-            GObject.ParamFlags.READWRITE,
-            0, 1, 1),
-        'sharpness': GObject.ParamSpec.float(
-            'sharpness', 'sharpness', 'sharpness',
-            GObject.ParamFlags.READWRITE,
-            0, 1, 0),
-    },
-}, class MyRadialShaderEffect extends Shell.GLSLEffect {
-    _init(params) {
-        this._brightness = undefined;
-        this._sharpness = undefined;
-
-        super._init(params);
-
-        this._brightnessLocation = this.get_uniform_location('brightness');
-        this._sharpnessLocation = this.get_uniform_location('vignette_sharpness');
-
-        this.brightness = 1.0;
-        this.sharpness = 0.0;
-    }
-
-    vfunc_build_pipeline() {
-        this.add_glsl_snippet(Shell.SnippetHook.FRAGMENT,
-            VIGNETTE_DECLARATIONS, VIGNETTE_CODE, true);
-    }
-
-    get brightness() {
-        return this._brightness;
-    }
-
-    set brightness(v) {
-        if (this._brightness === v)
-            return;
-        this._brightness = v;
-        this.set_uniform_float(this._brightnessLocation,
-            1, [this._brightness]);
-        this.notify('brightness');
-    }
-
-    get sharpness() {
-        return this._sharpness;
-    }
-
-    set sharpness(v) {
-        if (this._sharpness === v)
-            return;
-        this._sharpness = v;
-        this.set_uniform_float(this._sharpnessLocation,
-            1, [this._sharpness]);
-        this.notify('sharpness');
-    }
-});

@@ -13,7 +13,7 @@ const get_shader_source = _ => {
     try {
         return Shell.get_file_contents_utf8_sync(SHADER_PATH);
     } catch (e) {
-        log(`[Coverflow Alt-Tab] error loading shader from ${SHADER_PATH}: ${e}`);
+        console.log(`[Coverflow Alt-Tab] error loading shader from ${SHADER_PATH}: ${e}`);
         return null;
     }
 };
@@ -64,28 +64,22 @@ export const ColorEffect = new GObject.registerClass({
         ),
     }
 }, class CoverflowAltTabColorShader extends Clutter.ShaderEffect {
-    _init(params) {
+    constructor(params) {
+        let _color = params.color;
+        delete params.color;
+        super(params);
         this._red = null;
         this._green = null;
         this._blue = null;
         this._blend = null;
 
-        // initialize without color as a parameter
-
-        let _color = params.color;
-        delete params.color;
-
-        super._init(params);
-
         // set shader source
-
         this._source = get_shader_source();
 
         if (this._source)
             this.set_shader_source(this._source);
 
         // set shader color
-
         if (_color)
             this.color = _color;
 

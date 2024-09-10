@@ -28,7 +28,6 @@ const BaseSwitcher = Switcher;
 import {Preview, Placement, Direction, findUpperLeftFromCenter} from './preview.js'
 
 const SIDE_ANGLE = 90;
-const BLEND_OUT_ANGLE = 30;
 const ALPHA = 1;
 
 function appendParams(base, extra) {
@@ -58,13 +57,12 @@ export class CoverflowSwitcher extends BaseSwitcher {
         for (let windowActor of global.get_window_actors()) {
             let metaWin = windowActor.get_meta_window();
             let texture = windowActor.get_texture();
-            let width, height;
+            let width, height, _;
             if (texture.get_size) {
                 [width, height] = texture.get_size();
             } else {
                 // TODO: Check this OK!
-                let preferred_size_ok;
-                [preferred_size_ok, width, height] = texture.get_preferred_size();
+                [_, width, height] = texture.get_preferred_size();
             }
 
             let scale = 1.0;
@@ -76,7 +74,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
 
             let preview = new Preview(metaWin, this, {
                 name: metaWin.title,
-                opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() == currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
+                opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
                 source: texture.get_size ? texture : windowActor,
                 reactive: true,
                 x: metaWin.minimized ? 0 :
@@ -104,17 +102,17 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 this._previews[this._windows.indexOf(metaWin)] = preview;
             }
             this._allPreviews.push(preview);
-            
+
             this.previewActor.add_child(preview);
         }
     }
 
     _usingCarousel() {
-        return (this._settings.switcher_looping_method == "Carousel");
+        return (this._settings.switcher_looping_method === "Carousel");
     }
 
     _previewNext() {
-        if (this._currentIndex == this._windows.length - 1) {
+        if (this._currentIndex === this._windows.length - 1) {
             this._setCurrentIndex(0);
             if (this._usingCarousel()) {
                 this._updatePreviews(false)
@@ -128,7 +126,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _previewPrevious() {
-        if (this._currentIndex == 0) {
+        if (this._currentIndex === 0) {
             this._setCurrentIndex(this._windows.length-1);
             if (this._usingCarousel()) {
                 this._updatePreviews(false)
@@ -142,43 +140,15 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _flipStack(direction) {
-        //this._looping = true;
-
-        let xOffset, angle;
-        this._updateActiveMonitor();
-        if (direction === Direction.TO_LEFT) {
-            xOffset = -this._xOffsetLeft;
-            angle = BLEND_OUT_ANGLE;
-        } else {
-            xOffset = this._activeMonitor.width + this._xOffsetLeft;
-            angle = -BLEND_OUT_ANGLE;
-        }
-
-        let animation_time = this._settings.animation_time * 2/3;
-
         for (let [i, preview] of this._previews.entries()) {
             this._onFlipIn(preview, i, direction);
         }
     }
 
     _onFlipIn(preview, index, direction) {
-        let xOffsetStart, xOffsetEnd, angleStart, angleEnd;
         let zeroIndexPreview = null;
         this._updateActiveMonitor();
 
-        if (direction === Direction.TO_LEFT) {
-            xOffsetStart = this.actor.width + this._xOffsetLeft;
-            xOffsetEnd = this._xOffsetRight;
-            angleStart = -BLEND_OUT_ANGLE;
-            angleEnd = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
-        } else {
-            xOffsetStart = -this._xOffsetLeft;
-            xOffsetEnd = this._xOffsetLeft;
-            angleStart = BLEND_OUT_ANGLE;
-            angleEnd = SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0);
-        }
-
-        //let animation_time = this._settings.animation_time * 2;
         let animation_time = this._settings.animation_time * 2 * (direction === Direction.TO_RIGHT ? ((index + 1) / this._previews.length) : (1 - index / this._previews.length));
         this._updatePreview(index, zeroIndexPreview, preview, index, false, animation_time);
         this._manager.platform.tween(preview, {
@@ -190,7 +160,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
         return;
     }
 
-    _onFlipComplete(direction) {
+    _onFlipComplete(_direction) {
         this._looping = false;
         this._updatePreviews(false);
     }
@@ -219,7 +189,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
         let pivot_point = new Graphene.Point({ x: x, y: y });
         let half_length = Math.floor(this._previews.length / 2);
         let pivot_index = (this._usingCarousel()) ?
-                           half_length : this._currentIndex; 
+                           half_length : this._currentIndex;
         if (toChangePivotPoint) {
             if (index < pivot_index) {
                 let progress = pivot_index - index < 1 ? pivot_index - index : 1;
@@ -251,32 +221,33 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _getPerspectiveCorrectionAngle(side) {
-        if (this._settings.perspective_correction_method != "Adjust Angles") return 0;
-        if (this.num_monitors == 1) {
+        if (this._settings.perspective_correction_method !== "Adjust Angles") return 0;
+        if (this.num_monitors === 1) {
             return 0;
-        } else if (this.num_monitors == 2) {
-            if (this.monitor_number == this.monitors_ltr[0].index) {
-                if (side == 0) return 508/1000 * 90;
+        } else if (this.num_monitors === 2) {
+            if (this.monitor_number === this.monitors_ltr[0].index) {
+                if (side === 0) return 508/1000 * 90;
                 else return 508/1000 *90;
             } else {
-                if (side == 0) return -508/1000 * 90;
+                if (side === 0) return -508/1000 * 90;
                 else return -508/1000 * 90;
             }
-        } else if (this.num_monitors == 3) {
-            if (this.monitor_number == this.monitors_ltr[0].index) {
-                if (side == 0) return (666)/1000 * 90;
+        } else if (this.num_monitors === 3) {
+            if (this.monitor_number === this.monitors_ltr[0].index) {
+                if (side === 0) return (666)/1000 * 90;
                 else return 750/1000 * 90;
-            } else if (this.monitor_number == this.monitors_ltr[1].index) {
+            } else if (this.monitor_number === this.monitors_ltr[1].index) {
                 return 0;
             } else {
-                if (side == 0) return (-750)/1000 * 90;
+                if (side === 0) return (-750)/1000 * 90;
                 else return -666/1000 * 90;
             }
         }
+        return 0;
     }
 
     _updatePreviews(reorder_only=false) {
-        if (this._previews == null) return;
+        if (this._previews === null) return;
         let half_length = Math.floor(this._previews.length / 2);
         let previews = [];
         for (let [i, preview] of this._previews.entries()) {
@@ -289,7 +260,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
 
         let zeroIndexPreview = null;
         for (let item of previews) {
-            let preview = item[2]; 
+            let preview = item[2];
             let i = item[0];
             let idx = item[1];
             let animation_time = this._getRandomTime();
@@ -303,7 +274,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 }
             });
         }
-        if (zeroIndexPreview != null) zeroIndexPreview.make_bottom_layer(this.previewActor);
+        if (zeroIndexPreview !== null) zeroIndexPreview.make_bottom_layer(this.previewActor);
         this._raiseIcons();
     }
 
@@ -311,10 +282,10 @@ export class CoverflowSwitcher extends BaseSwitcher {
         let half_length = Math.floor(this._previews.length / 2);
         let pivot_index = (this._usingCarousel()) ?
          half_length : this._currentIndex;
-        if (this._usingCarousel() && idx == 0) {
+        if (this._usingCarousel() && idx === 0) {
             zeroIndexPreview = preview;
         }
-        if (i == this._currentIndex) {
+        if (i === this._currentIndex) {
             preview.make_top_layer(this.previewActor);
             if (!reorder_only) {
                 this._animatePreviewToMid(preview, this._settings.animation_time);
