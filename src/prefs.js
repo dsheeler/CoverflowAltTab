@@ -394,7 +394,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             description: _("Internal actions that will not conflict with other window switchers.")
         });
         keybinding_page.add(custom_keybinding_pref_group);
-        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", _("Coverflow Switch Windows Shortcut"), _("Activate winow switcher.")));
+        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", _("Coverflow Switch Windows Shortcut"), _("Activate window switcher.")));
         custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", _("Coverflow Switch Applications Shortcut"), _("Activate application switcher.")));
 
         let pcorrection_pref_group = new Adw.PreferencesGroup({
