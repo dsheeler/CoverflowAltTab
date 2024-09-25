@@ -208,7 +208,7 @@ export const Manager = class Manager {
         }
 
         if (windows.length) {
-            let currentIndex = windows.indexOf(display.focus_window);
+            const currentIndex = 0;
             let switcher_class = this.platform.getSettings().switcher_class;
             this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null, dBus);
         }
