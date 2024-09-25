@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-04 20:42-0500\n"
+"POT-Creation-Date: 2024-09-25 17:58-0500\n"
 "PO-Revision-Date: 2024-06-14 05:09+0000\n"
 "Last-Translator: hugoalh <hugoalh@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -19,397 +19,442 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.6-dev\n"
 
-#: src/prefs.js:104 src/prefs.js:149
-msgid "Coverflow"
-msgstr "Coverflow"
-
-#: src/prefs.js:105 src/prefs.js:149
-msgid "Timeline"
-msgstr "時間軸"
-
-#: src/prefs.js:106 src/prefs.js:151
-msgid "Bottom"
-msgstr "底部"
-
-#: src/prefs.js:107 src/prefs.js:151
-msgid "Top"
-msgstr "頂部"
-
-#: src/prefs.js:108 src/prefs.js:203
-msgid "Classic"
-msgstr "經典"
-
-#: src/prefs.js:109 src/prefs.js:203
-msgid "Overlay"
-msgstr "覆蓋式"
-
-#: src/prefs.js:117
+#: src/prefs.js:105
 msgid "Reset to default value"
 msgstr "重置為預設值"
 
-#: src/prefs.js:133
+#: src/prefs.js:121
 #, javascript-format
 msgid "Version %d"
 msgstr "版本 %d"
 
-#: src/prefs.js:139
+#: src/prefs.js:127
 msgid "General"
 msgstr "一般"
 
-#: src/prefs.js:144
+#: src/prefs.js:132
 #, fuzzy
 msgid "Switcher Properties"
 msgstr "視窗屬性"
 
-#: src/prefs.js:146
+#: src/prefs.js:137
 msgid "Flip Stack"
 msgstr "翻轉堆疊"
 
-#: src/prefs.js:146
+#: src/prefs.js:143
 msgid "Carousel"
 msgstr "輪播"
 
-#: src/prefs.js:148
+#: src/prefs.js:149
 msgid "Looping Method"
 msgstr "循環方法"
 
-#: src/prefs.js:148
+#: src/prefs.js:149
 msgid "How to cycle through windows."
 msgstr "如何循環瀏覽視窗。"
 
-#: src/prefs.js:149
+#: src/prefs.js:153
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: src/prefs.js:159
+msgid "Timeline"
+msgstr "時間軸"
+
+#: src/prefs.js:164
 msgid "Style"
 msgstr "樣式"
 
-#: src/prefs.js:149
+#: src/prefs.js:164
 msgid "Pick the type of switcher."
 msgstr "選擇切換器類型。"
 
-#: src/prefs.js:150
+#: src/prefs.js:165
 msgid "Vertical Offset"
 msgstr "垂直偏移"
 
-#: src/prefs.js:150
+#: src/prefs.js:165
 msgid "Positive value moves everything down, negative up."
 msgstr "正數值使一切向下移動，負數值則使一切向上移動。"
 
-#: src/prefs.js:151
+#: src/prefs.js:169
+msgid "Bottom"
+msgstr "底部"
+
+#: src/prefs.js:175
+msgid "Top"
+msgstr "頂部"
+
+#: src/prefs.js:180
 msgid "Window Title Position"
 msgstr "視窗標題位置"
 
-#: src/prefs.js:151
+#: src/prefs.js:180
 msgid "Place window title above or below the switcher."
 msgstr "放置視窗標題在切換器上方或下方。"
 
-#: src/prefs.js:152
+#: src/prefs.js:181
 msgid "Enforce Primary Monitor"
 msgstr "強制主顯示器"
 
-#: src/prefs.js:152
+#: src/prefs.js:181
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
 msgstr "總是顯示在主顯示器上，否則顯示在目前的顯示器上。"
 
-#: src/prefs.js:155
+#: src/prefs.js:184
 msgid "Hide Panel"
 msgstr "隱藏面板"
 
-#: src/prefs.js:155
+#: src/prefs.js:184
 msgid "Hide panel when switching windows."
 msgstr "切換視窗時隱藏面板。"
 
-#: src/prefs.js:156
+#: src/prefs.js:185
 msgid "Invert Swipes"
 msgstr "反轉滑動"
 
-#: src/prefs.js:156
+#: src/prefs.js:185
 msgid "Invert system scroll direction setting."
 msgstr ""
 
-#: src/prefs.js:160
+#: src/prefs.js:189
 msgid "Background"
 msgstr "背景"
 
-#: src/prefs.js:162
+#: src/prefs.js:191
 msgid "Dim-factor"
 msgstr "暗淡系數"
 
-#: src/prefs.js:162
+#: src/prefs.js:191
 msgid "Bigger means darker."
 msgstr "越大代表越暗。"
 
-#: src/prefs.js:166
+#: src/prefs.js:195
 msgid "Animation"
 msgstr "動畫"
 
-#: src/prefs.js:171 src/prefs.js:197 src/prefs.js:219 src/prefs.js:231
+#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:298
 #, fuzzy
 msgid "Properties"
 msgstr "視窗屬性"
 
-#: src/prefs.js:175
+#: src/prefs.js:203
+#, fuzzy
+msgid "Easing Function"
+msgstr "彈性動畫"
+
+#: src/prefs.js:203
+msgid "Determine how windows move."
+msgstr ""
+
+#: src/prefs.js:204
 msgid "Duration [s]"
 msgstr "持續時間 [秒]"
 
-#: src/prefs.js:176
+#: src/prefs.js:205
 msgid "Randomize Durations"
 msgstr "隨機化持續時間"
 
-#: src/prefs.js:176
+#: src/prefs.js:205
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr "每個動畫的持續時間在 0 和配置值之間隨機分配。"
 
-#: src/prefs.js:179
+#: src/prefs.js:208
 msgid "Included"
 msgstr ""
 
-#: src/prefs.js:182
+#: src/prefs.js:211
 msgid "Current workspace only"
 msgstr "僅目前工作區"
 
-#: src/prefs.js:184
+#: src/prefs.js:213
 msgid "All workspaces"
 msgstr "所有工作區"
 
-#: src/prefs.js:186
+#: src/prefs.js:215
 msgid "All workspaces, current first"
 msgstr "所有工作區，目前優先"
 
-#: src/prefs.js:188
+#: src/prefs.js:217
 msgid "Workspaces"
 msgstr "工作區"
 
-#: src/prefs.js:188
+#: src/prefs.js:217
 msgid "Switch between windows on current or on all workspaces."
 msgstr "在目前或所有工作區的視窗之間切換。"
 
-#: src/prefs.js:189
+#: src/prefs.js:218
 msgid "Current Monitor"
 msgstr "目前的顯示器"
 
-#: src/prefs.js:189
+#: src/prefs.js:218
 msgid "Switch between windows on current monitor."
 msgstr "在目前顯示器上的視窗之間切換。"
 
-#: src/prefs.js:192
+#: src/prefs.js:221
 msgid "Icons"
 msgstr "圖示"
 
-#: src/prefs.js:201
+#: src/prefs.js:230
 msgid "Overlay Icon Size"
 msgstr "覆蓋圖示大小"
 
-#: src/prefs.js:201
+#: src/prefs.js:230
 msgid "Set the overlay icon size in pixels."
 msgstr "設定覆蓋圖示大小，以像素為單位。"
 
-#: src/prefs.js:202
+#: src/prefs.js:231
 msgid "Overlay Icon Opacity"
 msgstr "覆蓋圖示不透明度"
 
-#: src/prefs.js:202
+#: src/prefs.js:231
 msgid "Set the overlay icon opacity."
 msgstr "設定覆蓋圖示的不透明度。"
 
-#: src/prefs.js:203
+#: src/prefs.js:235
+msgid "Classic"
+msgstr "經典"
+
+#: src/prefs.js:241
+msgid "Overlay"
+msgstr "覆蓋式"
+
+#: src/prefs.js:247
 msgid "Attached"
 msgstr "已吸附"
 
-#: src/prefs.js:204
+#: src/prefs.js:252
 msgid "Application Icon Style"
 msgstr "應用程式圖示樣式"
 
-#: src/prefs.js:205
+#: src/prefs.js:257
 msgid "Fade Only"
 msgstr ""
 
-#: src/prefs.js:205
+#: src/prefs.js:263
 msgid "Scale Only"
 msgstr ""
 
-#: src/prefs.js:205
+#: src/prefs.js:269
 msgid "Fade and Scale"
 msgstr ""
 
-#: src/prefs.js:207
+#: src/prefs.js:274
 msgid "Add / Remove Effects"
 msgstr ""
 
-#: src/prefs.js:207
+#: src/prefs.js:274
 msgid "How Icons and Labels ease in and out."
 msgstr ""
 
-#: src/prefs.js:211
+#: src/prefs.js:278
 msgid "Icon Shadow"
 msgstr "圖示陰影"
 
-#: src/prefs.js:215
+#: src/prefs.js:282
 #, fuzzy
 msgid "Windows"
 msgstr "切換器樣式"
 
-#: src/prefs.js:223
+#: src/prefs.js:290
 msgid "Window Preview Size to Monitor Size Ratio"
 msgstr "視窗預覽尺寸與顯示器尺寸的比例"
 
-#: src/prefs.js:223
+#: src/prefs.js:290
 msgid "Maximum ratio of window preview size to monitor size."
 msgstr "視窗預覽尺寸與顯示器尺寸的最大比例。"
 
-#: src/prefs.js:224
+#: src/prefs.js:291
 msgid "Off-center Size Factor"
 msgstr "偏離中心尺寸系數"
 
-#: src/prefs.js:224
+#: src/prefs.js:291
 msgid "Factor by which to successively shrink previews off to the side."
 msgstr "連續將預覽縮小至一側的系數。"
 
-#: src/prefs.js:227
+#: src/prefs.js:294
 #, fuzzy
 msgid "AppSwitcher"
 msgstr "切換器"
 
-#: src/prefs.js:234
-msgid "Make the Application Switcher Behave Like the Window Switcher"
+#: src/prefs.js:301
+#, fuzzy
+msgid "Make the Application Switcher Show Only First Preview"
 msgstr "使應用程式切換器的行為類似於視窗切換器"
 
-#: src/prefs.js:234
+#: src/prefs.js:301
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "不要將同一應用程式的視窗群組至子切換器。"
 
-#: src/prefs.js:235
+#: src/prefs.js:302
 msgid "Desaturate"
 msgstr "去飽和"
 
-#: src/prefs.js:235
+#: src/prefs.js:302
 msgid "Larger means more desaturation."
 msgstr "越大代表越去飽和。"
 
-#: src/prefs.js:238
+#: src/prefs.js:305
 msgid "Tint"
 msgstr "著色"
 
-#: src/prefs.js:250 src/prefs.js:361
+#: src/prefs.js:317 src/prefs.js:427
 msgid "Color"
 msgstr "顏色"
 
-#: src/prefs.js:271 src/prefs.js:382
+#: src/prefs.js:338 src/prefs.js:448
 msgid "Set to Theme Color"
 msgstr "設定為主題顏色"
 
-#: src/prefs.js:308
+#: src/prefs.js:376
 msgid "Blend"
 msgstr "混合"
 
-#: src/prefs.js:308
+#: src/prefs.js:376
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr "色調顏色的混合量；越大代表越多色調。"
 
-#: src/prefs.js:309
+#: src/prefs.js:377
 msgid "Glitch"
 msgstr "毛刺"
 
-#: src/prefs.js:312
+#: src/prefs.js:380
 msgid "Keybindings"
 msgstr "按鍵綁定"
 
-#: src/prefs.js:317
+#: src/prefs.js:385
 msgid "System Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:318
+#: src/prefs.js:386
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
 
-#: src/prefs.js:321
+#: src/prefs.js:389
 msgid "Bind to 'switch-windows'"
 msgstr "綁定至「switch-windows」"
 
-#: src/prefs.js:322
+#: src/prefs.js:390
 msgid "Bind to 'switch-applications'"
 msgstr "綁定至「switch-applications」"
 
-#: src/prefs.js:325
+#: src/prefs.js:393
 msgid "Internal Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:326
+#: src/prefs.js:394
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 
-#: src/prefs.js:333
+#: src/prefs.js:397
+msgid "Coverflow Switch Windows Shortcut"
+msgstr ""
+
+#: src/prefs.js:397
+#, fuzzy
+msgid "Activate window switcher."
+msgstr "選擇切換器類型。"
+
+#: src/prefs.js:398
+msgid "Coverflow Switch Applications Shortcut"
+msgstr ""
+
+#: src/prefs.js:398
+#, fuzzy
+msgid "Activate application switcher."
+msgstr "應用程式切換器"
+
+#: src/prefs.js:401
 msgid "Advanced Options"
 msgstr ""
 
-#: src/prefs.js:337
+#: src/prefs.js:405
 msgid "None"
 msgstr "無"
 
-#: src/prefs.js:338
+#: src/prefs.js:406
 msgid "Move Camera"
 msgstr "移動相機"
 
-#: src/prefs.js:339
+#: src/prefs.js:407
 msgid "Adjust Angles"
 msgstr "調整角度"
 
-#: src/prefs.js:340
+#: src/prefs.js:408
 msgid "Perspective Correction"
 msgstr "透視校正"
 
-#: src/prefs.js:342
+#: src/prefs.js:408
+msgid "Method to make off-center switcher look centered."
+msgstr ""
+
+#: src/prefs.js:410
 msgid "Verbose Logging"
 msgstr ""
 
-#: src/prefs.js:342
+#: src/prefs.js:410
 msgid "Log debug and normal messages."
 msgstr ""
 
-#: src/prefs.js:346
+#: src/prefs.js:414
 msgid "Highlight Window Under Mouse"
 msgstr "突出顯示滑鼠下的視窗"
 
-#: src/prefs.js:347
+#: src/prefs.js:415
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr "在滑鼠下方的視窗上繪畫一個彩色突出顯示，以了解點擊的效果。"
 
-#: src/prefs.js:419
+#: src/prefs.js:488
 msgid "Raise Window Under Mouse"
 msgstr "升起滑鼠下方的視窗"
 
-#: src/prefs.js:419
+#: src/prefs.js:488
 msgid "Raise the window under the mouse above all others."
 msgstr "將滑鼠下方的視窗升起至所有其他視窗之上。"
 
-#: src/prefs.js:439
+#: src/prefs.js:491
 msgid "Contribute"
 msgstr "貢獻"
 
-#: src/prefs.js:475
+#: src/prefs.js:527
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "程式碼（建立拉取請求、報告問題等）"
 
-#: src/prefs.js:483
+#: src/prefs.js:535
 msgid "Donate"
 msgstr "捐贈"
 
-#: src/prefs.js:504
+#: src/prefs.js:556
 msgid "Translate"
 msgstr "翻譯"
+
+#: src/shortcutButton.js:37
+msgid "Choose..."
+msgstr ""
+
+#: src/shortcutButton.js:46
+msgid "Change keyboard shortcut"
+msgstr ""
+
+#: src/shortcutButton.js:50
+msgid "Clear"
+msgstr ""
+
+#: src/shortcutButton.js:90
+msgid "Press your keyboard shortcut..."
+msgstr ""
 
 #~ msgid "Swipe content instead of view."
 #~ msgstr "滑動內容而不是檢視。"
 
 #~ msgid "Switcher Windows"
 #~ msgstr "切換器視窗"
-
-#~ msgid "Application Switcher"
-#~ msgstr "應用程式切換器"
 
 #~ msgid "Blur"
 #~ msgstr "模糊"
@@ -430,6 +475,3 @@ msgstr "翻譯"
 
 #~ msgid "Animation speed (smaller means faster)"
 #~ msgstr "動畫速度（越小即越快）"
-
-#~ msgid "Elastic animations"
-#~ msgstr "彈性動畫"

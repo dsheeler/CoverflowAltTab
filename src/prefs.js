@@ -298,7 +298,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             title: _('Properties'),
         });
         background_application_page.add(background_application_switcher_pref_group);
-        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], [], _("Make the Application Switcher Behave Like the Window Switcher"), _("Don't group windows of the same application in a subswitcher.")));
+        background_application_switcher_pref_group.add(buildSwitcherAdw(settings, "switch-application-behaves-like-switch-windows", [], [], _("Make the Application Switcher Show Only First Preview"), _("Don't group windows of the same application in a subswitcher.")));
         background_application_switcher_pref_group.add(buildRangeAdw(settings, "desaturate-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Desaturate"), _("Larger means more desaturation."), true));
 
         let color_row = new Adw.ExpanderRow({
