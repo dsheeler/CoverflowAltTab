@@ -392,20 +392,25 @@ export const Preview = GObject.registerClass({
             }
 
             if (this.switcher._iconScaleUpDown) {
-                this.switcher._manager.platform.tween(this._icon, {
-                    transition: 'easeInOutQuint',
-                    scale_x: 0,
-                    scale_y: 0,
-                    time: animation_time,
-                    onComplete: () => {
-                        if (this._icon !== null) {
-                            this._icon.destroy()
-                            this._icon = null;
-                            this._application_icon_box.destroy();
-                            this._application_icon_box = null;
-                        }
-                    },
-                });
+                if (this._icon !== null) {
+                    let t = this._icon.get_transition('scale-x');
+                        if (!t || t.get_interval().peek_final_value() !== 0) {
+                        this.switcher._manager.platform.tween(this._icon, {
+                            transition: 'easeInOutQuint',
+                            scale_x: 0,
+                            scale_y: 0,
+                            time: animation_time,
+                            onComplete: () => {
+                                if (this._icon !== null) {
+                                    this._icon.destroy()
+                                    this._icon = null;
+                                    this._application_icon_box.destroy();
+                                    this._application_icon_box = null;
+                                }
+                            },
+                        });
+                    }
+                }
             }
         }
     }
