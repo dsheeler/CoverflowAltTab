@@ -84,6 +84,8 @@ export class Switcher {
         this._logger = this._manager.logger;
         this._iconFadeInOut = this._settings.icon_add_remove_effects === "Fade Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
         this._iconScaleUpDown = this._settings.icon_add_remove_effects === "Scale Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
+        this._lastButtonPressPositionX = -1;
+        this._lastButtonPressPositionY = -1;
 
         this._logger.log(`Creating Switcher`);
         this._logger.increaseIndent();
@@ -195,9 +197,11 @@ export class Switcher {
                 preview.addIcon();
             }
         }
+
+
         for (let preview of this._allPreviews) {
             preview.set_reactive(false)
-            preview.connect('button-press-event', this._previewButtonPressEvent.bind(this, preview));
+            preview.connect('button-press-event', this._previewButtonPressEvent.bind(this));
         }
 
         // hide windows and showcd  Coverflow actors
@@ -294,6 +298,8 @@ export class Switcher {
         if (this._haveModal) {
             this.actor.disconnect(this._key_press_handler_id);
             this.actor.disconnect(this._key_release_handler_id);
+            this.actor.disconnect(this._button_press_handler_id);
+            this.actor.disconnect(this._button_release_handler_id)
             Main.popModal(this._grab);
             this._haveModal = false;
         }
@@ -303,6 +309,8 @@ export class Switcher {
         if (this._haveModal) return;
         this._key_press_handler_id = this.actor.connect('key-press-event', this._keyPressEvent.bind(this));
         this._key_release_handler_id = this.actor.connect('key-release-event', this._keyReleaseEvent.bind(this));
+        this._button_press_handler_id = this.actor.connect('button-press-event', this._buttonPressEvent.bind(this));
+        this._button_release_handler_id = this.actor.connect('button-release-event', this._buttonReleaseEvent.bind(this));
         this._grab = Main.pushModal(this.actor)
         if (!this._grab) {
             this._activateSelected();
@@ -799,15 +807,18 @@ export class Switcher {
     }
 
     // eslint-disable-next-line complexity
-    _keyPressEvent(actor, event) {
+    _keyPressEvent(_actor, event) {
         if (this.gestureInProgress) return false;
         switch(event.get_key_symbol()) {
 
             case Clutter.KEY_Return:
+                this._activateSelected();
+                return true;
+
             case Clutter.KEY_Escape:
             case Clutter.Escape:
                 // Esc -> close CoverFlow
-                this._activateSelected();
+                this._activateWithoutSelection();
                 return true;
 
             case Clutter.KEY_Right:
@@ -873,6 +884,29 @@ export class Switcher {
         }
         return true;
     }
+
+    _buttonPressEvent(_actor, event) {
+
+        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
+            if (this.gestureInProgress) {
+                this._lastButtonPressPositionX = -1;
+                this._lastButtonPressPositionY = -1;
+                return;
+            }
+            [this._lastButtonPressPositionX, this._lastButtonPressPositionY] = event.get_coords();
+        }
+    }
+
+    _buttonReleaseEvent(_actor, event) {
+        if (this.gestureInProgress) return;
+        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
+            let [x, y] = event.get_coords();
+            if (x === this._lastButtonPressPositionX && y === this._lastButtonPressPositionY) {
+                this._activateWithoutSelection();
+            }
+        }
+    }
+
     _windowDestroyed(wm, actor) {
         this._removeDestroyedWindow(actor.meta_window);
     }
@@ -900,14 +934,21 @@ export class Switcher {
         }
     }
 
-    _previewButtonPressEvent(preview) {
-        for (let [i, p] of this._previews.entries()) {
-            if (preview === p) {
-                this._setCurrentIndex(i);
-                this._activateSelected(true);
-                break;
+    _previewButtonPressEvent(preview, event) {
+        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
+            for (let [i, p] of this._previews.entries()) {
+                if (preview === p) {
+                    this._setCurrentIndex(i);
+                    this._activateSelected(true);
+                    break;
+                }
             }
         }
+    }
+
+    _activateWithoutSelection() {
+        this._currentIndex = -1;
+        this.animateClosed(CloseReason.ACTIVATE_SELECTED);
     }
 
     _activateSelected(reset_current_window_title) {
@@ -1160,20 +1201,22 @@ export class Switcher {
                         });
                     }
                 }
-                let current_preview = this._previews[Math.round(this._currentIndex)];
-                let current_preview_transient = current_preview.metaWin.get_transient_for()
-                if (current_preview_transient !== null) {
-                    for (let p of this._allPreviews) {
-                        if (p.metaWin === current_preview_transient) {
-                            p.make_top_layer(this.previewActor);
-                            break;
+                if (this._currentIndex >= 0) {
+                    let current_preview = this._previews[Math.round(this._currentIndex)];
+                    let current_preview_transient = current_preview.metaWin.get_transient_for()
+                    if (current_preview_transient !== null) {
+                        for (let p of this._allPreviews) {
+                            if (p.metaWin === current_preview_transient) {
+                                p.make_top_layer(this.previewActor);
+                                break;
+                            }
                         }
                     }
-                }
-                current_preview.make_top_layer(this.previewActor);
-                for (let p of this._allPreviews) {
-                    if (p.metaWin.get_transient_for() === current_preview.metaWin) {
-                        this.previewActor.set_child_above_sibling(p, current_preview);
+                    current_preview.make_top_layer(this.previewActor);
+                    for (let p of this._allPreviews) {
+                        if (p.metaWin.get_transient_for() === current_preview.metaWin) {
+                            this.previewActor.set_child_above_sibling(p, current_preview);
+                        }
                     }
                 }
                 this._raiseIcons();
