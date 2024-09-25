@@ -1,0 +1,14 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+
+<node>
+  <interface name="org.gnome.Shell.Extensions.Coverflowalttab">
+    <method name="launch">
+        <arg type="s" direction="in" name="type"/>
+    </method>
+    <method name="next"/>
+    <method name="previous"/>
+    <method name="select"/>
+  </interface>
+</node>

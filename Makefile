@@ -58,6 +58,7 @@ build:
 		--extra-source ./logger.js \
 		--extra-source ../ui \
 		--extra-source ../src/effects \
+        --extra-source ../dbus-interfaces \
 		--schema ../schemas/org.gnome.shell.extensions.coverflowalttab.gschema.xml \
 		--podir ../locale/ \
 		-o ../build/

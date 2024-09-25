@@ -48,10 +48,10 @@ export default class CoverflowAltTabExtension extends Extension {
             this.manager = new Manager.Manager(
                 new Platform.PlatformGnomeShell(this.getSettings(), this.logger),
                 new Keybinder.Keybinder330Api(this.getSettings()),
-                this.logger
+                this
             );
             this.logger.log("Creating New Manager DONE");
-        }   
+        }
         this.manager.enable();
         this.logger.decreaseIndent();
         this.logger.log("Enabling DONE");

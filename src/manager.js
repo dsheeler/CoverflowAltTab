@@ -25,18 +25,6 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import Gio from 'gi://Gio';
 
 
-const dBusInterfaceXml = `
-<node>
-  <interface name="org.gnome.Shell.Extensions.Coverflowalttab">
-    <method name="launch">
-        <arg type="s" direction="in" name="type"/>
-    </method>
-    <method name="next"/>
-    <method name="previous"/>
-    <method name="select"/>
-  </interface>
-</node>`;
-
 function sortWindowsByUserTime(win1, win2) {
     let t1 = win1.get_user_time();
     let t2 = win2.get_user_time();
@@ -60,10 +48,11 @@ function matchOtherWorkspace(win) {
 }
 
 export const Manager = class Manager {
-    constructor(platform, keybinder, logger) {
+    constructor(platform, keybinder, extensionObj) {
         this.platform = platform;
         this.keybinder = keybinder;
-        this.logger = logger;
+        this.extensionObj = extensionObj;
+        this.logger = this.extensionObj.logger;
         this.switcher = null;
         this.exportedObject = null;
 
@@ -107,10 +96,14 @@ export const Manager = class Manager {
         }
         this.keybinder.disable();
         this.platform.disable();
+        this.logger = null;
+        this.extensionObj = null;
     }
 
     onBusAcquired(connection, name) {
         this.logger.log(`DBus Bus Acquired: ${name}`);
+        const dBusInterfaceXml = new TextDecoder().decode(
+            this.extensionObj.dir.get_child('dbus-interfaces').get_child('org.gnome.Shell.Extensions.Coverflowalttab.xml').load_contents(null)[1]);
         this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
         this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
     }
