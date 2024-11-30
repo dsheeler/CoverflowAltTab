@@ -239,10 +239,8 @@ export const Preview = GObject.registerClass({
         this._entered = true;
         if (this.switcher._settings.raise_mouse_over) {
             this.make_top_layer(this.switcher.previewActor);
-            this.switcher._raiseIcons();
         }
-        if (this.switcher._settings.highlight_mouse_over) {
-            let window_actor = this.metaWin.get_compositor_private();
+        if (this.switcher._settings.highlight_mouse_over && !this.switcher.gestureInProgress) {
             if (this._highlight === null) {
                     this._highlight = new St.Bin({
                     opacity: 0,
