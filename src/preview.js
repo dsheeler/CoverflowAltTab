@@ -61,10 +61,12 @@ export const Preview = GObject.registerClass({
         this.switcher = switcher;
         this._icon = null;
         this._highlight = null;
+        this._application_icon_box = null;
         this._flash = null;
         this._entered = false;
         this._effectNames = ['glitch', 'desaturate', 'tint']
         this._effectCounts = {};
+        this._destroying = false;
         for (let effect_name of this._effectNames) {
             this._effectCounts[effect_name] = 0;
         }
@@ -80,10 +82,14 @@ export const Preview = GObject.registerClass({
     make_top_layer(parent) {
         if (this.raise_top) {
             this.raise_top()
+            if (this._highlight) this._highlight.raise_top();
             if (this._application_icon_box) this._application_icon_box.raise_top();
+            this.switcher._raiseIcons();
         } else if (parent.set_child_above_sibling) {
             parent.set_child_above_sibling(this, null);
-            if (this._application_icon_box) parent.set_child_above_sibling(this._application_icon_box, this);
+            if (this._highlight) parent.set_child_above_sibling(this._highlight, null);
+            if (this._application_icon_box) parent.set_child_above_sibling(this._application_icon_box, null);
+            this.switcher._raiseIcons();
         } else {
             // Don't throw anything here, it may cause unstabilities
             this.switcher._logger.error("No method found for making preview the top layer");
@@ -100,9 +106,11 @@ export const Preview = GObject.registerClass({
     make_bottom_layer(parent) {
         if (this.lower_bottom) {
             if (this._application_icon_box) this._application_icon_box.lower_bottom();
+            if (this._highlight) this._highlight.lower_bottom();
             this.lower_bottom()
         } else if (parent.set_child_below_sibling) {
             parent.set_child_below_sibling(this, null);
+            if (this._highlight) parent.set_child_above_sibling(this._highlight, this);
             if (this._application_icon_box) parent.set_child_above_sibling(this._application_icon_box, this);
         } else {
             // Don't throw anything here, it may cause unstabilities
@@ -244,11 +252,23 @@ export const Preview = GObject.registerClass({
                     y: 0,
                     reactive: false,
                 });
-                this._highlight.set_style(this._getHighlightStyle(0.3));
-                let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
+                this._highlight.set_style(this._getHighlightStyle(0.666));
+                let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
                 this._highlight.add_constraint(constraint);
-                window_actor.add_child(this._highlight);
 
+                this.bind_property('rotation_angle_y', this._highlight, 'rotation_angle_y',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('pivot_point', this._highlight, 'pivot_point',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('translation_x', this._highlight, 'translation_x',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_x', this._highlight, 'scale_x',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_y', this._highlight, 'scale_y',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_z', this._highlight, 'scale_z',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.switcher.previewActor.add_child(this._highlight);
             }
             if (this._flash === null) {
                 this._flash = new St.Bin({
@@ -260,9 +280,27 @@ export const Preview = GObject.registerClass({
                     y: 0,
                 });
                 this._flash.set_style(this._getHighlightStyle(1));
-                let constraint = Clutter.BindConstraint.new(window_actor, Clutter.BindCoordinate.SIZE, 0);
+                let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
                 this._flash.add_constraint(constraint);
-                window_actor.add_child(this._flash);
+                this.bind_property('rotation_angle_y', this._flash, 'rotation_angle_y',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('pivot_point', this._flash, 'pivot_point',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('translation_x', this._flash, 'translation_x',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_x', this._flash, 'scale_x',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_y', this._flash, 'scale_y',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.bind_property('scale_z', this._flash, 'scale_z',
+                    GObject.BindingFlags.SYNC_CREATE);
+                this.switcher.previewActor.add_child(this._flash);
+                if (this._application_icon_box !== null) {
+                    this.switcher.previewActor.set_child_above_sibling(this._application_icon_box,
+                        this._highlight);
+                    this.switcher.previewActor.set_child_above_sibling(this._application_icon_box,
+                        this._flash);
+                }
                 this._flash.ease({
                     opacity: 0,
                     duration: 500,
@@ -273,6 +311,7 @@ export const Preview = GObject.registerClass({
                 });
             }
         }
+        this.switcher._raiseIcons();
         return Clutter.EVENT_PROPAGATE;
     }
 
@@ -416,6 +455,7 @@ export const Preview = GObject.registerClass({
     }
 
     vfunc_leave_event(_crossingEvent) {
+        if (this._destroying) return Clutter.EVENT_PROPAGATE;
         this.remove_highlight();
         this._entered = false;
         if (this.switcher._settings.raise_mouse_over && !this.switcher._animatingClosed) this.switcher._updatePreviews(true, 0);
