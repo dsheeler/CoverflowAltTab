@@ -238,7 +238,6 @@ export class Switcher {
             this._next();
         }
         this._getSwitcherBackgroundColor();
-
     }
 
     _gestureBegin(tracker) {
@@ -333,8 +332,9 @@ export class Switcher {
                 preview._effectCounts['glitch'] += 1;
             }
             if (this._settings.use_tint) {
-                let c = this._settings.tint_color;
+                let c = this._settings.tint_use_theme_color ? this._settings.switcher_background_color : this._settings.tint_color;
                 let b = this._settings.tint_blend;
+
                 preview.addEffect(ColorEffect, { color: [c[0], c[1], c[2], 0] }, 'tint', 'blend', 0.0, b, this._settings.animation_time);
             }
 

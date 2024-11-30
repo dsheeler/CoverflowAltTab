@@ -329,38 +329,58 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             with_alpha: false,
         });
 
-        let color_button = new Gtk.ColorDialogButton({
+        let tint_color_button = new Gtk.ColorDialogButton({
             valign: Gtk.Align.CENTER,
             dialog: color_dialog,
         });
 
-        let use_theme_color_button = new Gtk.Button({
+        let tint_set_to_theme_color_button = new Gtk.Button({
             label: _("Set to Theme Color"),
             valign: Gtk.Align.CENTER,
         });
 
-        use_theme_color_button.connect('clicked', () => {
-            let c = settings.get_value("switcher-background-color").deep_unpack();
-            let rgba = color_button.rgba;
-            rgba.red = c[0];
-            rgba.green = c[1];
-            rgba.blue = c[2];
-            rgba.alpha = 1
-            color_button.set_rgba(rgba);
+        tint_set_to_theme_color_button.connect('clicked', () => {
+            let stc_c = settings.get_value("switcher-background-color").deep_unpack();
+            let stc_rgba = tint_color_button.rgba;
+            stc_rgba.red = stc_c[0];
+            stc_rgba.green = stc_c[1];
+            stc_rgba.blue = stc_c[2];
+            stc_rgba.alpha = 1
+            tint_color_button.set_rgba(stc_rgba);
         });
 
-        choose_tint_box.append(use_theme_color_button);
-        choose_tint_box.append(color_button);
+        let tint_use_theme_color_button = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: settings.get_boolean('tint-use-theme-color')
+        });
+
+        tint_set_to_theme_color_button.set_sensitive(!tint_use_theme_color_button.active);
+        tint_color_button.set_sensitive(!tint_use_theme_color_button.active);
+        tint_use_theme_color_button.connect("notify::active",  (widget) => {
+            settings.set_boolean("tint-use-theme-color", widget.active);
+            tint_set_to_theme_color_button.set_sensitive(!widget.active);
+            tint_color_button.set_sensitive(!widget.active);
+        })
+
+        let use_theme_color_label = new Gtk.Label({
+            label: "Use Gnome-Shell Theme",
+            valign: Gtk.Align.CENTER,
+        });
+
+        choose_tint_box.append(use_theme_color_label);
+        choose_tint_box.append(tint_use_theme_color_button);
+        choose_tint_box.append(tint_set_to_theme_color_button);
+        choose_tint_box.append(tint_color_button);
         let c = settings.get_value("tint-color").deep_unpack();
-        let rgba = color_button.rgba;
+        let rgba = tint_color_button.rgba;
         rgba.red = c[0];
         rgba.green = c[1];
         rgba.blue = c[2];
         rgba.alpha = 1
-        color_button.set_rgba(rgba);
-        color_button.connect('notify::rgba', _button => {
+        tint_color_button.set_rgba(rgba);
+        tint_color_button.connect('notify::rgba', _button => {
             //eslint-disable-next-line no-shadow
-            let c = color_button.rgba;
+            let c = tint_color_button.rgba;
             let val = new GLib.Variant("(ddd)", [c.red, c.green, c.blue]);
             settings.set_value("tint-color", val);
         });
@@ -431,12 +451,15 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             spacing: 10,
             valign: Gtk.Align.CENTER,
         });
-
         highlight_chooser_row.add_suffix(choose_highlight_box);
         highlight_color_row.add_row(highlight_chooser_row);
 
         let highlight_color_dialog = new Gtk.ColorDialog({
             with_alpha: false,
+        });
+        let highlight_use_theme_color_label = new Gtk.Label({
+            label: "Use Gnome-Shell Theme",
+            valign: Gtk.Align.CENTER,
         });
 
         let highlight_color_button = new Gtk.ColorDialogButton({
@@ -444,23 +467,37 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             dialog: highlight_color_dialog,
         });
 
-        let highlight_use_theme_color_button = new Gtk.Button({
+        let highlight_set_to_theme_color_button = new Gtk.Button({
             label: _("Set to Theme Color"),
             valign: Gtk.Align.CENTER,
-        });
-        highlight_use_theme_color_button.connect('clicked', () => {
-            //eslint-disable-next-line no-shadow
-            let c = settings.get_value("switcher-background-color").deep_unpack();
-            //eslint-disable-next-line no-shadow
-            let rgba = highlight_color_button.rgba;
-            rgba.red = c[0];
-            rgba.green = c[1];
-            rgba.blue = c[2];
-            rgba.alpha = 1
-            highlight_color_button.set_rgba(rgba);
+
         });
 
+        highlight_set_to_theme_color_button.connect('clicked', () => {
+            let stc_c = settings.get_value("switcher-background-color").deep_unpack();
+            let stc_rgba = highlight_color_button.rgba;
+            stc_rgba.red = stc_c[0];
+            stc_rgba.green = stc_c[1];
+            stc_rgba.blue = stc_c[2];
+            stc_rgba.alpha = 1
+            highlight_color_button.set_rgba(stc_rgba);
+        });
+
+        let highlight_use_theme_color_button = new Gtk.Switch({
+            valign: Gtk.Align.CENTER,
+            active: settings.get_boolean('highlight-use-theme-color')
+        });
+        highlight_set_to_theme_color_button.set_sensitive(!highlight_use_theme_color_button.active);
+        highlight_color_button.set_sensitive(!highlight_use_theme_color_button.active);
+        highlight_use_theme_color_button.connect('notify::active', (button) => {
+            settings.set_boolean("highlight-use-theme-color", button.active);
+            highlight_set_to_theme_color_button.set_sensitive(!button.active);
+            highlight_color_button.set_sensitive(!button.active)
+        });
+
+        choose_highlight_box.append(highlight_use_theme_color_label);
         choose_highlight_box.append(highlight_use_theme_color_button);
+        choose_highlight_box.append(highlight_set_to_theme_color_button);
         choose_highlight_box.append(highlight_color_button);
         let hc = settings.get_value("highlight-color").deep_unpack();
         let hrgba = highlight_color_button.rgba;

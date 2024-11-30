@@ -160,6 +160,10 @@
         <summary>Highlight window under mouse</summary>
         <description>Whether or not to draw some flare on the window under the mouse so you know.</description>
     </key>
+    <key type="b" name="highlight-use-theme-color">
+        <default>true</default>
+        <summary></summary>
+    </key>
     <key type="b" name="raise-mouse-over">
         <default>true</default>
         <summary>Raise window under mouse</summary>
@@ -203,6 +207,7 @@
         <default>true</default>
         <summary>Whether to Use a Tint Color on the Background Application Switcher</summary>
     </key>
+
     <key type="(ddd)" name="tint-color">
         <default>(0.,0.,0.)</default>
         <summary></summary>
@@ -215,6 +220,10 @@
         <default>0.0</default>
         <range min="0" max="1"/>
         <summary>Amount to Blend Tint Color</summary>
+    </key>
+      <key type="b" name="tint-use-theme-color">
+        <default>true</default>
+        <summary></summary>
     </key>
     <key type="b" name="use-glitch-effect">
         <default>false</default>
@@ -259,7 +268,7 @@
     <key name="verbose-logging" type="b">
         <default>false</default>
         <summary>Whether to log lots of messages or not</summary>
-    </key> 
+    </key>
     <key name="icon-add-remove-effects" type="s">
         <choices>
             <choice value="Fade Only"/>
