@@ -908,7 +908,14 @@ export class Switcher {
     }
 
     _windowDestroyed(wm, actor) {
+        this._logger.debug('_windowDestroyed')
         this._removeDestroyedWindow(actor.meta_window);
+    }
+
+    removeSelectedWindow(window) {
+        this._logger.debug('removeSelectedWindow')
+        window.delete(global.get_current_time());
+        this._removeDestroyedWindow(window);
     }
 
     _checkDestroyed(window) {
@@ -916,34 +923,48 @@ export class Switcher {
     }
 
     _removeDestroyedWindow(window) {
-        for (let i in this._windows) {
-            if (window === this._windows[i]) {
-                if (this._windows.length === 1)
-                    this.destroy(CloseReason.ACTIVATE_SELECTED);
-                else {
-                    this._windows.splice(i, 1);
-                    this._previews[i].destroy();
-                    this._previews.splice(i, 1);
-                    this._setCurrentIndex((i < this._currentIndex) ? this._currentIndex - 1 :
-                        this._currentIndex % this._windows.length);
-                    this._updatePreviews(false, 0);
-                    this._updateWindowTitle();
-                }
-                return;
-            }
+        this._logger.debug('_removeDestroyedWindow')
+        const idx = this._windows.indexOf(window);
+        this._logger.debug(`idx: ${idx}`);
+        if (idx === -1) {
+            this._logger.debug('window already removed.')
+            return;
         }
-    }
+        if (this._windows.length === 1)
+            this._activateWithoutSelection();
+        else {
+            let preview = this._previews[idx];
+            preview._destoying = true;
+            preview.removeIcon(0);
 
-    _previewButtonPressEvent(preview, event) {
-        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
-            for (let [i, p] of this._previews.entries()) {
-                if (preview === p) {
-                    this._setCurrentIndex(i);
-                    this._activateSelected(true);
-                    break;
+            let title = this._windowTitles[idx];
+            let icon = this._windowIconBoxes[idx];
+            this._windows.splice(idx, 1);
+            this._previews.splice(idx, 1);
+            this._allPreviews.splice(this._allPreviews.indexOf(preview), 1);
+            this._windowTitles.splice(idx, 1);
+            this._windowIconBoxes.splice(idx, 1);
+            this._destroyingPreview = preview;
+
+            preview.remove_highlight();
+            this._animateClosedWindowTitle(title, this._settings.animation_time);
+            this._animateClosedIcon(icon, this._settings.animation_time);
+            //icon.destroy();
+           //window = null;
+            if (idx >= this._currentIndex) {
+                if (this._currentIndex === this._windows.length) {
+                    this._currentIndex = this._currentIndex - 1;
                 }
+            } else {
+                this._currentIndex = this._currentIndex - 1;
             }
+            this._updatePreviews(false, 0);
+            if (this._destroyingPreview) {
+                this.previewActor.set_child_above_sibling(this._destroyingPreview, null);
+            }
+            this._updateWindowTitle();
         }
+        return;
     }
 
     _activateWithoutSelection() {
