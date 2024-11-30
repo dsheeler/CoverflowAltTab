@@ -1013,6 +1013,9 @@ export class Switcher {
 
     _activateWithoutSelection() {
         this._currentIndex = -1;
+        if (this._parent !== null) {
+            this._parent.animateClosed(CloseReason.NO_ACTIVATION);
+        }
         this.animateClosed(CloseReason.ACTIVATE_SELECTED);
     }
 
