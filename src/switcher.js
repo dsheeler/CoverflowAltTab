@@ -248,7 +248,9 @@ export class Switcher {
         for (let i = 0; i < this._previews.length; i++) {
             points.push(i);
         }
-
+        for (let preview of this._previews) {
+            preview.remove_highlight();
+        }
         tracker.confirmSwipe(baseDistance, points, progress, progress);
         this.gestureInProgress = true;
     }
