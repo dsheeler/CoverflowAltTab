@@ -72,10 +72,12 @@ export class CoverflowSwitcher extends BaseSwitcher {
             if (width > previewWidth || height > previewHeight)
                     scale = Math.min(previewWidth / width, previewHeight / height);
 
+            const sourceActor = texture.get_size ? texture : windowActor;
+
             let preview = new Preview(metaWin, this, {
                 name: metaWin.title,
                 opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace || metaWin.is_on_all_workspaces()) ? 255 : 0,
-                source: texture.get_size ? texture : windowActor,
+                source: sourceActor,
                 reactive: true,
                 x: metaWin.minimized ? 0 :
                     windowActor.x - monitor.x,
@@ -89,6 +91,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 scale_z: metaWin.minimized ? 0 : 1,
                 rotation_angle_y: 0,
             });
+
             preview.scale = scale;
             preview.set_pivot_point_placement(Placement.CENTER);
             preview.center_position = {
