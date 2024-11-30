@@ -86,6 +86,7 @@ export class Switcher {
         this._iconScaleUpDown = this._settings.icon_add_remove_effects === "Scale Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
         this._lastButtonPressPositionX = -1;
         this._lastButtonPressPositionY = -1;
+        this._qPressed = false;
 
         this._logger.log(`Creating Switcher`);
         this._logger.increaseIndent();
@@ -810,6 +811,14 @@ export class Switcher {
     _keyPressEvent(_actor, event) {
         if (this.gestureInProgress) return false;
         switch(event.get_key_symbol()) {
+            case Clutter.KEY_q:
+            case Clutter.KEY_Q:
+            case Clutter.F4:
+                if (!this._qPressed) {
+                    this._qPressed = true;
+                    this.removeSelectedWindow(this._windows[this._currentIndex]);
+                }
+                return true;
 
             case Clutter.KEY_Return:
                 this._activateSelected();
@@ -872,7 +881,14 @@ export class Switcher {
         return true;
     }
 
-    _keyReleaseEvent(_actor, _event) {
+    _keyReleaseEvent(_actor, event) {
+        switch(event.get_key_symbol()) {
+            case Clutter.KEY_q:
+            case Clutter.KEY_Q:
+            case Clutter.F4:
+                    this._qPressed = false;
+        }
+
         if (!this._dBus) {
             let [_x, _y, mods] = global.get_pointer();
             let state = mods & this._modifierMask;
