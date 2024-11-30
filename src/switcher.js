@@ -199,10 +199,10 @@ export class Switcher {
             }
         }
 
-
         for (let preview of this._allPreviews) {
             preview.set_reactive(false)
             preview.connect('button-press-event', this._previewButtonPressEvent.bind(this));
+            preview.connect('button-release-event', this._previewButtonReleaseEvent.bind(this));
         }
 
         // hide windows and showcd  Coverflow actors
@@ -902,7 +902,6 @@ export class Switcher {
     }
 
     _buttonPressEvent(_actor, event) {
-
         if (event.get_button() === Clutter.BUTTON_PRIMARY) {
             if (this.gestureInProgress) {
                 this._lastButtonPressPositionX = -1;
@@ -919,6 +918,33 @@ export class Switcher {
             let [x, y] = event.get_coords();
             if (x === this._lastButtonPressPositionX && y === this._lastButtonPressPositionY) {
                 this._activateWithoutSelection();
+            }
+        }
+    }
+
+    _previewButtonPressEvent(preview, event) {
+        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
+            if (this.gestureInProgress) {
+                preview._lastButtonPressPositionX = -1;
+                preview._lastButtonPressPositionY = -1;
+                return;
+            }
+            [preview._lastButtonPressPositionX, preview._lastButtonPressPositionY] = event.get_coords();
+        }
+    }
+
+    _previewButtonReleaseEvent(preview, event) {
+        if (this.gestureInProgress) return;
+        if (event.get_button() === Clutter.BUTTON_PRIMARY) {
+            for (let [i, p] of this._previews.entries()) {
+                let [x, y] = event.get_coords();
+                if (x === preview._lastButtonPressPositionX && y === preview._lastButtonPressPositionY) {
+                    if (preview === p) {
+                        this._setCurrentIndex(i);
+                        this._activateSelected(true);
+                        break;
+                    }
+                }
             }
         }
     }
