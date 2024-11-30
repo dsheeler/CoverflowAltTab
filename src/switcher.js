@@ -1091,6 +1091,45 @@ export class Switcher {
         this._logger.log("Destroying Switcher DONE");
     }
 
+
+    _animateClosedWindowTitle(window_title, time) {
+        if (this._iconFadeInOut) {
+            this._manager.platform.tween(window_title, {
+                opacity: 0,
+                time: time,
+                transition: 'easeInOutQuint',
+            });
+        }
+        if (this._iconScaleUpDown) {
+            window_title.set_pivot_point(0.5, 0.5);
+            this._manager.platform.tween(window_title, {
+                scale_x: 0,
+                scale_y: 0,
+                time: time,
+                transition: 'easeInOutQuint',
+            });
+        }
+    }
+
+    _animateClosedIcon(icon_box, time) {
+        if (this._iconScaleUpDown) {
+            icon_box.set_pivot_point(0.5, 0.5);
+            this._manager.platform.tween(icon_box, {
+                scale_x: 0,
+                scale_y: 0,
+                time: time,
+                transition: 'easeInOutQuint',
+            });
+        }
+        if (this._iconFadeInOut) {
+            this._manager.platform.tween(icon_box, {
+                opacity: 0,
+                time: time,
+                transition: 'easeInOutQuint',
+            });
+        }
+    }
+
     // eslint-disable-next-line complexity
     animateClosed(reason=CloseReason.ACTIVATE_SELECTED) {
         if (this._animatingClosed) return;
@@ -1102,40 +1141,10 @@ export class Switcher {
         if (this._initialDelayTimeoutId === 0) {
             // window title and icon
             for (let window_title of this._windowTitles) {
-                if (this._iconFadeInOut) {
-                    this._manager.platform.tween(window_title, {
-                        opacity: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
-                }
-                if (this._iconScaleUpDown) {
-                    window_title.set_pivot_point(0.5, 0.5);
-                    this._manager.platform.tween(window_title, {
-                        scale_x: 0,
-                        scale_y: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
-                }
+                this._animateClosedWindowTitle(window_title, this._settings.animation_time);
             }
             for (let icon_box of this._windowIconBoxes) {
-                if (this._iconScaleUpDown) {
-                    icon_box.set_pivot_point(0.5, 0.5);
-                    this._manager.platform.tween(icon_box, {
-                        scale_x: 0,
-                        scale_y: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
-                }
-                if (this._iconFadeInOut) {
-                    this._manager.platform.tween(icon_box, {
-                        opacity: 0,
-                        time: this._settings.animation_time,
-                        transition: 'easeInOutQuint',
-                    });
-                }
+                this._animateClosedIcon(icon_box, this._settings.animation_time);
             }
             this._removeBackgroundEffects();
 
