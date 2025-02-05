@@ -27,7 +27,6 @@ import {Switcher} from './switcher.js';
 const BaseSwitcher = Switcher;
 import {Preview, Placement, Direction, findUpperLeftFromCenter} from './preview.js'
 
-const SIDE_ANGLE = 90;
 const ALPHA = 1;
 
 function appendParams(base, extra) {
@@ -51,7 +50,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
             y: this.actor.height / 2 + this._settings.offset
         };
         let ratio = this._settings.preview_to_monitor_ratio;
-        this._xOffsetLeft = this.actor.width * (0.5 * (1 - ratio) - 0.1 * ratio)
+        this._xOffsetLeft = this.actor.width * (0.5 * (1 - ratio) - 0.1 * ratio);
         this._xOffsetRight = this.actor.width - this._xOffsetLeft;
 
         for (let windowActor of global.get_window_actors()) {
@@ -212,12 +211,13 @@ export class CoverflowSwitcher extends BaseSwitcher {
             scale_z: scale,
             pivot_point: pivot_point,
         };
+        const window_offset_width = this._settings.coverflow_window_offset_width;
         if (index < pivot_index) {
-            tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                - preview.width / 2) + 50 * (index - pivot_index);
+            tweenParams.translation_x =  (xOffset - (this._previewsCenterPosition.x
+                - preview.width / 2) +  window_offset_width * (index - pivot_index));
         } else {
-            tweenParams.translation_x = xOffset - (this._previewsCenterPosition.x
-                + preview.width / 2) + 50 * (index - pivot_index);
+            tweenParams.translation_x = (xOffset - (this._previewsCenterPosition.x
+                + preview.width / 2) + window_offset_width  * (index - pivot_index));
         }
         appendParams(tweenParams, extraParams);
         this._manager.platform.tween(preview, tweenParams);
@@ -282,6 +282,8 @@ export class CoverflowSwitcher extends BaseSwitcher {
     }
 
     _updatePreview(idx, zeroIndexPreview, preview, i, reorder_only, animation_time) {
+        const  side_angle = this._settings.coverflow_window_angle;
+
         let half_length = Math.floor(this._previews.length / 2);
         let pivot_index = (this._usingCarousel()) ?
          half_length : this._currentIndex;
@@ -296,7 +298,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
         } else if (idx < pivot_index) {
             preview.make_top_layer(this.previewActor);
             if (!reorder_only) {
-                let final_angle = SIDE_ANGLE + this._getPerspectiveCorrectionAngle(0);
+                let final_angle = side_angle + this._getPerspectiveCorrectionAngle(0);
                 let progress = pivot_index - idx < 1 ? pivot_index - idx : 1;
                 let center_offset = (this._xOffsetLeft + this._xOffsetRight) / 2;
                 this._animatePreviewToSide(preview, idx, center_offset - preview.width / 2 - progress * (center_offset - preview.width / 2 - this._xOffsetLeft), {
@@ -308,7 +310,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
         } else /* i > this._currentIndex */ {
             preview.make_bottom_layer(this.previewActor);
             if (!reorder_only) {
-                let final_angle = -SIDE_ANGLE + this._getPerspectiveCorrectionAngle(1);
+                let final_angle = -side_angle + this._getPerspectiveCorrectionAngle(1);
                 let progress = idx - pivot_index < 1 ? idx - pivot_index : 1;
                 let center_offset = (this._xOffsetLeft + this._xOffsetRight) / 2;
                 this._animatePreviewToSide(preview, idx, center_offset + preview.width / 2 + progress * (this._xOffsetRight - center_offset - preview.width / 2), {

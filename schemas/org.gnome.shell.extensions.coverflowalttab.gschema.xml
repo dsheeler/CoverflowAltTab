@@ -145,6 +145,16 @@
         <summary>In Coverflow Switcher, scales the previews as they spread out to the sides in </summary>
         <description>Define the scale factor successively applied each step away from the current preview.</description>
     </key>
+    <key type="d" name="coverflow-window-angle">
+        <range min="0" max="360"/>
+        <default>90</default>
+        <summary>In Coverflow switcher, angle of off-center windows</summary>
+    </key>
+    <key type="d" name="coverflow-window-offset-width">
+        <range min="0" max="1000"/>
+        <default>50</default>
+        <summary>In Coverflow switcher, distance from center of off-center windows</summary>
+    </key>
     <key type="b" name="bind-to-switch-applications">
         <default>true</default>
         <summary>Bind to 'switch-applications' keybinding</summary>
