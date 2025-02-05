@@ -144,6 +144,8 @@ class AbstractPlatform {
             verbose_logging: false,
             natural_scrolling: true,
             icon_add_remove_effects: "Fade Only",
+            coverflow_window_angle: 90,
+            coverflow_window_offset_width: 50,
         };
     }
 
@@ -257,6 +259,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "prefs-default-height",
             "verbose-logging",
             "icon-add-remove-effects",
+            "coverflow-window-angle",
+            "coverflow-window-offset-width",
         ];
 
         let dkeys = [
@@ -409,6 +413,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 verbose_logging: settings.get_boolean("verbose-logging"),
                 natural_scrolling: touchpadSettings.get_boolean(KEY_NATURAL_SCROLL),
                 icon_add_remove_effects: settings.get_string("icon-add-remove-effects"),
+                coverflow_window_angle: settings.get_double("coverflow-window-angle"),
+                coverflow_window_offset_width: settings.get_double("coverflow-window-offset-width"),
             };
         } catch (e) {
             this._logger.log(e);
