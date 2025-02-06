@@ -120,7 +120,7 @@ export const Manager = class Manager {
     onNameAcquired(connection, name) {
         this.logger.log(`DBus Name Acquired: ${name}`);
     }
-
+ 
     /**
      * Invoked when the name is lost or @connection has been closed.
      *
@@ -143,7 +143,7 @@ export const Manager = class Manager {
         win.delete(global.get_current_time());
     }
 
-    _startWindowSwitcher(display, window, binding) {
+    _startWindowSwitcher(display, window, event, binding) {
         this._startWindowSwitcherInternal(display, window, binding.get_name(), binding.get_mask(), false);
     }
 

@@ -1,5 +1,6 @@
 import Shell from 'gi://Shell'
 import GObject from 'gi://GObject'
+import Cogl from 'gi://Cogl'
 
 const VIGNETTE_DECLARATIONS = '                                              \
 uniform float brightness;                                                  \n\
@@ -42,7 +43,7 @@ export const MyRadialShaderEffect = GObject.registerClass({
     }
 
     vfunc_build_pipeline() {
-        this.add_glsl_snippet(Shell.SnippetHook.FRAGMENT,
+        this.add_glsl_snippet(Cogl.SnippetHook.FRAGMENT,
             VIGNETTE_DECLARATIONS, VIGNETTE_CODE, true);
     }
 

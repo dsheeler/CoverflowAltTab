@@ -1333,14 +1333,14 @@ export class Switcher {
     Code stolen from the blur my shell extension, blur-my-shell@aunetx.*/
     /// Add the Clutter debug flag.
     _disable_clipped_redraws() {
-        Meta.add_clutter_debug_flags(
+        Clutter.add_debug_flags(
             null, Clutter.DrawDebugFlag.DISABLE_CLIPPED_REDRAWS, null
         );
     }
 
     /// Remove the Clutter debug flag.
     _reenable_clipped_redraws() {
-        Meta.remove_clutter_debug_flags(
+        Clutter.remove_debug_flags(
             null, Clutter.DrawDebugFlag.DISABLE_CLIPPED_REDRAWS, null
         );
     }
