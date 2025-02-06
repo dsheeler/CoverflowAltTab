@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 17:58-0500\n"
+"POT-Creation-Date: 2025-02-05 20:07-0600\n"
 "PO-Revision-Date: 2024-06-14 05:09+0000\n"
 "Last-Translator: hugoalh <hugoalh@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -134,7 +134,7 @@ msgstr "越大代表越暗。"
 msgid "Animation"
 msgstr "動畫"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:298
+#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 #, fuzzy
 msgid "Properties"
 msgstr "視窗屬性"
@@ -274,163 +274,179 @@ msgstr "偏離中心尺寸系數"
 msgid "Factor by which to successively shrink previews off to the side."
 msgstr "連續將預覽縮小至一側的系數。"
 
-#: src/prefs.js:294
+#: src/prefs.js:292
+msgid "Coverflow Window Angle"
+msgstr ""
+
+#: src/prefs.js:292
+msgid "Angle of off-center windows in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:293
+msgid "Coverflow Window Offset Width"
+msgstr ""
+
+#: src/prefs.js:293
+msgid "How far windows are off to the side in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:295
 #, fuzzy
 msgid "AppSwitcher"
 msgstr "切換器"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 #, fuzzy
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "使應用程式切換器的行為類似於視窗切換器"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "不要將同一應用程式的視窗群組至子切換器。"
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Desaturate"
 msgstr "去飽和"
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Larger means more desaturation."
 msgstr "越大代表越去飽和。"
 
-#: src/prefs.js:305
+#: src/prefs.js:306
 msgid "Tint"
 msgstr "著色"
 
-#: src/prefs.js:317 src/prefs.js:427
+#: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
 msgstr "顏色"
 
-#: src/prefs.js:338 src/prefs.js:448
+#: src/prefs.js:339 src/prefs.js:472
 msgid "Set to Theme Color"
 msgstr "設定為主題顏色"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "Blend"
 msgstr "混合"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr "色調顏色的混合量；越大代表越多色調。"
 
-#: src/prefs.js:377
+#: src/prefs.js:398
 msgid "Glitch"
 msgstr "毛刺"
 
-#: src/prefs.js:380
+#: src/prefs.js:401
 msgid "Keybindings"
 msgstr "按鍵綁定"
 
-#: src/prefs.js:385
+#: src/prefs.js:406
 msgid "System Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:386
+#: src/prefs.js:407
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
 
-#: src/prefs.js:389
+#: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
 msgstr "綁定至「switch-windows」"
 
-#: src/prefs.js:390
+#: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
 msgstr "綁定至「switch-applications」"
 
-#: src/prefs.js:393
+#: src/prefs.js:414
 msgid "Internal Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:394
+#: src/prefs.js:415
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 #, fuzzy
 msgid "Activate window switcher."
 msgstr "選擇切換器類型。"
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 #, fuzzy
 msgid "Activate application switcher."
 msgstr "應用程式切換器"
 
-#: src/prefs.js:401
+#: src/prefs.js:422
 msgid "Advanced Options"
 msgstr ""
 
-#: src/prefs.js:405
+#: src/prefs.js:426
 msgid "None"
 msgstr "無"
 
-#: src/prefs.js:406
+#: src/prefs.js:427
 msgid "Move Camera"
 msgstr "移動相機"
 
-#: src/prefs.js:407
+#: src/prefs.js:428
 msgid "Adjust Angles"
 msgstr "調整角度"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Perspective Correction"
 msgstr "透視校正"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Verbose Logging"
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Log debug and normal messages."
 msgstr ""
 
-#: src/prefs.js:414
+#: src/prefs.js:435
 msgid "Highlight Window Under Mouse"
 msgstr "突出顯示滑鼠下的視窗"
 
-#: src/prefs.js:415
+#: src/prefs.js:436
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr "在滑鼠下方的視窗上繪畫一個彩色突出顯示，以了解點擊的效果。"
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise Window Under Mouse"
 msgstr "升起滑鼠下方的視窗"
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise the window under the mouse above all others."
 msgstr "將滑鼠下方的視窗升起至所有其他視窗之上。"
 
-#: src/prefs.js:491
+#: src/prefs.js:529
 msgid "Contribute"
 msgstr "貢獻"
 
-#: src/prefs.js:527
+#: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "程式碼（建立拉取請求、報告問題等）"
 
-#: src/prefs.js:535
+#: src/prefs.js:573
 msgid "Donate"
 msgstr "捐贈"
 
-#: src/prefs.js:556
+#: src/prefs.js:594
 msgid "Translate"
 msgstr "翻譯"
 

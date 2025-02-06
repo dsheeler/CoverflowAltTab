@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-09-25 17:58-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-05 20:07-0600\n"
 "PO-Revision-Date: 2024-12-18 12:00+0000\n"
 "Last-Translator: Степан Наумов <st250492@yandex.ru>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/"
-"coverflow-alt-tab/source/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/coverflow-alt-"
+"tab/source/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -136,7 +136,7 @@ msgstr "Больше значит темнее."
 msgid "Animation"
 msgstr "Анимация"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:298
+#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 msgid "Properties"
 msgstr "Свойства"
 
@@ -279,61 +279,79 @@ msgstr ""
 "Фактор, с помощью которого можно последовательно сдвигать предварительные "
 "просмотры в сторону."
 
-#: src/prefs.js:294
+#: src/prefs.js:292
+#, fuzzy
+msgid "Coverflow Window Angle"
+msgstr "Coverflow клавиша Win"
+
+#: src/prefs.js:292
+msgid "Angle of off-center windows in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:293
+#, fuzzy
+msgid "Coverflow Window Offset Width"
+msgstr "Coverflow клавиша Win"
+
+#: src/prefs.js:293
+msgid "How far windows are off to the side in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:295
 msgid "AppSwitcher"
 msgstr "Переключатель приложений"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "Показать только первый предварительный просмотр"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr ""
 "Не группировать окна одного и того же приложения в отдельном переключателе."
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Desaturate"
 msgstr "Обесцветить"
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Larger means more desaturation."
 msgstr "Чем больше, тем больше насыщенность."
 
-#: src/prefs.js:305
+#: src/prefs.js:306
 msgid "Tint"
 msgstr "Оттенок"
 
-#: src/prefs.js:317 src/prefs.js:427
+#: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
 msgstr "Цвет"
 
-#: src/prefs.js:338 src/prefs.js:448
+#: src/prefs.js:339 src/prefs.js:472
 msgid "Set to Theme Color"
 msgstr "Установить цвет темы"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "Blend"
 msgstr "Смешивание"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 "Сколько нужно растушевать оттеночного цвета; чем больше, тем больше оттенок."
 
-#: src/prefs.js:377
+#: src/prefs.js:398
 msgid "Glitch"
 msgstr "Помехи"
 
-#: src/prefs.js:380
+#: src/prefs.js:401
 msgid "Keybindings"
 msgstr "Сочетания клавиш"
 
-#: src/prefs.js:385
+#: src/prefs.js:406
 msgid "System Actions Keybindings"
 msgstr "Системные действия и привязки клавиш"
 
-#: src/prefs.js:386
+#: src/prefs.js:407
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
@@ -341,78 +359,78 @@ msgstr ""
 "В случае конфликтов с другими оконными переключателями, может отказаться от "
 "системных действий."
 
-#: src/prefs.js:389
+#: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
 msgstr "Привязка к \"Клавише-Win\""
 
-#: src/prefs.js:390
+#: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
 msgstr "Привязка к \"Клавише-приложений\""
 
-#: src/prefs.js:393
+#: src/prefs.js:414
 msgid "Internal Actions Keybindings"
 msgstr "Внутренние действия и привязки клавиш"
 
-#: src/prefs.js:394
+#: src/prefs.js:415
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 "Внутренние действия, которые не будут конфликтовать с другими "
 "переключателями окон."
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Coverflow Switch Windows Shortcut"
 msgstr "Coverflow клавиша Win"
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Activate window switcher."
 msgstr "Активируйте переключатель окон."
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr "Coverflow клавиша переключения приложений"
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Activate application switcher."
 msgstr "Активируйте переключатель приложений."
 
-#: src/prefs.js:401
+#: src/prefs.js:422
 msgid "Advanced Options"
 msgstr "Расширенные параметры"
 
-#: src/prefs.js:405
+#: src/prefs.js:426
 msgid "None"
 msgstr "Нет"
 
-#: src/prefs.js:406
+#: src/prefs.js:427
 msgid "Move Camera"
 msgstr "Перемещение камеры"
 
-#: src/prefs.js:407
+#: src/prefs.js:428
 msgid "Adjust Angles"
 msgstr "Настройка углов"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Perspective Correction"
 msgstr "Перспективная коррекция"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
 msgstr ""
 "Способ заставить смещенный от центра переключатель выглядеть центрированным."
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Verbose Logging"
 msgstr "Подробное ведение журнала"
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Log debug and normal messages."
 msgstr "Регистрируйте отладочные и обычные сообщения."
 
-#: src/prefs.js:414
+#: src/prefs.js:435
 msgid "Highlight Window Under Mouse"
 msgstr "Выделите окно с помощью мыши"
 
-#: src/prefs.js:415
+#: src/prefs.js:436
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
@@ -420,27 +438,27 @@ msgstr ""
 "Нарисуйте цветную подсветку на окне под мышкой, чтобы увидеть эффект от "
 "нажатия."
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise Window Under Mouse"
 msgstr "Поднимите окно с помощью мыши"
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise the window under the mouse above all others."
 msgstr "Поднимите окно под мышкой выше всех остальных."
 
-#: src/prefs.js:491
+#: src/prefs.js:529
 msgid "Contribute"
 msgstr "Взаимодействие"
 
-#: src/prefs.js:527
+#: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "Код (создание запросов на извлечение, сообщение о проблемах и т.д.)"
 
-#: src/prefs.js:535
+#: src/prefs.js:573
 msgid "Donate"
 msgstr "Донат"
 
-#: src/prefs.js:556
+#: src/prefs.js:594
 msgid "Translate"
 msgstr "Перевод"
 

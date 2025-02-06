@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 17:58-0500\n"
+"POT-Creation-Date: 2025-02-05 20:07-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "Animation"
 msgstr ""
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:298
+#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 msgid "Properties"
 msgstr ""
 
@@ -267,159 +267,175 @@ msgstr ""
 msgid "Factor by which to successively shrink previews off to the side."
 msgstr ""
 
-#: src/prefs.js:294
+#: src/prefs.js:292
+msgid "Coverflow Window Angle"
+msgstr ""
+
+#: src/prefs.js:292
+msgid "Angle of off-center windows in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:293
+msgid "Coverflow Window Offset Width"
+msgstr ""
+
+#: src/prefs.js:293
+msgid "How far windows are off to the side in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:295
 msgid "AppSwitcher"
 msgstr ""
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr ""
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr ""
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Desaturate"
 msgstr ""
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Larger means more desaturation."
 msgstr ""
 
-#: src/prefs.js:305
+#: src/prefs.js:306
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:317 src/prefs.js:427
+#: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
 msgstr ""
 
-#: src/prefs.js:338 src/prefs.js:448
+#: src/prefs.js:339 src/prefs.js:472
 msgid "Set to Theme Color"
 msgstr ""
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "Blend"
 msgstr ""
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 
-#: src/prefs.js:377
+#: src/prefs.js:398
 msgid "Glitch"
 msgstr ""
 
-#: src/prefs.js:380
+#: src/prefs.js:401
 msgid "Keybindings"
 msgstr ""
 
-#: src/prefs.js:385
+#: src/prefs.js:406
 msgid "System Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:386
+#: src/prefs.js:407
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
 
-#: src/prefs.js:389
+#: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
 msgstr ""
 
-#: src/prefs.js:390
+#: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
 msgstr ""
 
-#: src/prefs.js:393
+#: src/prefs.js:414
 msgid "Internal Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:394
+#: src/prefs.js:415
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Activate window switcher."
 msgstr ""
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Activate application switcher."
 msgstr ""
 
-#: src/prefs.js:401
+#: src/prefs.js:422
 msgid "Advanced Options"
 msgstr ""
 
-#: src/prefs.js:405
+#: src/prefs.js:426
 msgid "None"
 msgstr ""
 
-#: src/prefs.js:406
+#: src/prefs.js:427
 msgid "Move Camera"
 msgstr ""
 
-#: src/prefs.js:407
+#: src/prefs.js:428
 msgid "Adjust Angles"
 msgstr ""
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Perspective Correction"
 msgstr ""
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Verbose Logging"
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Log debug and normal messages."
 msgstr ""
 
-#: src/prefs.js:414
+#: src/prefs.js:435
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:415
+#: src/prefs.js:436
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:491
+#: src/prefs.js:529
 msgid "Contribute"
 msgstr ""
 
-#: src/prefs.js:527
+#: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr ""
 
-#: src/prefs.js:535
+#: src/prefs.js:573
 msgid "Donate"
 msgstr ""
 
-#: src/prefs.js:556
+#: src/prefs.js:594
 msgid "Translate"
 msgstr ""
 

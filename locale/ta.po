@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2024-09-25 17:58-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-05 20:07-0600\n"
 "PO-Revision-Date: 2024-12-18 12:00+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/coverflow-alt-tab/"
@@ -134,7 +134,7 @@ msgstr "பெரியது என்றால் இருண்டது."
 msgid "Animation"
 msgstr "அசைவூட்டம்"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:298
+#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 msgid "Properties"
 msgstr "பண்புகள்"
 
@@ -183,8 +183,7 @@ msgstr "பணியிடங்கள்"
 
 #: src/prefs.js:217
 msgid "Switch between windows on current or on all workspaces."
-msgstr ""
-"மின்னோட்டத்தில் அல்லது அனைத்து பணியிடங்களிலும் சாளரங்களுக்கு இடையில் மாறவும்."
+msgstr "மின்னோட்டத்தில் அல்லது அனைத்து பணியிடங்களிலும் சாளரங்களுக்கு இடையில் மாறவும்."
 
 #: src/prefs.js:218
 msgid "Current Monitor"
@@ -274,161 +273,178 @@ msgstr "மையத்திற்கு வெளியே அளவுக் 
 msgid "Factor by which to successively shrink previews off to the side."
 msgstr "பக்கவாட்டில் முன்னோட்டங்களை அடுத்தடுத்து சுருங்குவதற்கான காரணி."
 
-#: src/prefs.js:294
+#: src/prefs.js:292
+#, fuzzy
+msgid "Coverflow Window Angle"
+msgstr "மூடிஓட்டம் மாற்றிச் சாளரங்கள் குறுக்குவழி"
+
+#: src/prefs.js:292
+msgid "Angle of off-center windows in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:293
+#, fuzzy
+msgid "Coverflow Window Offset Width"
+msgstr "மூடிஓட்டம் மாற்றிச் சாளரங்கள் குறுக்குவழி"
+
+#: src/prefs.js:293
+msgid "How far windows are off to the side in coverflow mode."
+msgstr ""
+
+#: src/prefs.js:295
 msgid "AppSwitcher"
 msgstr "பயன்பாடுமாற்றி"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "பயன்பாட்டு மாற்றி முதல் முன்னோட்டத்தை மட்டுமே காண்பி"
 
-#: src/prefs.js:301
+#: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "ஒரே பயன்பாட்டின் சாளரங்களை ஒரு துணைக்குழுவில் குழு செய்ய வேண்டாம்."
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Desaturate"
 msgstr "தேய்வுறு"
 
-#: src/prefs.js:302
+#: src/prefs.js:303
 msgid "Larger means more desaturation."
 msgstr "பெரியது என்றால் அதிக தேய்வுற்றது."
 
-#: src/prefs.js:305
+#: src/prefs.js:306
 msgid "Tint"
 msgstr "மென்னிறம்"
 
-#: src/prefs.js:317 src/prefs.js:427
+#: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
 msgstr "நிறம்"
 
-#: src/prefs.js:338 src/prefs.js:448
+#: src/prefs.js:339 src/prefs.js:472
 msgid "Set to Theme Color"
 msgstr "கருப்பொருள் வண்ணமாக அமை"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "Blend"
 msgstr "கலப்பு"
 
-#: src/prefs.js:376
+#: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr "சாயல் நிறத்தை எவ்வளவு கலக்க வேண்டும்; பெரியது என்றால் அதிக சாயல் நிறம்."
 
-#: src/prefs.js:377
+#: src/prefs.js:398
 msgid "Glitch"
 msgstr "தடுமாற்றம்"
 
-#: src/prefs.js:380
+#: src/prefs.js:401
 msgid "Keybindings"
 msgstr "விசைபிணைப்புகள்"
 
-#: src/prefs.js:385
+#: src/prefs.js:406
 msgid "System Actions Keybindings"
 msgstr "கணினி செயல்கள் விசைபிணைப்புகள்"
 
-#: src/prefs.js:386
+#: src/prefs.js:407
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
-msgstr ""
-"பிற சாளரமாற்றிகளுடனான மோதல்கள் ஏற்பட்டால், கணினி செயல்களிலிருந்து பிணைப்புநீக்கு."
+msgstr "பிற சாளரமாற்றிகளுடனான மோதல்கள் ஏற்பட்டால், கணினி செயல்களிலிருந்து பிணைப்புநீக்கு."
 
-#: src/prefs.js:389
+#: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
 msgstr "'சாளரங்கள்-மாற்றி' உடன் பிணை"
 
-#: src/prefs.js:390
+#: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
 msgstr "'பயன்பாடுகள்-மாற்றி' உடன் பிணை"
 
-#: src/prefs.js:393
+#: src/prefs.js:414
 msgid "Internal Actions Keybindings"
 msgstr "உள் செயல்கள் விசைபிணைப்புகள்"
 
-#: src/prefs.js:394
+#: src/prefs.js:415
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr "மற்ற சாளர மாற்றிகளுடன் முரண்படாத உள் நடவடிக்கைகள்."
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Coverflow Switch Windows Shortcut"
 msgstr "மூடிஓட்டம் மாற்றிச் சாளரங்கள் குறுக்குவழி"
 
-#: src/prefs.js:397
+#: src/prefs.js:418
 msgid "Activate window switcher."
 msgstr "சாளர மாற்றியைச் செயல்படுத்து."
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr "மூடிஓட்டம் மாற்றிப் பயன்பாடுகள் குறுக்குவழி"
 
-#: src/prefs.js:398
+#: src/prefs.js:419
 msgid "Activate application switcher."
 msgstr "பயன்பாட்டு மாற்றியைச் செயல்படுத்து."
 
-#: src/prefs.js:401
+#: src/prefs.js:422
 msgid "Advanced Options"
 msgstr "மேம்பட்ட விருப்பங்கள்"
 
-#: src/prefs.js:405
+#: src/prefs.js:426
 msgid "None"
 msgstr "எதுவுமில்லை"
 
-#: src/prefs.js:406
+#: src/prefs.js:427
 msgid "Move Camera"
 msgstr "ஒளிப்படக்கருவியை நகர்த்து"
 
-#: src/prefs.js:407
+#: src/prefs.js:428
 msgid "Adjust Angles"
 msgstr "கோணங்களைச் சரிசெய்"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Perspective Correction"
 msgstr "முன்னோக்கு திருத்தம்"
 
-#: src/prefs.js:408
+#: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
 msgstr "மையத்திற்கு வெளியே மாற்றித் தோற்றத்தை மையமாகக் கொண்ட முறை."
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Verbose Logging"
 msgstr "சொற்களஞ்சியம் பதிவு"
 
-#: src/prefs.js:410
+#: src/prefs.js:431
 msgid "Log debug and normal messages."
 msgstr "பதிவு பிழைத்திருத்தம் மற்றும் சாதாரண செய்திகள்."
 
-#: src/prefs.js:414
+#: src/prefs.js:435
 msgid "Highlight Window Under Mouse"
 msgstr "சுட்டியின் கீழ் சாளரத்தை முன்னிலைப்படுத்து"
 
-#: src/prefs.js:415
+#: src/prefs.js:436
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 "சொடுக்கு செய்வதன் விளைவுகளை அறிய சுட்டியின் கீழ் சாளரத்தில் ஒரு வண்ண சிறப்பம்சத்தை வரை."
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise Window Under Mouse"
 msgstr "சுட்டியின் கீழ் சாளரத்தை உயர்த்தவும்"
 
-#: src/prefs.js:488
+#: src/prefs.js:526
 msgid "Raise the window under the mouse above all others."
 msgstr "எல்லாவற்றிற்கும் மேலாகச் சுட்டியின் கீழ் சாளரத்தை உயர்த்தவும்."
 
-#: src/prefs.js:491
+#: src/prefs.js:529
 msgid "Contribute"
 msgstr "பங்களிப்பு"
 
-#: src/prefs.js:527
+#: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
 msgstr "குறியீடு (இழுக்கும் கோரிக்கைகளை உருவாக்கு, அறிக்கை சிக்கல்கள் போன்றவை)"
 
-#: src/prefs.js:535
+#: src/prefs.js:573
 msgid "Donate"
 msgstr "நன்கொடை"
 
-#: src/prefs.js:556
+#: src/prefs.js:594
 msgid "Translate"
 msgstr "மொழிபெயர்த்திடு"
 
