@@ -42,6 +42,7 @@ Such a user could change the keybindings as in the table:
 All of the shortcuts with **Shift** key pressed cycles backward.
 
 -   Hit **Esc** to cancel.
+-   Hit **Return** to pick current window.
 -   Hit **d** to hide all windows and show the desktop.
 
 You can also use the **arrow keys**, **mouse wheel**, or **trackpad** to cycle through the windows.
