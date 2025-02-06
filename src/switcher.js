@@ -24,6 +24,9 @@ import St from 'gi://St';
 import Meta from 'gi://Meta';
 import Pango from 'gi://Pango';
 import GLib from 'gi://GLib';
+import Cogl from 'gi://Cogl';
+import Graphene from 'gi://Graphene';
+
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
@@ -602,6 +605,7 @@ export class Switcher {
     _getWindowTitle(index) {
 
         let overlay_icon_size = this._settings.overlay_icon_size;
+        this._logger.debug(`icon size ${this._settings.overlay_icon_size}`)
         let window_title = new St.Label({
             style_class: 'switcher-list',
             text: this._windows[index].get_title(),
@@ -635,11 +639,11 @@ export class Switcher {
         if (!icon) {
             icon = new St.Icon({
                 icon_name: 'applications-other',
-                icon_size: app_icon_size
+                icon_size: app_icon_size,
             });
         }
         icon.opacity = this._settings.icon_style === "Classic" ? 255 : 255 * this._settings.overlay_icon_opacity;
-
+        this._logger.debug(`icon actual size ${icon.get_icon_size()}`)
         if (this._settings.icon_has_shadow) {
             icon.add_style_class_name("icon-dropshadow");
         }
@@ -659,23 +663,27 @@ export class Switcher {
         } else {
             application_icon_box = new St.Bin({
                 style_class: 'window-iconbox',
-                width: app_icon_size * 1.25,
-                height: app_icon_size * 1.25,
+                width: 1,
+                height: 1,
                 opacity: this._iconFadeInOut ? 0 : 255,
-                scale_x: this._iconScaleUpDown ? 0 : 1,
-                scale_y: this._iconScaleUpDown ? 0 : 1,
-                x: (this.actor.width - app_icon_size * 1.25) / 2,
-                y: (this.actor.height - app_icon_size * 1.25) / 2 + this._settings.offset,
+                pivot_point: new Graphene.Point({x:0.5, y:0.5}),
+                scale_x: this._iconScaleUpDown ? 0 : app_icon_size,
+                scale_y: this._iconScaleUpDown ? 0 : app_icon_size,
+                x: (this.actor.width -  1) / 2,
+                y: (this.actor.height - 1) / 2 + this._settings.offset,
             });
         }
 
-        application_icon_box.set_child(icon);
+        //this.previewActor.add_child(icon);
+
         this.previewActor.add_child(application_icon_box);
+        application_icon_box.set_child(icon);
         this._windowIconBoxes[index] = application_icon_box;
     }
 
     // eslint-disable-next-line complexity
     _updateWindowTitle() {
+        const app_icon_size = this._settings.overlay_icon_size;
         let idx_low = Math.floor(this._currentIndex);
         let idx_high = Math.ceil(this._currentIndex) % this._windowTitles.length;
         /*Window titles:*/
@@ -751,8 +759,8 @@ export class Switcher {
                     let tx = icon_box.get_transition('scale-x');
                     if (!tx || tx.get_interval().peek_final_value() !== 1) {
                         this._manager.platform.tween(icon_box, {
-                            scale_x: 1,
-                            scale_y: 1,
+                            scale_x: app_icon_size,
+                            scale_y: app_icon_size,
                             time: this._settings.animation_time,
                             transition: 'easeInOutQuint',
                         });
@@ -790,7 +798,8 @@ export class Switcher {
             let icon_box_low = this._windowIconBoxes[idx_low];
             let icon_box_high = this._windowIconBoxes[idx_high];
 
-            let scale = 1;
+            let scale =  app_icon_size;
+            ;
             let alpha = 1;
             if (this._settings.icon_style === "Attached") {
                 scale = 0;
