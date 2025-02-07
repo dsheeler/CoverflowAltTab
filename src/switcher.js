@@ -755,12 +755,13 @@ export class Switcher {
                 let icon_box = this._windowIconBoxes[this._currentIndex];
 
                 if (this._iconScaleUpDown) {
+                    const scale = this._settings.icon_style === "Classic" ? 1 : app_icon_size;
                     icon_box.set_pivot_point(0.5, 0.5);
                     let tx = icon_box.get_transition('scale-x');
                     if (!tx || tx.get_interval().peek_final_value() !== 1) {
                         this._manager.platform.tween(icon_box, {
-                            scale_x: app_icon_size,
-                            scale_y: app_icon_size,
+                            scale_x: scale,
+                            scale_y: scale,
                             time: this._settings.animation_time,
                             transition: 'easeInOutQuint',
                         });
@@ -798,8 +799,7 @@ export class Switcher {
             let icon_box_low = this._windowIconBoxes[idx_low];
             let icon_box_high = this._windowIconBoxes[idx_high];
 
-            let scale =  app_icon_size;
-            ;
+            let scale = this._settings.icon_style === "Classic" ? 1 : app_icon_size;
             let alpha = 1;
             if (this._settings.icon_style === "Attached") {
                 scale = 0;
