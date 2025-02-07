@@ -21,29 +21,35 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
     - `make all`
 
 ## Usage
-
-### Manual
-
-This extension uses the following key binding actions and shortcuts (you can change or disable them in your system settings):
+### Keybindings for System Actions
+This extension uses the following system actions:
 
 -   "Switch applications" (usually **Alt+Tab**): Cycle through windows grouped by application
 -   "Switch windows" (usually undefined): Cycle through windows 
 -   "Switch windows of an application" (usually **Alt+\`**): Cycle through all windows from the current application from all workspaces
 
+#### Default and Recommended Shortcuts
 Many users prefer a flat list of windows over a list grouped by application and so prefer the **Alt+Tab** key combination for "Switch windows". 
 Such a user could change the keybindings as in the table:
 
-| Action              | Default Shortcut | Recommended Shortcut |
+| System Action       | Default Shortcut | Recommended Shortcut |
 |---------------------|------------------|----------------------|
-| Switch applications | **Alt+Tab**      | **Super+Tab**        |
-| Switch windows      | None             | **Alt+Tab**          |
+| Switch Applications | **Alt+Tab**      | **Super+Tab**        |
+| Switch Windows      | None             | **Alt+Tab**          |
 
+### Keybindings for Internal Actions
+The extension adds its own internal actions which can be bound to other keyboard shortcuts. This could, for example, be useful if you want to sometimes use another window switcher that uses system actions bound to one set of shortcuts and use this extension that uses internal actions bound to a different set of shortcuts. 
+
+Use the [preferences gui](#preferences-gui) to set the internal actions shortcuts. The internal actions correspond to the `Switch Windows` and `Switch Applications` system actions-- both system and internal `Switch Windows` and `Switch Applications` actions have the same effect to launch and cycle this extension.
 
 All of the shortcuts with **Shift** key pressed cycles backward.
 
--   Hit **Esc** to cancel.
+### Running Switcher Control
+Keypresses can control the running switcher:
+-   Hit **Esc** to cancel without picking a new window.
 -   Hit **Return** to pick current window.
 -   Hit **d** to hide all windows and show the desktop.
+-   Hit **q** to close the current window (mostly works, might have some edge case bugs).
 
 You can also use the **arrow keys**, **mouse wheel**, or **trackpad** to cycle through the windows.
 
@@ -66,23 +72,20 @@ gdbus call --session --dest org.gnome.Shell.Extensions.Coverflowalttab --object-
 
 ## Customization
 
-To change the keybindings, use your system keyboard settings! See above for the used keybindings and change them to your desire.
+### Keybinding Shortcuts
+To change the system action shortcuts, use `gnome-control-center`.  To change the internal action shortcuts, use the [preferences GUI](#preferences-gui).
 
+### Preferences GUI
 To access preferences you can:
 
   - Open the Extensions tool. You should find it in your system menu
   - Click the preferences button on [extensions.gnome.org](https://extensions.gnome.org/local/)
-  - run `gnome-extensions prefs CoverflowAltTab@palatis.blogspot.com` inside a terminal
+  - run
+```
+gnome-extensions prefs CoverflowAltTab@palatis.blogspot.com
+```
 
 This will show you a preference dialog where you can change the settings to your needs.
-
-## Troubleshooting
-
-### I have to manually enable the extension every time I start my computer.
-
-Many GNU/Linux distributions, namely Debian and its derivatives, install some extensions by default. Among those it's very common to find the [AlternateTab](https://extensions.gnome.org/extension/15/alternatetab/) extension; unfortunately, both AlternateTab and CoverflowAltTab are alt-tab replacements, and so they conflict: AlternateTab is usually the winning one, and so CoverflowAltTab appears as enabled but does not work as expected.
-
-All you need to do to be able to enjoy the CoverflowAltTab eyecandy is to disable AlternateTab (or any other alt-tab replacement extension)! To do that, you might use the Extensions tool or visit https://extensions.gnome.org/local/. CoverflowAltTab might need to be disabled and re-enabled after you disable the offending extension(s), but this time it'll continue working even after a reboot.
 
 ## License
 
