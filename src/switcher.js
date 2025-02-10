@@ -24,7 +24,6 @@ import St from 'gi://St';
 import Meta from 'gi://Meta';
 import Pango from 'gi://Pango';
 import GLib from 'gi://GLib';
-import Cogl from 'gi://Cogl';
 import Graphene from 'gi://Graphene';
 
 
