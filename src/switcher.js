@@ -1114,7 +1114,7 @@ export class Switcher {
             this._logger.log("Destroying Sub-switchers DONE");
         }
 
-        if (this._initialDelayTimeoutId !== 0) {
+        if (this._parent === null && this._initialDelayTimeoutId !== 0) {
             GLib.Source.remove(this._initialDelayTimeoutId);
         }
 
