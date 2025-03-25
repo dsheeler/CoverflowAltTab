@@ -604,7 +604,6 @@ export class Switcher {
     _getWindowTitle(index) {
 
         let overlay_icon_size = this._settings.overlay_icon_size;
-        this._logger.debug(`icon size ${this._settings.overlay_icon_size}`)
         let window_title = new St.Label({
             style_class: 'switcher-list',
             text: this._windows[index].get_title(),
@@ -642,7 +641,6 @@ export class Switcher {
             });
         }
         icon.opacity = this._settings.icon_style === "Classic" ? 255 : 255 * this._settings.overlay_icon_opacity;
-        this._logger.debug(`icon actual size ${icon.get_icon_size()}`)
         if (this._settings.icon_has_shadow) {
             icon.add_style_class_name("icon-dropshadow");
         }
