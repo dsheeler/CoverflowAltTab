@@ -1047,7 +1047,7 @@ export class Switcher {
             }
         }
         this.animateClosed(CloseReason.ACTIVATE_SELECTED);
-        if (this._parent === null) {
+        if (this._isAppSwitcher && !this.isDestroyed()) {
             for (let switcher of this._subSwitchers.values()) {
                 for (let p of switcher._allPreviews) {
                     p.removeIcon(this._getRandomTime());
