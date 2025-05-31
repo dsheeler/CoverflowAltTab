@@ -316,6 +316,8 @@ export const Preview = GObject.registerClass({
     addIcon() {
         const icon_size = BASE_ICON_SIZE;
         const target_size = this.switcher._settings.overlay_icon_size;
+        let shortest_side_length = Math.min(this.width, this.height)
+        let scale =  target_size / Math.min(shortest_side_length, icon_size) / this.scale;
 
         if (this._icon === null) {
             let app = this.switcher._tracker.get_window_app(this.metaWin);
