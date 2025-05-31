@@ -419,10 +419,7 @@ export const Preview = GObject.registerClass({
                     time: animation_time,
                     onComplete: () => {
                         if (this._icon !== null) {
-                            this._icon.destroy()
-                            this._icon = null;
-                            this._application_icon_box.destroy();
-                            this._application_icon_box = null;
+                           this._destroyApplicationIconBox();
                         }
                     },
                 });
@@ -439,10 +436,7 @@ export const Preview = GObject.registerClass({
                             time: animation_time,
                             onComplete: () => {
                                 if (this._icon !== null) {
-                                    this._icon.destroy()
-                                    this._icon = null;
-                                    this._application_icon_box.destroy();
-                                    this._application_icon_box = null;
+                                    this._destroyApplicationIconBox();
                                 }
                             },
                         });
@@ -452,6 +446,12 @@ export const Preview = GObject.registerClass({
         }
     }
 
+    _destroyApplicationIconBox() {
+        this._application_icon_box.destroy();
+        this._application_icon_box = null;
+        this._application_inner_icon_box = null;
+        this._icon = null;
+    }
     vfunc_leave_event(_crossingEvent) {
         if (this._destroying) return Clutter.EVENT_PROPAGATE;
         this.remove_highlight();
