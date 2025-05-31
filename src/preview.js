@@ -337,9 +337,10 @@ export const Preview = GObject.registerClass({
 
             let constraint = Clutter.BindConstraint.new(this, Clutter.BindCoordinate.ALL, 0);
             this._application_icon_box.add_constraint(constraint);
+            this._application_icon_box.set_child(this._icon);
 
-
-
+            this._icon.set_pivot_point(0.5, 0.5);
+            this._icon.set_scale(this.switcher._iconScaleUpDown ? 0 : scale, this.switcher._iconScaleUpDown ? 0 : scale);
             this._icon.opacity = 255 * this.switcher._settings.overlay_icon_opacity;
 
             this.bind_property('rotation_angle_y', this._application_icon_box, 'rotation_angle_y',
@@ -356,24 +357,11 @@ export const Preview = GObject.registerClass({
                 GObject.BindingFlags.SYNC_CREATE);
             this.switcher.previewActor.add_child(this._application_icon_box);
 
-            this._application_inner_icon_box =  new St.Bin({
-                style_class: 'window-iconbox',
-                width: 1,
-                height: 1,
-                opacity: 255,
-                pivot_point: new Graphene.Point({x:0.5, y:0.5}),
-                scale_x: this.switcher._iconScaleUpDown ? 0 : target_size,
-                scale_y: this.switcher._iconScaleUpDown ? 0 : target_size,
-            });
-
-            this._application_icon_box.set_child(this._application_inner_icon_box);
-            this._application_inner_icon_box.set_child(this._icon);
-
             if (this.switcher._iconScaleUpDown) {
-                this.switcher._manager.platform.tween(this._application_inner_icon_box, {
+                this.switcher._manager.platform.tween(this._icon, {
                     transition: 'easeInOutQuint',
-                    scale_x: target_size,
-                    scale_y: target_size,
+                    scale_x: scale,
+                    scale_y: scale,
                     time: this.switcher._getRandomTime(),
                 });
             }
@@ -389,14 +377,15 @@ export const Preview = GObject.registerClass({
             });
         } else {
             this._icon.removing = false;
-            this.switcher._logger.log(`adding icon ${this.metaWin.title}, iconscaleupdown {this.swi}`);
+
             if (this.switcher._iconScaleUpDown) {
-                let t = this._application_inner_icon_box.get_transition('scale_x');
-                if (!t || t.get_interval().peek_final_value() !== target_size) {
-                    this.switcher._manager.platform.tween(this._application_inner_icon_box, {
+                let t = this._application_icon_box.get_transition('scale_x');
+                if (!t || t.get_interval().peek_final_value() !== scale) {
+
+                    this.switcher._manager.platform.tween(this._icon, {
                         transition: 'easeInOutQuint',
-                        scale_x: target_size,
-                        scale_y: target_size,
+                        scale_x: scale,
+                        scale_y: scale,
                         time: this.switcher._getRandomTime(),
                     });
                 }
@@ -428,7 +417,10 @@ export const Preview = GObject.registerClass({
                     time: animation_time,
                     onComplete: () => {
                         if (this._icon !== null) {
-                           this._destroyApplicationIconBox();
+                            this._icon.destroy()
+                            this._icon = null;
+                            this._application_icon_box.destroy();
+                            this._application_icon_box = null;
                         }
                     },
                 });
@@ -438,14 +430,17 @@ export const Preview = GObject.registerClass({
                 if (this._icon !== null) {
                     let t = this._icon.get_transition('scale-x');
                         if (!t || t.get_interval().peek_final_value() !== 0) {
-                        this.switcher._manager.platform.tween(this._application_inner_icon_box, {
+                        this.switcher._manager.platform.tween(this._icon, {
                             transition: 'easeInOutQuint',
                             scale_x: 0,
                             scale_y: 0,
                             time: animation_time,
                             onComplete: () => {
                                 if (this._icon !== null) {
-                                    this._destroyApplicationIconBox();
+                                    this._icon.destroy()
+                                    this._icon = null;
+                                    this._application_icon_box.destroy();
+                                    this._application_icon_box = null;
                                 }
                             },
                         });
@@ -453,13 +448,6 @@ export const Preview = GObject.registerClass({
                 }
             }
         }
-    }
-
-    _destroyApplicationIconBox() {
-        this._application_icon_box.destroy();
-        this._application_icon_box = null;
-        this._application_inner_icon_box = null;
-        this._icon = null;
     }
 
     vfunc_leave_event(_crossingEvent) {
