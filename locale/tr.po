@@ -7,18 +7,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2023-09-02 18:52+0300\n"
-"Last-Translator: Muha Aliss <muhaaliss@pm.me>\n"
-"Language-Team: Turkish <muhaaliss@pm.me>\n"
+"PO-Revision-Date: 2025-06-19 13:01+0000\n"
+"Last-Translator: Bora Atay <boraatay39@gmail.com>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/"
+"coverflow-alt-tab/source/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.12.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 
 #: src/prefs.js:105
 msgid "Reset to default value"
@@ -141,7 +142,7 @@ msgstr "Animasyon"
 
 #: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 msgid "Properties"
-msgstr ""
+msgstr "Özellikler"
 
 #: src/prefs.js:203
 #, fuzzy
@@ -330,8 +331,9 @@ msgid "Color"
 msgstr ""
 
 #: src/prefs.js:339 src/prefs.js:472
+#, fuzzy
 msgid "Set to Theme Color"
-msgstr ""
+msgstr "Renk Paledini Ayarla"
 
 #: src/prefs.js:397
 msgid "Blend"
@@ -455,7 +457,7 @@ msgstr "Kod (çekme istekleri oluşturma, sorunları bildirme vb.)"
 
 #: src/prefs.js:573
 msgid "Donate"
-msgstr ""
+msgstr "Bağış yap"
 
 #: src/prefs.js:594
 msgid "Translate"
@@ -463,19 +465,19 @@ msgstr ""
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
-msgstr ""
+msgstr "Seç..."
 
 #: src/shortcutButton.js:46
 msgid "Change keyboard shortcut"
-msgstr ""
+msgstr "Klavye kısayolunu değiştir"
 
 #: src/shortcutButton.js:50
 msgid "Clear"
-msgstr ""
+msgstr "Temizle"
 
 #: src/shortcutButton.js:90
 msgid "Press your keyboard shortcut..."
-msgstr ""
+msgstr "Klavye kısayoluna basın..."
 
 #, fuzzy
 #~ msgid "Larger means blurrier."
