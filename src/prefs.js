@@ -342,7 +342,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 
         tint_set_to_theme_color_button.connect('clicked', () => {
             let stc_c = settings.get_value("switcher-background-color").deep_unpack();
-            let stc_rgba = tint_color_button.rgba;
+            let stc_rgba = new Gdk.RGBA();
             stc_rgba.red = stc_c[0];
             stc_rgba.green = stc_c[1];
             stc_rgba.blue = stc_c[2];
@@ -373,7 +373,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         choose_tint_box.append(tint_set_to_theme_color_button);
         choose_tint_box.append(tint_color_button);
         let c = settings.get_value("tint-color").deep_unpack();
-        let rgba = tint_color_button.rgba;
+        let rgba = new Gdk.RGBA();
         rgba.red = c[0];
         rgba.green = c[1];
         rgba.blue = c[2];
@@ -476,7 +476,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
 
         highlight_set_to_theme_color_button.connect('clicked', () => {
             let stc_c = settings.get_value("switcher-background-color").deep_unpack();
-            let stc_rgba = highlight_color_button.rgba;
+            let stc_rgba = new Gdk.RGBA();
             stc_rgba.red = stc_c[0];
             stc_rgba.green = stc_c[1];
             stc_rgba.blue = stc_c[2];
@@ -501,7 +501,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         choose_highlight_box.append(highlight_set_to_theme_color_button);
         choose_highlight_box.append(highlight_color_button);
         let hc = settings.get_value("highlight-color").deep_unpack();
-        let hrgba = highlight_color_button.rgba;
+        let hrgba = new Gdk.RGBA();
         hrgba.red = hc[0];
         hrgba.green = hc[1];
         hrgba.blue = hc[2];
