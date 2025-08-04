@@ -6,29 +6,31 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-08-05 16:02+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/"
+"coverflow-alt-tab/source/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: src/prefs.js:105
 msgid "Reset to default value"
-msgstr ""
+msgstr "Repor para o valor padrão"
 
 #: src/prefs.js:121
 #, javascript-format
 msgid "Version %d"
-msgstr ""
+msgstr "Versão %d"
 
 #: src/prefs.js:127
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 #: src/prefs.js:132
 msgid "Switcher Properties"
@@ -40,7 +42,7 @@ msgstr ""
 
 #: src/prefs.js:143
 msgid "Carousel"
-msgstr ""
+msgstr "Carrossel"
 
 #: src/prefs.js:149
 msgid "Looping Method"
@@ -48,27 +50,27 @@ msgstr ""
 
 #: src/prefs.js:149
 msgid "How to cycle through windows."
-msgstr ""
+msgstr "Como circular pelas janelas."
 
 #: src/prefs.js:153
 msgid "Coverflow"
-msgstr ""
+msgstr "Coverflow"
 
 #: src/prefs.js:159
 msgid "Timeline"
-msgstr ""
+msgstr "Linha do tempo"
 
 #: src/prefs.js:164
 msgid "Style"
-msgstr ""
+msgstr "Estilo"
 
 #: src/prefs.js:164
 msgid "Pick the type of switcher."
-msgstr ""
+msgstr "Escolher o tipo de seletor."
 
 #: src/prefs.js:165
 msgid "Vertical Offset"
-msgstr ""
+msgstr "Deslocamento vertical"
 
 #: src/prefs.js:165
 msgid "Positive value moves everything down, negative up."
@@ -76,11 +78,11 @@ msgstr ""
 
 #: src/prefs.js:169
 msgid "Bottom"
-msgstr ""
+msgstr "Base"
 
 #: src/prefs.js:175
 msgid "Top"
-msgstr ""
+msgstr "Topo"
 
 #: src/prefs.js:180
 msgid "Window Title Position"
@@ -88,11 +90,11 @@ msgstr ""
 
 #: src/prefs.js:180
 msgid "Place window title above or below the switcher."
-msgstr ""
+msgstr "Posicionar o título da janela acima ou abaixo do seletor."
 
 #: src/prefs.js:181
 msgid "Enforce Primary Monitor"
-msgstr ""
+msgstr "Aplicar monitor principal"
 
 #: src/prefs.js:181
 msgid ""
@@ -101,15 +103,15 @@ msgstr ""
 
 #: src/prefs.js:184
 msgid "Hide Panel"
-msgstr ""
+msgstr "Ocultar painel"
 
 #: src/prefs.js:184
 msgid "Hide panel when switching windows."
-msgstr ""
+msgstr "Ocultar painel quando trocar janelas."
 
 #: src/prefs.js:185
 msgid "Invert Swipes"
-msgstr ""
+msgstr "Inverter deslizamento"
 
 #: src/prefs.js:185
 msgid "Invert system scroll direction setting."
@@ -129,7 +131,7 @@ msgstr ""
 
 #: src/prefs.js:195
 msgid "Animation"
-msgstr ""
+msgstr "Animação"
 
 #: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
 msgid "Properties"
@@ -145,16 +147,18 @@ msgstr ""
 
 #: src/prefs.js:204
 msgid "Duration [s]"
-msgstr ""
+msgstr "Duração [s]"
 
 #: src/prefs.js:205
 msgid "Randomize Durations"
-msgstr ""
+msgstr "Duração aleatória"
 
 #: src/prefs.js:205
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr ""
+"Cada duração de animação é atribuída aleatoriamente entre 0 e a duração "
+"configurada."
 
 #: src/prefs.js:208
 msgid "Included"
@@ -162,15 +166,15 @@ msgstr ""
 
 #: src/prefs.js:211
 msgid "Current workspace only"
-msgstr ""
+msgstr "Somente para área de trabalho atual"
 
 #: src/prefs.js:213
 msgid "All workspaces"
-msgstr ""
+msgstr "Todas as áreas de trabalho"
 
 #: src/prefs.js:215
 msgid "All workspaces, current first"
-msgstr ""
+msgstr "Todas as áreas de trabalho, com prioridade à atual"
 
 #: src/prefs.js:217
 msgid "Workspaces"
@@ -182,7 +186,7 @@ msgstr ""
 
 #: src/prefs.js:218
 msgid "Current Monitor"
-msgstr ""
+msgstr "Monitor atual"
 
 #: src/prefs.js:218
 msgid "Switch between windows on current monitor."
@@ -190,35 +194,35 @@ msgstr ""
 
 #: src/prefs.js:221
 msgid "Icons"
-msgstr ""
+msgstr "Ícones"
 
 #: src/prefs.js:230
 msgid "Overlay Icon Size"
-msgstr ""
+msgstr "Tamanho da sobreposição do ícone"
 
 #: src/prefs.js:230
 msgid "Set the overlay icon size in pixels."
-msgstr ""
+msgstr "Define o tamanho da sobreposição do ícone em pixels."
 
 #: src/prefs.js:231
 msgid "Overlay Icon Opacity"
-msgstr ""
+msgstr "Opacidade da sobreposição do ícone"
 
 #: src/prefs.js:231
 msgid "Set the overlay icon opacity."
-msgstr ""
+msgstr "Define a opacidade da sobreposição do ícone."
 
 #: src/prefs.js:235
 msgid "Classic"
-msgstr ""
+msgstr "Clássico"
 
 #: src/prefs.js:241
 msgid "Overlay"
-msgstr ""
+msgstr "Sobreposição"
 
 #: src/prefs.js:247
 msgid "Attached"
-msgstr ""
+msgstr "Anexado"
 
 #: src/prefs.js:252
 msgid "Application Icon Style"
@@ -246,7 +250,7 @@ msgstr ""
 
 #: src/prefs.js:278
 msgid "Icon Shadow"
-msgstr ""
+msgstr "Sombra do ícone"
 
 #: src/prefs.js:282
 msgid "Windows"
@@ -254,11 +258,11 @@ msgstr ""
 
 #: src/prefs.js:290
 msgid "Window Preview Size to Monitor Size Ratio"
-msgstr ""
+msgstr "Tamanho da prévia entre a proporção da janela e do monitor"
 
 #: src/prefs.js:290
 msgid "Maximum ratio of window preview size to monitor size."
-msgstr ""
+msgstr "Tamanho máximo da proporção da janela para o tamanho do monitor."
 
 #: src/prefs.js:291
 msgid "Off-center Size Factor"
