@@ -1,11 +1,8 @@
-// -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
-/* exported SwipeTracker */
-
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
-import Mtk from 'gi://Mtk';
-import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Mtk from 'gi://Mtk';
 
 import * as Params from 'resource:///org/gnome/shell/misc/params.js';
 
@@ -37,6 +34,7 @@ const EPSILON = 0.005;
 
 const GESTURE_FINGER_COUNT = 3;
 
+/** @enum {number} */
 const State = {
     NONE: 0,
     SCROLLING: 1,
@@ -68,7 +66,7 @@ const EventHistory = class {
     append(time, delta) {
         this.trim(time);
 
-        this._data.push({ time, delta });
+        this._data.push({time, delta});
     }
 
     calculateVelocity() {
@@ -91,23 +89,23 @@ const EventHistory = class {
 const TouchpadSwipeGesture = GObject.registerClass({
     Properties: {
         'enabled': GObject.ParamSpec.boolean(
-            'enabled', 'enabled', 'enabled',
+            'enabled', null, null,
             GObject.ParamFlags.READWRITE,
             true),
         'orientation': GObject.ParamSpec.enum(
-            'orientation', 'orientation', 'orientation',
+            'orientation', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.Orientation, Clutter.Orientation.HORIZONTAL),
     },
     Signals: {
-        'begin':  { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'update': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
+        'begin':  {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'update': {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'end':    {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE]},
     },
 }, class TouchpadSwipeGesture extends GObject.Object {
-    constructor(allowedModes) {
+    constructor(/* allowedModes */) {
         super();
-        this._allowedModes = allowedModes;
+        /* this._allowedModes = allowedModes; */
         this._state = TouchpadState.NONE;
         this._cumulativeX = 0;
         this._cumulativeY = 0;
@@ -119,8 +117,7 @@ const TouchpadSwipeGesture = GObject.registerClass({
             'captured-event::touchpad', this._handleEvent.bind(this), this);
     }
 
-
-    //eslint-disable-next-line complexity
+    // eslint-disable-next-line complexity
     _handleEvent(actor, event) {
         if (event.type() !== Clutter.EventType.TOUCHPAD_SWIPE)
             return Clutter.EVENT_PROPAGATE;
@@ -128,10 +125,10 @@ const TouchpadSwipeGesture = GObject.registerClass({
         if (event.get_gesture_phase() === Clutter.TouchpadGesturePhase.BEGIN)
             this._state = TouchpadState.NONE;
 
-        if (event.get_touchpad_gesture_finger_count() !== GESTURE_FINGER_COUNT)
+        if (event.get_touchpad_gesture_finger_count() < GESTURE_FINGER_COUNT)
             return Clutter.EVENT_PROPAGATE;
 
-  /*       if ((this._allowedModes & Main.actionMode) === 0)
+        /* if ((this._allowedModes & Main.actionMode) === 0)
             return Clutter.EVENT_PROPAGATE; */
 
         if (!this.enabled)
@@ -215,30 +212,29 @@ const TouchpadSwipeGesture = GObject.registerClass({
 const TouchSwipeGesture = GObject.registerClass({
     Properties: {
         'distance': GObject.ParamSpec.double(
-            'distance', 'distance', 'distance',
+            'distance', null, null,
             GObject.ParamFlags.READWRITE,
             0, Infinity, 0),
         'orientation': GObject.ParamSpec.enum(
-            'orientation', 'orientation', 'orientation',
+            'orientation', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.Orientation, Clutter.Orientation.HORIZONTAL),
     },
     Signals: {
-        'begin':  { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'update': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
-        'cancel': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
+        'begin':  {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'update': {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'end':    {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE]},
+        'cancel': {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE]},
     },
 }, class TouchSwipeGesture extends Clutter.GestureAction {
-    constructor(allowedModes, nTouchPoints, thresholdTriggerEdge, inverted=false) {
+    constructor(/* allowedModes, */ nTouchPoints, thresholdTriggerEdge) {
         super();
         this.set_n_touch_points(nTouchPoints);
         this.set_threshold_trigger_edge(thresholdTriggerEdge);
 
-        this._allowedModes = allowedModes;
+        /* this._allowedModes = allowedModes; */
         this._distance = global.screen_height;
         this._lastPosition = 0;
-        this._inverted = inverted;
     }
 
     get distance() {
@@ -281,8 +277,7 @@ const TouchSwipeGesture = GObject.registerClass({
         let [x, y] = this.get_motion_coords(0);
         let pos = this.orientation === Clutter.Orientation.VERTICAL ? y : x;
 
-        let diff = pos - this._lastPosition;
-        let delta = this._inverted ? -diff : diff;
+        let delta = pos - this._lastPosition;
         this._lastPosition = pos;
 
         let time = this.get_last_event(0).get_time();
@@ -308,30 +303,30 @@ const TouchSwipeGesture = GObject.registerClass({
 const ScrollGesture = GObject.registerClass({
     Properties: {
         'enabled': GObject.ParamSpec.boolean(
-            'enabled', 'enabled', 'enabled',
+            'enabled', null, null,
             GObject.ParamFlags.READWRITE,
             true),
         'orientation': GObject.ParamSpec.enum(
-            'orientation', 'orientation', 'orientation',
+            'orientation', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.Orientation, Clutter.Orientation.HORIZONTAL),
         'scroll-modifiers': GObject.ParamSpec.flags(
-            'scroll-modifiers', 'scroll-modifiers', 'scroll-modifiers',
+            'scroll-modifiers', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.ModifierType, 0),
     },
     Signals: {
-        'begin':  { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'update': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
+        'begin':  {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'update': {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'end':    {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE]},
     },
 }, class ScrollGesture extends GObject.Object {
-    constructor(actor, allowedModes, inverted=false) {
+    constructor(actor, /* allowedModes */) {
         super();
-        this._inverted = inverted;
-        this._allowedModes = allowedModes;
+        /* this._allowedModes = allowedModes; */
         this._began = false;
         this._enabled = true;
+
         actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
@@ -351,7 +346,7 @@ const ScrollGesture = GObject.registerClass({
 
     canHandleEvent(event) {
         if (event.type() !== Clutter.EventType.SCROLL)
-           return false;
+            return false;
 
         if (event.get_scroll_source() !== Clutter.ScrollSource.FINGER &&
             event.get_source_device().get_device_type() !== Clutter.InputDeviceType.TOUCHPAD_DEVICE)
@@ -360,8 +355,11 @@ const ScrollGesture = GObject.registerClass({
         if (!this.enabled)
             return false;
 
+        /* if ((this._allowedModes & Main.actionMode) === 0)
+            return false; */
+
         if (!this._began && this.scrollModifiers !== 0 &&
-            (event.get_state() & this.scrollModifiers) === 0)
+            (event.get_state() & this.scrollModifiers) !== this.scrollModifiers)
             return false;
 
         return true;
@@ -379,10 +377,6 @@ const ScrollGesture = GObject.registerClass({
 
         let time = event.get_time();
         let [dx, dy] = event.get_scroll_delta();
-        if (this._inverted) {
-            dx = -dx; dy = -dy;
-        }
-
         if (dx === 0 && dy === 0) {
             this.emit('end', time, distance);
             this._began = false;
@@ -406,19 +400,18 @@ const ScrollGesture = GObject.registerClass({
 const MouseScroll = GObject.registerClass({
     Properties: {
         'enabled': GObject.ParamSpec.boolean(
-            'enabled', 'enabled', 'enabled',
+            'enabled', null, null,
             GObject.ParamFlags.READWRITE,
             true),
         },
     Signals: {
-        'begin':  { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'update': { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-        'end':    { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
+        'begin':  {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'update': {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE]},
+        'end':    {param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE]},
     },
 }, class MouseScroll extends GObject.Object {
-    constructor(actor, inverted=false) {
+    constructor(actor) {
         super();
-        this._inverted = inverted;
         this._began = false;
         this._enabled = true;
         this._gestureTimeoutId = 0;
@@ -469,10 +462,6 @@ const MouseScroll = GObject.registerClass({
         let time = event.get_time();
         this._lastTime = time;
         let [dx, dy] = event.get_scroll_delta();
-        if (this._inverted) {
-            dx = -dx;
-            dy = -dy;
-        }
 
         if (!this._began) {
             let [x, y] = event.get_coords();
@@ -503,8 +492,8 @@ const MouseScroll = GObject.registerClass({
             this._gestureTimeoutId = 0;
         }
     }
-
 });
+
 // USAGE:
 //
 // To correctly implement the gesture, there must be handlers for the following
@@ -536,48 +525,49 @@ const MouseScroll = GObject.registerClass({
 //   instantly.
 
 /** A class for handling swipe gestures */
-export const MySwipeTracker = GObject.registerClass({
+export const SwipeTracker = GObject.registerClass({
     Properties: {
         'enabled': GObject.ParamSpec.boolean(
-            'enabled', 'enabled', 'enabled',
+            'enabled', null, null,
             GObject.ParamFlags.READWRITE,
             true),
         'orientation': GObject.ParamSpec.enum(
-            'orientation', 'orientation', 'orientation',
+            'orientation', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.Orientation, Clutter.Orientation.HORIZONTAL),
         'distance': GObject.ParamSpec.double(
-            'distance', 'distance', 'distance',
+            'distance', null, null,
             GObject.ParamFlags.READWRITE,
             0, Infinity, 0),
         'allow-long-swipes': GObject.ParamSpec.boolean(
-            'allow-long-swipes', 'allow-long-swipes', 'allow-long-swipes',
+            'allow-long-swipes', null, null,
             GObject.ParamFlags.READWRITE,
             false),
         'scroll-modifiers': GObject.ParamSpec.flags(
-            'scroll-modifiers', 'scroll-modifiers', 'scroll-modifiers',
+            'scroll-modifiers', null, null,
             GObject.ParamFlags.READWRITE,
             Clutter.ModifierType, 0),
     },
     Signals: {
-        'begin':  { param_types: [GObject.TYPE_UINT] },
-        'update': { param_types: [GObject.TYPE_DOUBLE] },
-        'end':    { param_types: [GObject.TYPE_UINT64, GObject.TYPE_DOUBLE] },
+        'begin':  {param_types: [GObject.TYPE_UINT]},
+        'update': {param_types: [GObject.TYPE_DOUBLE]},
+        'end':    {param_types: [GObject.TYPE_UINT64, GObject.TYPE_DOUBLE]},
     },
-}, class MySwipeTracker extends GObject.Object {
-    constructor(actor, orientation, allowedModes, params, settings) {
+}, class SwipeTracker extends GObject.Object {
+    constructor(actor, orientation, /* allowedModes, */ params, settings) {
         super();
-        params = Params.parse(params, { allowDrag: true, allowScroll: true, inverted: false });
+        params = Params.parse(params, {allowDrag: true, allowScroll: true, inverted: false});
+
         this.orientation = orientation;
         this._settings = settings;
-        this._allowedModes = allowedModes;
+        /* this._allowedModes = allowedModes; */
         this._enabled = true;
         this._distance = global.screen_height;
         this._history = new EventHistory();
         this._reset();
         this._inverted = params.inverted;
 
-        this._touchpadGesture = new TouchpadSwipeGesture(allowedModes);
+        this._touchpadGesture = new TouchpadSwipeGesture(/* allowedModes */);
         this._touchpadGesture.connect('begin', this._beginGesture.bind(this));
         this._touchpadGesture.connect('update', this._updateGesture.bind(this));
         this._touchpadGesture.connect('end', this._endTouchpadGesture.bind(this));
@@ -585,7 +575,7 @@ export const MySwipeTracker = GObject.registerClass({
         this.bind_property('orientation', this._touchpadGesture, 'orientation',
             GObject.BindingFlags.SYNC_CREATE);
 
-        this._touchGesture = new TouchSwipeGesture(allowedModes,
+        this._touchGesture = new TouchSwipeGesture(/* allowedModes, */
             GESTURE_FINGER_COUNT,
             Clutter.GestureTriggerEdge.AFTER);
         this._touchGesture.connect('begin', this._beginTouchSwipe.bind(this));
@@ -599,10 +589,8 @@ export const MySwipeTracker = GObject.registerClass({
         global.stage.add_action_full('swipe', Clutter.EventPhase.CAPTURE, this._touchGesture);
 
         if (params.allowDrag) {
-            const natural_scrolling = this._settings.natural_scrolling;
-            let inverted = natural_scrolling ? this._inverted : !this._inverted;
-            this._dragGesture = new TouchSwipeGesture(allowedModes, 1,
-                Clutter.GestureTriggerEdge.AFTER, inverted);
+            this._dragGesture = new TouchSwipeGesture(/* allowedModes, */ 1,
+                Clutter.GestureTriggerEdge.AFTER);
             this._dragGesture.connect('begin', this._beginGesture.bind(this));
             this._dragGesture.connect('update', this._updateGesture.bind(this));
             this._dragGesture.connect('end', this._endTouchGesture.bind(this));
@@ -617,7 +605,7 @@ export const MySwipeTracker = GObject.registerClass({
         }
 
         if (params.allowScroll) {
-            this._scrollGesture = new ScrollGesture(actor, allowedModes, this._inverted);
+            this._scrollGesture = new ScrollGesture(actor, /* allowedModes */);
             this._scrollGesture.connect('begin', this._beginGesture.bind(this));
             this._scrollGesture.connect('update', this._updateGesture.bind(this));
             this._scrollGesture.connect('end', this._endTouchpadGesture.bind(this));
@@ -627,7 +615,7 @@ export const MySwipeTracker = GObject.registerClass({
             this.bind_property('scroll-modifiers',
                 this._scrollGesture, 'scroll-modifiers', 0);
 
-            this._mouseScroll = new MouseScroll(actor, this._inverted);
+            this._mouseScroll = new MouseScroll(actor);
             this._mouseScroll.connect('begin', this._beginGesture.bind(this));
             this._mouseScroll.connect('update', this._updateGesture.bind(this));
             this._mouseScroll.connect('end', this._endTouchpadGesture.bind(this));
@@ -640,18 +628,17 @@ export const MySwipeTracker = GObject.registerClass({
 
     /**
      * canHandleScrollEvent:
-     * @param {Clutter.Event} scrollEvent: an event to check
-     * @returns {bool} whether the event can be handled by the tracker
-     *
      * This function can be used to combine swipe gesture and mouse
      * scrolling.
+     *
+     * @param {Clutter.Event} scrollEvent an event to check
+     * @returns {boolean} whether the event can be handled by the tracker
      */
     canHandleScrollEvent(scrollEvent) {
-        if (!this.enabled || (this._scrollGesture === null && this._mouseScroll === null)) {
+        if (!this.enabled || (this._scrollGesture === null && this._mouseScroll === null))
             return false;
-        }
 
-        return this._scrollGesture.canHandleEvent(scrollEvent) || this.MouseScroll.canHandleEvent(scrollEvent);
+        return this._scrollGesture.canHandleEvent(scrollEvent) || this._mouseScroll.canHandleEvent(scrollEvent);
     }
 
     get enabled() {
@@ -713,7 +700,7 @@ export const MySwipeTracker = GObject.registerClass({
 
         this._history.append(time, 0);
 
-        let rect = new Mtk.Rectangle({ x, y, width: 1, height: 1 });
+        const rect = new Mtk.Rectangle({x, y, width: 1, height: 1});
         let monitor = global.display.get_monitor_index_for_rect(rect);
 
         this.emit('begin', monitor);
@@ -770,7 +757,7 @@ export const MySwipeTracker = GObject.registerClass({
         if (this._state !== State.SCROLLING)
             return;
 
-        if (!this.enabled) {
+        if (/* (this._allowedModes & Main.actionMode) === 0 || */ !this.enabled) {
             this._interrupt();
             return;
         }
@@ -778,6 +765,14 @@ export const MySwipeTracker = GObject.registerClass({
         if (this.orientation === Clutter.Orientation.HORIZONTAL &&
             Clutter.get_default_text_direction() === Clutter.TextDirection.RTL)
             delta = -delta;
+
+        if (gesture === this._dragGesture && this._settings.natural_scrolling) {
+            delta = -delta;
+        }
+
+        if (this._inverted) {
+            delta = -delta;
+        }
 
         this._progress += delta / distance;
         this._history.append(time, delta);
@@ -788,6 +783,7 @@ export const MySwipeTracker = GObject.registerClass({
         } else {
             this._progress = Math.clamp(this._progress, ...this._getBounds(this._initialProgress));
         }
+
         this.emit('update', this._progress);
     }
 
@@ -875,19 +871,17 @@ export const MySwipeTracker = GObject.registerClass({
     }
 
     /**
-     * confirmSwipe:
-     * @param {number} distance: swipe distance in pixels
-     * @param {number[]} snapPoints:
-     *     An array of snap points, sorted in ascending order
-     * @param {number} currentProgress: initial progress value
-     * @param {number} cancelProgress: the value to be used on cancelling
-     *
      * Confirms a swipe. User has to call this in 'begin' signal handler,
      * otherwise the swipe wouldn't start. If there's an animation running,
      * it should be stopped first.
      *
-     * @cancel_progress must always be a snap point, or a value matching
+     * `cancelProgress` must always be a snap point, or a value matching
      * some other non-transient state.
+     *
+     * @param {number} distance - swipe distance in pixels
+     * @param {number[]} snapPoints - An array of snap points, sorted in ascending order
+     * @param {number} currentProgress - initial progress value
+     * @param {number} cancelProgress - the value to be used on cancelling
      */
     confirmSwipe(distance, snapPoints, currentProgress, cancelProgress) {
         this.distance = distance;
