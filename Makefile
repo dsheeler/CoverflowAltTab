@@ -52,7 +52,6 @@ build:
 		--extra-source ./swipeTracker.js \
 		--extra-source ./switcher.js \
 		--extra-source ./timelineSwitcher.js \
-		--extra-source ./swipeTracker.js \
 		--extra-source ./shortcutButton.js \
 		--extra-source ../metadata.json \
 		--extra-source ./logger.js \
