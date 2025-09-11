@@ -7,7 +7,7 @@
     "gettext-domain": "CoverflowAltTab@palatis.blogspot.com",
     "name": "Coverflow Alt-Tab",
     "settings-schema": "org.gnome.shell.extensions.coverflowalttab",
-    "shell-version": ["48"],
+    "shell-version": ["49"],
     "uuid": "CoverflowAltTab@palatis.blogspot.com",
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
     "url": "https://github.com/dsheeler/CoverflowAltTab"

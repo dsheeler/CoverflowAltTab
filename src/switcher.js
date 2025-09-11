@@ -26,13 +26,12 @@ import Pango from 'gi://Pango';
 import GLib from 'gi://GLib';
 import Graphene from 'gi://Graphene';
 
-
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {ColorEffect} from './effects/color_effect.js';
 import {GlitchEffect} from './effects/glitch_effect.js';
 import {Placement, Direction} from './preview.js';
-import {MySwipeTracker} from './swipeTracker.js';
+import {SwipeTracker} from './swipeTracker.js';
 
 import {__ABSTRACT_METHOD__} from './lib.js';
 
@@ -120,9 +119,8 @@ export class Switcher {
             invert = this._settings.invert_swipes;
         }
 
-        const swipeTracker = new MySwipeTracker(this.actor,
+        const swipeTracker = new SwipeTracker(this.actor,
             Clutter.Orientation.HORIZONTAL,
-            0,
             { allowDrag: true, allowScroll: true, inverted: invert },
             this._manager.platform.getSettings());
         swipeTracker.allowLongSwipes = true;
