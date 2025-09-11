@@ -22,6 +22,7 @@
  * This class is a helper class to start the actual switcher.
  */
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import Shell from 'gi://Shell';
 import Gio from 'gi://Gio';
 
 
@@ -120,7 +121,7 @@ export const Manager = class Manager {
     onNameAcquired(connection, name) {
         this.logger.log(`DBus Name Acquired: ${name}`);
     }
- 
+
     /**
      * Invoked when the name is lost or @connection has been closed.
      *
@@ -148,6 +149,11 @@ export const Manager = class Manager {
     }
 
     _startWindowSwitcherInternal(display, window, bindingName, mask, dBus=false) {
+        if (Main.actionMode  !== Shell.ActionMode.NORMAL) {
+            this.logger.log(`Not starting switcher: action mode is ${Main.actionMode}, should be ${Shell.ActionMode.NORMAL}`);
+            return;
+        }
+
         let windows = [];
         let currentWorkspace = this.workspace_manager.get_active_workspace();
         let isApplicationSwitcher = false;
