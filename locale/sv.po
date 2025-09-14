@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2025-09-13 13:01+0000\n"
+"PO-Revision-Date: 2025-09-15 09:02+0000\n"
 "Last-Translator: Morgan Antonsson <morgan.antonsson@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/"
 "coverflow-alt-tab/source/sv/>\n"
@@ -281,7 +281,7 @@ msgstr ""
 
 #: src/prefs.js:292
 msgid "Coverflow Window Angle"
-msgstr ""
+msgstr "Coverflow fönstervinkel"
 
 #: src/prefs.js:292
 msgid "Angle of off-center windows in coverflow mode."
@@ -296,9 +296,8 @@ msgid "How far windows are off to the side in coverflow mode."
 msgstr ""
 
 #: src/prefs.js:295
-#, fuzzy
 msgid "AppSwitcher"
-msgstr "Stil för växlare"
+msgstr "Programväxlare"
 
 #: src/prefs.js:302
 msgid "Make the Application Switcher Show Only First Preview"
@@ -306,31 +305,31 @@ msgstr ""
 
 #: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
-msgstr ""
+msgstr "Gruppera inte fönster från samma program i en underväxlare."
 
 #: src/prefs.js:303
 msgid "Desaturate"
-msgstr ""
+msgstr "Minska mättnad"
 
 #: src/prefs.js:303
 msgid "Larger means more desaturation."
-msgstr ""
+msgstr "Större värde betyder mindre mättnad."
 
 #: src/prefs.js:306
 msgid "Tint"
-msgstr ""
+msgstr "Nyans"
 
 #: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
-msgstr ""
+msgstr "Färg"
 
 #: src/prefs.js:339 src/prefs.js:472
 msgid "Set to Theme Color"
-msgstr ""
+msgstr "Använd temats färg"
 
 #: src/prefs.js:397
 msgid "Blend"
-msgstr ""
+msgstr "Blandning"
 
 #: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
@@ -342,7 +341,7 @@ msgstr ""
 
 #: src/prefs.js:401
 msgid "Keybindings"
-msgstr ""
+msgstr "Tangentbindningar"
 
 #: src/prefs.js:406
 msgid "System Actions Keybindings"
@@ -353,10 +352,12 @@ msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
+"Vid konflikter med andra fönsterväxlare kan bindningen från systemåtgärder "
+"kopplas bort."
 
 #: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
-msgstr ""
+msgstr "Bind till 'växla fönster'"
 
 #: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
@@ -375,26 +376,24 @@ msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
 #: src/prefs.js:418
-#, fuzzy
 msgid "Activate window switcher."
-msgstr "Applikationsikonstil"
+msgstr "Aktivera fönsterväxlaren."
 
 #: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
 #: src/prefs.js:419
-#, fuzzy
 msgid "Activate application switcher."
-msgstr "Applikationsikonstil"
+msgstr "Aktivera programväxlaren."
 
 #: src/prefs.js:422
 msgid "Advanced Options"
-msgstr ""
+msgstr "Avancerade alternativ"
 
 #: src/prefs.js:426
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: src/prefs.js:427
 msgid "Move Camera"
@@ -402,11 +401,11 @@ msgstr ""
 
 #: src/prefs.js:428
 msgid "Adjust Angles"
-msgstr ""
+msgstr "Justera vinklar"
 
 #: src/prefs.js:429
 msgid "Perspective Correction"
-msgstr ""
+msgstr "Perspektivkorrigering"
 
 #: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
@@ -432,11 +431,11 @@ msgstr ""
 
 #: src/prefs.js:526
 msgid "Raise Window Under Mouse"
-msgstr ""
+msgstr "Höj fönstret under musen"
 
 #: src/prefs.js:526
 msgid "Raise the window under the mouse above all others."
-msgstr ""
+msgstr "Höj fönstret under musen ovanför alla andra."
 
 #: src/prefs.js:529
 msgid "Contribute"
@@ -444,19 +443,19 @@ msgstr ""
 
 #: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
-msgstr ""
+msgstr "Kod (skapa pull requests, rapportera problem, etc.)"
 
 #: src/prefs.js:573
 msgid "Donate"
-msgstr ""
+msgstr "Donera"
 
 #: src/prefs.js:594
 msgid "Translate"
-msgstr ""
+msgstr "Översätta"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
-msgstr ""
+msgstr "Välj..."
 
 #: src/shortcutButton.js:46
 msgid "Change keyboard shortcut"
@@ -464,7 +463,7 @@ msgstr ""
 
 #: src/shortcutButton.js:50
 msgid "Clear"
-msgstr ""
+msgstr "Rensa"
 
 #: src/shortcutButton.js:90
 msgid "Press your keyboard shortcut..."
