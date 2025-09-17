@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2019-06-17 17:27+0200\n"
-"Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
-"Language-Team: German <jonatan_zeidler@gmx.de>\n"
+"PO-Revision-Date: 2025-09-18 07:01+0000\n"
+"Last-Translator: Janlu Official <realdjjanlu@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/coverflow-alt-tab/"
+"source/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/prefs.js:105
@@ -45,7 +47,7 @@ msgstr "Karussell"
 
 #: src/prefs.js:149
 msgid "Looping Method"
-msgstr ""
+msgstr "Looping-Methode"
 
 #: src/prefs.js:149
 msgid "How to cycle through windows."
@@ -116,7 +118,7 @@ msgstr "Wischen invertieren"
 
 #: src/prefs.js:185
 msgid "Invert system scroll direction setting."
-msgstr ""
+msgstr "Invertiert die Systemeinstellung der Bildlaufrichtung."
 
 #: src/prefs.js:189
 msgid "Background"
@@ -136,18 +138,16 @@ msgid "Animation"
 msgstr "Animation"
 
 #: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
-#, fuzzy
 msgid "Properties"
-msgstr "Fenstereigenschaften"
+msgstr "Eigenschaften"
 
 #: src/prefs.js:203
-#, fuzzy
 msgid "Easing Function"
-msgstr "Elastische Animationen"
+msgstr "Elastische Animation"
 
 #: src/prefs.js:203
 msgid "Determine how windows move."
-msgstr ""
+msgstr "Bestimmt, wie Fenster sich bewegen."
 
 #: src/prefs.js:204
 msgid "Duration [s]"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: src/prefs.js:208
 msgid "Included"
-msgstr ""
+msgstr "Enthalten"
 
 #: src/prefs.js:211
 msgid "Current workspace only"
@@ -236,23 +236,23 @@ msgstr "Anwendungssymbolstil"
 
 #: src/prefs.js:257
 msgid "Fade Only"
-msgstr ""
+msgstr "Nur verblassen"
 
 #: src/prefs.js:263
 msgid "Scale Only"
-msgstr ""
+msgstr "Nur skalieren"
 
 #: src/prefs.js:269
 msgid "Fade and Scale"
-msgstr ""
+msgstr "Verblassen und skalieren"
 
 #: src/prefs.js:274
 msgid "Add / Remove Effects"
-msgstr ""
+msgstr "Effekte hinzufügen / entfernen"
 
 #: src/prefs.js:274
 msgid "How Icons and Labels ease in and out."
-msgstr ""
+msgstr "Wie Symbole und Beschriftungen ein- und ausgeblendet werden."
 
 #: src/prefs.js:278
 msgid "Icon Shadow"
@@ -279,14 +279,16 @@ msgstr "Außermittiger Größenfaktor"
 #: src/prefs.js:291
 msgid "Factor by which to successively shrink previews off to the side."
 msgstr ""
+"Faktor, um den die Vorschaubilder seitlich sukzessive verkleinert werden."
 
 #: src/prefs.js:292
+#, fuzzy
 msgid "Coverflow Window Angle"
-msgstr ""
+msgstr "Coverflow Fenster Winkel"
 
 #: src/prefs.js:292
 msgid "Angle of off-center windows in coverflow mode."
-msgstr ""
+msgstr "Winkel von nicht zentrierten Fenstern im Coverflow-Modus."
 
 #: src/prefs.js:293
 msgid "Coverflow Window Offset Width"
