@@ -6,18 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: coverflow\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2024-09-09 00:09+0000\n"
+"PO-Revision-Date: 2025-09-13 13:01+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/coverflow-alt-"
-"tab/source/ja/>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/"
+"coverflow-alt-tab/source/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: src/prefs.js:105
 msgid "Reset to default value"
@@ -140,13 +140,12 @@ msgid "Properties"
 msgstr "プロパティ"
 
 #: src/prefs.js:203
-#, fuzzy
 msgid "Easing Function"
-msgstr "弾力性"
+msgstr "イージング関数"
 
 #: src/prefs.js:203
 msgid "Determine how windows move."
-msgstr ""
+msgstr "ウィンドウの移動方法を設定します。"
 
 #: src/prefs.js:204
 msgid "Duration [s]"
@@ -376,18 +375,16 @@ msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
 #: src/prefs.js:418
-#, fuzzy
 msgid "Activate window switcher."
-msgstr "スイッチャーの種類を選択します。"
+msgstr "ウィンドウスイッチャーを有効にします。"
 
 #: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
 #: src/prefs.js:419
-#, fuzzy
 msgid "Activate application switcher."
-msgstr "アプリアイコンのスタイル"
+msgstr "アプリケーションスイッチャーを有効にします。"
 
 #: src/prefs.js:422
 msgid "Advanced Options"
@@ -458,19 +455,19 @@ msgstr "翻訳"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
-msgstr ""
+msgstr "選択…"
 
 #: src/shortcutButton.js:46
 msgid "Change keyboard shortcut"
-msgstr ""
+msgstr "キーボードショートカットを変更"
 
 #: src/shortcutButton.js:50
 msgid "Clear"
-msgstr ""
+msgstr "消去"
 
 #: src/shortcutButton.js:90
 msgid "Press your keyboard shortcut..."
-msgstr ""
+msgstr "キーボードショートカットを押してください…"
 
 #~ msgid "Swipe content instead of view."
 #~ msgstr "ビューではなくコンテンツをスワイプします。"
