@@ -324,6 +324,13 @@ const MouseScroll = GObject.registerClass({
         this._began = false;
         this._enabled = true;
         this._gestureTimeoutId = 0;
+        this._mouseSettings = new Gio.Settings({
+            schema_id: 'org.gnome.desktop.peripherals.mouse',
+        });
+        this._natural_scrolling =    this._mouseSettings.get_boolean('natural-scroll');
+        this._mouseSettings.connect('changed::natural-scroll', (settings, key) => {
+            this._natural_scrolling = settings.get_boolean(key);
+        });
         actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
@@ -378,7 +385,7 @@ const MouseScroll = GObject.registerClass({
             this._began = true;
         }
 
-        const delta = dx * 2* SCROLL_MULTIPLIER + dy * SCROLL_MULTIPLIER;
+        const delta = dx * 2* SCROLL_MULTIPLIER - dy * SCROLL_MULTIPLIER;
         if (this._gestureTimeoutId !== 0) {
             GLib.Source.remove(this._gestureTimeoutId);
             this._gestureTimeoutId = 0;
@@ -693,12 +700,12 @@ export const SwipeTracker = GObject.registerClass({
     }
 
     _updatePanGesture(panGesture) {
-        const deltaVec = panGesture.get_delta_abs();
+        const deltaVec = panGesture.get_delta();
         let delta = this.orientation === Clutter.Orientation.HORIZONTAL
             ? -deltaVec.get_x()
             : -deltaVec.get_y();
 
-        if (this._allowDrag && this._settings.natural_scrolling) {
+         if (!this._settings.natural_scrolling) {
             delta = -delta;
         }
 
@@ -781,9 +788,17 @@ export const SwipeTracker = GObject.registerClass({
 
     _endPanGesture(panGesture) {
         const velocity = panGesture.get_velocity();
-        const v = this.orientation === Clutter.Orientation.HORIZONTAL
+        let v = this.orientation === Clutter.Orientation.HORIZONTAL
             ? -velocity.get_x()
             : -velocity.get_y();
+
+        if (!this._settings.natural_scrolling) {
+            v = -v;
+        }
+
+        if (this._inverted) {
+            v = -v;
+        }
 
         this._endGesture(v, this._distance, false);
     }
@@ -795,8 +810,10 @@ export const SwipeTracker = GObject.registerClass({
         } */
 
         this._history.trim(time);
-        const velocity = this._history.calculateVelocity();
-
+        let velocity = this._history.calculateVelocity();
+        if (this._inverted) {
+            velocity = -velocity;
+        }
         this._endGesture(velocity, distance, true);
     }
 
