@@ -235,8 +235,17 @@ export class Switcher {
             for (let switcher of this._subSwitchers.values()) {
                 switcher.show();
             }
-            this._next();
+            if (this._settings.start_with_next) {
+                this._next();
+            } else {
+                this._manager.platform.dimBackground();
+                this._stopClosing();
+                this._showSubswitcher(Direction.TO_RIGHT);
+                this._updatePreviews();
+                this._updateWindowTitle();
+            }
         }
+
         this._getSwitcherBackgroundColor();
     }
 

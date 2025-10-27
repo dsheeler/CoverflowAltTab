@@ -288,5 +288,9 @@
         <default>"Fade Only"</default>
         <summary>Whether to fade, scale, or both fade and scale icons in and out</summary>
     </key>
+    <key name="start-with-next" type="b">
+        <default>true</default>
+        <summary>Whether to start with the next window</summary>
+    </key>
   </schema>
 </schemalist>
