@@ -183,6 +183,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         switcher_pref_group.add(switcher_looping_method_row);
         switcher_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], [], _("Hide Panel"), _("Hide panel when switching windows.")));
         switcher_pref_group.add(buildSwitcherAdw(settings, "invert-swipes", [], [], _("Invert Swipes"), _("Invert system scroll direction setting.")));
+        switcher_pref_group.add(buildSwitcherAdw(settings, "start-with-next", [], [], _("Start with Next"), _("Start with the next window (instead of the current window).")));
         switcher_page.add(switcher_pref_group);
 
         let background_pref_group = new Adw.PreferencesGroup({

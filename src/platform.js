@@ -146,6 +146,7 @@ class AbstractPlatform {
             icon_add_remove_effects: "Fade Only",
             coverflow_window_angle: 90,
             coverflow_window_offset_width: 50,
+            start_with_next: true,
         };
     }
 
@@ -261,6 +262,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             "icon-add-remove-effects",
             "coverflow-window-angle",
             "coverflow-window-offset-width",
+            "start-with-next",
         ];
 
         let dkeys = [
@@ -415,6 +417,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 icon_add_remove_effects: settings.get_string("icon-add-remove-effects"),
                 coverflow_window_angle: settings.get_double("coverflow-window-angle"),
                 coverflow_window_offset_width: settings.get_double("coverflow-window-offset-width"),
+                start_with_next: settings.get_boolean("start-with-next"),
             };
         } catch (e) {
             this._logger.log(e);
