@@ -32,7 +32,7 @@ export class TimelineSwitcher extends Switcher {
     constructor(...args) {
         super(...args);
         TRANSITION_TYPE = 'userChoice';
-        IN_BOUNDS_TRANSITION_TYPE = 'easeInOutQuint';
+        IN_BOUNDS_TRANSITION_TYPE = 'easeOutQuad';
     }
 
     _createPreviews() {
@@ -46,54 +46,56 @@ export class TimelineSwitcher extends Switcher {
 
         for (let windowActor of global.get_window_actors()) {
             let metaWin = windowActor.get_meta_window();
-            let compositor = metaWin.get_compositor_private();
-            if (compositor) {
-                let texture = compositor.get_texture();
-                let width, height;
-                if (texture.get_size) {
-                    [width, height] = texture.get_size()
-                } else {
-                    let _preferred_size_ok;
-                    [_preferred_size_ok, width, height] = texture.get_preferred_size();
-                }
-                let previewScale = this._settings.preview_to_monitor_ratio;
-                let scale = 1.0;
-                let previewWidth = this.actor.width * previewScale;
-                let previewHeight = this.actor.height * previewScale;
-                if (width > previewWidth || height > previewHeight)
-                    scale = Math.min(previewWidth / width, previewHeight / height);
 
-                let preview = new Preview(metaWin, this, {
-                    opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
-                    source: texture.get_size ? texture : compositor,
-                    reactive: true,
-                    name: metaWin.title,
-                    x: (metaWin.minimized ? -(compositor.x + compositor.width / 2) :
-                        compositor.x) - monitor.x,
-                    y: (metaWin.minimized ? -(compositor.y + compositor.height / 2) :
-                        compositor.y) - monitor.y,
-                    rotation_angle_y: 0,
-                    width: width,
-                    height: height,
-                });
-
-                preview.scale = scale;
-
-                preview.target_x = findUpperLeftFromCenter(preview.width * preview.scale,
-                    this._previewsCenterPosition.x);
-                preview.target_y = findUpperLeftFromCenter(preview.height,
-                    this._previewsCenterPosition.y);
-
-                preview.set_pivot_point_placement(Placement.LEFT);
-
-                if (this._windows.includes(metaWin)) {
-                    this._previews[this._windows.indexOf(metaWin)] = preview;
-                }
-                this._allPreviews.push(preview);
-                this.previewActor.add_child(preview);
-
-                preview.make_bottom_layer(this.previewActor);
+            let texture = windowActor.get_texture();
+            let width, height;
+            if (texture.get_size) {
+                [width, height] = texture.get_size()
+            } else {
+                let _preferred_size_ok;
+                [_preferred_size_ok, width, height] = texture.get_preferred_size();
             }
+            let previewScale = this._settings.preview_to_monitor_ratio;
+            let scale = 1.0;
+            let previewWidth = this.actor.width * previewScale;
+            let previewHeight = this.actor.height * previewScale;
+            if (width > previewWidth || height > previewHeight)
+                scale = Math.min(previewWidth / width, previewHeight / height);
+
+            let preview = new Preview(metaWin, this, {
+                opacity: ALPHA * (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace || metaWin.is_on_all_workspaces()) ? 255: 0,
+                source: texture.get_size ? texture : windowActor,
+                reactive: true,
+                name: metaWin.title,
+                x: metaWin.minimized ? 0:
+                    windowActor.x - monitor.x,
+                y: metaWin.minimized ? -height/2:
+                    windowActor.y - monitor.y,
+                rotation_angle_y: 0,
+                width: width,
+                height: height,
+                scale_x: metaWin.minimized ? 0 : 1,
+                scale_y: metaWin.minimized ? 0 : 1,
+                scale_z: metaWin.minimized ? 0 : 1,
+            });
+
+            preview.scale = scale;
+
+            preview.target_x = findUpperLeftFromCenter(preview.width * preview.scale,
+                this._previewsCenterPosition.x);
+            preview.target_y = findUpperLeftFromCenter(preview.height,
+                this._previewsCenterPosition.y);
+
+            preview.set_pivot_point_placement(Placement.LEFT);
+
+            if (this._windows.includes(metaWin)) {
+                this._previews[this._windows.indexOf(metaWin)] = preview;
+            }
+            this._allPreviews.push(preview);
+            this.previewActor.add_child(preview);
+
+            preview.make_bottom_layer(this.previewActor);
+
         }
     }
 
