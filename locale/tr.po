@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: CoverflowAltTab Gnome-Shell extension\n"
 "Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2025-06-19 13:01+0000\n"
-"Last-Translator: Bora Atay <boraatay39@gmail.com>\n"
+"PO-Revision-Date: 2025-11-09 11:51+0000\n"
+"Last-Translator: Erenay <erenaydev@proton.me>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/"
 "coverflow-alt-tab/source/tr/>\n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12.1\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/prefs.js:105
@@ -35,25 +35,24 @@ msgid "General"
 msgstr "Genel"
 
 #: src/prefs.js:132
-#, fuzzy
 msgid "Switcher Properties"
-msgstr "Değiştirici pencereleri"
+msgstr "Geçiş Ayarları"
 
 #: src/prefs.js:137
 msgid "Flip Stack"
-msgstr ""
+msgstr "Yığın"
 
 #: src/prefs.js:143
 msgid "Carousel"
-msgstr ""
+msgstr "Döngü"
 
 #: src/prefs.js:149
 msgid "Looping Method"
-msgstr ""
+msgstr "Geçiş Yöntemi"
 
 #: src/prefs.js:149
 msgid "How to cycle through windows."
-msgstr ""
+msgstr "Pencereler arası geçiş şekli."
 
 #: src/prefs.js:153
 msgid "Coverflow"
@@ -79,7 +78,7 @@ msgstr "Dikey ofset"
 msgid "Positive value moves everything down, negative up."
 msgstr ""
 "Pozitif değer her şeyi aşağıya, negatif değer ise her şeyi yukarıya hareket "
-"ettirir"
+"ettirir."
 
 #: src/prefs.js:169
 msgid "Bottom"
@@ -117,11 +116,11 @@ msgstr "Pencereleri değiştirirken paneli gizle."
 
 #: src/prefs.js:185
 msgid "Invert Swipes"
-msgstr ""
+msgstr "Kaydırma Yönü"
 
 #: src/prefs.js:185
 msgid "Invert system scroll direction setting."
-msgstr ""
+msgstr "Sistem kaydırma yönünü tersine çevir."
 
 #: src/prefs.js:189
 msgid "Background"
@@ -129,12 +128,11 @@ msgstr "Arka plan"
 
 #: src/prefs.js:191
 msgid "Dim-factor"
-msgstr ""
+msgstr "Karartma Oranı"
 
 #: src/prefs.js:191
-#, fuzzy
 msgid "Bigger means darker."
-msgstr "Daha küçük, daha koyu anlamına gelir."
+msgstr "Yüksek değer daha koyu demektir."
 
 #: src/prefs.js:195
 msgid "Animation"
@@ -145,13 +143,12 @@ msgid "Properties"
 msgstr "Özellikler"
 
 #: src/prefs.js:203
-#, fuzzy
 msgid "Easing Function"
-msgstr "Elastik animasyonlar"
+msgstr "Geçiş Efekti"
 
 #: src/prefs.js:203
 msgid "Determine how windows move."
-msgstr ""
+msgstr "Pencerelerin hareket şeklini belirler."
 
 #: src/prefs.js:204
 msgid "Duration [s]"
@@ -162,15 +159,13 @@ msgid "Randomize Durations"
 msgstr "Süreleri rastgeleleştir"
 
 #: src/prefs.js:205
-#, fuzzy
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
-msgstr ""
-"Her animasyon süresi 0 ile yapılandırılmış süre arasında rastgele atanır"
+msgstr "Her animasyon süresi 0 ile belirlenen süre arasında rastgele atanır."
 
 #: src/prefs.js:208
 msgid "Included"
-msgstr ""
+msgstr "Dahil Edilen"
 
 #: src/prefs.js:211
 msgid "Current workspace only"
@@ -189,23 +184,20 @@ msgid "Workspaces"
 msgstr "Çalışma alanları"
 
 #: src/prefs.js:217
-#, fuzzy
 msgid "Switch between windows on current or on all workspaces."
-msgstr "Mevcut veya tüm çalışma alanlarındaki pencereler arasında geçiş yap"
+msgstr "Mevcut veya tüm çalışma alanlarındaki pencereler arası geçiş."
 
 #: src/prefs.js:218
 msgid "Current Monitor"
 msgstr "Mevcut monitör"
 
 #: src/prefs.js:218
-#, fuzzy
 msgid "Switch between windows on current monitor."
-msgstr "Mevcut monitördeki pencereler arasında geçiş yap"
+msgstr "Mevcut monitörde ki pencereler arası geçiş."
 
 #: src/prefs.js:221
-#, fuzzy
 msgid "Icons"
-msgstr "Simge"
+msgstr "Simgeler"
 
 #: src/prefs.js:230
 msgid "Overlay Icon Size"
@@ -233,7 +225,7 @@ msgstr "Kapla"
 
 #: src/prefs.js:247
 msgid "Attached"
-msgstr ""
+msgstr "Yapışık"
 
 #: src/prefs.js:252
 msgid "Application Icon Style"
@@ -241,32 +233,31 @@ msgstr "Uygulama simge tarzı"
 
 #: src/prefs.js:257
 msgid "Fade Only"
-msgstr ""
+msgstr "Sadece Solma"
 
 #: src/prefs.js:263
 msgid "Scale Only"
-msgstr ""
+msgstr "Sadece Boyut"
 
 #: src/prefs.js:269
 msgid "Fade and Scale"
-msgstr ""
+msgstr "Solma ve Boyut"
 
 #: src/prefs.js:274
 msgid "Add / Remove Effects"
-msgstr ""
+msgstr "Ekleme / Kaldırma Efektleri"
 
 #: src/prefs.js:274
 msgid "How Icons and Labels ease in and out."
-msgstr ""
+msgstr "Simge ve Etiketlerin giriş-çıkış efekti."
 
 #: src/prefs.js:278
 msgid "Icon Shadow"
 msgstr "Simge gölgesi"
 
 #: src/prefs.js:282
-#, fuzzy
 msgid "Windows"
-msgstr "Pencere boyutu"
+msgstr "Pencereler"
 
 #: src/prefs.js:290
 msgid "Window Preview Size to Monitor Size Ratio"
@@ -278,74 +269,71 @@ msgstr "Pencere ön izleme boyutunun monitör boyutuna maksimum oranı."
 
 #: src/prefs.js:291
 msgid "Off-center Size Factor"
-msgstr ""
+msgstr "Merkez Dışı Boyut Faktörü"
 
 #: src/prefs.js:291
-#, fuzzy
 msgid "Factor by which to successively shrink previews off to the side."
-msgstr "Ön izlemeleri ardı ardına küçültecek faktör"
+msgstr "Yan taraftaki önizlemelerin sırayla küçülme oranı."
 
 #: src/prefs.js:292
 msgid "Coverflow Window Angle"
-msgstr ""
+msgstr "Coverflow Pencere Açısı"
 
 #: src/prefs.js:292
 msgid "Angle of off-center windows in coverflow mode."
-msgstr ""
+msgstr "Coverflow modunda merkez dışı pencerelerin açısı."
 
 #: src/prefs.js:293
 msgid "Coverflow Window Offset Width"
-msgstr ""
+msgstr "Coverflow Pencere Ofset Genişliği"
 
 #: src/prefs.js:293
 msgid "How far windows are off to the side in coverflow mode."
-msgstr ""
+msgstr "Coverflow modunda pencerelerin yan tarafa ne kadar kaydığı."
 
 #: src/prefs.js:295
-#, fuzzy
 msgid "AppSwitcher"
-msgstr "Değiştirici"
+msgstr "Uygulama Geçişi"
 
 #: src/prefs.js:302
 msgid "Make the Application Switcher Show Only First Preview"
-msgstr ""
+msgstr "Uygulama Geçişte Sadece İlk Önizlemeyi Göster"
 
 #: src/prefs.js:302
 msgid "Don't group windows of the same application in a subswitcher."
-msgstr ""
+msgstr "Aynı uygulamanın pencerelerini alt geçişte gruplandırma."
 
 #: src/prefs.js:303
 msgid "Desaturate"
-msgstr ""
+msgstr "Renk Azaltma"
 
 #: src/prefs.js:303
 msgid "Larger means more desaturation."
-msgstr ""
+msgstr "Yüksek değer daha az renk demektir."
 
 #: src/prefs.js:306
 msgid "Tint"
-msgstr ""
+msgstr "Renk Tonu"
 
 #: src/prefs.js:318 src/prefs.js:448
 msgid "Color"
-msgstr ""
+msgstr "Renk"
 
 #: src/prefs.js:339 src/prefs.js:472
-#, fuzzy
 msgid "Set to Theme Color"
-msgstr "Renk Paledini Ayarla"
+msgstr "Tema Rengine Ayarla"
 
 #: src/prefs.js:397
 msgid "Blend"
-msgstr ""
+msgstr "Karışım"
 
 #: src/prefs.js:397
 msgid "How much to blend the tint color; bigger means more tint color."
-msgstr ""
+msgstr "Renk tonunun karışım oranı; yüksek değer daha fazla ton rengi demektir."
 
 #: src/prefs.js:398
 msgid "Glitch"
-msgstr ""
+msgstr "Bozma Efekti"
 
 #: src/prefs.js:401
 msgid "Keybindings"
@@ -353,51 +341,51 @@ msgstr "Tuş atamaları"
 
 #: src/prefs.js:406
 msgid "System Actions Keybindings"
-msgstr ""
+msgstr "Sistem Eylemleri Tuş Atamaları"
 
 #: src/prefs.js:407
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
+"Diğer pencere geçiş araçlarıyla çakışma durumunda sistem eylemlerinden "
+"çözülebilir."
 
 #: src/prefs.js:410
 msgid "Bind to 'switch-windows'"
-msgstr ""
+msgstr "'switch-windows' ile bağla"
 
 #: src/prefs.js:411
 msgid "Bind to 'switch-applications'"
-msgstr ""
+msgstr "'switch-applications' ile bağla"
 
 #: src/prefs.js:414
 msgid "Internal Actions Keybindings"
-msgstr ""
+msgstr "Dahili Eylemler Tuş Atamaları"
 
 #: src/prefs.js:415
 msgid "Internal actions that will not conflict with other window switchers."
-msgstr ""
+msgstr "Diğer pencere geçiş araçlarıyla çakışmayacak dahili eylemler."
 
 #: src/prefs.js:418
 msgid "Coverflow Switch Windows Shortcut"
-msgstr ""
+msgstr "Coverflow Pencere Geçiş Kısayolu"
 
 #: src/prefs.js:418
-#, fuzzy
 msgid "Activate window switcher."
-msgstr "Değiştirici türünü seç."
+msgstr "Pencere geçişi etkinleştir."
 
 #: src/prefs.js:419
 msgid "Coverflow Switch Applications Shortcut"
-msgstr ""
+msgstr "Coverflow Uygulama Geçiş Kısayolu"
 
 #: src/prefs.js:419
-#, fuzzy
 msgid "Activate application switcher."
-msgstr "Uygulama değiştirici"
+msgstr "Uygulama geçişi etkinleştir."
 
 #: src/prefs.js:422
 msgid "Advanced Options"
-msgstr ""
+msgstr "Gelişmiş Seçenekler"
 
 #: src/prefs.js:426
 msgid "None"
@@ -417,27 +405,25 @@ msgstr "Perspektif düzeltme"
 
 #: src/prefs.js:429
 msgid "Method to make off-center switcher look centered."
-msgstr ""
+msgstr "Merkez dışı geçişin merkezli görünmesini sağlama yöntemi."
 
 #: src/prefs.js:431
 msgid "Verbose Logging"
-msgstr ""
+msgstr "Ayrıntılı Günlük"
 
 #: src/prefs.js:431
 msgid "Log debug and normal messages."
-msgstr ""
+msgstr "Hata ayıklama ve normal mesajları günlükle."
 
 #: src/prefs.js:435
 msgid "Highlight Window Under Mouse"
 msgstr "Farenin altındaki pencereyi vurgula"
 
 #: src/prefs.js:436
-#, fuzzy
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
-msgstr ""
-"Tıklamanın etkilerini göstermek için farenin altındaki pencereye süsleme çiz."
+msgstr "Tıklama etkilerini görmek için fare altındaki pencereyi renkli vurgula."
 
 #: src/prefs.js:526
 msgid "Raise Window Under Mouse"
@@ -453,7 +439,7 @@ msgstr "Katkı"
 
 #: src/prefs.js:565
 msgid "Code (create pull requests, report issues, etc.)"
-msgstr "Kod (çekme istekleri oluşturma, sorunları bildirme vb.)"
+msgstr "Kod (PR oluşturma, sorunları bildirme vb.)"
 
 #: src/prefs.js:573
 msgid "Donate"
@@ -461,7 +447,7 @@ msgstr "Bağış yap"
 
 #: src/prefs.js:594
 msgid "Translate"
-msgstr ""
+msgstr "Çevir"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
