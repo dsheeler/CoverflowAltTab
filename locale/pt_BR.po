@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2024-02-06 20:06+0000\n"
-"Last-Translator: Iago Emanuel <iagoemanuel@live.com>\n"
+"PO-Revision-Date: 2025-12-13 21:00+0000\n"
+"Last-Translator: Mateus Liberale Gomes <sergiogomes209403@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "coverflow-alt-tab/source/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: src/prefs.js:105
 msgid "Reset to default value"
@@ -33,7 +33,6 @@ msgid "General"
 msgstr "Geral"
 
 #: src/prefs.js:132
-#, fuzzy
 msgid "Switcher Properties"
 msgstr "Propriedades da janela"
 
@@ -47,7 +46,7 @@ msgstr "Carrossel"
 
 #: src/prefs.js:149
 msgid "Looping Method"
-msgstr ""
+msgstr "Método de repetição"
 
 #: src/prefs.js:149
 msgid "How to cycle through windows."
@@ -74,10 +73,9 @@ msgid "Vertical Offset"
 msgstr "Deslocamento vertical"
 
 #: src/prefs.js:165
-#, fuzzy
 msgid "Positive value moves everything down, negative up."
 msgstr ""
-"Desvio vertical (valor positivo move tudo para cima, negativo para baixo)"
+"Desvio vertical (valor positivo move tudo para cima, negativo para baixo)."
 
 #: src/prefs.js:169
 msgid "Bottom"
@@ -88,7 +86,6 @@ msgid "Top"
 msgstr "Topo"
 
 #: src/prefs.js:180
-#, fuzzy
 msgid "Window Title Position"
 msgstr "Posição da caixa de título da janela"
 
