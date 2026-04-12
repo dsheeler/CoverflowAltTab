@@ -338,6 +338,9 @@ export class Switcher {
                     preview.add_effect_with_name('glitch-effect', glitchEffect);
                 }
                 preview.get_effect('glitch-effect').set_enabled(true);
+                if (preview._effectCounts['glitch'] === undefined) {
+                    preview._effectCounts['glitch'] = 0;
+                }
                 preview._effectCounts['glitch'] += 1;
             }
             if (this._settings.use_tint) {
