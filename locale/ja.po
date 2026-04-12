@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: coverflow\n"
 "Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2025-02-05 20:07-0600\n"
-"PO-Revision-Date: 2025-09-13 13:01+0000\n"
+"PO-Revision-Date: 2026-04-04 15:09+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/"
-"coverflow-alt-tab/source/ja/>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/coverflow-alt-"
+"tab/source/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: src/prefs.js:105
 msgid "Reset to default value"
@@ -30,7 +30,7 @@ msgstr "バージョン %d"
 
 #: src/prefs.js:127
 msgid "General"
-msgstr "一般"
+msgstr "全般"
 
 #: src/prefs.js:132
 msgid "Switcher Properties"
