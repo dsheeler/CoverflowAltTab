@@ -57,6 +57,7 @@ export class Switcher {
         this._windows = [...windows];
         this._modifierMask = null;
         this._currentIndex = currentIndex;
+        this._lastIndex = currentIndex;
         this._haveModal = false;
         this._tracker = manager.platform.getWindowTracker();
         this._windowManager = global.window_manager;
@@ -251,7 +252,8 @@ export class Switcher {
 
     _gestureBegin(tracker) {
         const baseDistance = 400;
-        const progress = this._currentIndex;
+        let t = this._previews[this._currentIndex].get_transition('scale-x');
+        const progress = t !== null ? (this._currentIndex - this._lastIndex) * t.get_progress() + this._lastIndex : this._currentIndex;//this._currentIndex;
         const points = [];
         for (let i = 0; i < this._previews.length; i++) {
             points.push(i);
@@ -522,6 +524,7 @@ export class Switcher {
     }
 
     _setCurrentIndex(value) {
+        this._lastIndex = this._currentIndex;
         this._currentIndex = value;
     }
 
