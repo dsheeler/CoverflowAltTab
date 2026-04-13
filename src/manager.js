@@ -166,8 +166,6 @@ export const Manager = class Manager {
             }
         }
 
-        windowActors = null;
-
         let currentOnly = this.platform.getSettings().current_workspace_only;
         let focused = display.focus_window ? display.focus_window : windows[0];
 
@@ -194,8 +192,6 @@ export const Manager = class Manager {
                     wins1.sort(sortWindowsByUserTime);
                     wins2.sort(sortWindowsByUserTime);
                     windows = wins1.concat(wins2);
-                    wins1 = [];
-                    wins2 = [];
                 } else {
                     let filter = currentOnly === 'current' ? matchWorkspace :
                           matchSkipTaskbar;

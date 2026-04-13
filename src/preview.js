@@ -54,7 +54,7 @@ export const Preview = GObject.registerClass({
             1.0,
         )
     }
-}, class Preview extends Clutter.Clone {
+}, class PreviewClass extends Clutter.Clone {
     constructor(window, switcher, ...args) {
         super(...args);
         this.metaWin = window;
@@ -465,9 +465,8 @@ export const Preview = GObject.registerClass({
      * @return {Graphene.Point}
      */
     get_pivot_point_placement(placement) {
-        let xFraction = 0,
-            yFraction = 0;
-
+        let xFraction;
+        let yFraction;
         // Set xFraction
         switch (placement) {
             case Placement.TOP_LEFT:

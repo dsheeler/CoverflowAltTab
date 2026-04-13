@@ -195,7 +195,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
             Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_child(parent);
-            parent = null;
             let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
             this._extensionSettings.set_value("switcher-background-color", color);
         }

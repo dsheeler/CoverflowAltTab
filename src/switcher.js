@@ -462,8 +462,9 @@ export class Switcher {
     // eslint-disable-next-line complexity
     _updateSubSwitcher() {
         if (this._isAppSwitcher && !this._settings.switch_application_behaves_like_switch_windows) {
-            let scale = 1, x = 0;
-            let progress = 1;
+            let scale
+            let x;
+            let progress;
             let to_index = this._toIndex;
             let from_index = this._fromIndex;
             progress = (this._currentIndex - from_index) / (to_index - from_index);
@@ -577,7 +578,6 @@ export class Switcher {
             Main.uiGroup.add_child(parent);
             this._backgroundColor = actor.get_theme_node().get_background_color();
             Main.uiGroup.remove_child(parent);
-            parent = null;
             let color = new GLib.Variant("(ddd)", [this._backgroundColor.red/255, this._backgroundColor.green/255, this._backgroundColor.blue/255]);
             this._manager.platform._extensionSettings.set_value("switcher-background-color", color);
         }
