@@ -880,7 +880,9 @@ export class Switcher {
             case Meta.KeyBindingAction.SWITCH_GROUP:
             case Meta.KeyBindingAction.SWITCH_WINDOWS:
             case this._manager.keybinder.getAction("coverflow-switch-windows"):
+            case this._manager.keybinder.getAction("coverflow-switch-windows-on-all-workspaces"):
             case this._manager.keybinder.getAction("coverflow-switch-applications"):
+            case this._manager.keybinder.getAction("coverflow-switch-applications-on-all-workspaces"):
 
                 // shift -> backwards
                 if (event_state & Clutter.ModifierType.SHIFT_MASK) {
@@ -894,7 +896,9 @@ export class Switcher {
             case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
             case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
             case this._manager.keybinder.getAction("coverflow-switch-windows-backward"):
+            case this._manager.keybinder.getAction("coverflow-switch-windows-on-all-workspaces-backward"):
             case this._manager.keybinder.getAction("coverflow-switch-applications-backward"):
+            case this._manager.keybinder.getAction("coverflow-switch-applications-on-all-workspaces-backward"):
 
                 this._previous();
                 return true;

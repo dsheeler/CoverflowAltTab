@@ -81,14 +81,20 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         platform.addSettingsChangedCallback(this._onSettingsChanged.bind(this));
 
         this.addKeybinding("coverflow-switch-windows");
+        this.addKeybinding("coverflow-switch-windows-on-all-workspaces");
         this.addKeybinding("coverflow-switch-applications");
+        this.addKeybinding("coverflow-switch-applications-on-all-workspaces");
 
         Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler("coverflow-switch-windows", mode.NORMAL, this._startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler("coverflow-switch-windows-backward", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-windows-on-all-workspaces", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-windows-on-all-workspaces-backward", mode.NORMAL, this._startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler("coverflow-switch-applications", mode.NORMAL, this._startAppSwitcherBind);
         Main.wm.setCustomKeybindingHandler("coverflow-switch-applications-backward", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-applications-on-all-workspaces", mode.NORMAL, this._startAppSwitcherBind);
+        Main.wm.setCustomKeybindingHandler("coverflow-switch-applications-on-all-workspaces-backward", mode.NORMAL, this._startAppSwitcherBind);
     }
 
     disable() {
@@ -101,7 +107,9 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
         Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
 
         this.removeKeybinding("coverflow-switch-windows");
+        this.removeKeybinding("coverflow-switch-windows-on-all-workspaces");
         this.removeKeybinding("coverflow-switch-applications");
+        this.removeKeybinding("coverflow-switch-applications-on-all-workspaces");
     }
 
     _onSettingsChanged(settings, key=null) {

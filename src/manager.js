@@ -40,6 +40,10 @@ function matchWmClass(win) {
     return win.get_wm_class() === this && !win.is_skip_taskbar();
 }
 
+function matchOnAllWorkspaces(win) {
+    return win.on_all_workspaces && !win.is_skip_taskbar();
+}
+
 function matchWorkspace(win) {
     return win.get_workspace() === this && !win.is_skip_taskbar();
 }
@@ -176,6 +180,15 @@ export const Manager = class Manager {
                 windows.sort(sortWindowsByUserTime);
                 break;
 
+            case 'coverflow-switch-applications-on-all-workspaces':
+            case 'coverflow-switch-applications-on-all-workspaces-backward':
+                isApplicationSwitcher = true;
+            case 'coverflow-switch-windows-on-all-workspaces':
+            case 'coverflow-switch-windows-on-all-workspaces-backward':
+                windows = windows.filter(matchOnAllWorkspaces);
+                windows.sort(sortWindowsByUserTime);
+                break;
+
             case 'switch-applications':
             case 'switch-applications-backward':
             case 'coverflow-switch-applications':
@@ -224,6 +237,10 @@ export const Manager = class Manager {
             actionName = actionPrefix + "windows";
         } else if (type === "applications") {
             actionName = actionPrefix + "applications";
+        } else if (type === "windows-on-all-workspaces") {
+            actionName = actionPrefix + "windows-on-all-workspaces";
+        } else if (type === "applications-on-all-workspaces") {
+            actionName = actionPrefix + "applications-on-all-workspaces";
         }
         this.logger.log(`DBus Launch Action Name: ${actionName}`);
         if (actionName !== null) this._startWindowSwitcherInternal(this.display, null, actionName, 0, true);

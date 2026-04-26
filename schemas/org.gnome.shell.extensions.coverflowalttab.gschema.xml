@@ -257,6 +257,16 @@
         <summary>Switch Windows Keyboard Shortcut</summary>
         <description>Switch Windows Keyboard Shortcut Keybinding</description>
     </key>
+    <key name="coverflow-switch-windows-on-all-workspaces" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Windows that are visible on All Workspaces Keyboard Shortcut</summary>
+        <description>Window switcher shortcut that lists windows that are visible on every workspace</description>
+    </key>
+    <key name="coverflow-switch-windows-on-all-workspaces-backward" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Windows that are visible on All Workspaces Backward Keyboard Shortcut</summary>
+        <description>Backward window switcher shortcut for windows that are visible on every workspace</description>
+    </key>
     <key name="coverflow-switch-applications" type="as">
         <default><![CDATA[[""]]]></default>
         <summary>Switch Applications Keyboard Shortcut</summary>
@@ -266,6 +276,16 @@
         <default><![CDATA[[""]]]></default>
         <summary>Switch Applications Keyboard Shortcut</summary>
         <description>Switch Applications Keyboard Shortcut Keybinding</description>
+    </key>
+    <key name="coverflow-switch-applications-on-all-workspaces" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Applications that are visible on All Workspaces Keyboard Shortcut</summary>
+        <description>Application switcher shortcut using applications that are visible on every workspace</description>
+    </key>
+    <key name="coverflow-switch-applications-on-all-workspaces-backward" type="as">
+        <default><![CDATA[[""]]]></default>
+        <summary>Switch Applications that are visible on All Workspaces Backward Keyboard Shortcut</summary>
+        <description>Backward application switcher shortcut for applications that are visible on every workspace</description>
     </key>
     <key name="prefs-default-width" type="d">
         <default>700</default>

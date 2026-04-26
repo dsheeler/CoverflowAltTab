@@ -417,7 +417,9 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
         keybinding_page.add(custom_keybinding_pref_group);
         custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows", _("Coverflow Switch Windows Shortcut"), _("Activate window switcher.")));
+        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-windows-on-all-workspaces", _("Coverflow Switch Windows That are Visible on All Workspaces Shortcut"), _("Activate window switcher listing windows visible on all workspaces.")));
         custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications", _("Coverflow Switch Applications Shortcut"), _("Activate application switcher.")));
+        custom_keybinding_pref_group.add(buildShortcutButtonAdw(settings, "coverflow-switch-applications-on-all-workspaces", _("Coverflow Switch Applications That are Visible on All Workspaces Shortcut"), _("Activate application switcher listing applications visible on all workspaces.")));
 
         let pcorrection_pref_group = new Adw.PreferencesGroup({
             title: _("Advanced Options"),
