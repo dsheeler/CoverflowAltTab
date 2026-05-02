@@ -163,6 +163,9 @@ export const Manager = class Manager {
             }
         }
 
+        if (windows.length === 0)
+            return;
+
         let currentOnly = this.platform.getSettings().current_workspace_only;
         let focused = display.focus_window ? display.focus_window : windows[0];
 
@@ -267,5 +270,4 @@ export const Manager = class Manager {
         }
     }
 }
-
 

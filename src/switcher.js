@@ -1156,7 +1156,7 @@ export class Switcher {
         if (this._parent === null) this._manager.platform.removeBackground();
 
         this._disablePerspectiveCorrection();
-        Main.uiGroup.remove_child(this.actor);
+        this.actor.destroy();
         this._destroyed = true;
         this._logger.decreaseIndent();
         this._logger.log("Destroying Switcher DONE");
