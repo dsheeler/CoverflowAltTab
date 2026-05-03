@@ -183,6 +183,7 @@ export const Manager = class Manager {
             case 'coverflow-switch-applications-on-all-workspaces':
             case 'coverflow-switch-applications-on-all-workspaces-backward':
                 isApplicationSwitcher = true;
+                //eslint-disable-next-line no-fallthrough
             case 'coverflow-switch-windows-on-all-workspaces':
             case 'coverflow-switch-windows-on-all-workspaces-backward':
                 windows = windows.filter(matchOnAllWorkspaces);
