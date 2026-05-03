@@ -74,7 +74,7 @@ export class TimelineSwitcher extends Switcher {
                 name: metaWin.title,
                 x: metaWin.minimized ? 0:
                     windowActor.x - monitor.x,
-                y: metaWin.minimized ? -height/2:
+                y: metaWin.minimized ? 0:
                     windowActor.y - monitor.y,
                 rotation_angle_y: 0,
                 width: width,
