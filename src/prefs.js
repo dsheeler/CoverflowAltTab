@@ -280,8 +280,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             title: _("Coverflow Settings")
         });
         window_size_page.add(window_size_pref_group);
-        window_size_page.add(timeline_window_pref_group);
         window_size_page.add(coverflow_window_pref_group);
+        window_size_page.add(timeline_window_pref_group);
         window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
         let workspace_inclusion_options = [{
             id: 'current', name: _("Current workspace only")
