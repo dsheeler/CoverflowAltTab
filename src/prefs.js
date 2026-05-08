@@ -151,14 +151,14 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             {
                 choice: "Coverflow",
                 label: _("Coverflow"),
-                sensitive_widgets: [switcher_looping_method_row],
+                sensitive_widgets: [],
                 insensitive_widgets: [],
             },
             {
                 choice: "Timeline",
                 label: _("Timeline"),
                 sensitive_widgets: [],
-                insensitive_widgets: [switcher_looping_method_row],
+                insensitive_widgets: [],
             },
         ];
         switcher_pref_group.add(buildRadioAdw(settings, "switcher-style", switcher_style_buttons, _("Style"), _("Pick the type of switcher.")));
@@ -180,17 +180,11 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         switcher_pref_group.add(buildRadioAdw(settings, "position", position_buttons, _("Window Title Position"), _("Place window title above or below the switcher.")));
         switcher_pref_group.add(buildSwitcherAdw(settings, "enforce-primary-monitor", [], [], _("Enforce Primary Monitor"), _("Always show on the primary monitor, otherwise, show on the active monitor.")));
 
-        switcher_pref_group.add(switcher_looping_method_row);
         switcher_pref_group.add(buildSwitcherAdw(settings, "hide-panel", [], [], _("Hide Panel"), _("Hide panel when switching windows.")));
+        switcher_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Dim-Factor"), _("Bigger means darker."), true));
         switcher_pref_group.add(buildSwitcherAdw(settings, "invert-swipes", [], [], _("Invert Swipes"), _("Invert system scroll direction setting.")));
         switcher_pref_group.add(buildSwitcherAdw(settings, "start-with-next", [], [], _("Start with Next"), _("Start with the next window (instead of the current window).")));
         switcher_page.add(switcher_pref_group);
-
-        let background_pref_group = new Adw.PreferencesGroup({
-            title: _('Background'),
-        });
-        background_pref_group.add(buildRangeAdw(settings, "dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Dim-factor"), _("Bigger means darker."), true));
-        switcher_page.add(background_pref_group);
 
         let animation_page = new Adw.PreferencesPage({
             title: _("Animation"),
@@ -282,7 +276,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         window_size_page.add(window_size_pref_group);
         window_size_page.add(coverflow_window_pref_group);
         window_size_page.add(timeline_window_pref_group);
-        window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
+        window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Size to Monitor Size Ratio"), _("Maximum ratio of window size to monitor size."), true));
         let workspace_inclusion_options = [{
             id: 'current', name: _("Current workspace only")
         }, {
@@ -292,15 +286,16 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         }];
         window_size_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", workspace_inclusion_options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
         window_size_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
-        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-distance", [0, 1024, 1, [64, 128, 256, 512, 768, 1024]], _("Timeline Preview Layout Distance"), _("Distance in pixels between timeline previews."), true));
-        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-angle", [0, 60, 0.001, [29.36, 32, 45.00]], _("Timeline Preview Layout Angle"), _("Angle in degrees (0-90) for timeline preview layout such that previews go from lower left to upper right at this angle, with the current preview's upper left corner at the center of the monitor."), true));
-        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-tilt-angle", [0, 90, 0.5, [0, 15, 30, 45, 60, 75, 90]], _("Timeline Preview Tilt Angle"), _("Y-axis rotation angle in degrees applied to timeline previews."), true));
-        const scaling_factor_row = buildRangeAdw(settings, "timeline-preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Timeline Preview Scaling Factor"), _("Factor by which timeline previews successively shrink with distance from the top preview."), true);
-        timeline_window_pref_group.add(buildSwitcherAdw(settings, "timeline-preview-scale-with-distance", [scaling_factor_row], [], _("Timeline Preview Scaling"), _("Scale timeline previews by Timeline Preview Scaling Factor. Useful if you have a large number of windows and want to see them all.")));
+        coverflow_window_pref_group.add(switcher_looping_method_row);
+        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-distance", [0, 1024, 1, [64, 128, 256, 512, 768, 1024]], _("Window Layout Distance"), _("Distance in pixels between timeline window's upper left corners."), true));
+        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-angle", [0, 60, 0.001, [29.36, 32, 45.00]], _("Window Layout Angle"), _("Angle in degrees (0-90) for timeline window layout such that windows go from lower right to upper left at this angle between successive window's upper left corners. The topmost window's upper left corner is at the center of the monitor."), true));
+        timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-tilt-angle", [0, 90, 0.5, [0, 15, 30, 45, 60, 75, 90]], _("Window Tilt Angle"), _("Y-axis rotation angle in degrees applied to timeline windows."), true));
+        const scaling_factor_row = buildRangeAdw(settings, "timeline-preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Window Scaling Factor"), _("Factor by which timeline windows successively shrink with distance from the top window."), true);
+        timeline_window_pref_group.add(buildSwitcherAdw(settings, "timeline-preview-scale-with-distance", [scaling_factor_row], [], _("Enable Window Scaling"), _("Useful if you have a large number of windows and want to see them all.")));
         timeline_window_pref_group.add(scaling_factor_row);
-        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Coverflow Off-center Size Factor"), _("Factor by which coverflow previews successively shrink off to the side."), true));
-        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-window-angle", [0, 360, 0.5, [0, 90, 180, 270]], _("Coverflow Window Angle"), _("Angle of off-center windows in coverflow mode."), true));
-        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-window-offset-width", [0, 1000, 1, [0, 50,]], _("Coverflow Window Offset Width"), _("How far windows are off to the side in coverflow mode."), true));
+        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-preview-scaling-factor", [0, 1, 0.001, [0.250, 0.500, 0.800]], _("Window Scaling Factor"), _("Factor by which coverflow windows successively shrink off to the side."), true));
+        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-window-angle", [0, 360, 0.5, [0, 90, 180, 270]], _("Window Angle"), _("Angle of off-center windows in coverflow mode."), true));
+        coverflow_window_pref_group.add(buildRangeAdw(settings, "coverflow-window-offset-width", [0, 1000, 1, [0, 50,]], _("Window Offset Width"), _("How far windows are off to the side in coverflow mode."), true));
         let background_application_page = new Adw.PreferencesPage({
             title: _("AppSwitcher"),
             icon_name: "appswitcher-symbolic"
