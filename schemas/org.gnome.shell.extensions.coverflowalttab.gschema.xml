@@ -123,6 +123,11 @@
         <summary>Per monitor window switch</summary>
         <description>Switch between windows on current monitor (monitor with the mouse cursor)</description>
     </key>
+    <key type="b" name="skip-minimized-windows">
+        <default>false</default>
+        <summary>Skip minimized windows</summary>
+        <description>When enabled, minimized windows are excluded from the window switcher.</description>
+    </key>
     <key type="b" name="icon-has-shadow">
         <default>false</default>
         <summary>Icon has shadow switch</summary>

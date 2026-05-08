@@ -223,6 +223,10 @@ export const Manager = class Manager {
               win.get_monitor() === Main.layoutManager.currentMonitor.index );
         }
 
+        if (this.platform.getSettings().skip_minimized_windows) {
+            windows = windows.filter(win => !win.minimized);
+        }
+
         if (windows.length) {
             const currentIndex = 0;
             let switcher_class = this.platform.getSettings().switcher_class;

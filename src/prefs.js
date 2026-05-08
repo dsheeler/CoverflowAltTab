@@ -286,6 +286,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         }];
         window_size_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", workspace_inclusion_options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
         window_size_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
+        window_size_pref_group.add(buildSwitcherAdw(settings, "skip-minimized-windows", [], [], _("Skip Minimized Windows"), _("Exclude minimized windows from the switcher.")));
         coverflow_window_pref_group.add(switcher_looping_method_row);
         timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-distance", [0, 1024, 1, [64, 128, 256, 512, 768, 1024]], _("Window Layout Distance"), _("Distance in pixels between timeline window's upper left corners."), true));
         timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-angle", [0, 60, 0.001, [29.36, 32, 45.00]], _("Window Layout Angle"), _("Angle in degrees (0-90) for timeline window layout such that windows go from lower right to upper left at this angle between successive window's upper left corners. The topmost window's upper left corner is at the center of the monitor."), true));
