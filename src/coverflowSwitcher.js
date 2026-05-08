@@ -201,7 +201,7 @@ export class CoverflowSwitcher extends BaseSwitcher {
                 pivot_point = new Graphene.Point({ x: 0.5 + 0.5 * progress, y: 0.5});
             }
         }
-        let scale = Math.pow(this._settings.preview_scaling_factor, Math.abs(index - pivot_index));
+        let scale = Math.pow(this._settings.coverflow_preview_scaling_factor, Math.abs(index - pivot_index));
         scale = scale * preview.scale;
         let tweenParams = {
             x: findUpperLeftFromCenter(preview.width, this._previewsCenterPosition.x),

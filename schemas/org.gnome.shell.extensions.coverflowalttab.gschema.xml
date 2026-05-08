@@ -139,7 +139,7 @@
         <summary>The maximum ratio of the preview dimensions with the monitor dimensions</summary>
         <description>Define the ratio of the preview to monitor sizes.</description>
     </key>
-    <key type="d" name="preview-scaling-factor">
+    <key type="d" name="coverflow-preview-scaling-factor">
         <range min="0" max="1"/>
         <default>0.8</default>
         <summary>In Coverflow Switcher, scales the previews as they spread out to the sides in </summary>
