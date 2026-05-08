@@ -205,19 +205,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         animation_pref_group.add(buildRangeAdw(settings, "animation-time", [0.01, 2, 0.001, [0.5, 1, 1.5]], _("Duration [s]"), "", true));
         animation_pref_group.add(buildSwitcherAdw(settings, "randomize-animation-times", [], [], _("Randomize Durations"), _("Each animation duration assigned randomly between 0 and configured duration.")));
 
-        let windows_pref_group = new Adw.PreferencesGroup({
-            title: _('Included'),
-        });
-        let options = [{
-            id: 'current', name: _("Current workspace only")
-        }, {
-            id: 'all', name: _("All workspaces")
-        }, {
-            id: 'all-currentfirst', name: _("All workspaces, current first")
-        }];
-        windows_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
-        windows_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
-
         let icon_page = new Adw.PreferencesPage({
             title: _("Icons"),
             icon_name: "icons-symbolic",
@@ -284,7 +271,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             icon_name: "windows-symbolic"
         })
         let window_size_pref_group = new Adw.PreferencesGroup({
-            title: _("Properties")
+            title: _("General Settings")
         });
         let timeline_window_pref_group = new Adw.PreferencesGroup({
             title: _("Timeline Settings")
@@ -295,8 +282,16 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         window_size_page.add(window_size_pref_group);
         window_size_page.add(timeline_window_pref_group);
         window_size_page.add(coverflow_window_pref_group);
-        window_size_page.add(windows_pref_group);
         window_size_pref_group.add(buildRangeAdw(settings, "preview-to-monitor-ratio", [0, 1, 0.001, [0.250, 0.500, 0.750]], _("Window Preview Size to Monitor Size Ratio"), _("Maximum ratio of window preview size to monitor size."), true));
+        let workspace_inclusion_options = [{
+            id: 'current', name: _("Current workspace only")
+        }, {
+            id: 'all', name: _("All workspaces")
+        }, {
+            id: 'all-currentfirst', name: _("All workspaces, current first")
+        }];
+        window_size_pref_group.add(buildDropDownAdw(settings, "current-workspace-only", workspace_inclusion_options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
+        window_size_pref_group.add(buildSwitcherAdw(settings, "switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
         timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-distance", [0, 1024, 1, [64, 128, 256, 512, 768, 1024]], _("Timeline Preview Layout Distance"), _("Distance in pixels between timeline previews."), true));
         timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-angle", [0, 60, 0.001, [29.36, 32, 45.00]], _("Timeline Preview Layout Angle"), _("Angle in degrees (0-90) for timeline preview layout such that previews go from lower left to upper right at this angle, with the current preview's upper left corner at the center of the monitor."), true));
         timeline_window_pref_group.add(buildRangeAdw(settings, "timeline-preview-tilt-angle", [0, 90, 0.5, [0, 15, 30, 45, 60, 75, 90]], _("Timeline Preview Tilt Angle"), _("Y-axis rotation angle in degrees applied to timeline previews."), true));
