@@ -55,6 +55,7 @@ build:
 		--extra-source ./shortcutButton.js \
 		--extra-source ../metadata.json \
 		--extra-source ./logger.js \
+        --extra-source ./settings.js \
 		--extra-source ../ui \
 		--extra-source ../src/effects \
         --extra-source ../dbus-interfaces \
