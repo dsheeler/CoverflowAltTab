@@ -649,7 +649,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     getPanels() {
         let panels = [];
         for (let child of Main.layoutManager.uiGroup.get_children()) {
-            if (child.get_name() === "panelBox") {
+            if (child.get_name() === "panelBox" || child.get_name() === "dashtodockContainer") {
                 panels.push(child);
             }
         }
