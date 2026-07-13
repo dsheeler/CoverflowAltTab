@@ -47,6 +47,16 @@ const DESKTOP_INTERFACE_SCHEMA = 'org.gnome.desktop.interface';
 const KEY_TEXT_SCALING_FACTOR = 'text-scaling-factor';
 const DESKTOP_TOUCHPAD_SCHEMA = 'org.gnome.desktop.peripherals.touchpad';
 const KEY_NATURAL_SCROLL = 'natural-scroll';
+const DASH_TO_DOCK_UUIDS = [
+    'dash-to-dock@micxgx.gmail.com',
+    'ubuntu-dock@ubuntu.com',
+];
+
+class Visibility {}
+Visibility.HIDDEN = 1;
+Visibility.HIDING = 2;
+Visibility.SHOWING = 3;
+
 
 const TRANSITION_TYPE = 'easeOutQuad';
 
@@ -568,9 +578,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
      dimBackground() {
+        this._setDashToDockVisibility(Visibility.SHOWING);
         if (this._settings.hide_panel) {
             this.hidePanels();
         }
+
         // hide gnome-shell legacy tray
         try {
             if (Main.legacyTray) {
@@ -616,23 +628,16 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     lightenBackground() {
+        this._setDashToDockVisibility(Visibility.HIDING);
         if (this._settings.hide_panel) {
             this.showPanels(this._settings.animation_time);
-        }
-        // show gnome-shell legacy trayconn
-        try {
-            if (Main.legacyTray) {
-                Main.legacyTray.actor.show();
-            }
-        } catch (e) {
-            //ignore missing legacy tray
-            this._logger.error(e);
         }
 
         this.tween(this._backgroundGroup, {
             opacity: 0,
             time: this._settings.animation_time,
             transition: 'easeInOutQuint',
+            onComplete: () => this._setDashToDockVisibility(Visibility.HIDDEN),
         });
         this.tween(this._backgroundShade, {
             time: this._settings.animation_time * 0.95,
@@ -644,6 +649,39 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
     removeBackground() {
         this._backgroundGroup.destroy();
+    }
+
+    /**
+     * Hide/show Dash to Dock via its exported dockManager (private _hide/_show).
+     * Falls back quietly if Dash to Dock / Ubuntu Dock is not enabled.
+     */
+    async _setDashToDockVisibility(visibility) {
+        try {
+            for (const uuid of DASH_TO_DOCK_UUIDS) {
+                const extension = Main.extensionManager.lookup(uuid);
+                if (!extension)
+                    continue;
+
+                // DtD exports `dockManager` specifically for other extensions.
+                const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
+                if (!dockManager)
+                    continue;
+
+                for (const dock of dockManager._allDocks) {
+                    if (visibility === Visibility.SHOWING) {
+                        dock._onOverviewShowing();
+                    } else if (visibility === Visibility.HIDING) {
+                        dock._onOverviewHiding();
+                    } else if (visibility === Visibility.HIDDEN) {
+                        dock._onOverviewHidden();
+                    }
+                }
+
+                return;
+            }
+        } catch (e) {
+            this._logger.error(e);
+        }
     }
 
     getPanels() {
