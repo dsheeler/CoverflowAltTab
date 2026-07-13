@@ -518,12 +518,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
     initBackground() {
         this._backgroundGroup = new Meta.BackgroundGroup();
         this._backgroundGroup.set_name("coverflow-alt-tab-background-group");
-        Main.layoutManager.uiGroup.add_child(this._backgroundGroup);
-        if (this._backgroundGroup.lower_bottom) {
-            this._backgroundGroup.lower_bottom();
-        } else {
-            Main.uiGroup.set_child_below_sibling(this._backgroundGroup, null);
-        }
+        Main.uiGroup.add_child(this._backgroundGroup);
+        Main.uiGroup.set_child_above_sibling(this._backgroundGroup, global.window_group);
 
         this._backgroundShade = new Clutter.Actor({
             opacity: 0,
@@ -542,7 +538,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
         this._backgroundGroup.add_child(this._backgroundShade);
         this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
-
+        this._backgroundGroup.opacity = 0;
         this._backgroundGroup.hide();
         for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
             new Background.BackgroundManager({
@@ -585,6 +581,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
             this._logger.error(e);
         }
         this._backgroundGroup.show();
+        this.tween(this._backgroundGroup, {
+            opacity: 255,
+            time: this._settings.animation_time,
+            transition: 'easeInOutQuint',
+        });
         this.tween(this._backgroundShade, {
             opacity: 255,
             time: this._settings.animation_time,
@@ -628,6 +629,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
             this._logger.error(e);
         }
 
+        this.tween(this._backgroundGroup, {
+            opacity: 0,
+            time: this._settings.animation_time,
+            transition: 'easeInOutQuint',
+        });
         this.tween(this._backgroundShade, {
             time: this._settings.animation_time * 0.95,
             transition: 'easeInOutQuint',

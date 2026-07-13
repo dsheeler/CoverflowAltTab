@@ -111,6 +111,8 @@ export class Switcher {
         this.actor.add_child(this.previewActor);
         Main.uiGroup.add_child(this.actor);
 
+        Main.uiGroup.set_child_above_sibling(this.actor, manager.platform._backgroundGroup);
+
         this.gestureInProgress = false;
 
         let invert = false;
@@ -207,7 +209,13 @@ export class Switcher {
         }
 
         // hide windows and showcd  Coverflow actors
-        if (this._parent === null) global.window_group.hide();
+        if (this._parent === null) {
+            for (let child of global.window_group.get_children()) {
+                if (child !== global.window_group.get_first_child()) {
+                    child.hide();
+                }
+            }
+        }
 
         if (this._parent === null) this.actor.show();
         if (this._parent !== null) {
@@ -1152,8 +1160,16 @@ export class Switcher {
         this._windowManager.disconnect(this._dcid);
         this._windowManager.disconnect(this._mcid);
 
-        if (this._parent === null) { global.window_group.show() };
         if (this._parent === null) this._manager.platform.removeBackground();
+        if (this._parent === null) {
+            for (let child of global.window_group.get_children()) {
+                if (typeof child.get_meta_window === "function") {
+                    if (!child.get_meta_window().minimized) {
+                        child.show();
+                    }
+                }
+            }
+        }
 
         this._disablePerspectiveCorrection();
         Main.uiGroup.remove_child(this.actor);
@@ -1161,7 +1177,6 @@ export class Switcher {
         this._logger.decreaseIndent();
         this._logger.log("Destroying Switcher DONE");
     }
-
 
     _animateClosedWindowTitle(window_title, time) {
         if (this._iconFadeInOut) {
