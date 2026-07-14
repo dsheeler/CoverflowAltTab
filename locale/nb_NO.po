@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-05 20:07-0600\n"
+"POT-Creation-Date: 2026-07-14 16:42-0500\n"
 "PO-Revision-Date: 2024-01-09 11:27+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
@@ -19,445 +19,626 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: src/prefs.js:105
-msgid "Reset to default value"
-msgstr "Tilbakestill til forvalgt verdi"
-
-#: src/prefs.js:121
+#: src/prefs.js:118
 #, javascript-format
 msgid "Version %d"
 msgstr "Versjon %d"
 
-#: src/prefs.js:127
+#: src/prefs.js:123
 msgid "General"
 msgstr "Generelt"
 
-#: src/prefs.js:132
+#: src/prefs.js:128
 #, fuzzy
 msgid "Switcher Properties"
 msgstr "Vindusbytter"
 
-#: src/prefs.js:137
+#: src/prefs.js:133
 msgid "Flip Stack"
 msgstr "Vend stabel"
 
-#: src/prefs.js:143
+#: src/prefs.js:139
 msgid "Carousel"
 msgstr "Karusell"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "Looping Method"
 msgstr "Gjentagelsesmetode"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "How to cycle through windows."
 msgstr "Hvordan man bytter seg gjennom vinduene"
 
-#: src/prefs.js:153
+#: src/prefs.js:149
 msgid "Coverflow"
 msgstr "Omslagsflyt"
 
-#: src/prefs.js:159
+#: src/prefs.js:155
 msgid "Timeline"
 msgstr "Tidslinje"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Style"
 msgstr ""
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Pick the type of switcher."
 msgstr ""
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Vertical Offset"
 msgstr "Loddrett forskyvning"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Positive value moves everything down, negative up."
 msgstr "Positiv verdi betyr alt ned, og negativ verdi opp."
 
-#: src/prefs.js:169
+#: src/prefs.js:165
 msgid "Bottom"
 msgstr "Under"
 
-#: src/prefs.js:175
+#: src/prefs.js:171
 msgid "Top"
 msgstr "Over"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 #, fuzzy
 msgid "Window Title Position"
 msgstr "Vindusflisposisjon"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Place window title above or below the switcher."
 msgstr "Plasser vindusflis over eller under veksleren."
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid "Enforce Primary Monitor"
 msgstr "Påtving primær skjerm"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
 msgstr "Alltid vis på primærskjerm. Ellers vis på aktiv skjerm."
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide Panel"
 msgstr "Skjul panel"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide panel when switching windows."
 msgstr "Skjul panel ved bytting av vinduer."
 
-#: src/prefs.js:185
-msgid "Invert Swipes"
-msgstr "Inverter dragninger"
-
-#: src/prefs.js:185
-msgid "Invert system scroll direction setting."
-msgstr ""
-
-#: src/prefs.js:189
-msgid "Background"
+#: src/prefs.js:180
+#, fuzzy
+msgid "Background Dim-Factor"
 msgstr "Bakgrunn"
 
-#: src/prefs.js:191
-msgid "Dim-factor"
-msgstr "Dimmingsfaktor"
-
-#: src/prefs.js:191
+#: src/prefs.js:180
 #, fuzzy
 msgid "Bigger means darker."
 msgstr "Mindre verdi gjør mørkere."
 
-#: src/prefs.js:195
+#: src/prefs.js:181
+msgid "Invert Swipes"
+msgstr "Inverter dragninger"
+
+#: src/prefs.js:181
+msgid "Invert system scroll direction setting."
+msgstr ""
+
+#: src/prefs.js:182
+msgid "Start with Next"
+msgstr ""
+
+#: src/prefs.js:182
+#, fuzzy
+msgid "Start with the next window (instead of the current window)."
+msgstr "Bytt mellom vinduer på nåværende skjerm."
+
+#: src/prefs.js:186
+#, fuzzy
+msgid "Dash to Dock Properties"
+msgstr "Vindusbytter"
+
+#: src/prefs.js:191
+msgid "Show"
+msgstr ""
+
+#: src/prefs.js:197
+msgid "Hide"
+msgstr ""
+
+#: src/prefs.js:203
+msgid "Neither"
+msgstr ""
+
+#: src/prefs.js:209
+msgid "Dash to Dock Visibility Behavior"
+msgstr ""
+
+#: src/prefs.js:210
+msgid "How to display dash-to-dock when the switcher is active."
+msgstr ""
+
+#: src/prefs.js:214
 msgid "Animation"
 msgstr "Animasjon"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
+#: src/prefs.js:219 src/prefs.js:232 src/prefs.js:329
 msgid "Properties"
 msgstr ""
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Easing Function"
 msgstr ""
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Determine how windows move."
 msgstr ""
 
-#: src/prefs.js:204
+#: src/prefs.js:223
 msgid "Duration [s]"
 msgstr "Verighet [s]"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid "Randomize Durations"
 msgstr "Tilfeldiggjøringsvarighet"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr ""
 "Hver animasjonsvarighet tildeles tilfeldig mellom 0 og angitt varighet."
 
-#: src/prefs.js:208
-msgid "Included"
-msgstr ""
-
-#: src/prefs.js:211
-msgid "Current workspace only"
-msgstr "Kun nåværende arbeidsområder"
-
-#: src/prefs.js:213
-msgid "All workspaces"
-msgstr "Alle arbeidsområder"
-
-#: src/prefs.js:215
-msgid "All workspaces, current first"
-msgstr "Alle arbeidsområder, nåværende først"
-
-#: src/prefs.js:217
-msgid "Workspaces"
-msgstr "Arbeidsområder"
-
-#: src/prefs.js:217
-msgid "Switch between windows on current or on all workspaces."
-msgstr "Bytt mellom vinduer på nåværende, eller alle arbeidsområder"
-
-#: src/prefs.js:218
-msgid "Current Monitor"
-msgstr "Nåværende skjerm"
-
-#: src/prefs.js:218
-msgid "Switch between windows on current monitor."
-msgstr "Bytt mellom vinduer på nåværende skjerm."
-
-#: src/prefs.js:221
+#: src/prefs.js:227
 #, fuzzy
 msgid "Icons"
 msgstr "Ikon"
 
-#: src/prefs.js:230
+#: src/prefs.js:236
 msgid "Overlay Icon Size"
 msgstr "Ikonstørrelse for overlag"
 
-#: src/prefs.js:230
+#: src/prefs.js:236
 msgid "Set the overlay icon size in pixels."
 msgstr "Sett ikonstørrelse for overlaget i piksler."
 
-#: src/prefs.js:231
+#: src/prefs.js:237
 msgid "Overlay Icon Opacity"
 msgstr "Ikondekkevne for overlag"
 
-#: src/prefs.js:231
+#: src/prefs.js:237
 msgid "Set the overlay icon opacity."
 msgstr "Sett ikondekkevne for overlaget."
 
-#: src/prefs.js:235
+#: src/prefs.js:241
 msgid "Classic"
 msgstr "Klassisk"
 
-#: src/prefs.js:241
+#: src/prefs.js:247
 msgid "Overlay"
 msgstr "Overlag"
 
-#: src/prefs.js:247
+#: src/prefs.js:253
 msgid "Attached"
 msgstr ""
 
-#: src/prefs.js:252
+#: src/prefs.js:258
 msgid "Application Icon Style"
 msgstr "Programikonstil"
 
-#: src/prefs.js:257
+#: src/prefs.js:263
 msgid "Fade Only"
 msgstr ""
 
-#: src/prefs.js:263
+#: src/prefs.js:269
 msgid "Scale Only"
 msgstr ""
 
-#: src/prefs.js:269
+#: src/prefs.js:275
 msgid "Fade and Scale"
 msgstr ""
 
-#: src/prefs.js:274
+#: src/prefs.js:280
 msgid "Add / Remove Effects"
 msgstr ""
 
-#: src/prefs.js:274
+#: src/prefs.js:280
 msgid "How Icons and Labels ease in and out."
 msgstr ""
 
-#: src/prefs.js:278
+#: src/prefs.js:284
 msgid "Icon Shadow"
 msgstr "Ikonskygge"
 
-#: src/prefs.js:282
+#: src/prefs.js:288
 msgid "Windows"
 msgstr "Vinduer"
 
-#: src/prefs.js:290
+#: src/prefs.js:292
 #, fuzzy
-msgid "Window Preview Size to Monitor Size Ratio"
+msgid "General Settings"
+msgstr "Generelt"
+
+#: src/prefs.js:295
+#, fuzzy
+msgid "Timeline Settings"
+msgstr "Tidslinje"
+
+#: src/prefs.js:298
+#, fuzzy
+msgid "Coverflow Settings"
+msgstr "Omslagsflyt"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Window Size to Monitor Size Ratio"
 msgstr "Forhåndsvisning av vindu i forhold til skjermstørrelse"
 
-#: src/prefs.js:290
+#: src/prefs.js:303
 #, fuzzy
-msgid "Maximum ratio of window preview size to monitor size."
+msgid "Maximum ratio of window size to monitor size."
 msgstr ""
 "Maks. størrelse på forhåndsvisning av vindu i forhold til skjermstørrelse"
 
-#: src/prefs.js:291
-#, fuzzy
-msgid "Off-center Size Factor"
-msgstr "Usentrert størrelsesfaktor"
+#: src/prefs.js:305
+msgid "Current workspace only"
+msgstr "Kun nåværende arbeidsområder"
 
-#: src/prefs.js:291
-msgid "Factor by which to successively shrink previews off to the side."
-msgstr "Forhold forhåndsvisninger suksessivt skal krympes til siden."
+#: src/prefs.js:307
+msgid "All workspaces"
+msgstr "Alle arbeidsområder"
 
-#: src/prefs.js:292
-msgid "Coverflow Window Angle"
+#: src/prefs.js:309
+msgid "All workspaces, current first"
+msgstr "Alle arbeidsområder, nåværende først"
+
+#: src/prefs.js:311
+msgid "Workspaces"
+msgstr "Arbeidsområder"
+
+#: src/prefs.js:311
+msgid "Switch between windows on current or on all workspaces."
+msgstr "Bytt mellom vinduer på nåværende, eller alle arbeidsområder"
+
+#: src/prefs.js:312
+msgid "Current Monitor"
+msgstr "Nåværende skjerm"
+
+#: src/prefs.js:312
+msgid "Switch between windows on current monitor."
+msgstr "Bytt mellom vinduer på nåværende skjerm."
+
+#: src/prefs.js:313
+msgid "Skip Minimized Windows"
 msgstr ""
 
-#: src/prefs.js:292
+#: src/prefs.js:313
+msgid "Exclude minimized windows from the switcher."
+msgstr ""
+
+#: src/prefs.js:315
+msgid "Window Layout Distance"
+msgstr ""
+
+#: src/prefs.js:315
+msgid "Distance in pixels between timeline window's upper left corners."
+msgstr ""
+
+#: src/prefs.js:316
+msgid "Window Layout Angle"
+msgstr ""
+
+#: src/prefs.js:316
+msgid ""
+"Angle in degrees (0-90) for timeline window layout such that windows go from "
+"lower right to upper left at this angle between successive window's upper "
+"left corners. The topmost window's upper left corner is at the center of the "
+"monitor."
+msgstr ""
+
+#: src/prefs.js:317
+#, fuzzy
+msgid "Window Tilt Angle"
+msgstr "Vindusflisposisjon"
+
+#: src/prefs.js:317
+msgid "Y-axis rotation angle in degrees applied to timeline windows."
+msgstr ""
+
+#: src/prefs.js:318 src/prefs.js:321
+msgid "Window Scaling Factor"
+msgstr ""
+
+#: src/prefs.js:318
+#, fuzzy
+msgid ""
+"Factor by which timeline windows successively shrink with distance from the "
+"top window."
+msgstr "Forhold forhåndsvisninger suksessivt skal krympes til siden."
+
+#: src/prefs.js:319
+msgid "Enable Window Scaling"
+msgstr ""
+
+#: src/prefs.js:319
+msgid "Useful if you have a large number of windows and want to see them all."
+msgstr ""
+
+#: src/prefs.js:321
+#, fuzzy
+msgid "Factor by which coverflow windows successively shrink off to the side."
+msgstr "Forhold forhåndsvisninger suksessivt skal krympes til siden."
+
+#: src/prefs.js:322
+#, fuzzy
+msgid "Window Angle"
+msgstr "Vinduer"
+
+#: src/prefs.js:322
 msgid "Angle of off-center windows in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:293
-msgid "Coverflow Window Offset Width"
+#: src/prefs.js:323
+msgid "Window Offset Width"
 msgstr ""
 
-#: src/prefs.js:293
+#: src/prefs.js:323
 msgid "How far windows are off to the side in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:295
+#: src/prefs.js:325
 #, fuzzy
 msgid "AppSwitcher"
 msgstr "Bytter"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 #, fuzzy
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "Få programbytteren til å oppføre seg som vindusbytteren"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "Ikke grupper vinduer fra samme program i underkategori."
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Desaturate"
 msgstr "Opphev metning"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Larger means more desaturation."
 msgstr "Høyere verdi gir mer avmetning."
 
-#: src/prefs.js:306
+#: src/prefs.js:336
 msgid "Tint"
 msgstr "Iblanding"
 
-#: src/prefs.js:318 src/prefs.js:448
+#: src/prefs.js:348 src/prefs.js:487
 msgid "Color"
 msgstr ""
 
-#: src/prefs.js:339 src/prefs.js:472
+#: src/prefs.js:369 src/prefs.js:511
 msgid "Set to Theme Color"
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "Blend"
 msgstr ""
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 
-#: src/prefs.js:398
+#: src/prefs.js:435
 #, fuzzy
 msgid "Glitch"
 msgstr "Forstyrrelse"
 
-#: src/prefs.js:401
+#: src/prefs.js:438
 msgid "Keybindings"
 msgstr "Tastaturtilknytninger"
 
-#: src/prefs.js:406
+#: src/prefs.js:443
 msgid "System Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:407
+#: src/prefs.js:444
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:447
 #, fuzzy
 msgid "Bind to 'switch-windows'"
 msgstr "Tilknytt 'switch-windows'"
 
-#: src/prefs.js:411
+#: src/prefs.js:448
 #, fuzzy
 msgid "Bind to 'switch-applications'"
 msgstr "Tilknytt 'switch-applications'"
 
-#: src/prefs.js:414
+#: src/prefs.js:451
 msgid "Internal Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:415
+#: src/prefs.js:452
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 #, fuzzy
 msgid "Activate window switcher."
 msgstr "Programveksler"
 
-#: src/prefs.js:419
+#: src/prefs.js:456
+msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
+msgstr ""
+
+#: src/prefs.js:456
+#, fuzzy
+msgid "Activate window switcher listing windows visible on all workspaces."
+msgstr "Bytt mellom vinduer på nåværende, eller alle arbeidsområder"
+
+#: src/prefs.js:457
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
-#: src/prefs.js:419
+#: src/prefs.js:457
 #, fuzzy
 msgid "Activate application switcher."
 msgstr "Programveksler"
 
-#: src/prefs.js:422
+#: src/prefs.js:458
+msgid ""
+"Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
+msgstr ""
+
+#: src/prefs.js:458
+msgid ""
+"Activate application switcher listing applications visible on all workspaces."
+msgstr ""
+
+#: src/prefs.js:461
 msgid "Advanced Options"
 msgstr ""
 
-#: src/prefs.js:426
+#: src/prefs.js:465
 msgid "None"
 msgstr "Ingen"
 
-#: src/prefs.js:427
+#: src/prefs.js:466
 msgid "Move Camera"
 msgstr "Kameraflytting"
 
-#: src/prefs.js:428
+#: src/prefs.js:467
 msgid "Adjust Angles"
 msgstr "Juster vinkler"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Perspective Correction"
 msgstr "Perspektivkorrigering"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Method to make off-center switcher look centered."
 msgstr ""
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Verbose Logging"
 msgstr ""
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Log debug and normal messages."
 msgstr ""
 
-#: src/prefs.js:435
+#: src/prefs.js:474
 msgid "Highlight Window Under Mouse"
 msgstr "Framhev vindu under mus"
 
-#: src/prefs.js:436
+#: src/prefs.js:475
 #, fuzzy
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr "Tegn vindusramme for vindu under mus for å tilkjennegi klikkeffekt."
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise Window Under Mouse"
 msgstr "Hev vindu under peker"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise the window under the mouse above all others."
 msgstr "Hev vinduet under pekeren over alle andre."
 
-#: src/prefs.js:529
+#: src/prefs.js:576
 msgid "Contribute"
 msgstr "Bidra"
 
-#: src/prefs.js:565
-msgid "Code (create pull requests, report issues, etc.)"
-msgstr "Kode (opprett flettingsforespørsler, rapporter feil, osv.)"
+#: src/prefs.js:610
+msgid "Get involved"
+msgstr ""
 
-#: src/prefs.js:573
+#: src/prefs.js:611
+msgid ""
+"Help improve this extension by contributing code, reporting issues, or "
+"translating it into your language."
+msgstr ""
+
+#: src/prefs.js:615
+msgid "Code and Issues"
+msgstr ""
+
+#: src/prefs.js:621
+msgid "Translations"
+msgstr ""
+
+#: src/prefs.js:627
 msgid "Donate"
 msgstr ""
 
-#: src/prefs.js:594
-msgid "Translate"
+#: src/prefs.js:628
+msgid "If you use this extension, consider supporting its development."
 msgstr ""
+
+#: src/prefs.js:632
+msgid "Liberapay"
+msgstr ""
+
+#: src/prefs.js:638
+msgid "PayPal"
+msgstr ""
+
+#: src/prefs.js:644
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: src/prefs.js:650
+msgid "Preferences backup"
+msgstr ""
+
+#: src/prefs.js:651
+msgid ""
+"Save or restore this extension's settings, or reset everything to defaults."
+msgstr ""
+
+#: src/prefs.js:656
+msgid "Settings"
+msgstr ""
+
+#: src/prefs.js:660
+msgid "Load"
+msgstr ""
+
+#: src/prefs.js:666
+msgid "Load Settings"
+msgstr ""
+
+#: src/prefs.js:673
+msgid "Could not read settings file"
+msgstr ""
+
+#: src/prefs.js:687
+msgid "Save"
+msgstr ""
+
+#: src/prefs.js:691
+msgid "Save Settings"
+msgstr ""
+
+#: src/prefs.js:698
+msgid "dconf dump failed"
+msgstr ""
+
+#: src/prefs.js:708
+msgid "Reset"
+msgstr ""
+
+#: src/prefs.js:789
+msgid "Reset to default value"
+msgstr "Tilbakestill til forvalgt verdi"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
@@ -471,9 +652,19 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: src/shortcutButton.js:90
+#: src/shortcutButton.js:89
 msgid "Press your keyboard shortcut..."
 msgstr ""
+
+#~ msgid "Dim-factor"
+#~ msgstr "Dimmingsfaktor"
+
+#, fuzzy
+#~ msgid "Off-center Size Factor"
+#~ msgstr "Usentrert størrelsesfaktor"
+
+#~ msgid "Code (create pull requests, report issues, etc.)"
+#~ msgstr "Kode (opprett flettingsforespørsler, rapporter feil, osv.)"
 
 #~ msgid "Swipe content instead of view."
 #~ msgstr "Bytt innhold i steden for visning"

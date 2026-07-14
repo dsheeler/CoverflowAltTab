@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2025-02-05 20:07-0600\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-14 16:42-0500\n"
 "PO-Revision-Date: 2025-06-13 19:02+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/"
-"coverflow-alt-tab/source/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/coverflow-alt-"
+"tab/source/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,340 +19,434 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#: src/prefs.js:105
-msgid "Reset to default value"
-msgstr "Restablecer valor predeterminado"
-
-#: src/prefs.js:121
+#: src/prefs.js:118
 #, javascript-format
 msgid "Version %d"
 msgstr "Versión %d"
 
-#: src/prefs.js:127
+#: src/prefs.js:123
 msgid "General"
 msgstr "General"
 
-#: src/prefs.js:132
+#: src/prefs.js:128
 msgid "Switcher Properties"
 msgstr "Propiedades del conmutador"
 
-#: src/prefs.js:137
+#: src/prefs.js:133
 msgid "Flip Stack"
 msgstr "Voltear pila"
 
-#: src/prefs.js:143
+#: src/prefs.js:139
 msgid "Carousel"
 msgstr "Carrusel"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "Looping Method"
 msgstr "Método del bucle"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "How to cycle through windows."
 msgstr "Cómo pasar por las ventanas."
 
-#: src/prefs.js:153
+#: src/prefs.js:149
 msgid "Coverflow"
 msgstr "Coverflow"
 
-#: src/prefs.js:159
+#: src/prefs.js:155
 msgid "Timeline"
 msgstr "Línea de tiempo"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Style"
 msgstr "Estilo"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Pick the type of switcher."
 msgstr "Elegir el tipo de conmutador."
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Vertical Offset"
 msgstr "Desplazamiento vertical"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Positive value moves everything down, negative up."
 msgstr "Un valor positivo mueve todo hacia abajo, negativo hacia arriba."
 
-#: src/prefs.js:169
+#: src/prefs.js:165
 msgid "Bottom"
 msgstr "Inferior"
 
-#: src/prefs.js:175
+#: src/prefs.js:171
 msgid "Top"
 msgstr "Superior"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Window Title Position"
 msgstr "Posición del título de ventana"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Place window title above or below the switcher."
 msgstr "Coloque el título de la ventana arriba o debajo del conmutador."
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid "Enforce Primary Monitor"
 msgstr "Forzar el monitor primario"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
 msgstr ""
 "Siempre mostrar en el monitor primario, de otra manera, mostrar en el "
 "monitor activo."
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide Panel"
 msgstr "Ocultar panel"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide panel when switching windows."
 msgstr "Ocultar el panel cuando se estén cambiando las ventanas."
 
-#: src/prefs.js:185
-msgid "Invert Swipes"
-msgstr "Golpes invertidos"
-
-#: src/prefs.js:185
-msgid "Invert system scroll direction setting."
-msgstr "Invertir la dirección de desplazamiento del sistema."
-
-#: src/prefs.js:189
-msgid "Background"
+#: src/prefs.js:180
+#, fuzzy
+msgid "Background Dim-Factor"
 msgstr "Fondo"
 
-#: src/prefs.js:191
-msgid "Dim-factor"
-msgstr "Factor de atenuación"
-
-#: src/prefs.js:191
+#: src/prefs.js:180
 msgid "Bigger means darker."
 msgstr "Más grande significa más oscuro."
 
-#: src/prefs.js:195
+#: src/prefs.js:181
+msgid "Invert Swipes"
+msgstr "Golpes invertidos"
+
+#: src/prefs.js:181
+msgid "Invert system scroll direction setting."
+msgstr "Invertir la dirección de desplazamiento del sistema."
+
+#: src/prefs.js:182
+msgid "Start with Next"
+msgstr ""
+
+#: src/prefs.js:182
+#, fuzzy
+msgid "Start with the next window (instead of the current window)."
+msgstr "Cambiar entre ventanas en el monitor actual."
+
+#: src/prefs.js:186
+#, fuzzy
+msgid "Dash to Dock Properties"
+msgstr "Propiedades del conmutador"
+
+#: src/prefs.js:191
+msgid "Show"
+msgstr ""
+
+#: src/prefs.js:197
+msgid "Hide"
+msgstr ""
+
+#: src/prefs.js:203
+msgid "Neither"
+msgstr ""
+
+#: src/prefs.js:209
+msgid "Dash to Dock Visibility Behavior"
+msgstr ""
+
+#: src/prefs.js:210
+msgid "How to display dash-to-dock when the switcher is active."
+msgstr ""
+
+#: src/prefs.js:214
 msgid "Animation"
 msgstr "Animación"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
+#: src/prefs.js:219 src/prefs.js:232 src/prefs.js:329
 msgid "Properties"
 msgstr "Propiedades"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Easing Function"
 msgstr "funciones de aceleración"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Determine how windows move."
 msgstr "Determinar cómo se mueven las ventanas."
 
-#: src/prefs.js:204
+#: src/prefs.js:223
 msgid "Duration [s]"
 msgstr "Duración [s]"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid "Randomize Durations"
 msgstr "Aleatorizar las duraciones"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr ""
 "La duración de cada animación se asigna aleatoriamente entre 0 y la duración "
 "configurada."
 
-#: src/prefs.js:208
-msgid "Included"
-msgstr "Incluido"
+#: src/prefs.js:227
+msgid "Icons"
+msgstr "Iconos"
 
-#: src/prefs.js:211
+#: src/prefs.js:236
+msgid "Overlay Icon Size"
+msgstr "Tamaño de icono sobrepuesto"
+
+#: src/prefs.js:236
+msgid "Set the overlay icon size in pixels."
+msgstr "Establecer el tamaño del icono sobrepuesto en pixeles."
+
+#: src/prefs.js:237
+msgid "Overlay Icon Opacity"
+msgstr "Opacidad del icono sobrepuesto"
+
+#: src/prefs.js:237
+msgid "Set the overlay icon opacity."
+msgstr "Establecer la opacidad del icono sobrepuesto."
+
+#: src/prefs.js:241
+msgid "Classic"
+msgstr "Clásico"
+
+#: src/prefs.js:247
+msgid "Overlay"
+msgstr "Sobreposición"
+
+#: src/prefs.js:253
+msgid "Attached"
+msgstr "Adjunto"
+
+#: src/prefs.js:258
+msgid "Application Icon Style"
+msgstr "Estilo de iconos de aplicación"
+
+#: src/prefs.js:263
+msgid "Fade Only"
+msgstr "Solo desvanecer"
+
+#: src/prefs.js:269
+msgid "Scale Only"
+msgstr "Solo escalar"
+
+#: src/prefs.js:275
+msgid "Fade and Scale"
+msgstr "Desvanecer y escalar"
+
+#: src/prefs.js:280
+msgid "Add / Remove Effects"
+msgstr "Añadir/quitar efectos"
+
+#: src/prefs.js:280
+msgid "How Icons and Labels ease in and out."
+msgstr "Cómo aparecen y desaparecen los íconos y las etiquetas."
+
+#: src/prefs.js:284
+msgid "Icon Shadow"
+msgstr "Sombra de icono"
+
+#: src/prefs.js:288
+msgid "Windows"
+msgstr "Ventanas"
+
+#: src/prefs.js:292
+#, fuzzy
+msgid "General Settings"
+msgstr "General"
+
+#: src/prefs.js:295
+#, fuzzy
+msgid "Timeline Settings"
+msgstr "Línea de tiempo"
+
+#: src/prefs.js:298
+#, fuzzy
+msgid "Coverflow Settings"
+msgstr "Coverflow"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Window Size to Monitor Size Ratio"
+msgstr ""
+"Relación entre el tamaño de la vista previa de la ventana y el tamaño del "
+"monitor"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Maximum ratio of window size to monitor size."
+msgstr ""
+"Relación máxima entre el tamaño de la vista previa de la ventana y el tamaño "
+"del monitor."
+
+#: src/prefs.js:305
 msgid "Current workspace only"
 msgstr "Solamente para el área de trabajo actual"
 
-#: src/prefs.js:213
+#: src/prefs.js:307
 msgid "All workspaces"
 msgstr "Todas las áreas de trabajo"
 
-#: src/prefs.js:215
+#: src/prefs.js:309
 msgid "All workspaces, current first"
 msgstr "Todas las áreas de trabajo, con prioridad en la actual"
 
-#: src/prefs.js:217
+#: src/prefs.js:311
 msgid "Workspaces"
 msgstr "Áreas de trabajo"
 
-#: src/prefs.js:217
+#: src/prefs.js:311
 msgid "Switch between windows on current or on all workspaces."
 msgstr ""
 "Cambiar entre ventanas en el espacio de trabajo actual o en todos los "
 "espacios de trabajo."
 
-#: src/prefs.js:218
+#: src/prefs.js:312
 msgid "Current Monitor"
 msgstr "Monitor actual"
 
-#: src/prefs.js:218
+#: src/prefs.js:312
 msgid "Switch between windows on current monitor."
 msgstr "Cambiar entre ventanas en el monitor actual."
 
-#: src/prefs.js:221
-msgid "Icons"
-msgstr "Iconos"
-
-#: src/prefs.js:230
-msgid "Overlay Icon Size"
-msgstr "Tamaño de icono sobrepuesto"
-
-#: src/prefs.js:230
-msgid "Set the overlay icon size in pixels."
-msgstr "Establecer el tamaño del icono sobrepuesto en pixeles."
-
-#: src/prefs.js:231
-msgid "Overlay Icon Opacity"
-msgstr "Opacidad del icono sobrepuesto"
-
-#: src/prefs.js:231
-msgid "Set the overlay icon opacity."
-msgstr "Establecer la opacidad del icono sobrepuesto."
-
-#: src/prefs.js:235
-msgid "Classic"
-msgstr "Clásico"
-
-#: src/prefs.js:241
-msgid "Overlay"
-msgstr "Sobreposición"
-
-#: src/prefs.js:247
-msgid "Attached"
-msgstr "Adjunto"
-
-#: src/prefs.js:252
-msgid "Application Icon Style"
-msgstr "Estilo de iconos de aplicación"
-
-#: src/prefs.js:257
-msgid "Fade Only"
-msgstr "Solo desvanecer"
-
-#: src/prefs.js:263
-msgid "Scale Only"
-msgstr "Solo escalar"
-
-#: src/prefs.js:269
-msgid "Fade and Scale"
-msgstr "Desvanecer y escalar"
-
-#: src/prefs.js:274
-msgid "Add / Remove Effects"
-msgstr "Añadir/quitar efectos"
-
-#: src/prefs.js:274
-msgid "How Icons and Labels ease in and out."
-msgstr "Cómo aparecen y desaparecen los íconos y las etiquetas."
-
-#: src/prefs.js:278
-msgid "Icon Shadow"
-msgstr "Sombra de icono"
-
-#: src/prefs.js:282
-msgid "Windows"
-msgstr "Ventanas"
-
-#: src/prefs.js:290
-msgid "Window Preview Size to Monitor Size Ratio"
+#: src/prefs.js:313
+msgid "Skip Minimized Windows"
 msgstr ""
-"Relación entre el tamaño de la vista previa de la ventana y el tamaño del "
-"monitor"
 
-#: src/prefs.js:290
-msgid "Maximum ratio of window preview size to monitor size."
+#: src/prefs.js:313
+msgid "Exclude minimized windows from the switcher."
 msgstr ""
-"Relación máxima entre el tamaño de la vista previa de la ventana y el tamaño "
-"del monitor."
 
-#: src/prefs.js:291
-msgid "Off-center Size Factor"
-msgstr "Factor de tamaño descentrado"
+#: src/prefs.js:315
+msgid "Window Layout Distance"
+msgstr ""
 
-#: src/prefs.js:291
-msgid "Factor by which to successively shrink previews off to the side."
+#: src/prefs.js:315
+msgid "Distance in pixels between timeline window's upper left corners."
+msgstr ""
+
+#: src/prefs.js:316
+msgid "Window Layout Angle"
+msgstr ""
+
+#: src/prefs.js:316
+msgid ""
+"Angle in degrees (0-90) for timeline window layout such that windows go from "
+"lower right to upper left at this angle between successive window's upper "
+"left corners. The topmost window's upper left corner is at the center of the "
+"monitor."
+msgstr ""
+
+#: src/prefs.js:317
+#, fuzzy
+msgid "Window Tilt Angle"
+msgstr "Posición del título de ventana"
+
+#: src/prefs.js:317
+msgid "Y-axis rotation angle in degrees applied to timeline windows."
+msgstr ""
+
+#: src/prefs.js:318 src/prefs.js:321
+msgid "Window Scaling Factor"
+msgstr ""
+
+#: src/prefs.js:318
+#, fuzzy
+msgid ""
+"Factor by which timeline windows successively shrink with distance from the "
+"top window."
 msgstr "Factor por el cual encoger sucesivamente las vistas previas a un lado."
 
-#: src/prefs.js:292
-msgid "Coverflow Window Angle"
+#: src/prefs.js:319
+msgid "Enable Window Scaling"
+msgstr ""
+
+#: src/prefs.js:319
+msgid "Useful if you have a large number of windows and want to see them all."
+msgstr ""
+
+#: src/prefs.js:321
+#, fuzzy
+msgid "Factor by which coverflow windows successively shrink off to the side."
+msgstr "Factor por el cual encoger sucesivamente las vistas previas a un lado."
+
+#: src/prefs.js:322
+#, fuzzy
+msgid "Window Angle"
 msgstr "Ángulo de ventanas en Coverflow"
 
-#: src/prefs.js:292
+#: src/prefs.js:322
 msgid "Angle of off-center windows in coverflow mode."
 msgstr "Ángulo de las ventanas descentradas en modo Coverflow."
 
-#: src/prefs.js:293
+#: src/prefs.js:323
 #, fuzzy
-msgid "Coverflow Window Offset Width"
+msgid "Window Offset Width"
 msgstr "Acceso directo de Coverflow Switch para Windows"
 
-#: src/prefs.js:293
+#: src/prefs.js:323
 msgid "How far windows are off to the side in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:295
+#: src/prefs.js:325
 msgid "AppSwitcher"
 msgstr "AppSwitcher"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr ""
 "Cómo hacer que el selector de aplicaciones muestre solo la primera vista "
 "previa"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "No agrupes ventanas de la misma aplicación en un subconmutador."
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Desaturate"
 msgstr "Desaturar"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Larger means more desaturation."
 msgstr "Más grande significa más desaturación."
 
-#: src/prefs.js:306
+#: src/prefs.js:336
 msgid "Tint"
 msgstr "Matiz"
 
-#: src/prefs.js:318 src/prefs.js:448
+#: src/prefs.js:348 src/prefs.js:487
 msgid "Color"
 msgstr "Color"
 
-#: src/prefs.js:339 src/prefs.js:472
+#: src/prefs.js:369 src/prefs.js:511
 msgid "Set to Theme Color"
 msgstr "Ajustar al color del tema"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "Blend"
 msgstr "Mezclar"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 "Cuánto mezclar el color del tinte; más grande significa más color de tinte."
 
-#: src/prefs.js:398
+#: src/prefs.js:435
 msgid "Glitch"
 msgstr "Glitch"
 
-#: src/prefs.js:401
+#: src/prefs.js:438
 msgid "Keybindings"
 msgstr "Atajos de teclado"
 
-#: src/prefs.js:406
+#: src/prefs.js:443
 msgid "System Actions Keybindings"
 msgstr "Combinaciones de teclas de acciones del sistema"
 
-#: src/prefs.js:407
+#: src/prefs.js:444
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
@@ -360,77 +454,100 @@ msgstr ""
 "En caso de conflictos con otros conmutadores de ventanas, puede "
 "desvincularse de las acciones del sistema."
 
-#: src/prefs.js:410
+#: src/prefs.js:447
 msgid "Bind to 'switch-windows'"
 msgstr "Enlazar a 'switch-windows'"
 
-#: src/prefs.js:411
+#: src/prefs.js:448
 msgid "Bind to 'switch-applications'"
 msgstr "Enlazar a 'switch-applications'"
 
-#: src/prefs.js:414
+#: src/prefs.js:451
 msgid "Internal Actions Keybindings"
 msgstr "Combinaciones de teclas para acciones internas"
 
-#: src/prefs.js:415
+#: src/prefs.js:452
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 "Acciones internas que no entrarán en conflicto con otros conmutadores de "
 "ventanas."
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Coverflow Switch Windows Shortcut"
 msgstr "Acceso directo de Coverflow Switch para Windows"
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Activate window switcher."
 msgstr "Activar el conmutador de ventanas."
 
-#: src/prefs.js:419
+#: src/prefs.js:456
+#, fuzzy
+msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
+msgstr "Acceso directo de Coverflow Switch para Windows"
+
+#: src/prefs.js:456
+#, fuzzy
+msgid "Activate window switcher listing windows visible on all workspaces."
+msgstr ""
+"Cambiar entre ventanas en el espacio de trabajo actual o en todos los "
+"espacios de trabajo."
+
+#: src/prefs.js:457
 msgid "Coverflow Switch Applications Shortcut"
 msgstr "Acceso directo a aplicaciones de Coverflow Switch"
 
-#: src/prefs.js:419
+#: src/prefs.js:457
 msgid "Activate application switcher."
 msgstr "Activar el selector de aplicaciones."
 
-#: src/prefs.js:422
+#: src/prefs.js:458
+#, fuzzy
+msgid ""
+"Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
+msgstr "Acceso directo a aplicaciones de Coverflow Switch"
+
+#: src/prefs.js:458
+msgid ""
+"Activate application switcher listing applications visible on all workspaces."
+msgstr ""
+
+#: src/prefs.js:461
 msgid "Advanced Options"
 msgstr "Opciones avanzadas"
 
-#: src/prefs.js:426
+#: src/prefs.js:465
 msgid "None"
 msgstr "Ninguno"
 
-#: src/prefs.js:427
+#: src/prefs.js:466
 msgid "Move Camera"
 msgstr "Mover cámara"
 
-#: src/prefs.js:428
+#: src/prefs.js:467
 msgid "Adjust Angles"
 msgstr "Ajustar ángulos"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Perspective Correction"
 msgstr "Corrección de perspectiva"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Method to make off-center switcher look centered."
 msgstr "Método para hacer que el conmutador descentrado parezca centrado."
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Verbose Logging"
 msgstr "Registro detallado"
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Log debug and normal messages."
 msgstr "Registrar mensajes de depuración y normales."
 
-#: src/prefs.js:435
+#: src/prefs.js:474
 msgid "Highlight Window Under Mouse"
 msgstr "Resaltar ventana debajo del cursor"
 
-#: src/prefs.js:436
+#: src/prefs.js:475
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
@@ -438,29 +555,101 @@ msgstr ""
 "Dibuja un resalte de color en la ventana inferior al ratón para conocer los "
 "efectos del clic."
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise Window Under Mouse"
 msgstr "Alzar la ventana debajo del cursor"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise the window under the mouse above all others."
 msgstr "Alzar la ventana debajo del cursor por encima de todas las demás."
 
-#: src/prefs.js:529
+#: src/prefs.js:576
 msgid "Contribute"
 msgstr "Contribuir"
 
-#: src/prefs.js:565
-msgid "Code (create pull requests, report issues, etc.)"
-msgstr "Código (crear pull request, reportar problemas, etc)"
+#: src/prefs.js:610
+msgid "Get involved"
+msgstr ""
 
-#: src/prefs.js:573
+#: src/prefs.js:611
+msgid ""
+"Help improve this extension by contributing code, reporting issues, or "
+"translating it into your language."
+msgstr ""
+
+#: src/prefs.js:615
+msgid "Code and Issues"
+msgstr ""
+
+#: src/prefs.js:621
+#, fuzzy
+msgid "Translations"
+msgstr "Traducir"
+
+#: src/prefs.js:627
 msgid "Donate"
 msgstr "Donar"
 
-#: src/prefs.js:594
-msgid "Translate"
-msgstr "Traducir"
+#: src/prefs.js:628
+msgid "If you use this extension, consider supporting its development."
+msgstr ""
+
+#: src/prefs.js:632
+msgid "Liberapay"
+msgstr ""
+
+#: src/prefs.js:638
+msgid "PayPal"
+msgstr ""
+
+#: src/prefs.js:644
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: src/prefs.js:650
+msgid "Preferences backup"
+msgstr ""
+
+#: src/prefs.js:651
+msgid ""
+"Save or restore this extension's settings, or reset everything to defaults."
+msgstr ""
+
+#: src/prefs.js:656
+msgid "Settings"
+msgstr ""
+
+#: src/prefs.js:660
+msgid "Load"
+msgstr ""
+
+#: src/prefs.js:666
+msgid "Load Settings"
+msgstr ""
+
+#: src/prefs.js:673
+msgid "Could not read settings file"
+msgstr ""
+
+#: src/prefs.js:687
+msgid "Save"
+msgstr ""
+
+#: src/prefs.js:691
+msgid "Save Settings"
+msgstr ""
+
+#: src/prefs.js:698
+msgid "dconf dump failed"
+msgstr ""
+
+#: src/prefs.js:708
+msgid "Reset"
+msgstr ""
+
+#: src/prefs.js:789
+msgid "Reset to default value"
+msgstr "Restablecer valor predeterminado"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
@@ -474,9 +663,21 @@ msgstr "Cambiar el atajo del teclado"
 msgid "Clear"
 msgstr "Limpiar"
 
-#: src/shortcutButton.js:90
+#: src/shortcutButton.js:89
 msgid "Press your keyboard shortcut..."
 msgstr "Presione su atajo de teclado..."
+
+#~ msgid "Dim-factor"
+#~ msgstr "Factor de atenuación"
+
+#~ msgid "Included"
+#~ msgstr "Incluido"
+
+#~ msgid "Off-center Size Factor"
+#~ msgstr "Factor de tamaño descentrado"
+
+#~ msgid "Code (create pull requests, report issues, etc.)"
+#~ msgstr "Código (crear pull request, reportar problemas, etc)"
 
 #~ msgid "Swipe content instead of view."
 #~ msgstr "Deslizar el contenido en lugar de verlo."

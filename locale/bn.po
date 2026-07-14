@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-05 20:07-0600\n"
+"POT-Creation-Date: 2026-07-14 16:42-0500\n"
 "PO-Revision-Date: 2026-04-17 13:40+0530\n"
 "Last-Translator: Krishnendu Ghosh\n"
 "Language-Team: Bengali <bn@li.org>\n"
@@ -16,428 +16,617 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/prefs.js:105
-msgid "Reset to default value"
-msgstr "ডিফল্ট মান-এ ফিরিয়ে নিন"
-
-#: src/prefs.js:121
+#: src/prefs.js:118
 #, javascript-format
 msgid "Version %d"
 msgstr "সংস্করণ %d"
 
-#: src/prefs.js:127
+#: src/prefs.js:123
 msgid "General"
 msgstr "সাধারণ"
 
-#: src/prefs.js:132
+#: src/prefs.js:128
 msgid "Switcher Properties"
 msgstr "স্যুইচার বৈশিষ্ট্য"
 
-#: src/prefs.js:137
+#: src/prefs.js:133
 msgid "Flip Stack"
 msgstr "ফ্লিপ স্ট্যাক"
 
-#: src/prefs.js:143
+#: src/prefs.js:139
 msgid "Carousel"
 msgstr "ক্যারোসেল"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "Looping Method"
 msgstr "লুপ করার পদ্ধতি"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "How to cycle through windows."
 msgstr "উইন্ডোগুলোর মধ্যে কীভাবে আবর্তন করবেন।"
 
-#: src/prefs.js:153
+#: src/prefs.js:149
 msgid "Coverflow"
 msgstr "কাভারফ্লো"
 
-#: src/prefs.js:159
+#: src/prefs.js:155
 msgid "Timeline"
 msgstr "টাইমলাইন"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Style"
 msgstr "ধরণ"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Pick the type of switcher."
 msgstr "স্যুইচারের ধরণ বেছে নিন।"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Vertical Offset"
 msgstr "উল্লম্ব অফসেট"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Positive value moves everything down, negative up."
 msgstr "ধনাত্মক মান সবকিছু নিচে নামায়, ঋণাত্মক মান উপরে ওঠায়।"
 
-#: src/prefs.js:169
+#: src/prefs.js:165
 msgid "Bottom"
 msgstr "নিচে"
 
-#: src/prefs.js:175
+#: src/prefs.js:171
 msgid "Top"
 msgstr "উপরে"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Window Title Position"
 msgstr "উইন্ডোর শিরোনামের অবস্থান"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Place window title above or below the switcher."
 msgstr "উইন্ডোর শিরোনাম স্যুইচারের উপরে বা নিচে রাখুন।"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid "Enforce Primary Monitor"
 msgstr "প্রাথমিক মনিটর বাধ্যতামুলক করুন"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
 msgstr "সবসময় প্রাথমিক মনিটরে দেখান, অন্যথায় সক্রিয় মনিটরে দেখান।"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide Panel"
 msgstr "প্যানেল লুকান"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide panel when switching windows."
 msgstr "উইন্ডো পরিবর্তনের সময় প্যানেল লুকিয়ে রাখুন।"
 
-#: src/prefs.js:185
-msgid "Invert Swipes"
-msgstr "সোয়াইপ উল্টে দিন"
-
-#: src/prefs.js:185
-msgid "Invert system scroll direction setting."
-msgstr "সিস্টেমের স্ক্রল অভিমুখে পরিবর্তন করুন।"
-
-#: src/prefs.js:189
-msgid "Background"
+#: src/prefs.js:180
+#, fuzzy
+msgid "Background Dim-Factor"
 msgstr "পটভূমি"
 
-#: src/prefs.js:191
-msgid "Dim-factor"
-msgstr "ডিম-ফ্যাক্টর"
-
-#: src/prefs.js:191
+#: src/prefs.js:180
 msgid "Bigger means darker."
 msgstr "মান বড় হলে অন্ধকার বেশি হবে।"
 
-#: src/prefs.js:195
+#: src/prefs.js:181
+msgid "Invert Swipes"
+msgstr "সোয়াইপ উল্টে দিন"
+
+#: src/prefs.js:181
+msgid "Invert system scroll direction setting."
+msgstr "সিস্টেমের স্ক্রল অভিমুখে পরিবর্তন করুন।"
+
+#: src/prefs.js:182
+msgid "Start with Next"
+msgstr ""
+
+#: src/prefs.js:182
+#, fuzzy
+msgid "Start with the next window (instead of the current window)."
+msgstr "বর্তমান মনিটরের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
+
+#: src/prefs.js:186
+#, fuzzy
+msgid "Dash to Dock Properties"
+msgstr "স্যুইচার বৈশিষ্ট্য"
+
+#: src/prefs.js:191
+msgid "Show"
+msgstr ""
+
+#: src/prefs.js:197
+msgid "Hide"
+msgstr ""
+
+#: src/prefs.js:203
+msgid "Neither"
+msgstr ""
+
+#: src/prefs.js:209
+msgid "Dash to Dock Visibility Behavior"
+msgstr ""
+
+#: src/prefs.js:210
+msgid "How to display dash-to-dock when the switcher is active."
+msgstr ""
+
+#: src/prefs.js:214
 msgid "Animation"
 msgstr "অ্যানিমেশন"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
+#: src/prefs.js:219 src/prefs.js:232 src/prefs.js:329
 msgid "Properties"
 msgstr "বৈশিষ্ট্যসমূহ"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Easing Function"
 msgstr "ইজিং ফাংশন"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Determine how windows move."
 msgstr "উইন্ডোগুলো কীভাবে নড়াচড়া করবে তা নির্ধারণ করুন।"
 
-#: src/prefs.js:204
+#: src/prefs.js:223
 msgid "Duration [s]"
 msgstr "সময়কাল [সেকেন্ড]"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid "Randomize Durations"
 msgstr "সময়কাল এলোমেলো করুন"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr "প্রতিটি অ্যানিমেশনের সময়কাল ০ থেকে নির্ধারিত সীমার মধ্যে এলোমেলোভাবে হবে।"
 
-#: src/prefs.js:208
-msgid "Included"
-msgstr "অন্তর্ভুক্ত"
-
-#: src/prefs.js:211
-msgid "Current workspace only"
-msgstr "শুধুমাত্র বর্তমান ওয়ার্কস্পেস"
-
-#: src/prefs.js:213
-msgid "All workspaces"
-msgstr "সকল ওয়ার্কস্পেস"
-
-#: src/prefs.js:215
-msgid "All workspaces, current first"
-msgstr "সকল ওয়ার্কস্পেস, বর্তমানটি প্রথমে"
-
-#: src/prefs.js:217
-msgid "Workspaces"
-msgstr "ওয়ার্কস্পেস"
-
-#: src/prefs.js:217
-msgid "Switch between windows on current or on all workspaces."
-msgstr "বর্তমান বা সকল ওয়ার্কস্পেসের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
-
-#: src/prefs.js:218
-msgid "Current Monitor"
-msgstr "বর্তমান মনিটর"
-
-#: src/prefs.js:218
-msgid "Switch between windows on current monitor."
-msgstr "বর্তমান মনিটরের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
-
-#: src/prefs.js:221
+#: src/prefs.js:227
 msgid "Icons"
 msgstr "আইকনসমূহ"
 
-#: src/prefs.js:230
+#: src/prefs.js:236
 msgid "Overlay Icon Size"
 msgstr "ওভারলে আইকনের আকার"
 
-#: src/prefs.js:230
+#: src/prefs.js:236
 msgid "Set the overlay icon size in pixels."
 msgstr "পিক্সেলে ওভারলে আইকনের আকার নির্ধারণ করুন।"
 
-#: src/prefs.js:231
+#: src/prefs.js:237
 msgid "Overlay Icon Opacity"
 msgstr "ওভারলে আইকনের স্বচ্ছতা"
 
-#: src/prefs.js:231
+#: src/prefs.js:237
 msgid "Set the overlay icon opacity."
 msgstr "ওভারলে আইকনের স্বচ্ছতা নির্ধারণ করুন।"
 
-#: src/prefs.js:235
+#: src/prefs.js:241
 msgid "Classic"
 msgstr "ক্লাসিক"
 
-#: src/prefs.js:241
+#: src/prefs.js:247
 msgid "Overlay"
 msgstr "ওভারলে"
 
-#: src/prefs.js:247
+#: src/prefs.js:253
 msgid "Attached"
 msgstr "সংযুক্ত"
 
-#: src/prefs.js:252
+#: src/prefs.js:258
 msgid "Application Icon Style"
 msgstr "অ্যাপ্লিকেশন আইকন স্টাইল"
 
-#: src/prefs.js:257
+#: src/prefs.js:263
 msgid "Fade Only"
 msgstr "শুধুমাত্র ফেড"
 
-#: src/prefs.js:263
+#: src/prefs.js:269
 msgid "Scale Only"
 msgstr "শুধুমাত্র স্কেল"
 
-#: src/prefs.js:269
+#: src/prefs.js:275
 msgid "Fade and Scale"
 msgstr "ফেড এবং স্কেল"
 
-#: src/prefs.js:274
+#: src/prefs.js:280
 msgid "Add / Remove Effects"
 msgstr "ইফেক্ট যোগ / অপসারণ"
 
-#: src/prefs.js:274
+#: src/prefs.js:280
 msgid "How Icons and Labels ease in and out."
 msgstr "আইকন এবং লেবেলগুলো কীভাবে দৃশ্যমান বা অদৃশ্য হবে।"
 
-#: src/prefs.js:278
+#: src/prefs.js:284
 msgid "Icon Shadow"
 msgstr "আইকনের ছায়া"
 
-#: src/prefs.js:282
+#: src/prefs.js:288
 msgid "Windows"
 msgstr "উইন্ডোগুলি"
 
-#: src/prefs.js:290
-msgid "Window Preview Size to Monitor Size Ratio"
+#: src/prefs.js:292
+#, fuzzy
+msgid "General Settings"
+msgstr "সাধারণ"
+
+#: src/prefs.js:295
+#, fuzzy
+msgid "Timeline Settings"
+msgstr "টাইমলাইন"
+
+#: src/prefs.js:298
+#, fuzzy
+msgid "Coverflow Settings"
+msgstr "কাভারফ্লো"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Window Size to Monitor Size Ratio"
 msgstr "মনিটরের তুলনায় উইন্ডো প্রিভিউ-এর অনুপাত"
 
-#: src/prefs.js:290
-msgid "Maximum ratio of window preview size to monitor size."
+#: src/prefs.js:303
+#, fuzzy
+msgid "Maximum ratio of window size to monitor size."
 msgstr "মনিটরের তুলনায় উইন্ডো প্রিভিউ-এর সর্বোচ্চ অনুপাত।"
 
-#: src/prefs.js:291
-msgid "Off-center Size Factor"
-msgstr "অফ-সেন্টার সাইজ ফ্যাক্টর"
+#: src/prefs.js:305
+msgid "Current workspace only"
+msgstr "শুধুমাত্র বর্তমান ওয়ার্কস্পেস"
 
-#: src/prefs.js:291
-msgid "Factor by which to successively shrink previews off to the side."
+#: src/prefs.js:307
+msgid "All workspaces"
+msgstr "সকল ওয়ার্কস্পেস"
+
+#: src/prefs.js:309
+msgid "All workspaces, current first"
+msgstr "সকল ওয়ার্কস্পেস, বর্তমানটি প্রথমে"
+
+#: src/prefs.js:311
+msgid "Workspaces"
+msgstr "ওয়ার্কস্পেস"
+
+#: src/prefs.js:311
+msgid "Switch between windows on current or on all workspaces."
+msgstr "বর্তমান বা সকল ওয়ার্কস্পেসের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
+
+#: src/prefs.js:312
+msgid "Current Monitor"
+msgstr "বর্তমান মনিটর"
+
+#: src/prefs.js:312
+msgid "Switch between windows on current monitor."
+msgstr "বর্তমান মনিটরের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
+
+#: src/prefs.js:313
+msgid "Skip Minimized Windows"
+msgstr ""
+
+#: src/prefs.js:313
+msgid "Exclude minimized windows from the switcher."
+msgstr ""
+
+#: src/prefs.js:315
+msgid "Window Layout Distance"
+msgstr ""
+
+#: src/prefs.js:315
+msgid "Distance in pixels between timeline window's upper left corners."
+msgstr ""
+
+#: src/prefs.js:316
+msgid "Window Layout Angle"
+msgstr ""
+
+#: src/prefs.js:316
+msgid ""
+"Angle in degrees (0-90) for timeline window layout such that windows go from "
+"lower right to upper left at this angle between successive window's upper "
+"left corners. The topmost window's upper left corner is at the center of the "
+"monitor."
+msgstr ""
+
+#: src/prefs.js:317
+#, fuzzy
+msgid "Window Tilt Angle"
+msgstr "উইন্ডোর শিরোনামের অবস্থান"
+
+#: src/prefs.js:317
+msgid "Y-axis rotation angle in degrees applied to timeline windows."
+msgstr ""
+
+#: src/prefs.js:318 src/prefs.js:321
+msgid "Window Scaling Factor"
+msgstr ""
+
+#: src/prefs.js:318
+#, fuzzy
+msgid ""
+"Factor by which timeline windows successively shrink with distance from the "
+"top window."
 msgstr "যে হারে পাশের প্রিভিউগুলো ছোট হতে থাকবে।"
 
-#: src/prefs.js:292
-msgid "Coverflow Window Angle"
+#: src/prefs.js:319
+msgid "Enable Window Scaling"
+msgstr ""
+
+#: src/prefs.js:319
+msgid "Useful if you have a large number of windows and want to see them all."
+msgstr ""
+
+#: src/prefs.js:321
+#, fuzzy
+msgid "Factor by which coverflow windows successively shrink off to the side."
+msgstr "যে হারে পাশের প্রিভিউগুলো ছোট হতে থাকবে।"
+
+#: src/prefs.js:322
+#, fuzzy
+msgid "Window Angle"
 msgstr "কাভারফ্লো উইন্ডো কোণ"
 
-#: src/prefs.js:292
+#: src/prefs.js:322
 msgid "Angle of off-center windows in coverflow mode."
 msgstr "কাভারফ্লো মোডে পাশের উইন্ডোগুলোর কোণ।"
 
-#: src/prefs.js:293
-msgid "Coverflow Window Offset Width"
+#: src/prefs.js:323
+#, fuzzy
+msgid "Window Offset Width"
 msgstr "কাভারফ্লো উইন্ডো অফসেট প্রস্থ"
 
-#: src/prefs.js:293
+#: src/prefs.js:323
 msgid "How far windows are off to the side in coverflow mode."
 msgstr "কাভারফ্লো মোডে উইন্ডোগুলো পার্শ্ববর্তী দিক থেকে কতটা দূরে থাকবে।"
 
-#: src/prefs.js:295
+#: src/prefs.js:325
 msgid "AppSwitcher"
 msgstr "অ্যাপ-স্যুইচার"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "অ্যাপ্লিকেশন স্যুইচারে শুধু প্রথম প্রিভিউ দেখান"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "একই অ্যাপ্লিকেশনের উইন্ডোগুলোকে গ্রুপ করবেন না।"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Desaturate"
 msgstr "ডিস্যাচুরেট"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Larger means more desaturation."
 msgstr "মান বড় হলে রঙের গাঢ়ত্ব কমবে।"
 
-#: src/prefs.js:306
+#: src/prefs.js:336
 msgid "Tint"
 msgstr "টিন্ট (Tint)"
 
-#: src/prefs.js:318 src/prefs.js:448
+#: src/prefs.js:348 src/prefs.js:487
 msgid "Color"
 msgstr "রঙ"
 
-#: src/prefs.js:339 src/prefs.js:472
+#: src/prefs.js:369 src/prefs.js:511
 msgid "Set to Theme Color"
 msgstr "থিমের রঙ ব্যবহার করুন"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "Blend"
 msgstr "মিশ্রণ (Blend)"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr "টিন্ট রঙের মিশ্রণের পরিমাণ; মান বড় হলে রঙ গাঢ় হবে।"
 
-#: src/prefs.js:398
+#: src/prefs.js:435
 msgid "Glitch"
 msgstr "গ্লিচ (Glitch)"
 
-#: src/prefs.js:401
+#: src/prefs.js:438
 msgid "Keybindings"
 msgstr "কী-বাইন্ডিং"
 
-#: src/prefs.js:406
+#: src/prefs.js:443
 msgid "System Actions Keybindings"
 msgstr "সিস্টেম অ্যাকশন কী-বাইন্ডিং"
 
-#: src/prefs.js:407
+#: src/prefs.js:444
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
-msgstr "অন্যান্য উইন্ডো স্যুইচারের সাথে সংঘাত হলে সিস্টেম থেকে আনবাইন্ড করা যেতে পারে।"
+msgstr ""
+"অন্যান্য উইন্ডো স্যুইচারের সাথে সংঘাত হলে সিস্টেম থেকে আনবাইন্ড করা যেতে পারে।"
 
-#: src/prefs.js:410
+#: src/prefs.js:447
 msgid "Bind to 'switch-windows'"
 msgstr "'switch-windows'-এর সাথে যুক্ত করুন"
 
-#: src/prefs.js:411
+#: src/prefs.js:448
 msgid "Bind to 'switch-applications'"
 msgstr "'switch-applications'-এর সাথে যুক্ত করুন"
 
-#: src/prefs.js:414
+#: src/prefs.js:451
 msgid "Internal Actions Keybindings"
 msgstr "অভ্যন্তরীণ অ্যাকশন কী-বাইন্ডিং"
 
-#: src/prefs.js:415
+#: src/prefs.js:452
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr "অভ্যন্তরীণ অ্যাকশন যা অন্য কোনো উইন্ডো স্যুইচারের সাথে সংঘাত ঘটাবে না।"
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Coverflow Switch Windows Shortcut"
 msgstr "কাভারফ্লো উইন্ডো পরিবর্তনের শর্টকাট"
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Activate window switcher."
 msgstr "উইন্ডো স্যুইচার সক্রিয় করুন।"
 
-#: src/prefs.js:419
+#: src/prefs.js:456
+#, fuzzy
+msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
+msgstr "কাভারফ্লো উইন্ডো পরিবর্তনের শর্টকাট"
+
+#: src/prefs.js:456
+#, fuzzy
+msgid "Activate window switcher listing windows visible on all workspaces."
+msgstr "বর্তমান বা সকল ওয়ার্কস্পেসের উইন্ডোগুলোর মধ্যে পরিবর্তন করুন।"
+
+#: src/prefs.js:457
 msgid "Coverflow Switch Applications Shortcut"
 msgstr "কাভারফ্লো অ্যাপ্লিকেশন পরিবর্তনের শর্টকাট"
 
-#: src/prefs.js:419
+#: src/prefs.js:457
 msgid "Activate application switcher."
 msgstr "অ্যাপ্লিকেশন স্যুইচার সক্রিয় করুন।"
 
-#: src/prefs.js:422
+#: src/prefs.js:458
+#, fuzzy
+msgid ""
+"Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
+msgstr "কাভারফ্লো অ্যাপ্লিকেশন পরিবর্তনের শর্টকাট"
+
+#: src/prefs.js:458
+msgid ""
+"Activate application switcher listing applications visible on all workspaces."
+msgstr ""
+
+#: src/prefs.js:461
 msgid "Advanced Options"
 msgstr "উন্নত বিকল্পসমূহ"
 
-#: src/prefs.js:426
+#: src/prefs.js:465
 msgid "None"
 msgstr "কিছু না"
 
-#: src/prefs.js:427
+#: src/prefs.js:466
 msgid "Move Camera"
 msgstr "ক্যামেরা সরান"
 
-#: src/prefs.js:428
+#: src/prefs.js:467
 msgid "Adjust Angles"
 msgstr "কোণ ঠিক করুন"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Perspective Correction"
 msgstr "পারসপেক্টিভ সংশোধন"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Method to make off-center switcher look centered."
 msgstr "পার্শ্ববর্তী স্যুইচারকে কেন্দ্রে দেখানোর পদ্ধতি।"
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Verbose Logging"
 msgstr "বিস্তারিত লগিং"
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Log debug and normal messages."
 msgstr "ডিবাগ এবং সাধারণ বার্তা লগ করুন।"
 
-#: src/prefs.js:435
+#: src/prefs.js:474
 msgid "Highlight Window Under Mouse"
 msgstr "মাউসের নিচে থাকা উইন্ডো হাইলাইট করুন"
 
-#: src/prefs.js:436
+#: src/prefs.js:475
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr "মাউসের নিচে থাকা উইন্ডোতে রঙিন হাইলাইট দেখান।"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise Window Under Mouse"
 msgstr "মাউসের নিচে থাকা উইন্ডো সামনে আনুন"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise the window under the mouse above all others."
 msgstr "মাউসের নিচে থাকা উইন্ডোকে সবার উপরে নিয়ে আসুন।"
 
-#: src/prefs.js:529
+#: src/prefs.js:576
 msgid "Contribute"
 msgstr "অবদান রাখুন"
 
-#: src/prefs.js:565
-msgid "Code (create pull requests, report issues, etc.)"
-msgstr "কোড (পুল রিকোয়েস্ট তৈরি, ইস্যু রিপোর্ট ইত্যাদি)"
+#: src/prefs.js:610
+msgid "Get involved"
+msgstr ""
 
-#: src/prefs.js:573
+#: src/prefs.js:611
+msgid ""
+"Help improve this extension by contributing code, reporting issues, or "
+"translating it into your language."
+msgstr ""
+
+#: src/prefs.js:615
+msgid "Code and Issues"
+msgstr ""
+
+#: src/prefs.js:621
+#, fuzzy
+msgid "Translations"
+msgstr "অনুবাদ করুন"
+
+#: src/prefs.js:627
 msgid "Donate"
 msgstr "দান করুন"
 
-#: src/prefs.js:594
-msgid "Translate"
-msgstr "অনুবাদ করুন"
+#: src/prefs.js:628
+msgid "If you use this extension, consider supporting its development."
+msgstr ""
+
+#: src/prefs.js:632
+msgid "Liberapay"
+msgstr ""
+
+#: src/prefs.js:638
+msgid "PayPal"
+msgstr ""
+
+#: src/prefs.js:644
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: src/prefs.js:650
+msgid "Preferences backup"
+msgstr ""
+
+#: src/prefs.js:651
+msgid ""
+"Save or restore this extension's settings, or reset everything to defaults."
+msgstr ""
+
+#: src/prefs.js:656
+msgid "Settings"
+msgstr ""
+
+#: src/prefs.js:660
+msgid "Load"
+msgstr ""
+
+#: src/prefs.js:666
+msgid "Load Settings"
+msgstr ""
+
+#: src/prefs.js:673
+msgid "Could not read settings file"
+msgstr ""
+
+#: src/prefs.js:687
+msgid "Save"
+msgstr ""
+
+#: src/prefs.js:691
+msgid "Save Settings"
+msgstr ""
+
+#: src/prefs.js:698
+msgid "dconf dump failed"
+msgstr ""
+
+#: src/prefs.js:708
+msgid "Reset"
+msgstr ""
+
+#: src/prefs.js:789
+msgid "Reset to default value"
+msgstr "ডিফল্ট মান-এ ফিরিয়ে নিন"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
@@ -451,6 +640,18 @@ msgstr "কীবোর্ড শর্টকাট পরিবর্তন ক
 msgid "Clear"
 msgstr "মুছে ফেলুন"
 
-#: src/shortcutButton.js:90
+#: src/shortcutButton.js:89
 msgid "Press your keyboard shortcut..."
 msgstr "আপনার কীবোর্ড শর্টকাট টিপুন..."
+
+#~ msgid "Dim-factor"
+#~ msgstr "ডিম-ফ্যাক্টর"
+
+#~ msgid "Included"
+#~ msgstr "অন্তর্ভুক্ত"
+
+#~ msgid "Off-center Size Factor"
+#~ msgstr "অফ-সেন্টার সাইজ ফ্যাক্টর"
+
+#~ msgid "Code (create pull requests, report issues, etc.)"
+#~ msgstr "কোড (পুল রিকোয়েস্ট তৈরি, ইস্যু রিপোর্ট ইত্যাদি)"

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: coverflow\n"
-"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
-"POT-Creation-Date: 2025-02-05 20:07-0600\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-14 16:42-0500\n"
 "PO-Revision-Date: 2026-04-04 15:09+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/coverflow-alt-"
@@ -19,334 +19,426 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.17-dev\n"
 
-#: src/prefs.js:105
-msgid "Reset to default value"
-msgstr "デフォルト値に戻す"
-
-#: src/prefs.js:121
+#: src/prefs.js:118
 #, javascript-format
 msgid "Version %d"
 msgstr "バージョン %d"
 
-#: src/prefs.js:127
+#: src/prefs.js:123
 msgid "General"
 msgstr "全般"
 
-#: src/prefs.js:132
+#: src/prefs.js:128
 msgid "Switcher Properties"
 msgstr "スイッチャーのプロパティ"
 
-#: src/prefs.js:137
+#: src/prefs.js:133
 msgid "Flip Stack"
 msgstr "反対側にジャンプ"
 
-#: src/prefs.js:143
+#: src/prefs.js:139
 msgid "Carousel"
 msgstr "カルーセル"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "Looping Method"
 msgstr "ループの方法"
 
-#: src/prefs.js:149
+#: src/prefs.js:145
 msgid "How to cycle through windows."
 msgstr "全ウィンドウを周回する方法。"
 
-#: src/prefs.js:153
+#: src/prefs.js:149
 msgid "Coverflow"
 msgstr "Coverflow"
 
-#: src/prefs.js:159
+#: src/prefs.js:155
 msgid "Timeline"
 msgstr "タイムライン"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Style"
 msgstr "スタイル"
 
-#: src/prefs.js:164
+#: src/prefs.js:160
 msgid "Pick the type of switcher."
 msgstr "スイッチャーの種類を選択します。"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Vertical Offset"
 msgstr "垂直方向のオフセット"
 
-#: src/prefs.js:165
+#: src/prefs.js:161
 msgid "Positive value moves everything down, negative up."
 msgstr "正の値にすると表示が下に移動し、負の値にすると上に移動します。"
 
-#: src/prefs.js:169
+#: src/prefs.js:165
 msgid "Bottom"
 msgstr "下部"
 
-#: src/prefs.js:175
+#: src/prefs.js:171
 msgid "Top"
 msgstr "上部"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Window Title Position"
 msgstr "ウィンドウタイトルの位置"
 
-#: src/prefs.js:180
+#: src/prefs.js:176
 msgid "Place window title above or below the switcher."
 msgstr "ウィンドウタイトルをスイッチャーの上部または下部に配置します。"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid "Enforce Primary Monitor"
 msgstr "プライマリモニターを強制"
 
-#: src/prefs.js:181
+#: src/prefs.js:177
 msgid ""
 "Always show on the primary monitor, otherwise, show on the active monitor."
 msgstr ""
 "常にプライマリモニター上に表示します。無効にすると、現在のモニター上に表示し"
 "ます。"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide Panel"
 msgstr "パネルを隠す"
 
-#: src/prefs.js:184
+#: src/prefs.js:179
 msgid "Hide panel when switching windows."
 msgstr "ウィンドウ切り替え時にパネルを隠します。"
 
-#: src/prefs.js:185
-msgid "Invert Swipes"
-msgstr "スワイプを逆にする"
-
-#: src/prefs.js:185
-msgid "Invert system scroll direction setting."
-msgstr "システムのスクロール方向の設定を逆にします。"
-
-#: src/prefs.js:189
-msgid "Background"
+#: src/prefs.js:180
+#, fuzzy
+msgid "Background Dim-Factor"
 msgstr "背景"
 
-#: src/prefs.js:191
-msgid "Dim-factor"
-msgstr "暗さ係数"
-
-#: src/prefs.js:191
+#: src/prefs.js:180
 msgid "Bigger means darker."
 msgstr "大きいほど暗くなります。"
 
-#: src/prefs.js:195
+#: src/prefs.js:181
+msgid "Invert Swipes"
+msgstr "スワイプを逆にする"
+
+#: src/prefs.js:181
+msgid "Invert system scroll direction setting."
+msgstr "システムのスクロール方向の設定を逆にします。"
+
+#: src/prefs.js:182
+msgid "Start with Next"
+msgstr ""
+
+#: src/prefs.js:182
+#, fuzzy
+msgid "Start with the next window (instead of the current window)."
+msgstr "現在のモニター上のウィンドウを切り替えます。"
+
+#: src/prefs.js:186
+#, fuzzy
+msgid "Dash to Dock Properties"
+msgstr "スイッチャーのプロパティ"
+
+#: src/prefs.js:191
+msgid "Show"
+msgstr ""
+
+#: src/prefs.js:197
+msgid "Hide"
+msgstr ""
+
+#: src/prefs.js:203
+msgid "Neither"
+msgstr ""
+
+#: src/prefs.js:209
+msgid "Dash to Dock Visibility Behavior"
+msgstr ""
+
+#: src/prefs.js:210
+msgid "How to display dash-to-dock when the switcher is active."
+msgstr ""
+
+#: src/prefs.js:214
 msgid "Animation"
 msgstr "アニメーション"
 
-#: src/prefs.js:200 src/prefs.js:226 src/prefs.js:286 src/prefs.js:299
+#: src/prefs.js:219 src/prefs.js:232 src/prefs.js:329
 msgid "Properties"
 msgstr "プロパティ"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Easing Function"
 msgstr "イージング関数"
 
-#: src/prefs.js:203
+#: src/prefs.js:222
 msgid "Determine how windows move."
 msgstr "ウィンドウの移動方法を設定します。"
 
-#: src/prefs.js:204
+#: src/prefs.js:223
 msgid "Duration [s]"
 msgstr "長さ [秒]"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid "Randomize Durations"
 msgstr "長さをランダムにする"
 
-#: src/prefs.js:205
+#: src/prefs.js:224
 msgid ""
 "Each animation duration assigned randomly between 0 and configured duration."
 msgstr ""
 "アニメーションの度に、0 から設定値までのランダムな値が長さとして設定されま"
 "す。"
 
-#: src/prefs.js:208
-msgid "Included"
-msgstr "対象ウィンドウ"
+#: src/prefs.js:227
+msgid "Icons"
+msgstr "アイコン"
 
-#: src/prefs.js:211
+#: src/prefs.js:236
+msgid "Overlay Icon Size"
+msgstr "重ね合わせるアイコンのサイズ"
+
+#: src/prefs.js:236
+msgid "Set the overlay icon size in pixels."
+msgstr "重ね合わせるアイコンのサイズをピクセル単位で設定します。"
+
+#: src/prefs.js:237
+msgid "Overlay Icon Opacity"
+msgstr "重ね合わせるアイコンの透明度"
+
+#: src/prefs.js:237
+msgid "Set the overlay icon opacity."
+msgstr "重ね合わせるアイコンの透明度を設定します。"
+
+#: src/prefs.js:241
+msgid "Classic"
+msgstr "クラシック"
+
+#: src/prefs.js:247
+msgid "Overlay"
+msgstr "重ね合わせる"
+
+#: src/prefs.js:253
+msgid "Attached"
+msgstr "一緒に表示"
+
+#: src/prefs.js:258
+msgid "Application Icon Style"
+msgstr "アプリケーションアイコンのスタイル"
+
+#: src/prefs.js:263
+msgid "Fade Only"
+msgstr "フェードのみ"
+
+#: src/prefs.js:269
+msgid "Scale Only"
+msgstr "拡大・縮小のみ"
+
+#: src/prefs.js:275
+msgid "Fade and Scale"
+msgstr "フェードと拡大・縮小"
+
+#: src/prefs.js:280
+msgid "Add / Remove Effects"
+msgstr "追加時/削除時の効果"
+
+#: src/prefs.js:280
+msgid "How Icons and Labels ease in and out."
+msgstr "アイコンとラベルのアニメーションのイージングを設定します。"
+
+#: src/prefs.js:284
+msgid "Icon Shadow"
+msgstr "アイコンの影"
+
+#: src/prefs.js:288
+msgid "Windows"
+msgstr "ウィンドウ"
+
+#: src/prefs.js:292
+#, fuzzy
+msgid "General Settings"
+msgstr "全般"
+
+#: src/prefs.js:295
+#, fuzzy
+msgid "Timeline Settings"
+msgstr "タイムライン"
+
+#: src/prefs.js:298
+#, fuzzy
+msgid "Coverflow Settings"
+msgstr "Coverflow"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Window Size to Monitor Size Ratio"
+msgstr "モニターサイズに対するウィンドウプレビューサイズの比率"
+
+#: src/prefs.js:303
+#, fuzzy
+msgid "Maximum ratio of window size to monitor size."
+msgstr "モニターサイズに対するウィンドウプレビューサイズの最大比率。"
+
+#: src/prefs.js:305
 msgid "Current workspace only"
 msgstr "現在のワークスペースのみ"
 
-#: src/prefs.js:213
+#: src/prefs.js:307
 msgid "All workspaces"
 msgstr "すべてのワークスペース"
 
-#: src/prefs.js:215
+#: src/prefs.js:309
 msgid "All workspaces, current first"
 msgstr "すべてのワークスペース (現在が最初)"
 
-#: src/prefs.js:217
+#: src/prefs.js:311
 msgid "Workspaces"
 msgstr "ワークスペース"
 
-#: src/prefs.js:217
+#: src/prefs.js:311
 msgid "Switch between windows on current or on all workspaces."
 msgstr ""
 "現在のワークスペース上、またはすべてのワークスペース上のウィンドウを切り替え"
 "ます。"
 
-#: src/prefs.js:218
+#: src/prefs.js:312
 msgid "Current Monitor"
 msgstr "現在のモニター"
 
-#: src/prefs.js:218
+#: src/prefs.js:312
 msgid "Switch between windows on current monitor."
 msgstr "現在のモニター上のウィンドウを切り替えます。"
 
-#: src/prefs.js:221
-msgid "Icons"
-msgstr "アイコン"
+#: src/prefs.js:313
+msgid "Skip Minimized Windows"
+msgstr ""
 
-#: src/prefs.js:230
-msgid "Overlay Icon Size"
-msgstr "重ね合わせるアイコンのサイズ"
+#: src/prefs.js:313
+msgid "Exclude minimized windows from the switcher."
+msgstr ""
 
-#: src/prefs.js:230
-msgid "Set the overlay icon size in pixels."
-msgstr "重ね合わせるアイコンのサイズをピクセル単位で設定します。"
+#: src/prefs.js:315
+msgid "Window Layout Distance"
+msgstr ""
 
-#: src/prefs.js:231
-msgid "Overlay Icon Opacity"
-msgstr "重ね合わせるアイコンの透明度"
+#: src/prefs.js:315
+msgid "Distance in pixels between timeline window's upper left corners."
+msgstr ""
 
-#: src/prefs.js:231
-msgid "Set the overlay icon opacity."
-msgstr "重ね合わせるアイコンの透明度を設定します。"
+#: src/prefs.js:316
+msgid "Window Layout Angle"
+msgstr ""
 
-#: src/prefs.js:235
-msgid "Classic"
-msgstr "クラシック"
+#: src/prefs.js:316
+msgid ""
+"Angle in degrees (0-90) for timeline window layout such that windows go from "
+"lower right to upper left at this angle between successive window's upper "
+"left corners. The topmost window's upper left corner is at the center of the "
+"monitor."
+msgstr ""
 
-#: src/prefs.js:241
-msgid "Overlay"
-msgstr "重ね合わせる"
+#: src/prefs.js:317
+#, fuzzy
+msgid "Window Tilt Angle"
+msgstr "ウィンドウタイトルの位置"
 
-#: src/prefs.js:247
-msgid "Attached"
-msgstr "一緒に表示"
+#: src/prefs.js:317
+msgid "Y-axis rotation angle in degrees applied to timeline windows."
+msgstr ""
 
-#: src/prefs.js:252
-msgid "Application Icon Style"
-msgstr "アプリケーションアイコンのスタイル"
+#: src/prefs.js:318 src/prefs.js:321
+msgid "Window Scaling Factor"
+msgstr ""
 
-#: src/prefs.js:257
-msgid "Fade Only"
-msgstr "フェードのみ"
+#: src/prefs.js:318
+msgid ""
+"Factor by which timeline windows successively shrink with distance from the "
+"top window."
+msgstr ""
 
-#: src/prefs.js:263
-msgid "Scale Only"
-msgstr "拡大・縮小のみ"
+#: src/prefs.js:319
+msgid "Enable Window Scaling"
+msgstr ""
 
-#: src/prefs.js:269
-msgid "Fade and Scale"
-msgstr "フェードと拡大・縮小"
+#: src/prefs.js:319
+msgid "Useful if you have a large number of windows and want to see them all."
+msgstr ""
 
-#: src/prefs.js:274
-msgid "Add / Remove Effects"
-msgstr "追加時/削除時の効果"
+#: src/prefs.js:321
+msgid "Factor by which coverflow windows successively shrink off to the side."
+msgstr ""
 
-#: src/prefs.js:274
-msgid "How Icons and Labels ease in and out."
-msgstr "アイコンとラベルのアニメーションのイージングを設定します。"
-
-#: src/prefs.js:278
-msgid "Icon Shadow"
-msgstr "アイコンの影"
-
-#: src/prefs.js:282
-msgid "Windows"
+#: src/prefs.js:322
+#, fuzzy
+msgid "Window Angle"
 msgstr "ウィンドウ"
 
-#: src/prefs.js:290
-msgid "Window Preview Size to Monitor Size Ratio"
-msgstr "モニターサイズに対するウィンドウプレビューサイズの比率"
-
-#: src/prefs.js:290
-msgid "Maximum ratio of window preview size to monitor size."
-msgstr "モニターサイズに対するウィンドウプレビューサイズの最大比率。"
-
-#: src/prefs.js:291
-msgid "Off-center Size Factor"
-msgstr ""
-
-#: src/prefs.js:291
-msgid "Factor by which to successively shrink previews off to the side."
-msgstr ""
-
-#: src/prefs.js:292
-msgid "Coverflow Window Angle"
-msgstr ""
-
-#: src/prefs.js:292
+#: src/prefs.js:322
 msgid "Angle of off-center windows in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:293
-msgid "Coverflow Window Offset Width"
+#: src/prefs.js:323
+msgid "Window Offset Width"
 msgstr ""
 
-#: src/prefs.js:293
+#: src/prefs.js:323
 msgid "How far windows are off to the side in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:295
+#: src/prefs.js:325
 msgid "AppSwitcher"
 msgstr "アプリスイッチャー"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 #, fuzzy
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "アプリケーションスイッチャーをウィンドウスイッチャーの挙動にする"
 
-#: src/prefs.js:302
+#: src/prefs.js:332
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr ""
 "同じアプリケーションのウィンドウをサブスイッチャー内でグループ化しません。"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Desaturate"
 msgstr "モノクロ化"
 
-#: src/prefs.js:303
+#: src/prefs.js:333
 msgid "Larger means more desaturation."
 msgstr "大きいほどモノクロになります。"
 
-#: src/prefs.js:306
+#: src/prefs.js:336
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:318 src/prefs.js:448
+#: src/prefs.js:348 src/prefs.js:487
 msgid "Color"
 msgstr "色"
 
-#: src/prefs.js:339 src/prefs.js:472
+#: src/prefs.js:369 src/prefs.js:511
 msgid "Set to Theme Color"
 msgstr "テーマカラーを設定"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "Blend"
 msgstr "混色"
 
-#: src/prefs.js:397
+#: src/prefs.js:434
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 
-#: src/prefs.js:398
+#: src/prefs.js:435
 msgid "Glitch"
 msgstr "グリッチ"
 
-#: src/prefs.js:401
+#: src/prefs.js:438
 msgid "Keybindings"
 msgstr "キーバインディング"
 
-#: src/prefs.js:406
+#: src/prefs.js:443
 msgid "System Actions Keybindings"
 msgstr "システムアクションのキーバインディング"
 
-#: src/prefs.js:407
+#: src/prefs.js:444
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
@@ -354,104 +446,197 @@ msgstr ""
 "その他のウィンドウスイッチャーと競合する場合、システムアクションとの連携を解"
 "除できます。"
 
-#: src/prefs.js:410
+#: src/prefs.js:447
 msgid "Bind to 'switch-windows'"
 msgstr "'switch-windows' と連携する"
 
-#: src/prefs.js:411
+#: src/prefs.js:448
 msgid "Bind to 'switch-applications'"
 msgstr "'switch-applications' と連携する"
 
-#: src/prefs.js:414
+#: src/prefs.js:451
 msgid "Internal Actions Keybindings"
 msgstr "内部アクションのキーバインディング"
 
-#: src/prefs.js:415
+#: src/prefs.js:452
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr "その他のウィンドウスイッチャーと競合することがない内部アクションです。"
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
-#: src/prefs.js:418
+#: src/prefs.js:455
 msgid "Activate window switcher."
 msgstr "ウィンドウスイッチャーを有効にします。"
 
-#: src/prefs.js:419
+#: src/prefs.js:456
+msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
+msgstr ""
+
+#: src/prefs.js:456
+#, fuzzy
+msgid "Activate window switcher listing windows visible on all workspaces."
+msgstr ""
+"現在のワークスペース上、またはすべてのワークスペース上のウィンドウを切り替え"
+"ます。"
+
+#: src/prefs.js:457
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
-#: src/prefs.js:419
+#: src/prefs.js:457
 msgid "Activate application switcher."
 msgstr "アプリケーションスイッチャーを有効にします。"
 
-#: src/prefs.js:422
+#: src/prefs.js:458
+msgid ""
+"Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
+msgstr ""
+
+#: src/prefs.js:458
+msgid ""
+"Activate application switcher listing applications visible on all workspaces."
+msgstr ""
+
+#: src/prefs.js:461
 msgid "Advanced Options"
 msgstr "高度なオプション"
 
-#: src/prefs.js:426
+#: src/prefs.js:465
 msgid "None"
 msgstr "なし"
 
-#: src/prefs.js:427
+#: src/prefs.js:466
 msgid "Move Camera"
 msgstr "カメラを移動"
 
-#: src/prefs.js:428
+#: src/prefs.js:467
 msgid "Adjust Angles"
 msgstr "角度を調整"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Perspective Correction"
 msgstr "パースペクティブ補正"
 
-#: src/prefs.js:429
+#: src/prefs.js:468
 msgid "Method to make off-center switcher look centered."
 msgstr ""
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Verbose Logging"
 msgstr "詳細なログ出力"
 
-#: src/prefs.js:431
+#: src/prefs.js:470
 msgid "Log debug and normal messages."
 msgstr "デバッグメッセージと通常メッセージをログ出力します。"
 
-#: src/prefs.js:435
+#: src/prefs.js:474
 msgid "Highlight Window Under Mouse"
 msgstr "マウス直下にあるウィンドウを強調表示"
 
-#: src/prefs.js:436
+#: src/prefs.js:475
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 "マウス直下のウィンドウを色付きで強調表示することで、クリックを可視化します。"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise Window Under Mouse"
 msgstr "マウス直下にあるウィンドウを前面に表示"
 
-#: src/prefs.js:526
+#: src/prefs.js:573
 msgid "Raise the window under the mouse above all others."
 msgstr "マウス直下にあるウィンドウを、他のウィンドウよりも前面に表示します。"
 
-#: src/prefs.js:529
+#: src/prefs.js:576
 msgid "Contribute"
 msgstr "貢献"
 
-#: src/prefs.js:565
-msgid "Code (create pull requests, report issues, etc.)"
-msgstr "コード (プルリクエスト作成や不具合報告など)"
+#: src/prefs.js:610
+msgid "Get involved"
+msgstr ""
 
-#: src/prefs.js:573
+#: src/prefs.js:611
+msgid ""
+"Help improve this extension by contributing code, reporting issues, or "
+"translating it into your language."
+msgstr ""
+
+#: src/prefs.js:615
+msgid "Code and Issues"
+msgstr ""
+
+#: src/prefs.js:621
+#, fuzzy
+msgid "Translations"
+msgstr "翻訳"
+
+#: src/prefs.js:627
 msgid "Donate"
 msgstr "寄付"
 
-#: src/prefs.js:594
-msgid "Translate"
-msgstr "翻訳"
+#: src/prefs.js:628
+msgid "If you use this extension, consider supporting its development."
+msgstr ""
+
+#: src/prefs.js:632
+msgid "Liberapay"
+msgstr ""
+
+#: src/prefs.js:638
+msgid "PayPal"
+msgstr ""
+
+#: src/prefs.js:644
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: src/prefs.js:650
+msgid "Preferences backup"
+msgstr ""
+
+#: src/prefs.js:651
+msgid ""
+"Save or restore this extension's settings, or reset everything to defaults."
+msgstr ""
+
+#: src/prefs.js:656
+msgid "Settings"
+msgstr ""
+
+#: src/prefs.js:660
+msgid "Load"
+msgstr ""
+
+#: src/prefs.js:666
+msgid "Load Settings"
+msgstr ""
+
+#: src/prefs.js:673
+msgid "Could not read settings file"
+msgstr ""
+
+#: src/prefs.js:687
+msgid "Save"
+msgstr ""
+
+#: src/prefs.js:691
+msgid "Save Settings"
+msgstr ""
+
+#: src/prefs.js:698
+msgid "dconf dump failed"
+msgstr ""
+
+#: src/prefs.js:708
+msgid "Reset"
+msgstr ""
+
+#: src/prefs.js:789
+msgid "Reset to default value"
+msgstr "デフォルト値に戻す"
 
 #: src/shortcutButton.js:37
 msgid "Choose..."
@@ -465,9 +650,18 @@ msgstr "キーボードショートカットを変更"
 msgid "Clear"
 msgstr "消去"
 
-#: src/shortcutButton.js:90
+#: src/shortcutButton.js:89
 msgid "Press your keyboard shortcut..."
 msgstr "キーボードショートカットを押してください…"
+
+#~ msgid "Dim-factor"
+#~ msgstr "暗さ係数"
+
+#~ msgid "Included"
+#~ msgstr "対象ウィンドウ"
+
+#~ msgid "Code (create pull requests, report issues, etc.)"
+#~ msgstr "コード (プルリクエスト作成や不具合報告など)"
 
 #~ msgid "Swipe content instead of view."
 #~ msgstr "ビューではなくコンテンツをスワイプします。"
