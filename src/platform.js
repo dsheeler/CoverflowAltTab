@@ -665,6 +665,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                     continue;
 
                 // DtD exports `dockManager` specifically for other extensions.
+                // eslint-disable-next-line no-await-in-loop
                 const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
                 if (!dockManager)
                     continue;
