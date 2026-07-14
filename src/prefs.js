@@ -619,7 +619,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         links_pref_group.add(this.buildContributeLinkRow(window, {
             icon_name: 'translate-symbolic',
             title: _('Translations'),
-            subtitle: 'hosted.weblate.org · coverflow-alt-tab',
+            subtitle: 'hosted.weblate.org coverflow-alt-tab',
             uri: 'https://hosted.weblate.org/engage/coverflow-alt-tab/',
         }));
 
