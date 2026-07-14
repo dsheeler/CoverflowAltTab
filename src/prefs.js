@@ -182,6 +182,34 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         switcher_pref_group.add(this.buildSwitcherAdw("start-with-next", [], [], _("Start with Next"), _("Start with the next window (instead of the current window).")));
         switcher_page.add(switcher_pref_group);
 
+        let dash_to_dock_pref_group = new Adw.PreferencesGroup({
+            title: _('Dash to Dock Properties'),
+        });
+        const dash_to_dock_visibility_behavior_buttons = [
+            {
+                choice: "Show",
+                label: _("Show"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Hide",
+                label: _("Hide"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+            {
+                choice: "Neither",
+                label: _("Neither"),
+                sensitive_widgets: [],
+                insensitive_widgets: [],
+            },
+        ];
+        dash_to_dock_pref_group.add(this.buildRadioAdw("dash-to-dock-visibility-behavior",
+            dash_to_dock_visibility_behavior_buttons, _("Dash to Dock Visibility Behavior"),
+            _("How to display dash-to-dock when the switcher is active.")));
+
+        switcher_page.add(dash_to_dock_pref_group);
         let animation_page = new Adw.PreferencesPage({
             title: _("Animation"),
             icon_name: 'animation-symbolic',

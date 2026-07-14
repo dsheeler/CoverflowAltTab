@@ -52,10 +52,10 @@ const DASH_TO_DOCK_UUIDS = [
     'ubuntu-dock@ubuntu.com',
 ];
 
-class Visibility {}
-Visibility.HIDDEN = 1;
-Visibility.HIDING = 2;
-Visibility.SHOWING = 3;
+class SwitcherVisibility {}
+SwitcherVisibility.HIDDEN = 1;
+SwitcherVisibility.HIDING = 2;
+SwitcherVisibility.SHOWING = 3;
 
 
 const TRANSITION_TYPE = 'easeOutQuad';
@@ -176,6 +176,7 @@ class AbstractPlatform {
             coverflow_window_angle: 90,
             coverflow_window_offset_width: 50,
             start_with_next: true,
+            dash_to_dock_visibility_behavior: "Neither",
         };
     }
 
@@ -398,6 +399,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 coverflow_window_angle: settings.get_double("coverflow-window-angle"),
                 coverflow_window_offset_width: settings.get_double("coverflow-window-offset-width"),
                 start_with_next: settings.get_boolean("start-with-next"),
+                dash_to_dock_visibility_behavior: settings.get_string("dash-to-dock-visibility-behavior"),
             };
         } catch (e) {
             this._logger.log(e);
@@ -578,7 +580,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
      dimBackground() {
-        this._setDashToDockVisibility(Visibility.SHOWING);
+        this._setDashToDockVisibility(SwitcherVisibility.SHOWING);
         if (this._settings.hide_panel) {
             this.hidePanels();
         }
@@ -628,7 +630,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     lightenBackground() {
-        this._setDashToDockVisibility(Visibility.HIDING);
+        this._setDashToDockVisibility(SwitcherVisibility.HIDING);
         if (this._settings.hide_panel) {
             this.showPanels(this._settings.animation_time);
         }
@@ -637,7 +639,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             opacity: 0,
             time: this._settings.animation_time,
             transition: 'easeInOutQuint',
-            onComplete: () => this._setDashToDockVisibility(Visibility.HIDDEN),
+            onComplete: () => this._setDashToDockVisibility(SwitcherVisibility.HIDDEN),
         });
         this.tween(this._backgroundShade, {
             time: this._settings.animation_time * 0.95,
@@ -668,12 +670,20 @@ export class PlatformGnomeShell extends AbstractPlatform {
                     continue;
 
                 for (const dock of dockManager._allDocks) {
-                    if (visibility === Visibility.SHOWING) {
-                        dock._onOverviewShowing();
-                    } else if (visibility === Visibility.HIDING) {
-                        dock._onOverviewHiding();
-                    } else if (visibility === Visibility.HIDDEN) {
-                        dock._onOverviewHidden();
+                    if (visibility === SwitcherVisibility.SHOWING) {
+                        dock._ignoreHover = true;
+                        dock._intellihide.disable();
+                        dock._removeAnimations();
+                        if (this._settings.dash_to_dock_visibility_behavior === "Show") {
+                            dock._animateIn(dockManager.settings.animationTime, 0);
+                        } else if (this._settings.dash_to_dock_visibility_behavior === "Hide") {
+                            dock._animateOut(dockManager.settings.animationTime, 0);
+                        }
+                    } else if (visibility === SwitcherVisibility.HIDING) {
+                        dock._intellihide.enable();
+                        dock._updateDashVisibility();
+                    } else if (visibility === SwitcherVisibility.HIDDEN) {
+                        dock._updateDashVisibility();
                     }
                 }
 
@@ -687,7 +697,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     getPanels() {
         let panels = [];
         for (let child of Main.layoutManager.uiGroup.get_children()) {
-            if (child.get_name() === "panelBox" || child.get_name() === "dashtodockContainer") {
+            if (child.get_name() === "panelBox") {
                 panels.push(child);
             }
         }

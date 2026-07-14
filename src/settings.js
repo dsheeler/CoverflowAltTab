@@ -51,4 +51,5 @@ export const ExtensionSettingKeys = [
     "coverflow-window-angle",
     "coverflow-window-offset-width",
     "start-with-next",
+    "dash-to-dock-visibility-behavior",
 ];

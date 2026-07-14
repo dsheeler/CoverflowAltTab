@@ -340,5 +340,15 @@
         <default>true</default>
         <summary>Whether to start with the next window</summary>
     </key>
+    <key name="dash-to-dock-visibility-behavior" type="s">
+        <choices>
+            <choice value="Show"/>
+            <choice value="Hide"/>
+            <choice value="Neither"/>
+        </choices>
+        <default>"Neither"</default>
+        <summary>How to display dash-to-dock when the switcher is active</summary>
+        <description>Whether to show, hide, or neither show nor hide dash-to-dock when the switcher is active.</description>
+    </key>
   </schema>
 </schemalist>

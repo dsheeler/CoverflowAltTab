@@ -261,7 +261,8 @@ export class Switcher {
     _gestureBegin(tracker) {
         const baseDistance = 400;
         let t = this._previews[this._currentIndex].get_transition('scale-x');
-        const progress = t !== null ? (this._currentIndex - this._lastIndex) * t.get_progress() + this._lastIndex : this._currentIndex;//this._currentIndex;
+        const progress = t !== null ? (this._currentIndex - this._lastIndex) * t.get_progress() + this._lastIndex :
+            this._currentIndex;
         const points = [];
         for (let i = 0; i < this._previews.length; i++) {
             points.push(i);
@@ -378,8 +379,6 @@ export class Switcher {
             }
         }
     }
-
-
 
     _stopClosing() {
         this._animatingClosed = false;
