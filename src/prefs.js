@@ -119,7 +119,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
     }
 
     fillPreferencesWindow(window) {
-        let switcher_page = new Adw.PreferencesPage({
+        let general_page = new Adw.PreferencesPage({
             title: _('General'),
             icon_name: 'general-symbolic',
         });
@@ -180,36 +180,123 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         switcher_pref_group.add(this.buildRangeAdw("dim-factor", [0, 1, 0.001, [0.25, 0.5, 0.75]], _("Background Dim-Factor"), _("Bigger means darker."), true));
         switcher_pref_group.add(this.buildSwitcherAdw("invert-swipes", [], [], _("Invert Swipes"), _("Invert system scroll direction setting.")));
         switcher_pref_group.add(this.buildSwitcherAdw("start-with-next", [], [], _("Start with Next"), _("Start with the next window (instead of the current window).")));
-        switcher_page.add(switcher_pref_group);
+        general_page.add(switcher_pref_group);
 
         let dash_to_dock_pref_group = new Adw.PreferencesGroup({
             title: _('Dash to Dock Properties'),
         });
-        const dash_to_dock_visibility_behavior_buttons = [
+        const dash_to_dock_visibility_behavior_options = [
             {
-                choice: "Show",
-                label: _("Show"),
-                sensitive_widgets: [],
-                insensitive_widgets: [],
+                id: "Show",
+                name: _("Show"),
             },
             {
-                choice: "Hide",
-                label: _("Hide"),
-                sensitive_widgets: [],
-                insensitive_widgets: [],
+                id: "Hide",
+                name: _("Hide"),
             },
             {
-                choice: "Neither",
-                label: _("Neither"),
-                sensitive_widgets: [],
-                insensitive_widgets: [],
+                id: "Neither",
+                name: _("Neither"),
             },
         ];
-        dash_to_dock_pref_group.add(this.buildRadioAdw("dash-to-dock-visibility-behavior",
-            dash_to_dock_visibility_behavior_buttons, _("Dash to Dock Visibility Behavior"),
+        dash_to_dock_pref_group.add(this.buildDropDownAdw("dash-to-dock-visibility-behavior",
+            dash_to_dock_visibility_behavior_options, _("Dash to Dock Visibility"),
             _("How to display dash-to-dock when the switcher is active.")));
 
-        switcher_page.add(dash_to_dock_pref_group);
+        general_page.add(dash_to_dock_pref_group);
+
+        const settings_pref_group = new Adw.PreferencesGroup({
+            title: _('Preferences backup'),
+            description: _('Save or restore this extension\'s settings, or reset everything to defaults.'),
+        });
+
+        // Save/Load Settings----------------------------------------------------------
+        const settingsRow = new Adw.ActionRow({
+            title: _('Settings'),
+        });
+
+        const loadButton = new Gtk.Button({
+            label: _('Load'),
+            valign: Gtk.Align.CENTER,
+        });
+
+        const schemaPath = '/org/gnome/shell/extensions/coverflowalttab/';
+
+        loadButton.connect('clicked', () => {
+            this.showFileChooser(window, _('Load Settings'), Gtk.FileChooserAction.OPEN, filename => {
+                    if (!filename || !GLib.file_test(filename, GLib.FileTest.EXISTS))
+                        return;
+                    try {
+                        const file = Gio.File.new_for_path(filename);
+                        const [readOk, contents] = file.load_contents(null);
+                        if (!readOk)
+                            throw new Error(_('Could not read settings file'));
+                        const subprocess = Gio.Subprocess.new(
+                            ['dconf', 'load', schemaPath],
+                            Gio.SubprocessFlags.STDIN_PIPE,
+                        );
+                        subprocess.communicate(new GLib.Bytes(contents), null);
+                        if (!subprocess.get_successful())
+                            console.error('CoverflowAltTab: dconf load exited with an error');
+                    } catch (e) {
+                        console.error(`CoverflowAltTab: failed to load settings: ${e}`);
+                    }
+            });
+        });
+        const saveButton = new Gtk.Button({
+            label: _('Save'),
+            valign: Gtk.Align.CENTER,
+        });
+        saveButton.connect('clicked', () => {
+            this.showFileChooser(window, _('Save Settings'), Gtk.FileChooserAction.SAVE, filename => {
+                    try {
+                        const file = Gio.File.new_for_path(filename);
+                        const raw = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+                        const out = Gio.BufferedOutputStream.new_sized(raw, 4096);
+                        const [ok, dumpBytes] = GLib.spawn_command_line_sync(`dconf dump ${schemaPath}`);
+                        if (!ok)
+                            throw new Error(_('dconf dump failed'));
+                        out.write_all(dumpBytes, null);
+                        out.close(null);
+                    } catch (e) {
+                        console.error(`CoverflowAltTab: failed to save settings: ${e}`);
+                    }
+            });
+        });
+
+        const resetButton = new Gtk.Button({
+            label: _('Reset'),
+            valign: Gtk.Align.CENTER,
+        });
+        resetButton.connect('clicked', () => {
+            for (const key of ExtensionSettingKeys) {
+                this.settings.reset(key);
+            }
+        });
+
+        settingsRow.add_suffix(saveButton);
+        settingsRow.add_suffix(loadButton);
+        settingsRow.add_suffix(resetButton);
+
+        settings_pref_group.add(settingsRow);
+        general_page.add(settings_pref_group);
+
+        //----------------------------------------------------------
+
+        let pcorrection_pref_group = new Adw.PreferencesGroup({
+            title: _("Advanced Options"),
+        });
+
+        pcorrection_pref_group.add(this.buildDropDownAdw("perspective-correction-method", [
+            { id: "None", name: _("None") },
+            { id: "Move Camera", name: _("Move Camera") },
+            { id: "Adjust Angles", name: _("Adjust Angles") }],
+            _("Perspective Correction"), _("Method to make off-center switcher look centered.")));
+
+        pcorrection_pref_group.add(this.buildSwitcherAdw("verbose-logging", [], [], _("Verbose Logging"), _("Log debug and normal messages.")));
+        general_page.add(pcorrection_pref_group);
+
+
         let animation_page = new Adw.PreferencesPage({
             title: _("Animation"),
             icon_name: 'animation-symbolic',
@@ -457,18 +544,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         custom_keybinding_pref_group.add(this.buildShortcutButtonAdw("coverflow-switch-applications", _("Coverflow Switch Applications Shortcut"), _("Activate application switcher.")));
         custom_keybinding_pref_group.add(this.buildShortcutButtonAdw("coverflow-switch-applications-on-all-workspaces", _("Coverflow Switch Applications That are Visible on All Workspaces Shortcut"), _("Activate application switcher listing applications visible on all workspaces.")));
 
-        let pcorrection_pref_group = new Adw.PreferencesGroup({
-            title: _("Advanced Options"),
-        });
-
-        pcorrection_pref_group.add(this.buildDropDownAdw("perspective-correction-method", [
-            { id: "None", name: _("None") },
-            { id: "Move Camera", name: _("Move Camera") },
-            { id: "Adjust Angles", name: _("Adjust Angles") }],
-            _("Perspective Correction"), _("Method to make off-center switcher look centered.")));
-
-        pcorrection_pref_group.add(this.buildSwitcherAdw("verbose-logging", [], [], _("Verbose Logging"), _("Log debug and normal messages.")));
-        switcher_page.add(pcorrection_pref_group);
 
         let highlight_color_row = new Adw.ExpanderRow({
             title: _("Highlight Window Under Mouse"),
@@ -646,80 +721,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             uri: 'https://github.com/sponsors/dsheeler',
         }));
 
-        const settings_pref_group = new Adw.PreferencesGroup({
-            title: _('Preferences backup'),
-            description: _('Save or restore this extension\'s settings, or reset everything to defaults.'),
-        });
-
-        // Save/Load Settings----------------------------------------------------------
-        const settingsRow = new Adw.ActionRow({
-            title: _('Settings'),
-            icon_name: "settings-symbolic",
-        });
-        const loadButton = new Gtk.Button({
-            label: _('Load'),
-            valign: Gtk.Align.CENTER,
-        });
-
-        const schemaPath = '/org/gnome/shell/extensions/coverflowalttab/';
-        loadButton.connect('clicked', () => {
-            this.showFileChooser(window, _('Load Settings'), Gtk.FileChooserAction.OPEN, filename => {
-                    if (!filename || !GLib.file_test(filename, GLib.FileTest.EXISTS))
-                        return;
-                    try {
-                        const file = Gio.File.new_for_path(filename);
-                        const [readOk, contents] = file.load_contents(null);
-                        if (!readOk)
-                            throw new Error(_('Could not read settings file'));
-                        const subprocess = Gio.Subprocess.new(
-                            ['dconf', 'load', schemaPath],
-                            Gio.SubprocessFlags.STDIN_PIPE,
-                        );
-                        subprocess.communicate(new GLib.Bytes(contents), null);
-                        if (!subprocess.get_successful())
-                            console.error('CoverflowAltTab: dconf load exited with an error');
-                    } catch (e) {
-                        console.error(`CoverflowAltTab: failed to load settings: ${e}`);
-                    }
-            });
-        });
-        const saveButton = new Gtk.Button({
-            label: _('Save'),
-            valign: Gtk.Align.CENTER,
-        });
-        saveButton.connect('clicked', () => {
-            this.showFileChooser(window, _('Save Settings'), Gtk.FileChooserAction.SAVE, filename => {
-                    try {
-                        const file = Gio.File.new_for_path(filename);
-                        const raw = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-                        const out = Gio.BufferedOutputStream.new_sized(raw, 4096);
-                        const [ok, dumpBytes] = GLib.spawn_command_line_sync(`dconf dump ${schemaPath}`);
-                        if (!ok)
-                            throw new Error(_('dconf dump failed'));
-                        out.write_all(dumpBytes, null);
-                        out.close(null);
-                    } catch (e) {
-                        console.error(`CoverflowAltTab: failed to save settings: ${e}`);
-                    }
-            });
-        });
-
-        const resetButton = new Gtk.Button({
-            label: _('Reset'),
-            valign: Gtk.Align.CENTER,
-        });
-        resetButton.connect('clicked', () => {
-            for (const key of ExtensionSettingKeys) {
-                this.settings.reset(key);
-            }
-        });
-
-        settingsRow.add_suffix(saveButton);
-        settingsRow.add_suffix(loadButton);
-        settingsRow.add_suffix(resetButton);
-
-        settings_pref_group.add(settingsRow);
-
         label_box.append(label);
         label_box.append(another_label);
         icon_box.append(icon_image);
@@ -731,7 +732,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         contribution_page.add(support_pref_group);
         contribution_page.add(settings_pref_group);
 
-        window.add(switcher_page);
+        window.add(general_page);
         window.add(animation_page);
         window.add(icon_page);
         window.add(window_size_page);
