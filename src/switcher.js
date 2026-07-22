@@ -1171,7 +1171,7 @@ export class Switcher {
         }
 
         this._disablePerspectiveCorrection();
-        Main.uiGroup.remove_child(this.actor);
+        this.actor.destroy();
         this._destroyed = true;
         this._logger.decreaseIndent();
         this._logger.log("Destroying Switcher DONE");

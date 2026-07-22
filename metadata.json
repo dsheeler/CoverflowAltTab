@@ -9,6 +9,7 @@
     "settings-schema": "org.gnome.shell.extensions.coverflowalttab",
     "shell-version": ["50"],
     "uuid": "CoverflowAltTab@palatis.blogspot.com",
+    "version": 84,
     "description": "Replacement of Alt-Tab, iterates through windows in a cover-flow manner.",
     "url": "https://github.com/dsheeler/CoverflowAltTab"
 }
