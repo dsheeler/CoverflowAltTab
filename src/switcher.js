@@ -63,6 +63,7 @@ export class Switcher {
         this._windowManager = global.window_manager;
         this._previews = [];
         this._allPreviews = [];
+        this._hiddenWindowActors = [];
         this._numPreviewsComplete = 0;
         this._isAppSwitcher = isAppSwitcher;
         this._appWindowsMap = new Map();
@@ -107,7 +108,11 @@ export class Switcher {
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
         manager.platform.switcher = this;
-        if (this._parent === null) manager.platform.initBackground();
+        if (this._parent === null) {
+            let backgroundMonitor = this._settings.switch_per_monitor
+                && this._settings.isolate_current_monitor ? monitor : null;
+            manager.platform.initBackground(backgroundMonitor);
+        }
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -229,7 +234,11 @@ export class Switcher {
             for (let child of global.window_group.get_children()) {
                 if (child !== global.window_group.get_first_child()
                     && typeof child.get_meta_window === "function"
-                    && child.get_meta_window().get_workspace() === currentWorkspace) {
+                    && child.get_meta_window().get_workspace() === currentWorkspace
+                    && (!(this._settings.switch_per_monitor
+                        && this._settings.isolate_current_monitor)
+                        || child.get_meta_window().get_monitor() === this._activeMonitor.index)) {
+                    this._hiddenWindowActors.push(child);
                     child.hide();
                     this._hiddenWindowActors.push(child);
                 }
@@ -1304,6 +1313,15 @@ export class Switcher {
             // Restore Dash to Dock after windows are visible again so intellihide
             // sees the real overlap state instead of an empty desktop.
             this._manager.platform.removeBackground();
+            for (let child of this._hiddenWindowActors) {
+                if (typeof child.get_meta_window === "function") {
+                    let metaWin = child.get_meta_window();
+                    if (metaWin !== null && !metaWin.minimized) {
+                        child.show();
+                    }
+                }
+            }
+            this._hiddenWindowActors = [];
         }
 
         this._disablePerspectiveCorrection();
