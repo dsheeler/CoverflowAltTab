@@ -51,6 +51,11 @@ export class TimelineSwitcher extends Switcher {
 
         for (let windowActor of global.get_window_actors()) {
             let metaWin = windowActor.get_meta_window();
+            if (this._settings.switch_per_monitor
+                && this._settings.isolate_current_monitor
+                && metaWin.get_monitor() !== monitor.index) {
+                continue;
+            }
 
             let texture = windowActor.get_texture();
             let width, height;

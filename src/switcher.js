@@ -63,6 +63,7 @@ export class Switcher {
         this._windowManager = global.window_manager;
         this._previews = [];
         this._allPreviews = [];
+        this._hiddenWindowActors = [];
         this._numPreviewsComplete = 0;
         this._isAppSwitcher = isAppSwitcher;
         this._appWindowsMap = new Map();
@@ -104,7 +105,11 @@ export class Switcher {
         this._dcid = this._windowManager.connect('destroy', this._windowDestroyed.bind(this));
         this._mcid = this._windowManager.connect('map', this._activateSelected.bind(this));
         manager.platform.switcher = this;
-        if (this._parent === null) manager.platform.initBackground();
+        if (this._parent === null) {
+            let backgroundMonitor = this._settings.switch_per_monitor
+                && this._settings.isolate_current_monitor ? monitor : null;
+            manager.platform.initBackground(backgroundMonitor);
+        }
 
         // create a container for all our widgets
         let widgetClass = manager.platform.getWidgetClass();
@@ -225,7 +230,11 @@ export class Switcher {
             for (let child of global.window_group.get_children()) {
                 if (child !== global.window_group.get_first_child()
                     && typeof child.get_meta_window === "function"
-                    && child.get_meta_window().get_workspace() === currentWorkspace) {
+                    && child.get_meta_window().get_workspace() === currentWorkspace
+                    && (!(this._settings.switch_per_monitor
+                        && this._settings.isolate_current_monitor)
+                        || child.get_meta_window().get_monitor() === this._activeMonitor.index)) {
+                    this._hiddenWindowActors.push(child);
                     child.hide();
                 }
             }
@@ -1009,6 +1018,8 @@ export class Switcher {
         if (this._destroyed || this._windows === null)
             return;
         this._logger.debug('_windowDestroyed')
+        this._hiddenWindowActors = this._hiddenWindowActors.filter(
+            windowActor => windowActor !== actor);
         this._removeDestroyedWindow(actor.meta_window);
     }
 
@@ -1234,18 +1245,15 @@ export class Switcher {
 
         if (this._parent === null) this._manager.platform.removeBackground();
         if (this._parent === null) {
-            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-            for (let child of global.window_group.get_children()) {
+            for (let child of this._hiddenWindowActors) {
                 if (typeof child.get_meta_window === "function") {
                     let metaWin = child.get_meta_window();
-                    // Only re-show windows that belong to the current workspace.
-                    // Re-showing windows from other workspaces is what left them
-                    // ghosting on the current workspace after a switch.
-                    if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace) {
+                    if (metaWin !== null && !metaWin.minimized) {
                         child.show();
                     }
                 }
             }
+            this._hiddenWindowActors = [];
         }
 
         this._disablePerspectiveCorrection();

@@ -396,7 +396,23 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             id: 'all-currentfirst', name: _("All workspaces, current first")
         }];
         window_size_pref_group.add(this.buildDropDownAdw("current-workspace-only", workspace_inclusion_options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
-        window_size_pref_group.add(this.buildSwitcherAdw("switch-per-monitor", [], [], _("Current Monitor"), _("Switch between windows on current monitor.")));
+        let current_monitor_row = new Adw.ExpanderRow({
+            title: _("Current Monitor"),
+            subtitle: _("Switch between windows on current monitor."),
+            show_enable_switch: true,
+            expanded: this.settings.get_boolean("switch-per-monitor"),
+        });
+        this.settings.bind("switch-per-monitor", current_monitor_row,
+            "enable-expansion", Gio.SettingsBindFlags.DEFAULT);
+        current_monitor_row.connect('notify::enable-expansion', row => {
+            if (row.enable_expansion)
+                row.expanded = true;
+        });
+        current_monitor_row.add_row(this.buildSwitcherAdw(
+            "isolate-current-monitor", [], [],
+            _("Leave Other Monitors Unaffected"),
+            _("Limit previews, hidden windows, and background effects to the current monitor.")));
+        window_size_pref_group.add(current_monitor_row);
         window_size_pref_group.add(this.buildSwitcherAdw("skip-minimized-windows", [], [], _("Skip Minimized Windows"), _("Exclude minimized windows from the switcher.")));
         coverflow_window_pref_group.add(switcher_looping_method_row);
         timeline_window_pref_group.add(this.buildRangeAdw("timeline-preview-distance", [0, 1024, 1, [64, 128, 256, 512, 768, 1024]], _("Window Layout Distance"), _("Distance in pixels between timeline window's upper left corners."), true));

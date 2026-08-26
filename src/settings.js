@@ -14,6 +14,7 @@ export const ExtensionSettingKeys = [
     "easing-function",
     "current-workspace-only",
     "switch-per-monitor",
+    "isolate-current-monitor",
     "skip-minimized-windows",
     "switcher-style",
     "preview-to-monitor-ratio",
