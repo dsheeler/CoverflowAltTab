@@ -216,11 +216,16 @@ export const Manager = class Manager {
                 break;
         }
 
+        // Capture the active monitor once so filtering and the switcher UI
+        // cannot disagree if the pointer moves while the switcher starts.
+        let activeMonitor = this.platform.getSettings().enforce_primary_monitor
+            ? Main.layoutManager.primaryMonitor
+            : Main.layoutManager.currentMonitor;
+
         // filter by windows existing on the active monitor
-        if (this.platform.getSettings().switch_per_monitor)
-        {
-            windows = windows.filter ( (win) =>
-              win.get_monitor() === Main.layoutManager.currentMonitor.index );
+        if (this.platform.getSettings().switch_per_monitor) {
+            windows = windows.filter(win =>
+                win.get_monitor() === activeMonitor.index);
         }
 
         if (this.platform.getSettings().skip_minimized_windows) {
@@ -230,7 +235,7 @@ export const Manager = class Manager {
         if (windows.length) {
             const currentIndex = 0;
             let switcher_class = this.platform.getSettings().switcher_class;
-            this.switcher = new switcher_class(windows, mask, currentIndex, this, null, isApplicationSwitcher, null, dBus);
+            this.switcher = new switcher_class(windows, mask, currentIndex, this, activeMonitor, isApplicationSwitcher, null, dBus);
         }
     }
 
@@ -279,6 +284,5 @@ export const Manager = class Manager {
         }
     }
 }
-
 
 

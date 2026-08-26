@@ -139,6 +139,7 @@ class AbstractPlatform {
             easing_function: 'ease-out-cubic',
             current_workspace_only: '1',
             switch_per_monitor: false,
+            isolate_current_monitor: false,
             skip_minimized_windows: false,
             preview_to_monitor_ratio: 0.5,
             coverflow_preview_scaling_factor: 0.75,
@@ -362,6 +363,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                     ? TimelineSwitcher : CoverflowSwitcher,
                 current_workspace_only: settings.get_string("current-workspace-only"),
                 switch_per_monitor: settings.get_boolean("switch-per-monitor"),
+                isolate_current_monitor: settings.get_boolean("isolate-current-monitor"),
                 skip_minimized_windows: settings.get_boolean("skip-minimized-windows"),
                 preview_to_monitor_ratio: clamp(settings.get_double("preview-to-monitor-ratio"), 0, 1),
                 coverflow_preview_scaling_factor: clamp(settings.get_double("coverflow-preview-scaling-factor"), 0, 1),
@@ -528,11 +530,18 @@ export class PlatformGnomeShell extends AbstractPlatform {
             actor.remove_all_transitions();
     }
 
-    initBackground() {
+    initBackground(monitor=null) {
         this._backgroundGroup = new Meta.BackgroundGroup();
         this._backgroundGroup.set_name("coverflow-alt-tab-background-group");
         Main.uiGroup.add_child(this._backgroundGroup);
         Main.uiGroup.set_child_above_sibling(this._backgroundGroup, global.window_group);
+
+        if (monitor !== null) {
+            // BackgroundManager positions its actor in stage coordinates, so
+            // clip the full-stage group instead of moving the background.
+            this._backgroundGroup.set_clip(
+                monitor.x, monitor.y, monitor.width, monitor.height);
+        }
 
         this._backgroundShade = new Clutter.Actor({
             opacity: 0,
@@ -553,10 +562,14 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
         this._backgroundGroup.opacity = 0;
         this._backgroundGroup.hide();
-        for (let i = 0; i < Main.layoutManager.monitors.length; i++) {
+        // A null monitor preserves the original all-monitor background.
+        let monitors = monitor !== null
+            ? [monitor]
+            : Main.layoutManager.monitors;
+        for (let currentMonitor of monitors) {
             new Background.BackgroundManager({
                 container: this._backgroundGroup,
-                monitorIndex: i,
+                monitorIndex: currentMonitor.index,
                 vignette: false,
             });
         }

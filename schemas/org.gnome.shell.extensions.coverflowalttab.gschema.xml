@@ -123,6 +123,11 @@
         <summary>Per monitor window switch</summary>
         <description>Switch between windows on current monitor (monitor with the mouse cursor)</description>
     </key>
+    <key type="b" name="isolate-current-monitor">
+        <default>false</default>
+        <summary>Leave other monitors unaffected</summary>
+        <description>Limit switcher previews, hidden windows, and background effects to the current monitor</description>
+    </key>
     <key type="b" name="skip-minimized-windows">
         <default>false</default>
         <summary>Skip minimized windows</summary>
