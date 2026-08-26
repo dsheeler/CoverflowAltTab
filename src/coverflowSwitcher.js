@@ -55,6 +55,8 @@ export class CoverflowSwitcher extends BaseSwitcher {
 
         for (let windowActor of global.get_window_actors()) {
             let metaWin = windowActor.get_meta_window();
+            // Off-monitor clones can flash during the opening and closing
+            // animations even when their original window actors stay visible.
             if (this._settings.switch_per_monitor
                 && this._settings.isolate_current_monitor
                 && metaWin.get_monitor() !== monitor.index) {
