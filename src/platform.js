@@ -537,6 +537,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
         Main.uiGroup.set_child_above_sibling(this._backgroundGroup, global.window_group);
 
         if (monitor !== null) {
+            // BackgroundManager positions its actor in stage coordinates, so
+            // clip the full-stage group instead of moving the background.
             this._backgroundGroup.set_clip(
                 monitor.x, monitor.y, monitor.width, monitor.height);
         }
@@ -560,6 +562,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._backgroundGroup.set_child_above_sibling(this._backgroundShade, null);
         this._backgroundGroup.opacity = 0;
         this._backgroundGroup.hide();
+        // A null monitor preserves the original all-monitor background.
         let monitors = monitor !== null
             ? [monitor]
             : Main.layoutManager.monitors;

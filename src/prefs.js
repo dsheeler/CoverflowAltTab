@@ -396,6 +396,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
             id: 'all-currentfirst', name: _("All workspaces, current first")
         }];
         window_size_pref_group.add(this.buildDropDownAdw("current-workspace-only", workspace_inclusion_options, _("Workspaces"), _("Switch between windows on current or on all workspaces.")));
+        // Keep visual isolation subordinate to per-monitor window filtering;
+        // without Current Monitor enabled, there is no single monitor to isolate.
         let current_monitor_row = new Adw.ExpanderRow({
             title: _("Current Monitor"),
             subtitle: _("Switch between windows on current monitor."),
