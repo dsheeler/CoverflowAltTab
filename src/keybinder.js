@@ -39,6 +39,7 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
 
         this._settings = settings;
         this._startAppSwitcherBind = null;
+        this._defaultSwitcherBind = Main.wm._startSwitcher.bind(Main.wm);
         this._keybindingActions = new Map();
     }
 
@@ -99,12 +100,12 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
 
     disable() {
         let mode = Shell.ActionMode ? Shell.ActionMode : Shell.KeyBindingMode;
-        Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-        Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+        Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._defaultSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, this._defaultSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-group', mode.NORMAL, this._defaultSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, this._defaultSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, this._defaultSwitcherBind);
+        Main.wm.setCustomKeybindingHandler('switch-group-backward', mode.NORMAL, this._defaultSwitcherBind);
 
         this.removeKeybinding("coverflow-switch-windows");
         this.removeKeybinding("coverflow-switch-windows-on-all-workspaces");
@@ -120,8 +121,8 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
                 Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._startAppSwitcherBind);
                 Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, this._startAppSwitcherBind);
             } else {
-                Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-                Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+                Main.wm.setCustomKeybindingHandler('switch-applications', mode.NORMAL, this._defaultSwitcherBind);
+                Main.wm.setCustomKeybindingHandler('switch-applications-backward', mode.NORMAL, this._defaultSwitcherBind);
             }
         }
         if (key === null || key === 'bind-to-switch-windows') {
@@ -129,8 +130,8 @@ export const Keybinder330Api = class Keybinder330Api extends AbstractKeybinder {
                 Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, this._startAppSwitcherBind);
                 Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, this._startAppSwitcherBind);
             } else {
-                Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
-                Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, Main.wm._startSwitcher.bind(Main.wm));
+                Main.wm.setCustomKeybindingHandler('switch-windows', mode.NORMAL, this._defaultSwitcherBind);
+                Main.wm.setCustomKeybindingHandler('switch-windows-backward', mode.NORMAL, this._defaultSwitcherBind);
             }
         }
     }

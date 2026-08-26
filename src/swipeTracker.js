@@ -112,6 +112,7 @@ const TouchpadSwipeGesture = GObject.registerClass({
         this._touchpadSettings = new Gio.Settings({
             schema_id: 'org.gnome.desktop.peripherals.touchpad',
         });
+        this._actor = actor;
 
         actor.connectObject(
             'event::touchpad', this._handleEvent.bind(this), this);
@@ -205,7 +206,8 @@ const TouchpadSwipeGesture = GObject.registerClass({
     }
 
     destroy() {
-        global.stage.disconnectObject(this);
+        this._actor.disconnectObject(this);
+        this._actor = null;
     }
 });
 
@@ -235,8 +237,9 @@ const ScrollGesture = GObject.registerClass({
         /* this._allowedModes = allowedModes; */
         this._began = false;
         this._enabled = true;
+        this._actor = actor;
 
-        actor.connect('scroll-event', this._handleEvent.bind(this));
+        this._scrollEventId = actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
     get enabled() {
@@ -304,6 +307,14 @@ const ScrollGesture = GObject.registerClass({
 
         return Clutter.EVENT_STOP;
     }
+
+    destroy() {
+        if (this._scrollEventId) {
+            this._actor.disconnect(this._scrollEventId);
+            this._scrollEventId = 0;
+        }
+        this._actor = null;
+    }
 });
 
 const MouseScroll = GObject.registerClass({
@@ -328,10 +339,11 @@ const MouseScroll = GObject.registerClass({
             schema_id: 'org.gnome.desktop.peripherals.mouse',
         });
         this._natural_scrolling =    this._mouseSettings.get_boolean('natural-scroll');
-        this._mouseSettings.connect('changed::natural-scroll', (settings, key) => {
+        this._mouseSettingsChangedId = this._mouseSettings.connect('changed::natural-scroll', (settings, key) => {
             this._natural_scrolling = settings.get_boolean(key);
         });
-        actor.connect('scroll-event', this._handleEvent.bind(this));
+        this._actor = actor;
+        this._scrollEventId = actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
     get enabled() {
@@ -407,6 +419,15 @@ const MouseScroll = GObject.registerClass({
             GLib.Source.remove(this._gestureTimeoutId);
             this._gestureTimeoutId = 0;
         }
+        if (this._scrollEventId) {
+            this._actor.disconnect(this._scrollEventId);
+            this._scrollEventId = 0;
+        }
+        if (this._mouseSettingsChangedId) {
+            this._mouseSettings.disconnect(this._mouseSettingsChangedId);
+            this._mouseSettingsChangedId = 0;
+        }
+        this._actor = null;
     }
 });
 
@@ -485,7 +506,7 @@ export const SwipeTracker = GObject.registerClass({
         this._settings = settings;
         /* this._allowedModes = allowedModes; */
         this._enabled = true;
-        this._distance = global.screen_height;
+        this._distance = global.stage.height;
         this._history = new EventHistory();
         this._reset();
         this._inverted = params.inverted;
@@ -871,6 +892,11 @@ export const SwipeTracker = GObject.registerClass({
         if (this._panGesture) {
             this._panGesture.actor?.remove_action(this._panGesture);
             delete this._panGesture;
+        }
+
+        if (this._scrollGesture) {
+            this._scrollGesture.destroy();
+            delete this._scrollGesture;
         }
 
         if (this._mouseScroll) {

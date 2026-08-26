@@ -41,7 +41,7 @@ function matchWmClass(win) {
 }
 
 function matchOnAllWorkspaces(win) {
-    return win.on_all_workspaces && !win.is_skip_taskbar();
+    return !win.is_skip_taskbar();
 }
 
 function matchWorkspace(win) {
@@ -61,15 +61,8 @@ export const Manager = class Manager {
         this.switcher = null;
         this.exportedObject = null;
 
-        if (global.workspace_manager && global.workspace_manager.get_active_workspace)
-            this.workspace_manager = global.workspace_manager;
-        else
-            this.workspace_manager = global.screen;
-
-        if (global.display && global.display.get_n_monitors)
-            this.display = global.display;
-        else
-            this.display = global.screen;
+        this.workspace_manager = global.workspace_manager;
+        this.display = global.display;
     }
 
     enable() {
@@ -169,6 +162,9 @@ export const Manager = class Manager {
                 windows.push(windowActor.get_meta_window());
             }
         }
+
+        if (windows.length === 0)
+            return;
 
         let currentOnly = this.platform.getSettings().current_workspace_only;
         let focused = display.focus_window ? display.focus_window : windows[0];
@@ -279,6 +275,4 @@ export const Manager = class Manager {
         }
     }
 }
-
-
 
