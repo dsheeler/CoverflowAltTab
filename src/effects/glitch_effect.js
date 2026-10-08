@@ -3,6 +3,7 @@
 //'use strict';
 
 import Clutter from 'gi://Clutter';
+import Cogl from 'gi://Cogl';
 import Shell from 'gi://Shell';
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
@@ -34,13 +35,22 @@ export const GlitchEffect = new GObject.registerClass({
     constructor(params) {
         super(params);
         this._timeOffset = Math.random() * 1000000;
-        // set shader source
-        this._source = get_shader_source();
-
-        if (this._source)
-            this.set_shader_source(this._source);
 
         this.set_enabled(true);
+    }
+
+    vfunc_get_static_snippet() {
+        const source = get_shader_source();
+        if (!source)
+            throw new Error('Unable to load Coverflow shader');
+        const main = /void\s+main\s*\(\s*\)\s*\{/.exec(source);
+        if (!main)
+            throw new Error('Coverflow shader has no main function');
+        const declarations = source.slice(0, main.index);
+        const body = source.slice(main.index + main[0].length, source.lastIndexOf('}'));
+        const snippet = Cogl.Snippet.new(Cogl.SnippetHook.FRAGMENT, declarations, null);
+        snippet.set_replace(body);
+        return snippet;
     }
 
     vfunc_paint_target(paint_node = null, paint_context = null) {
