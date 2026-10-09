@@ -52,6 +52,11 @@ const DASH_TO_DOCK_UUIDS = [
     'ubuntu-dock@ubuntu.com',
 ];
 
+class SwitcherVisibility {}
+SwitcherVisibility.HIDDEN = 1;
+SwitcherVisibility.HIDING = 2;
+SwitcherVisibility.SHOWING = 3;
+
 
 const TRANSITION_TYPE = 'easeOutQuad';
 
@@ -208,11 +213,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._settings_changed_callbacks = null;
         this._themeContext = null;
         this._logger = logger;
-        // Invalidates in-flight async Dash to Dock hold/release work.
-        this._dashToDockToken = 0;
-        this._dashToDockHeld = false;
-        this._dashToDockBehavior = null;
-        this._dashToDockManager = null;
     }
 
     _getSwitcherBackgroundColor() {
@@ -267,15 +267,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
         this._settings = this._loadSettings();
 
-        // Warm the Dash to Dock import so the first Alt-Tab hide is not delayed.
-        this._preloadDashToDock();
     }
 
 
     disable() {
         this.showPanels(0);
-        this._releaseDashToDock();
-        this._dashToDockManager = null;
         if (this._connections) {
             for (let connection of this._connections) {
                 this._extensionSettings.disconnect(connection);
@@ -584,8 +580,8 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
     }
 
-    dimBackground() {
-        this._holdDashToDock();
+     dimBackground() {
+        this._setDashToDockVisibility(SwitcherVisibility.SHOWING);
         if (this._settings.hide_panel) {
             this.hidePanels();
         }
@@ -635,8 +631,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     lightenBackground() {
-        // Keep Dash to Dock held until removeBackground() so intellihide cannot
-        // decide to show it again while Coverflow still has windows hidden.
+        this._setDashToDockVisibility(SwitcherVisibility.HIDING);
         if (this._settings.hide_panel) {
             this.showPanels(this._settings.animation_time);
         }
@@ -645,6 +640,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             opacity: 0,
             time: this._settings.animation_time,
             transition: 'easeInOutQuint',
+            onComplete: () => this._setDashToDockVisibility(SwitcherVisibility.HIDDEN),
         });
         this.tween(this._backgroundShade, {
             time: this._settings.animation_time * 0.95,
@@ -655,6 +651,14 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeBackground() {
+        // Always restore Dash to Dock here. dimBackground() may have disabled
+        // intellihide / set _ignoreHover and animated the dock out; if the
+        // switcher is destroyed without lightenBackground() finishing (crash,
+        // early destroy, Esc before animations complete), the dock otherwise
+        // stays invisible for the rest of the session.
+        this._setDashToDockVisibility(SwitcherVisibility.HIDING);
+        this._setDashToDockVisibility(SwitcherVisibility.HIDDEN);
+
         // Same for panels: snap them back onscreen if hidePanels() left them
         // translated off the stage without a completed showPanels() animation.
         if (this._settings.hide_panel)
@@ -664,146 +668,48 @@ export class PlatformGnomeShell extends AbstractPlatform {
             this._backgroundGroup.destroy();
         this._backgroundGroup = null;
         this._backgroundShade = null;
-
-        // Caller should re-show window actors before this so intellihide sees
-        // the real overlap state. Always release here as a safety net.
-        this._releaseDashToDock();
     }
 
-    _preloadDashToDock() {
-        this._resolveDashToDockManager().catch(e => this._logger?.error(e));
-    }
-
-    async _resolveDashToDockManager() {
-        if (this._dashToDockManager)
-            return this._dashToDockManager;
-
-        for (const uuid of DASH_TO_DOCK_UUIDS) {
-            const extension = Main.extensionManager.lookup(uuid);
-            if (!extension)
-                continue;
-
-            // Only one matching dock extension is expected; sequential lookup is intentional.
-            // eslint-disable-next-line no-await-in-loop
-            const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
-            if (dockManager) {
-                this._dashToDockManager = dockManager;
-                return dockManager;
-            }
-        }
-        return null;
-    }
-
-    async _forEachDashToDock(token, callback) {
+    /**
+     * Hide/show Dash to Dock via its exported dockManager (private _hide/_show).
+     * Falls back quietly if Dash to Dock / Ubuntu Dock is not enabled.
+     */
+    async _setDashToDockVisibility(visibility) {
         try {
-            const dockManager = await this._resolveDashToDockManager();
-            if (token !== this._dashToDockToken)
-                return;
-            if (!dockManager)
-                return;
+            for (const uuid of DASH_TO_DOCK_UUIDS) {
+                const extension = Main.extensionManager.lookup(uuid);
+                if (!extension)
+                    continue;
 
-            for (const dock of dockManager._allDocks)
-                callback(dock, dockManager);
+                // DtD exports `dockManager` specifically for other extensions.
+                // eslint-disable-next-line no-await-in-loop
+                const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
+                if (!dockManager)
+                    continue;
+
+                for (const dock of dockManager._allDocks) {
+                    if (visibility === SwitcherVisibility.SHOWING) {
+                        dock._ignoreHover = true;
+                        dock._intellihide.disable();
+                        dock._removeAnimations();
+                        if (this._settings.dash_to_dock_visibility_behavior === "Show") {
+                            dock._animateIn(dockManager.settings.animationTime, 0);
+                        } else if (this._settings.dash_to_dock_visibility_behavior === "Hide") {
+                            dock._animateOut(dockManager.settings.animationTime, 0);
+                        }
+                    } else if (visibility === SwitcherVisibility.HIDING) {
+                        dock._intellihide.enable();
+                        dock._updateDashVisibility();
+                    } else if (visibility === SwitcherVisibility.HIDDEN) {
+                        dock._updateDashVisibility();
+                    }
+                }
+
+                return;
+            }
         } catch (e) {
             this._logger.error(e);
         }
-    }
-
-    _patchDashToDock(dock) {
-        if (dock._coverflowAltTabPatched)
-            return;
-
-        dock._coverflowAltTabUpdateVisibilityMode =
-            dock._updateVisibilityMode.bind(dock);
-        dock._coverflowAltTabUpdateDashVisibility =
-            dock._updateDashVisibility.bind(dock);
-
-        // DtD's _resetPosition() → _updateVisibilityMode() re-reads settings and
-        // can re-enable intellihide mid-hide (e.g. after Coverflow adds its
-        // background). Keep visibility pinned for the switcher lifetime.
-        dock._updateVisibilityMode = () => {
-            if (!this._dashToDockHeld) {
-                dock._coverflowAltTabUpdateVisibilityMode();
-                return;
-            }
-            dock._ignoreHover = true;
-            dock._intellihide.disable();
-            if (this._dashToDockBehavior === 'Hide') {
-                dock._intellihideIsEnabled = false;
-                dock._autohideIsEnabled = false;
-            }
-        };
-
-        dock._updateDashVisibility = () => {
-            if (!this._dashToDockHeld) {
-                dock._coverflowAltTabUpdateDashVisibility();
-                return;
-            }
-            // Do not start a new in/out animation; leave the hold animation alone.
-        };
-
-        dock._coverflowAltTabPatched = true;
-    }
-
-    _unpatchDashToDock(dock) {
-        if (!dock._coverflowAltTabPatched)
-            return;
-
-        dock._updateVisibilityMode = dock._coverflowAltTabUpdateVisibilityMode;
-        dock._updateDashVisibility = dock._coverflowAltTabUpdateDashVisibility;
-        delete dock._coverflowAltTabUpdateVisibilityMode;
-        delete dock._coverflowAltTabUpdateDashVisibility;
-        delete dock._coverflowAltTabPatched;
-    }
-
-    /**
-     * Pin Dash to Dock visibility for the switcher lifetime.
-     */
-    _holdDashToDock() {
-        const behavior = this._settings.dash_to_dock_visibility_behavior;
-        if (behavior === 'Neither')
-            return;
-
-        this._dashToDockToken++;
-        const token = this._dashToDockToken;
-        this._dashToDockHeld = true;
-        this._dashToDockBehavior = behavior;
-
-        this._forEachDashToDock(token, dock => {
-            this._patchDashToDock(dock);
-
-            dock._ignoreHover = true;
-            dock._intellihide.disable();
-            dock._removeAnimations();
-
-            if (behavior === 'Hide') {
-                dock._intellihideIsEnabled = false;
-                dock._autohideIsEnabled = false;
-                dock._animateOut(this._settings.animation_time, 0);
-            } else if (behavior === 'Show') {
-                dock._animateIn(this._settings.animation_time, 0);
-            }
-        });
-    }
-
-    /**
-     * Undo _holdDashToDock() and let Dash to Dock recompute from its settings.
-     */
-    _releaseDashToDock() {
-        this._dashToDockToken++;
-        const token = this._dashToDockToken;
-        const wasHeld = this._dashToDockHeld;
-        this._dashToDockHeld = false;
-        this._dashToDockBehavior = null;
-        if (!wasHeld)
-            return;
-
-        this._forEachDashToDock(token, dock => {
-            this._unpatchDashToDock(dock);
-            dock._ignoreHover = false;
-            dock._updateVisibilityMode();
-            dock._box.sync_hover();
-        });
     }
 
     getPanels() {
