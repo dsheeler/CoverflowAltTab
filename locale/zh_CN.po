@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: dsheeler@pobox.com\n"
 "POT-Creation-Date: 2026-08-26 17:30-0500\n"
-"PO-Revision-Date: 2026-08-19 23:51+0000\n"
+"PO-Revision-Date: 2026-09-16 18:51+0000\n"
 "Last-Translator: xiezhihai <xiezhihai7321@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/coverflow-alt-tab/source/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/prefs.js:118
@@ -147,9 +147,8 @@ msgid "Neither"
 msgstr "都不"
 
 #: src/prefs.js:203
-#, fuzzy
 msgid "Dash to Dock Visibility"
-msgstr "Dash 到 Dock 的可见性行为"
+msgstr "仪表盘到停靠可见性"
 
 #: src/prefs.js:204
 msgid "How to display dash-to-dock when the switcher is active."
