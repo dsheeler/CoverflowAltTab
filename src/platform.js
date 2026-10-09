@@ -566,24 +566,14 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
     }
 
-    _panelOffscreenTranslationY(panelActor) {
-        // Top-half panels slide up; bottom-half panels (e.g. overview dash) slide down.
-        let [, y] = panelActor.get_transformed_position();
-        let height = panelActor.height;
-        if (y + height / 2 < global.stage.height / 2)
-            return -height;
-        return height;
-    }
-
     hidePanels() {
         let panels = this.getPanels();
         for (let panel of panels) {
             try {
                 let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
                 panelActor.set_reactive(false);
-                this.removeTweens(panelActor);
                 this.tween(panelActor, {
-                    translation_y: this._panelOffscreenTranslationY(panelActor),
+                    opacity: 0,
                     time: this._settings.animation_time,
                     transition: 'easeOutQuad'
                 });
@@ -632,7 +622,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 if (this._settings.hide_panel) {
                     this.removeTweens(panelActor);
                     this.tween(panelActor, {
-                        translation_y: 0,
+                        opacity: 255,
                         time: time,
                         transition: 'easeOutQuad'
                     });
