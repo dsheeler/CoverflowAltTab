@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 17:30-0500\n"
+"POT-Creation-Date: 2026-10-09 08:15-0500\n"
 "PO-Revision-Date: 2026-08-09 13:51+0000\n"
 "Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/coverflow-alt-"
@@ -237,7 +237,7 @@ msgstr "Catat pesan debug dan pesan normal."
 msgid "Animation"
 msgstr "Animasi"
 
-#: src/prefs.js:306 src/prefs.js:319 src/prefs.js:416
+#: src/prefs.js:306 src/prefs.js:319 src/prefs.js:434
 msgid "Properties"
 msgstr "Properti"
 
@@ -369,35 +369,45 @@ msgid "Switch between windows on current or on all workspaces."
 msgstr ""
 "Beralih antarjendela di ruang kerja saat ini atau di semua ruang kerja."
 
-#: src/prefs.js:399
+#: src/prefs.js:402
 msgid "Current Monitor"
 msgstr "Monitor Saat Ini"
 
-#: src/prefs.js:399
+#: src/prefs.js:403
 msgid "Switch between windows on current monitor."
 msgstr "Beralih antarjendela di monitor saat ini."
 
-#: src/prefs.js:400
+#: src/prefs.js:415
+msgid "Leave Other Monitors Unaffected"
+msgstr ""
+
+#: src/prefs.js:416
+msgid ""
+"Limit previews, hidden windows, and background effects to the current "
+"monitor."
+msgstr ""
+
+#: src/prefs.js:418
 msgid "Skip Minimized Windows"
 msgstr "Lewati Jendela yang Diminimalkan"
 
-#: src/prefs.js:400
+#: src/prefs.js:418
 msgid "Exclude minimized windows from the switcher."
 msgstr "Keluarkan jendela yang diminimalkan dari switcher."
 
-#: src/prefs.js:402
+#: src/prefs.js:420
 msgid "Window Layout Distance"
 msgstr "Jarak Tata Letak Jendela"
 
-#: src/prefs.js:402
+#: src/prefs.js:420
 msgid "Distance in pixels between timeline window's upper left corners."
 msgstr "Jarak dalam piksel antara sudut kiri atas jendela linimasa."
 
-#: src/prefs.js:403
+#: src/prefs.js:421
 msgid "Window Layout Angle"
 msgstr "Sudut Tata Letak Jendela"
 
-#: src/prefs.js:403
+#: src/prefs.js:421
 msgid ""
 "Angle in degrees (0-90) for timeline window layout such that windows go from "
 "lower right to upper left at this angle between successive window's upper "
@@ -409,20 +419,20 @@ msgstr ""
 "sudut kiri atas jendela yang berurutan. Sudut kiri atas jendela teratas "
 "berada di tengah monitor."
 
-#: src/prefs.js:404
+#: src/prefs.js:422
 msgid "Window Tilt Angle"
 msgstr "Sudut Kemiringan Jendela"
 
-#: src/prefs.js:404
+#: src/prefs.js:422
 msgid "Y-axis rotation angle in degrees applied to timeline windows."
 msgstr ""
 "Sudut rotasi sumbu Y dalam derajat yang diterapkan pada jendela linimasa."
 
-#: src/prefs.js:405 src/prefs.js:408
+#: src/prefs.js:423 src/prefs.js:426
 msgid "Window Scaling Factor"
 msgstr "Faktor Skala Jendela"
 
-#: src/prefs.js:405
+#: src/prefs.js:423
 msgid ""
 "Factor by which timeline windows successively shrink with distance from the "
 "top window."
@@ -430,91 +440,91 @@ msgstr ""
 "Faktor yang membuat jendela linimasa secara berturut-turut mengecil seiring "
 "jarak dari jendela teratas."
 
-#: src/prefs.js:406
+#: src/prefs.js:424
 msgid "Enable Window Scaling"
 msgstr "Aktifkan Skala Jendela"
 
-#: src/prefs.js:406
+#: src/prefs.js:424
 msgid "Useful if you have a large number of windows and want to see them all."
 msgstr "Berguna jika Anda memiliki banyak jendela dan ingin melihat semuanya."
 
-#: src/prefs.js:408
+#: src/prefs.js:426
 msgid "Factor by which coverflow windows successively shrink off to the side."
 msgstr ""
 "Faktor yang membuat jendela coverflow secara berturut-turut mengecil ke "
 "samping."
 
-#: src/prefs.js:409
+#: src/prefs.js:427
 msgid "Window Angle"
 msgstr "Sudut Jendela"
 
-#: src/prefs.js:409
+#: src/prefs.js:427
 msgid "Angle of off-center windows in coverflow mode."
 msgstr "Sudut jendela di luar pusat dalam mode coverflow."
 
-#: src/prefs.js:410
+#: src/prefs.js:428
 msgid "Window Offset Width"
 msgstr "Lebar Offset Jendela"
 
-#: src/prefs.js:410
+#: src/prefs.js:428
 msgid "How far windows are off to the side in coverflow mode."
 msgstr "Seberapa jauh jendela bergeser ke samping dalam mode coverflow."
 
-#: src/prefs.js:412
+#: src/prefs.js:430
 msgid "AppSwitcher"
 msgstr "AppSwitcher"
 
-#: src/prefs.js:419
+#: src/prefs.js:437
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr "Buat Application Switcher hanya menampilkan pratinjau pertama"
 
-#: src/prefs.js:419
+#: src/prefs.js:437
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr "Jangan kelompokkan jendela dari aplikasi yang sama dalam subswitcher."
 
-#: src/prefs.js:420
+#: src/prefs.js:438
 msgid "Desaturate"
 msgstr "Desaturasi"
 
-#: src/prefs.js:420
+#: src/prefs.js:438
 msgid "Larger means more desaturation."
 msgstr "Semakin besar nilainya, semakin tinggi desaturasinya."
 
-#: src/prefs.js:423
+#: src/prefs.js:441
 msgid "Tint"
 msgstr "Tint"
 
-#: src/prefs.js:435 src/prefs.js:562
+#: src/prefs.js:453 src/prefs.js:580
 msgid "Color"
 msgstr "Warna"
 
-#: src/prefs.js:456 src/prefs.js:586
+#: src/prefs.js:474 src/prefs.js:604
 msgid "Set to Theme Color"
 msgstr "Ubah ke Warna Tema"
 
-#: src/prefs.js:521
+#: src/prefs.js:539
 msgid "Blend"
 msgstr "Campur"
 
-#: src/prefs.js:521
+#: src/prefs.js:539
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 "Seberapa banyak warna tint dicampurkan; semakin besar nilainya, semakin kuat "
 "warna tint."
 
-#: src/prefs.js:522
+#: src/prefs.js:540
 msgid "Glitch"
 msgstr "Glitch"
 
-#: src/prefs.js:525
+#: src/prefs.js:543
 msgid "Keybindings"
 msgstr "Ikatan tombol"
 
-#: src/prefs.js:530
+#: src/prefs.js:548
 msgid "System Actions Keybindings"
 msgstr "Ikatan tombol tindakan sistem"
 
-#: src/prefs.js:531
+#: src/prefs.js:549
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
@@ -522,69 +532,69 @@ msgstr ""
 "Jika terjadi konflik dengan window switcher lain, ikatan dapat dilepas dari "
 "tindakan sistem."
 
-#: src/prefs.js:534
+#: src/prefs.js:552
 msgid "Bind to 'switch-windows'"
 msgstr "Ikat ke 'switch-windows'"
 
-#: src/prefs.js:535
+#: src/prefs.js:553
 msgid "Bind to 'switch-applications'"
 msgstr "Ikat ke 'switch-applications'"
 
-#: src/prefs.js:538
+#: src/prefs.js:556
 msgid "Internal Actions Keybindings"
 msgstr "Ikatan tombol tindakan internal"
 
-#: src/prefs.js:539
+#: src/prefs.js:557
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 "Tindakan internal yang tidak akan menimbulkan konflik dengan window switcher "
 "lain."
 
-#: src/prefs.js:542
+#: src/prefs.js:560
 msgid "Coverflow Switch Windows Shortcut"
 msgstr "Shortcut Coverflow Switch Windows"
 
-#: src/prefs.js:542
+#: src/prefs.js:560
 msgid "Activate window switcher."
 msgstr "Aktifkan switcher jendela."
 
-#: src/prefs.js:543
+#: src/prefs.js:561
 msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
 msgstr ""
 "Pintasan Coverflow untuk Beralih Jendela yang Terlihat di Semua Workspace"
 
-#: src/prefs.js:543
+#: src/prefs.js:561
 msgid "Activate window switcher listing windows visible on all workspaces."
 msgstr ""
 "Aktifkan switcher jendela yang menampilkan jendela terlihat di semua "
 "workspace."
 
-#: src/prefs.js:544
+#: src/prefs.js:562
 msgid "Coverflow Switch Applications Shortcut"
 msgstr "Shortcut Coverflow Switch Applications"
 
-#: src/prefs.js:544
+#: src/prefs.js:562
 msgid "Activate application switcher."
 msgstr "Aktifkan switcher aplikasi."
 
-#: src/prefs.js:545
+#: src/prefs.js:563
 msgid ""
 "Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
 msgstr ""
 "Pintasan Coverflow untuk Beralih Aplikasi yang Terlihat di Semua Workspace"
 
-#: src/prefs.js:545
+#: src/prefs.js:563
 msgid ""
 "Activate application switcher listing applications visible on all workspaces."
 msgstr ""
 "Aktifkan switcher aplikasi yang menampilkan aplikasi terlihat di semua "
 "workspace."
 
-#: src/prefs.js:549
+#: src/prefs.js:567
 msgid "Highlight Window Under Mouse"
 msgstr "Sorot jendela di bawah mouse"
 
-#: src/prefs.js:550
+#: src/prefs.js:568
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
@@ -592,23 +602,23 @@ msgstr ""
 "Gambar sorotan berwarna pada jendela di bawah mouse agar efek klik dapat "
 "diketahui."
 
-#: src/prefs.js:648
+#: src/prefs.js:666
 msgid "Raise Window Under Mouse"
 msgstr "Naikkan jendela di bawah mouse"
 
-#: src/prefs.js:648
+#: src/prefs.js:666
 msgid "Raise the window under the mouse above all others."
 msgstr "Naikkan jendela di bawah mouse ke atas semua jendela lainnya."
 
-#: src/prefs.js:651
+#: src/prefs.js:669
 msgid "Contribute"
 msgstr "Kontribusi"
 
-#: src/prefs.js:685
+#: src/prefs.js:703
 msgid "Get involved"
 msgstr "Terlibat"
 
-#: src/prefs.js:686
+#: src/prefs.js:704
 msgid ""
 "Help improve this extension by contributing code, reporting issues, or "
 "translating it into your language."
@@ -616,37 +626,37 @@ msgstr ""
 "Bantu tingkatkan ekstensi ini dengan berkontribusi kode, melaporkan masalah, "
 "atau menerjemahkannya ke bahasa Anda."
 
-#: src/prefs.js:690
+#: src/prefs.js:708
 msgid "Code and Issues"
 msgstr "Kode dan Masalah"
 
-#: src/prefs.js:696
+#: src/prefs.js:714
 msgid "Translations"
 msgstr "Terjemahan"
 
-#: src/prefs.js:702
+#: src/prefs.js:720
 msgid "Donate"
 msgstr "Donasi"
 
-#: src/prefs.js:703
+#: src/prefs.js:721
 msgid "If you use this extension, consider supporting its development."
 msgstr ""
 "Jika Anda menggunakan ekstensi ini, pertimbangkan untuk mendukung "
 "pengembangannya."
 
-#: src/prefs.js:707
+#: src/prefs.js:725
 msgid "Liberapay"
 msgstr "Liberapay"
 
-#: src/prefs.js:713
+#: src/prefs.js:731
 msgid "PayPal"
 msgstr "PayPal"
 
-#: src/prefs.js:719
+#: src/prefs.js:737
 msgid "GitHub Sponsors"
 msgstr "Sponsor GitHub"
 
-#: src/prefs.js:790
+#: src/prefs.js:808
 msgid "Reset to default value"
 msgstr "Kembalikan ke nilai default"
 

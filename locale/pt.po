@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CoverflowAltTab@palatis.blogspot.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 17:30-0500\n"
+"POT-Creation-Date: 2026-10-09 08:15-0500\n"
 "PO-Revision-Date: 2025-08-05 16:02+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/coverflow-alt-"
@@ -230,7 +230,7 @@ msgstr ""
 msgid "Animation"
 msgstr "Animação"
 
-#: src/prefs.js:306 src/prefs.js:319 src/prefs.js:416
+#: src/prefs.js:306 src/prefs.js:319 src/prefs.js:434
 msgid "Properties"
 msgstr ""
 
@@ -366,35 +366,45 @@ msgstr ""
 msgid "Switch between windows on current or on all workspaces."
 msgstr ""
 
-#: src/prefs.js:399
+#: src/prefs.js:402
 msgid "Current Monitor"
 msgstr "Monitor atual"
 
-#: src/prefs.js:399
+#: src/prefs.js:403
 msgid "Switch between windows on current monitor."
 msgstr ""
 
-#: src/prefs.js:400
+#: src/prefs.js:415
+msgid "Leave Other Monitors Unaffected"
+msgstr ""
+
+#: src/prefs.js:416
+msgid ""
+"Limit previews, hidden windows, and background effects to the current "
+"monitor."
+msgstr ""
+
+#: src/prefs.js:418
 msgid "Skip Minimized Windows"
 msgstr ""
 
-#: src/prefs.js:400
+#: src/prefs.js:418
 msgid "Exclude minimized windows from the switcher."
 msgstr ""
 
-#: src/prefs.js:402
+#: src/prefs.js:420
 msgid "Window Layout Distance"
 msgstr ""
 
-#: src/prefs.js:402
+#: src/prefs.js:420
 msgid "Distance in pixels between timeline window's upper left corners."
 msgstr ""
 
-#: src/prefs.js:403
+#: src/prefs.js:421
 msgid "Window Layout Angle"
 msgstr ""
 
-#: src/prefs.js:403
+#: src/prefs.js:421
 msgid ""
 "Angle in degrees (0-90) for timeline window layout such that windows go from "
 "lower right to upper left at this angle between successive window's upper "
@@ -402,221 +412,221 @@ msgid ""
 "monitor."
 msgstr ""
 
-#: src/prefs.js:404
+#: src/prefs.js:422
 msgid "Window Tilt Angle"
 msgstr ""
 
-#: src/prefs.js:404
+#: src/prefs.js:422
 msgid "Y-axis rotation angle in degrees applied to timeline windows."
 msgstr ""
 
-#: src/prefs.js:405 src/prefs.js:408
+#: src/prefs.js:423 src/prefs.js:426
 msgid "Window Scaling Factor"
 msgstr ""
 
-#: src/prefs.js:405
+#: src/prefs.js:423
 msgid ""
 "Factor by which timeline windows successively shrink with distance from the "
 "top window."
 msgstr ""
 
-#: src/prefs.js:406
+#: src/prefs.js:424
 msgid "Enable Window Scaling"
 msgstr ""
 
-#: src/prefs.js:406
+#: src/prefs.js:424
 msgid "Useful if you have a large number of windows and want to see them all."
 msgstr ""
 
-#: src/prefs.js:408
+#: src/prefs.js:426
 msgid "Factor by which coverflow windows successively shrink off to the side."
 msgstr ""
 
-#: src/prefs.js:409
+#: src/prefs.js:427
 msgid "Window Angle"
 msgstr ""
 
-#: src/prefs.js:409
+#: src/prefs.js:427
 msgid "Angle of off-center windows in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:428
 msgid "Window Offset Width"
 msgstr ""
 
-#: src/prefs.js:410
+#: src/prefs.js:428
 msgid "How far windows are off to the side in coverflow mode."
 msgstr ""
 
-#: src/prefs.js:412
+#: src/prefs.js:430
 msgid "AppSwitcher"
 msgstr ""
 
-#: src/prefs.js:419
+#: src/prefs.js:437
 msgid "Make the Application Switcher Show Only First Preview"
 msgstr ""
 
-#: src/prefs.js:419
+#: src/prefs.js:437
 msgid "Don't group windows of the same application in a subswitcher."
 msgstr ""
 
-#: src/prefs.js:420
+#: src/prefs.js:438
 msgid "Desaturate"
 msgstr ""
 
-#: src/prefs.js:420
+#: src/prefs.js:438
 msgid "Larger means more desaturation."
 msgstr ""
 
-#: src/prefs.js:423
+#: src/prefs.js:441
 msgid "Tint"
 msgstr ""
 
-#: src/prefs.js:435 src/prefs.js:562
+#: src/prefs.js:453 src/prefs.js:580
 msgid "Color"
 msgstr ""
 
-#: src/prefs.js:456 src/prefs.js:586
+#: src/prefs.js:474 src/prefs.js:604
 msgid "Set to Theme Color"
 msgstr ""
 
-#: src/prefs.js:521
+#: src/prefs.js:539
 msgid "Blend"
 msgstr ""
 
-#: src/prefs.js:521
+#: src/prefs.js:539
 msgid "How much to blend the tint color; bigger means more tint color."
 msgstr ""
 
-#: src/prefs.js:522
+#: src/prefs.js:540
 msgid "Glitch"
 msgstr ""
 
-#: src/prefs.js:525
+#: src/prefs.js:543
 msgid "Keybindings"
 msgstr ""
 
-#: src/prefs.js:530
+#: src/prefs.js:548
 msgid "System Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:531
+#: src/prefs.js:549
 msgid ""
 "In case of conflicts with other window switchers, can unbind from system "
 "actions."
 msgstr ""
 
-#: src/prefs.js:534
+#: src/prefs.js:552
 msgid "Bind to 'switch-windows'"
 msgstr ""
 
-#: src/prefs.js:535
+#: src/prefs.js:553
 msgid "Bind to 'switch-applications'"
 msgstr ""
 
-#: src/prefs.js:538
+#: src/prefs.js:556
 msgid "Internal Actions Keybindings"
 msgstr ""
 
-#: src/prefs.js:539
+#: src/prefs.js:557
 msgid "Internal actions that will not conflict with other window switchers."
 msgstr ""
 
-#: src/prefs.js:542
+#: src/prefs.js:560
 msgid "Coverflow Switch Windows Shortcut"
 msgstr ""
 
-#: src/prefs.js:542
+#: src/prefs.js:560
 msgid "Activate window switcher."
 msgstr ""
 
-#: src/prefs.js:543
+#: src/prefs.js:561
 msgid "Coverflow Switch Windows That are Visible on All Workspaces Shortcut"
 msgstr ""
 
-#: src/prefs.js:543
+#: src/prefs.js:561
 msgid "Activate window switcher listing windows visible on all workspaces."
 msgstr ""
 
-#: src/prefs.js:544
+#: src/prefs.js:562
 msgid "Coverflow Switch Applications Shortcut"
 msgstr ""
 
-#: src/prefs.js:544
+#: src/prefs.js:562
 msgid "Activate application switcher."
 msgstr ""
 
-#: src/prefs.js:545
+#: src/prefs.js:563
 msgid ""
 "Coverflow Switch Applications That are Visible on All Workspaces Shortcut"
 msgstr ""
 
-#: src/prefs.js:545
+#: src/prefs.js:563
 msgid ""
 "Activate application switcher listing applications visible on all workspaces."
 msgstr ""
 
-#: src/prefs.js:549
+#: src/prefs.js:567
 msgid "Highlight Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:550
+#: src/prefs.js:568
 msgid ""
 "Draw a colored highlight on window under the mouse to know the effects of "
 "clicking."
 msgstr ""
 
-#: src/prefs.js:648
+#: src/prefs.js:666
 msgid "Raise Window Under Mouse"
 msgstr ""
 
-#: src/prefs.js:648
+#: src/prefs.js:666
 msgid "Raise the window under the mouse above all others."
 msgstr ""
 
-#: src/prefs.js:651
+#: src/prefs.js:669
 msgid "Contribute"
 msgstr ""
 
-#: src/prefs.js:685
+#: src/prefs.js:703
 msgid "Get involved"
 msgstr ""
 
-#: src/prefs.js:686
+#: src/prefs.js:704
 msgid ""
 "Help improve this extension by contributing code, reporting issues, or "
 "translating it into your language."
 msgstr ""
 
-#: src/prefs.js:690
+#: src/prefs.js:708
 msgid "Code and Issues"
 msgstr ""
 
-#: src/prefs.js:696
+#: src/prefs.js:714
 msgid "Translations"
 msgstr ""
 
-#: src/prefs.js:702
+#: src/prefs.js:720
 msgid "Donate"
 msgstr ""
 
-#: src/prefs.js:703
+#: src/prefs.js:721
 msgid "If you use this extension, consider supporting its development."
 msgstr ""
 
-#: src/prefs.js:707
+#: src/prefs.js:725
 msgid "Liberapay"
 msgstr ""
 
-#: src/prefs.js:713
+#: src/prefs.js:731
 msgid "PayPal"
 msgstr ""
 
-#: src/prefs.js:719
+#: src/prefs.js:737
 msgid "GitHub Sponsors"
 msgstr ""
 
-#: src/prefs.js:790
+#: src/prefs.js:808
 msgid "Reset to default value"
 msgstr "Repor para o valor padrão"
 
