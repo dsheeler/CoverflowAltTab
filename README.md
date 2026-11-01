@@ -10,7 +10,9 @@ CoverflowAltTab is an Alt-Tab replacement available as an extension for [Gnome-S
 
 ## Installation
 
-Easiest way to install the extension is via [extensions.gnome.org](https://extensions.gnome.org/extension/97/coverflow-alt-tab/), the official Gnome extension platform. Head over there and install CoverflowAltTab with one click by toggling the switch on the site.
+This fork targets **GNOME Shell 51** and includes the upstream shader port from the removed `Shell.GLSLEffect` to `Clutter.ShaderEffect`. Build this fork rather than installing an older release from extensions.gnome.org.
+
+Build requirements: `make`, `gnome-extensions`, `glib-compile-schemas`, and GNU gettext (`msgfmt`, usually provided by the `gettext` package).
 
 If you want to install it manually (e.g. to test the latest, probably unstable code):
 
@@ -19,6 +21,16 @@ If you want to install it manually (e.g. to test the latest, probably unstable c
 2. Install the extension locally by running the following command in Terminal:
 
     - `make all`
+
+3. Enable it with `gnome-extensions enable CoverflowAltTab@palatis.blogspot.com`.
+
+4. **Log out and log back in** after replacing an installed version. GNOME Shell caches extension JavaScript, including failed imports; toggling the extension cannot reliably reload it. On Wayland, do not restart the running Shell. Existing extension settings are preserved.
+
+### Runtime smoke test
+
+Run `bash tests/gnome-shell-smoke.sh` on GNOME Shell 51. It starts an isolated headless Wayland Shell with two virtual monitors and test windows. It checks keyboard switching, both switcher styles, application grouping, tint/glitch shaders, preferences, window closure, and disabling/re-enabling while switching. It does not replace the installed extension or change desktop settings.
+
+The test requires `gjs` with GTK 4, `dbus-run-session`, `gdbus`, `gsettings`, `timeout`, and a working headless Mutter renderer. No test framework is required.
 
 ## Usage
 ### Keybindings for System Actions

@@ -706,8 +706,8 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         links_pref_group.add(this.buildContributeLinkRow(window, {
             icon_name: 'code-symbolic',
             title: _('Code and Issues'),
-            subtitle: 'github.com/dsheeler/CoverflowAltTab',
-            uri: 'https://github.com/dsheeler/CoverflowAltTab',
+            subtitle: 'github.com/m-arson/CoverflowAltTab',
+            uri: 'https://github.com/m-arson/CoverflowAltTab',
         }));
         links_pref_group.add(this.buildContributeLinkRow(window, {
             icon_name: 'translate-symbolic',
@@ -748,7 +748,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         contribution_page.add(contribute_icon_pref_group);
         contribution_page.add(links_pref_group);
         contribution_page.add(support_pref_group);
-        contribution_page.add(settings_pref_group);
 
         window.add(general_page);
         window.add(animation_page);
