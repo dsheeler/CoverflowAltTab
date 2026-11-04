@@ -203,8 +203,21 @@ export const Manager = class Manager {
 
         this.activateSelectedWindow(win);
 
+        // Shell's skipped unminimize path calls completed_unminimize without
+        // actor.show(). Coverflow hide()'d the actor when the switcher opened,
+        // so reveal and reset transforms here or the preview vanishes with
+        // nothing underneath.
+        actor = win.get_compositor_private() || actor;
+        if (actor) {
+            actor.remove_all_transitions();
+            actor.set_pivot_point(0, 0);
+            actor.set_scale(1, 1);
+            actor.opacity = 255;
+            actor.show();
+        }
+
         // If activate did not need an async map, restore promptly.
-        if (!win.minimized && actor.visible)
+        if (!win.minimized)
             GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
                 restore();
                 return GLib.SOURCE_REMOVE;

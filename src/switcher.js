@@ -988,13 +988,15 @@ export class Switcher {
     }
 
     _buttonReleaseEvent(_actor, event) {
-        if (this.gestureInProgress) return;
+        if (this.gestureInProgress || this._animatingClosed)
+            return Clutter.EVENT_PROPAGATE;
         if (event.get_button() === Clutter.BUTTON_PRIMARY) {
             let [x, y] = event.get_coords();
             if (x === this._lastButtonPressPositionX && y === this._lastButtonPressPositionY) {
                 this._activateWithoutSelection();
             }
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _previewButtonPressEvent(preview, event) {
@@ -1002,14 +1004,20 @@ export class Switcher {
             if (this.gestureInProgress) {
                 preview._lastButtonPressPositionX = -1;
                 preview._lastButtonPressPositionY = -1;
-                return;
+                return Clutter.EVENT_PROPAGATE;
             }
             [preview._lastButtonPressPositionX, preview._lastButtonPressPositionY] = event.get_coords();
+            // Do not let the parent actor treat this as a background click.
+            this._lastButtonPressPositionX = -1;
+            this._lastButtonPressPositionY = -1;
+            return Clutter.EVENT_STOP;
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _previewButtonReleaseEvent(preview, event) {
-        if (this.gestureInProgress) return;
+        if (this.gestureInProgress)
+            return Clutter.EVENT_PROPAGATE;
         if (event.get_button() === Clutter.BUTTON_PRIMARY) {
             for (let [i, p] of this._previews.entries()) {
                 let [x, y] = event.get_coords();
@@ -1017,11 +1025,12 @@ export class Switcher {
                     if (preview === p) {
                         this._setCurrentIndex(i);
                         this._activateSelected(true);
-                        break;
+                        return Clutter.EVENT_STOP;
                     }
                 }
             }
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _windowDestroyed(wm, actor) {
@@ -1092,6 +1101,11 @@ export class Switcher {
     }
 
     _activateWithoutSelection() {
+        // Preview clicks activate first, then the event can bubble to the
+        // switcher actor. Do not clear the pending window mid-close or a
+        // minimized selection never gets activated after the preview eases away.
+        if (this._destroyed || this._animatingClosed)
+            return;
         this._currentIndex = -1;
         this._windowToActivate = null;
         if (this._parent !== null) {
