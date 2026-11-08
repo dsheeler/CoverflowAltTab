@@ -49,6 +49,13 @@ export const MyRadialShaderEffect = GObject.registerClass({
         return snippet;
     }
 
+    _setFloat(name, value) {
+        const uniform = new GObject.Value();
+        uniform.init(GObject.TYPE_FLOAT);
+        uniform.set_float(value);
+        this.set_uniform_value(name, uniform);
+    }
+
     get brightness() {
         return this._brightness;
     }
@@ -57,7 +64,7 @@ export const MyRadialShaderEffect = GObject.registerClass({
         if (this._brightness === v)
             return;
         this._brightness = v;
-        this.set_uniform_float('brightness', 1, [this._brightness]);
+        this._setFloat('brightness', this._brightness);
         this.notify('brightness');
     }
 
@@ -69,7 +76,7 @@ export const MyRadialShaderEffect = GObject.registerClass({
         if (this._sharpness === v)
             return;
         this._sharpness = v;
-        this.set_uniform_float('vignette_sharpness', 1, [this._sharpness]);
+        this._setFloat('vignette_sharpness', this._sharpness);
         this.notify('sharpness');
     }
 });
