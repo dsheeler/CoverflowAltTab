@@ -108,10 +108,14 @@ export const Manager = class Manager {
 
     onBusAcquired(connection, name) {
         this.logger.log(`DBus Bus Acquired: ${name}`);
-        const dBusInterfaceXml = new TextDecoder().decode(
-            this.extensionObj.dir.get_child('dbus-interfaces').get_child('org.gnome.Shell.Extensions.Coverflowalttab.xml').load_contents(null)[1]);
-        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
-        this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
+        const ifaceFile = this.extensionObj.dir.get_child('dbus-interfaces')
+            .get_child('org.gnome.Shell.Extensions.Coverflowalttab.xml');
+        ifaceFile.load_contents_async(null, (file, res) => {
+            const [, bytes] = file.load_contents_finish(res);
+            const dBusInterfaceXml = new TextDecoder().decode(bytes);
+            this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
+            this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
+        });
     }
 
     /**
@@ -168,11 +172,16 @@ export const Manager = class Manager {
         let restored = false;
         let mapId = 0;
         let timeoutId = 0;
+        let destroyId = 0;
 
         let restore = () => {
             if (restored)
                 return;
             restored = true;
+            if (destroyId && actor) {
+                actor.disconnect(destroyId);
+                destroyId = 0;
+            }
             if (wm._shouldAnimateActor !== origShouldAnimateActor)
                 wm._shouldAnimateActor = origShouldAnimateActor;
             if (mapId) {
@@ -195,6 +204,8 @@ export const Manager = class Manager {
             if (mapped === actor)
                 restore();
         });
+        if (actor)
+            destroyId = actor.connect('destroy', () => restore());
         timeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
             timeoutId = 0;
             restore();
@@ -338,30 +349,21 @@ export const Manager = class Manager {
     }
 
     next() {
-        try {
-            this.logger.log(`DBus Next`);
+        this.logger.log(`DBus Next`);
+        if (this.switcher)
             this.switcher._next();
-        } catch(e) {
-            this.logger.error(e);
-        }
     }
 
     previous() {
-        try {
-            this.logger.log(`DBus Previous`);
+        this.logger.log(`DBus Previous`);
+        if (this.switcher)
             this.switcher._previous();
-        } catch(e) {
-            this.logger.error(e);
-        }
     }
 
     select() {
-        try {
-            this.logger.log(`DBus Select`);
+        this.logger.log(`DBus Select`);
+        if (this.switcher)
             this.switcher._activateSelected(true);
-        } catch (e) {
-            this.logger.error(e);
-        }
     }
 }
 

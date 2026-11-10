@@ -66,7 +66,6 @@ export const Preview = GObject.registerClass({
         this._entered = false;
         this._effectCounts = {};
         this._destroying = false;
-        this._cleanedUp = false;
         this._bindings = [];
     }
 
@@ -77,13 +76,9 @@ export const Preview = GObject.registerClass({
     }
 
     _unbindAll() {
-        for (let binding of this._bindings) {
-            try {
-                binding.unbind();
-            } catch {
-                // Binding may already be gone if the target was destroyed.
-            }
-        }
+        for (let binding of this._bindings)
+            binding.unbind();
+
         this._bindings = [];
     }
 
@@ -157,7 +152,7 @@ export const Preview = GObject.registerClass({
     }
 
     addEffect(effect_class, constructor_argument, name, parameter_name, from_param_value, param_value, duration) {
-        if (this._destroying || this._cleanedUp)
+        if (this._destroying)
             return;
         duration = 0.99 * 1000.0 * duration;
         let effect_name = name + "-effect";
@@ -207,7 +202,7 @@ export const Preview = GObject.registerClass({
     }
 
     removeEffect(name, parameter_name, value, duration) {
-        if (this._destroying || this._cleanedUp)
+        if (this._destroying)
             return;
         duration = 0.99 * 1000.0 * duration;
         let effect_name = name + "-effect";
@@ -295,20 +290,13 @@ export const Preview = GObject.registerClass({
      * Safe to call more than once; call before destroying the preview.
      */
     cleanup() {
-        if (this._cleanedUp)
-            return;
-        this._cleanedUp = true;
         this._destroying = true;
 
         this._unbindAll();
         this.remove_all_transitions();
         this.removeAllEffectsImmediate();
 
-        try {
-            this.source = null;
-        } catch {
-            // Ignore if the clone source was already cleared.
-        }
+        this.source = null;
 
         this.remove_highlight(true);
 
@@ -409,7 +397,7 @@ export const Preview = GObject.registerClass({
     }
 
     addIcon() {
-        if (this._destroying || this._cleanedUp)
+        if (this._destroying)
             return;
         const icon_size = BASE_ICON_SIZE;
         const target_size = this.switcher._settings.overlay_icon_size;
@@ -507,7 +495,7 @@ export const Preview = GObject.registerClass({
     }
 
     removeIcon(animation_time) {
-        if (this._destroying || this._cleanedUp)
+        if (this._destroying)
             return;
         if (this._icon !== null && !this._icon.removing) {
             this._icon.removing = true;

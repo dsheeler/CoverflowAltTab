@@ -245,7 +245,6 @@ export class Switcher {
                         || child.get_meta_window().get_monitor() === this._activeMonitor.index)) {
                     this._hiddenWindowActors.push(child);
                     child.hide();
-                    this._hiddenWindowActors.push(child);
                 }
             }
         }
@@ -1128,22 +1127,18 @@ export class Switcher {
             if (!actor)
                 continue;
             actor.hide();
-            let id = actor.connect('notify::visible', () => {
+            actor.connectObject('notify::visible', () => {
                 if (!this._destroyed && this._animatingClosed && actor.visible)
                     actor.hide();
-            });
-            this._hiddenWindowActorSignals.push([actor, id]);
+            }, this);
+            this._hiddenWindowActorSignals.push(actor);
         }
     }
 
     _unpinWindowActorsHidden() {
-        for (let [actor, id] of this._hiddenWindowActorSignals) {
-            try {
-                actor.disconnect(id);
-            } catch {
-                // Actor may already be destroyed.
-            }
-        }
+        for (let actor of this._hiddenWindowActorSignals)
+            actor?.disconnectObject(this);
+
         this._hiddenWindowActorSignals = [];
     }
 

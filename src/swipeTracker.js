@@ -113,6 +113,7 @@ const TouchpadSwipeGesture = GObject.registerClass({
             schema_id: 'org.gnome.desktop.peripherals.touchpad',
         });
 
+        this._actor = actor;
         actor.connectObject(
             'event::touchpad', this._handleEvent.bind(this), this);
     }
@@ -205,7 +206,8 @@ const TouchpadSwipeGesture = GObject.registerClass({
     }
 
     destroy() {
-        global.stage.disconnectObject(this);
+        this._actor?.disconnectObject(this);
+        this._touchpadSettings = null;
     }
 });
 
@@ -235,8 +237,8 @@ const ScrollGesture = GObject.registerClass({
         /* this._allowedModes = allowedModes; */
         this._began = false;
         this._enabled = true;
-
-        actor.connect('scroll-event', this._handleEvent.bind(this));
+        this._actor = actor;
+        this._scrollEventId = actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
     get enabled() {
@@ -304,6 +306,13 @@ const ScrollGesture = GObject.registerClass({
 
         return Clutter.EVENT_STOP;
     }
+
+    destroy() {
+        if (this._scrollEventId) {
+            this._actor?.disconnect(this._scrollEventId);
+            this._scrollEventId = 0;
+        }
+    }
 });
 
 const MouseScroll = GObject.registerClass({
@@ -324,14 +333,17 @@ const MouseScroll = GObject.registerClass({
         this._began = false;
         this._enabled = true;
         this._gestureTimeoutId = 0;
+        this._scrollEventId = 0;
+        this._settingsChangedId = 0;
         this._mouseSettings = new Gio.Settings({
             schema_id: 'org.gnome.desktop.peripherals.mouse',
         });
         this._natural_scrolling =    this._mouseSettings.get_boolean('natural-scroll');
-        this._mouseSettings.connect('changed::natural-scroll', (settings, key) => {
+        this._settingsChangedId = this._mouseSettings.connect('changed::natural-scroll', (settings, key) => {
             this._natural_scrolling = settings.get_boolean(key);
         });
-        actor.connect('scroll-event', this._handleEvent.bind(this));
+        this._actor = actor;
+        this._scrollEventId = actor.connect('scroll-event', this._handleEvent.bind(this));
     }
 
     get enabled() {
@@ -403,6 +415,15 @@ const MouseScroll = GObject.registerClass({
     }
 
     destroy() {
+        if (this._scrollEventId) {
+            this._actor?.disconnect(this._scrollEventId);
+            this._scrollEventId = 0;
+        }
+        if (this._settingsChangedId) {
+            this._mouseSettings?.disconnect(this._settingsChangedId);
+            this._settingsChangedId = 0;
+        }
+        this._mouseSettings = null;
         if (this._gestureTimeoutId !== 0) {
             GLib.Source.remove(this._gestureTimeoutId);
             this._gestureTimeoutId = 0;

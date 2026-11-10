@@ -339,12 +339,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
 
 
     _loadSettings() {
-        try {
-            let settings = this._extensionSettings;
-            let dsettings = this._desktopSettings;
-            let touchpadSettings = this._touchpadSettings;
+        let settings = this._extensionSettings;
+        let dsettings = this._desktopSettings;
+        let touchpadSettings = this._touchpadSettings;
 
-            return {
+        return {
                 animation_time: settings.get_double("animation-time"),
                 randomize_animation_times: settings.get_boolean("randomize-animation-times"),
                 dim_factor: clamp(settings.get_double("dim-factor"), 0, 1),
@@ -403,10 +402,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
                 start_with_next: settings.get_boolean("start-with-next"),
                 dash_to_dock_visibility_behavior: settings.get_string("dash-to-dock-visibility-behavior"),
             };
-        } catch (e) {
-            this._logger.log(e);
-        }
-        return this.getDefaultSettings();
     }
 
     //eslint-disable-next-line complexity
