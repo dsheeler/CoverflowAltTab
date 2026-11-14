@@ -526,8 +526,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeTweens(actor) {
-        if (actor)
-            actor.remove_all_transitions();
+        actor.remove_all_transitions();
     }
 
     initBackground(monitor=null) {
