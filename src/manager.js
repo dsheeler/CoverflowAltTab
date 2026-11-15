@@ -24,7 +24,6 @@
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import Shell from 'gi://Shell';
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 
 
 function sortWindowsByUserTime(win1, win2) {
@@ -143,85 +142,6 @@ export const Manager = class Manager {
 
     activateSelectedWindow(win) {
         Main.activateWindow(win, global.get_current_time());
-    }
-
-    /**
-     * Activate win, suppressing WindowManager's map/unminimize animation when
-     * the window was minimized. Used after Coverflow has already eased a
-     * preview into the window's final rect so the shell's unminimize effect
-     * does not flash the actor from invisible.
-     */
-    activateSelectedWindowInstant(win) {
-        if (!win) {
-            return;
-        }
-
-        let actor = win.get_compositor_private();
-        let wasMinimized = win.minimized;
-        if (!wasMinimized || !actor || !Main.wm || !Main.wm._shouldAnimateActor) {
-            this.activateSelectedWindow(win);
-            return;
-        }
-
-        let wm = Main.wm;
-        let origShouldAnimateActor = wm._shouldAnimateActor;
-        let restored = false;
-        let mapId = 0;
-        let timeoutId = 0;
-
-        let restore = () => {
-            if (restored)
-                return;
-            restored = true;
-            if (wm._shouldAnimateActor !== origShouldAnimateActor)
-                wm._shouldAnimateActor = origShouldAnimateActor;
-            if (mapId) {
-                global.window_manager.disconnect(mapId);
-                mapId = 0;
-            }
-            if (timeoutId) {
-                GLib.source_remove(timeoutId);
-                timeoutId = 0;
-            }
-        };
-
-        wm._shouldAnimateActor = function(a, types) {
-            if (a === actor)
-                return false;
-            return origShouldAnimateActor.call(wm, a, types);
-        };
-
-        mapId = global.window_manager.connect('map', (_jwm, mapped) => {
-            if (mapped === actor)
-                restore();
-        });
-        timeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
-            timeoutId = 0;
-            restore();
-            return GLib.SOURCE_REMOVE;
-        });
-
-        this.activateSelectedWindow(win);
-
-        // Shell's skipped unminimize path calls completed_unminimize without
-        // actor.show(). Coverflow hide()'d the actor when the switcher opened,
-        // so reveal and reset transforms here or the preview vanishes with
-        // nothing underneath.
-        actor = win.get_compositor_private() || actor;
-        if (actor) {
-            actor.remove_all_transitions();
-            actor.set_pivot_point(0, 0);
-            actor.set_scale(1, 1);
-            actor.opacity = 255;
-            actor.show();
-        }
-
-        // If activate did not need an async map, restore promptly.
-        if (!win.minimized)
-            GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-                restore();
-                return GLib.SOURCE_REMOVE;
-            });
     }
 
     removeSelectedWindow(win) {
