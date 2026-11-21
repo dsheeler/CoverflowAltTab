@@ -157,7 +157,9 @@ export class Switcher {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
         }
-
+        if (this._settings.switch_per_monitor && this._settings.isolate_current_monitor) {
+            this.actor.set_clip(0, 0, this.actor.width, this.actor.height);
+        }
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         if (this._isAppSwitcher) {
