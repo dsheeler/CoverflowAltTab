@@ -89,6 +89,7 @@ export const Manager = class Manager {
     disable() {
         // Note that `onNameLost()` is NOT invoked when manually unowning a name.
         Gio.bus_unown_name(this.ownerId);
+        this.ownerId = null;
         if (this.exportedObject) {
             this.exportedObject.flush();
             this.exportedObject.unexport();
