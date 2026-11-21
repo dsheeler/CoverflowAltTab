@@ -711,9 +711,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
                         }
                     } else if (visibility === SwitcherVisibility.HIDING) {
                         dock._intellihide.enable();
-                        dock._updateDashVisibility();
+                        dock.updateDashVisibility();
                     } else if (visibility === SwitcherVisibility.HIDDEN) {
-                        dock._updateDashVisibility();
+                        dock.updateDashVisibility();
                     }
                 }
 
