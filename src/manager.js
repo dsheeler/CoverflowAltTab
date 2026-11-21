@@ -105,11 +105,10 @@ export const Manager = class Manager {
         this.extensionObj = null;
     }
 
-    onBusAcquired(connection, name) {
-        this.logger.log(`DBus Bus Acquired: ${name}`);
-        const dBusInterfaceXml = new TextDecoder().decode(
-            this.extensionObj.dir.get_child('dbus-interfaces').get_child('org.gnome.Shell.Extensions.Coverflowalttab.xml').load_contents(null)[1]);
-        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(dBusInterfaceXml, this);
+    async onBusAcquired(connection, busName) {
+        this.logger.log(`DBus Bus Acquired: ${busName}`);
+        const [contents] = await this.extensionObj.dir.get_child('dbus-interfaces').get_child('org.gnome.Shell.Extensions.Coverflowalttab.xml').load_contents_async(null);
+        this.exportedObject = Gio.DBusExportedObject.wrapJSObject(new TextDecoder().decode(contents), this);
         this.exportedObject.export(connection, '/org/gnome/Shell/Extensions/Coverflowalttab');
     }
 
