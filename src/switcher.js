@@ -1021,6 +1021,9 @@ export class Switcher {
 
     _windowDestroyed(wm, actor) {
         this._logger.debug('_windowDestroyed')
+        // A destroyed actor must not be revisited by the teardown restore loop.
+        this._hiddenWindowActors = this._hiddenWindowActors.filter(
+            windowActor => windowActor !== actor);
         this._removeDestroyedWindow(actor.meta_window);
     }
 
@@ -1203,18 +1206,16 @@ export class Switcher {
 
         if (this._parent === null) this._manager.platform.removeBackground();
         if (this._parent === null) {
-            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-            for (let child of global.window_group.get_children()) {
+            // Restore exactly the live actors hidden when this switcher opened.
+            for (let child of this._hiddenWindowActors) {
                 if (typeof child.get_meta_window === "function") {
                     let metaWin = child.get_meta_window();
-                    // Only re-show windows that belong to the current workspace.
-                    // Re-showing windows from other workspaces is what left them
-                    // ghosting on the current workspace after a switch.
-                    if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace) {
+                    if (metaWin !== null && !metaWin.minimized) {
                         child.show();
                     }
                 }
             }
+            this._hiddenWindowActors = [];
         }
 
         this._disablePerspectiveCorrection();
