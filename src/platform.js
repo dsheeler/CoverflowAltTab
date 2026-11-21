@@ -546,10 +546,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
             reactive: false
         });
 
-        let constraint = Clutter.BindConstraint.new(this._backgroundGroup,
-            Clutter.BindCoordinate.ALL, 0);
-        this._backgroundShade.add_constraint(constraint);
-
+        if (monitor === null) {
+            let constraint = Clutter.BindConstraint.new(this._backgroundGroup, Clutter.BindCoordinate.ALL, 0);
+            this._backgroundShade.add_constraint(constraint);
+        } else {
+            this._backgroundShade.set_position(monitor.x, monitor.y);
+            this._backgroundShade.set_size(monitor.width, monitor.height);
+        }
         let shade = new MyRadialShaderEffect({name: 'shade'});
         shade.brightness = 1;
         shade.sharpness = this._settings.dim_factor;
