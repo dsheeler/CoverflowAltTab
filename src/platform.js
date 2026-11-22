@@ -567,12 +567,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
         let monitors = monitor !== null
             ? [monitor]
             : Main.layoutManager.monitors;
+        this._bgManagers = [];
         for (let currentMonitor of monitors) {
-            new Background.BackgroundManager({
+            this._bgManagers.push(new Background.BackgroundManager({
                 container: this._backgroundGroup,
                 monitorIndex: currentMonitor.index,
                 vignette: false,
-            });
+            }));
         }
     }
     
@@ -589,7 +590,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
         // translated off the stage without a completed showPanels() animation.
         if (this._settings.hide_panel)
             this.showPanels(0);
-
+        
+        if (this._bgManagers) {
+            for (let mgr of this._bgManagers)
+                mgr.destroy();
+            this._bgManagers = null;
+        }
+      
         if (this._backgroundGroup)
             this._backgroundGroup.destroy();
         this._backgroundGroup = null;
@@ -642,7 +649,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             opacity: 0,
         });
 
-    }
+    } 
 
     /**
      * Hide/show Dash to Dock via its exported dockManager (private _hide/_show).
