@@ -85,13 +85,7 @@ export class Switcher {
         this._dBus = dBus;
         this._fromIndex = currentIndex;
         this._toIndex = currentIndex;
-        this._windowToActivate = null;
-        this._hiddenWindowActors = [];
-        this._hiddenWindowActorSignals = [];
         this._destroyed = false;
-        this._stageBeforeUpdateID = 0;
-        this._stageAfterUpdateID = 0;
-        this._perspectiveMatrixPushed = null;
         this._logger = this._manager.logger;
         this._iconFadeInOut = this._settings.icon_add_remove_effects === "Fade Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
         this._iconScaleUpDown = this._settings.icon_add_remove_effects === "Scale Only" || this._settings.icon_add_remove_effects === "Fade and Scale";
@@ -163,7 +157,9 @@ export class Switcher {
             this.actor.set_size(this._width, this._height);
             this.actor.set_position(this._x, this._y);
         }
-
+        if (this._settings.switch_per_monitor && this._settings.isolate_current_monitor) {
+            this.actor.set_clip(0, 0, this.actor.width, this.actor.height);
+        }
         this._modifierMask = manager.platform.getPrimaryModifier(mask);
 
         if (this._isAppSwitcher) {
@@ -235,7 +231,6 @@ export class Switcher {
         // In isolation mode, off-monitor actors remain visible and untouched.
         if (this._parent === null) {
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
-            this._hiddenWindowActors = [];
             for (let child of global.window_group.get_children()) {
                 if (child !== global.window_group.get_first_child()
                     && typeof child.get_meta_window === "function"
@@ -245,7 +240,6 @@ export class Switcher {
                         || child.get_meta_window().get_monitor() === this._activeMonitor.index)) {
                     this._hiddenWindowActors.push(child);
                     child.hide();
-                    this._hiddenWindowActors.push(child);
                 }
             }
         }
@@ -375,8 +369,6 @@ export class Switcher {
     }
 
     _addBackgroundEffects() {
-        if (this._destroyed || !this._previews)
-            return;
         for (let preview of this._previews) {
             if (this._settings.use_glitch_effect) {
                 if (preview.get_effect('glitch-effect') === null) {
@@ -401,17 +393,15 @@ export class Switcher {
     }
 
     _removeBackgroundEffects() {
-        if (!this._previews)
-            return;
-        for (let preview of this._previews) {
-            if (preview._destroying || preview._cleanedUp)
-                continue;
-            preview.removeEffect('desaturate', 'factor', 0.0, this._settings.animation_time);
-            preview.removeEffect('tint', 'blend', 0.0, this._settings.animation_time);
-            if (preview._effectCounts['glitch'] > 0) {
-                preview._effectCounts['glitch'] -= 1;
-                if (preview._effectCounts['glitch'] === 0) {
-                    preview.get_effect('glitch-effect').set_enabled(false);
+        if (this._previews !== null) {
+            for (let preview of this._previews) {
+                preview.removeEffect('desaturate', 'factor', 0.0, this._settings.animation_time);
+                preview.removeEffect('tint', 'blend', 0.0, this._settings.animation_time);
+                if (preview._effectCounts['glitch'] > 0) {
+                    preview._effectCounts['glitch'] -= 1;
+                    if (preview._effectCounts['glitch'] === 0) {
+                        preview.get_effect('glitch-effect').set_enabled(false);
+                    }
                 }
             }
         }
@@ -653,8 +643,6 @@ export class Switcher {
     }
 
     _raiseIcons() {
-        if (!this._windows || !this._windowTitles || !this._windowIconBoxes)
-            return;
         for (let i = 0; i < this._windows.length; i++) {
             this.previewActor.set_child_above_sibling(this._windowIconBoxes[i], null);
             this.previewActor.set_child_above_sibling(this._windowTitles[i], null);
@@ -740,8 +728,6 @@ export class Switcher {
 
     // eslint-disable-next-line complexity
     _updateWindowTitle() {
-        if (this._destroyed || this._windowTitles === null || this._windowTitles.length === 0)
-            return;
         const app_icon_size = this._settings.overlay_icon_size;
         let idx_low = Math.floor(this._currentIndex);
         let idx_high = Math.ceil(this._currentIndex) % this._windowTitles.length;
@@ -988,13 +974,15 @@ export class Switcher {
     }
 
     _buttonReleaseEvent(_actor, event) {
-        if (this.gestureInProgress) return;
+        if (this.gestureInProgress || this._animatingClosed)
+            return Clutter.EVENT_PROPAGATE;
         if (event.get_button() === Clutter.BUTTON_PRIMARY) {
             let [x, y] = event.get_coords();
             if (x === this._lastButtonPressPositionX && y === this._lastButtonPressPositionY) {
                 this._activateWithoutSelection();
             }
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _previewButtonPressEvent(preview, event) {
@@ -1002,14 +990,20 @@ export class Switcher {
             if (this.gestureInProgress) {
                 preview._lastButtonPressPositionX = -1;
                 preview._lastButtonPressPositionY = -1;
-                return;
+                return Clutter.EVENT_PROPAGATE;
             }
             [preview._lastButtonPressPositionX, preview._lastButtonPressPositionY] = event.get_coords();
+            // Do not let the parent actor treat this as a background click.
+            this._lastButtonPressPositionX = -1;
+            this._lastButtonPressPositionY = -1;
+            return Clutter.EVENT_STOP;
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _previewButtonReleaseEvent(preview, event) {
-        if (this.gestureInProgress) return;
+        if (this.gestureInProgress)
+            return Clutter.EVENT_PROPAGATE;
         if (event.get_button() === Clutter.BUTTON_PRIMARY) {
             for (let [i, p] of this._previews.entries()) {
                 let [x, y] = event.get_coords();
@@ -1017,34 +1011,26 @@ export class Switcher {
                     if (preview === p) {
                         this._setCurrentIndex(i);
                         this._activateSelected(true);
-                        break;
+                        return Clutter.EVENT_STOP;
                     }
                 }
             }
         }
+        return Clutter.EVENT_PROPAGATE;
     }
 
     _windowDestroyed(wm, actor) {
-        if (this._destroyed || this._windows === null)
-            return;
         this._logger.debug('_windowDestroyed')
-        // A destroyed actor must not be revisited by the teardown restore loop.
-        this._hiddenWindowActors = this._hiddenWindowActors.filter(
-            windowActor => windowActor !== actor);
         this._removeDestroyedWindow(actor.meta_window);
     }
 
     removeSelectedWindow(window) {
-        if (this._destroyed || this._windows === null)
-            return;
         this._logger.debug('removeSelectedWindow')
         window.delete(global.get_current_time());
         this._removeDestroyedWindow(window);
     }
 
     _checkDestroyed(window) {
-        if (this._destroyed || this._windows === null)
-            return;
         this._removeDestroyedWindow(window);
     }
 
@@ -1060,8 +1046,8 @@ export class Switcher {
             this._activateWithoutSelection();
         else {
             let preview = this._previews[idx];
-            preview._destroying = true;
-            preview.cleanup();
+            preview._destoying = true;
+            preview.removeIcon(0);
 
             let title = this._windowTitles[idx];
             let icon = this._windowIconBoxes[idx];
@@ -1070,14 +1056,13 @@ export class Switcher {
             this._allPreviews.splice(this._allPreviews.indexOf(preview), 1);
             this._windowTitles.splice(idx, 1);
             this._windowIconBoxes.splice(idx, 1);
-            this._destroyingPreview = null;
+            this._destroyingPreview = preview;
 
-            this._manager.platform.removeTweens(title);
-            this._manager.platform.removeTweens(icon);
-            title.destroy();
-            icon.destroy();
-            preview.destroy();
-
+            preview.remove_highlight();
+            this._animateClosedWindowTitle(title, this._settings.animation_time);
+            this._animateClosedIcon(icon, this._settings.animation_time);
+            //icon.destroy();
+           //window = null;
             if (idx >= this._currentIndex) {
                 if (this._currentIndex === this._windows.length) {
                     this._currentIndex = this._currentIndex - 1;
@@ -1086,56 +1071,28 @@ export class Switcher {
                 this._currentIndex = this._currentIndex - 1;
             }
             this._updatePreviews(false, 0);
+            if (this._destroyingPreview) {
+                this.previewActor.set_child_above_sibling(this._destroyingPreview, null);
+            }
             this._updateWindowTitle();
         }
         return;
     }
 
     _activateWithoutSelection() {
+        // Preview clicks activate first, then the event can bubble to the
+        // switcher actor. Do not clear the pending window mid-close or a
+        // minimized selection never gets activated after the preview eases away.
+        if (this._destroyed || this._animatingClosed)
+            return;
         this._currentIndex = -1;
-        this._windowToActivate = null;
         if (this._parent !== null) {
             this._parent.animateClosed(CloseReason.NO_ACTIVATION);
         }
         this.animateClosed(CloseReason.ACTIVATE_SELECTED);
     }
 
-    /**
-     * Keep real window actors hidden for the whole close animation. Activating
-     * or unminimizing a window otherwise maps it at its final rect while the
-     * Coverflow preview is still easing there.
-     */
-    _pinWindowActorsHidden() {
-        if (this._parent !== null || !this._hiddenWindowActors)
-            return;
-
-        this._unpinWindowActorsHidden();
-        for (let actor of this._hiddenWindowActors) {
-            if (!actor)
-                continue;
-            actor.hide();
-            let id = actor.connect('notify::visible', () => {
-                if (!this._destroyed && this._animatingClosed && actor.visible)
-                    actor.hide();
-            });
-            this._hiddenWindowActorSignals.push([actor, id]);
-        }
-    }
-
-    _unpinWindowActorsHidden() {
-        for (let [actor, id] of this._hiddenWindowActorSignals) {
-            try {
-                actor.disconnect(id);
-            } catch {
-                // Actor may already be destroyed.
-            }
-        }
-        this._hiddenWindowActorSignals = [];
-    }
-
     _activateSelected(reset_current_window_title) {
-        if (this._destroyed || this._previews === null)
-            return;
         this._swipeTracker.enabled = false;
         let preview = this._previews[this._currentIndex];
         if (preview) {
@@ -1143,11 +1100,7 @@ export class Switcher {
         }
         let win = this._windows[this._currentIndex];
         if (win) {
-            // Defer activation until the root switcher destroy() so
-            // Main.activateWindow cannot re-show the real window actor while
-            // previews are still easing into place.
-            let root = this._parent !== null ? this._parent : this;
-            root._windowToActivate = win;
+            this._manager.activateSelectedWindow(win);
             if (reset_current_window_title) this._updateWindowTitle();
         }
         if (this._parent) {
@@ -1192,8 +1145,6 @@ export class Switcher {
     }
 
     _onPreviewAnimationComplete() {
-        if (this._destroyed)
-            return;
         this._numPreviewsComplete += 1;
         if (this._previews !== null && this._numPreviewsComplete >= this._previews.length) {
             if (this._parent === null)
@@ -1205,77 +1156,17 @@ export class Switcher {
         return this._destroyed;
     }
 
-    _cleanupActors() {
-        if (this.actor)
-            this.actor.remove_all_transitions();
-        if (this.previewActor)
-            this.previewActor.remove_all_transitions();
-
-        if (this._allPreviews) {
-            for (let preview of this._allPreviews) {
-                if (preview) {
-                    preview.cleanup();
-                    preview.destroy();
-                }
-            }
-        }
-
-        if (this._windowTitles) {
-            for (let title of this._windowTitles) {
-                if (title) {
-                    this._manager.platform.removeTweens(title);
-                    title.destroy();
-                }
-            }
-        }
-
-        if (this._windowIconBoxes) {
-            for (let icon_box of this._windowIconBoxes) {
-                if (icon_box) {
-                    this._manager.platform.removeTweens(icon_box);
-                    icon_box.destroy();
-                }
-            }
-        }
-    }
-
     destroy() {
         if (this.isDestroyed()) {
             this._logger.log(`Switcher Already Destroyed`);
             return;
         }
 
-        // Mark destroyed first so animation/window callbacks bail out.
-        this._destroyed = true;
-        this._animatingClosed = true;
-
         this._logger.log(`Destroying Switcher`);
         this._logger.increaseIndent();
         if (this._haveModal) {
             Main.popModal(this._grab);
             this._haveModal = false;
-        }
-
-        // Reveal the selected window under Coverflow before tearing down any
-        // previews (including app sub-switchers that own the selected clone).
-        if (this._parent === null) {
-            this._unpinWindowActorsHidden();
-
-            let winToActivate = this._windowToActivate;
-            this._windowToActivate = null;
-            if (winToActivate)
-                this._manager.activateSelectedWindowInstant(winToActivate);
-
-            for (let child of this._hiddenWindowActors) {
-                if (!child)
-                    continue;
-                if (typeof child.get_meta_window === "function") {
-                    let metaWin = child.get_meta_window();
-                    if (metaWin !== null && !metaWin.minimized)
-                        child.show();
-                }
-            }
-            this._hiddenWindowActors = [];
         }
 
         if (this._isAppSwitcher) {
@@ -1298,11 +1189,6 @@ export class Switcher {
             this._swipeTracker.destroy();
         }
 
-        this._windowManager.disconnect(this._dcid);
-        this._windowManager.disconnect(this._mcid);
-
-        this._cleanupActors();
-
         this._swipeTracker = null;
         this._windows = null;
         this._appWindowsMap = null;
@@ -1311,27 +1197,29 @@ export class Switcher {
         this._windowIconBoxes = null;
         this._previews = null;
         this._allPreviews = null;
-        this._destroyingPreview = null;
         this._initialDelayTimeoutId = 0;
+        this._windowManager.disconnect(this._dcid);
+        this._windowManager.disconnect(this._mcid);
 
+        if (this._parent === null) this._manager.platform.removeBackground();
         if (this._parent === null) {
-            // Restore Dash to Dock after windows are visible again so intellihide
-            // sees the real overlap state instead of an empty desktop.
-            this._manager.platform.removeBackground();
-            // Restore exactly the live actors hidden when this switcher opened.
-            for (let child of this._hiddenWindowActors) {
+            let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
+            for (let child of global.window_group.get_children()) {
                 if (typeof child.get_meta_window === "function") {
                     let metaWin = child.get_meta_window();
-                    if (metaWin !== null && !metaWin.minimized) {
+                    // Only re-show windows that belong to the current workspace.
+                    // Re-showing windows from other workspaces is what left them
+                    // ghosting on the current workspace after a switch.
+                    if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace) {
                         child.show();
                     }
                 }
             }
-            this._hiddenWindowActors = [];
         }
 
         this._disablePerspectiveCorrection();
         Main.uiGroup.remove_child(this.actor);
+        this._destroyed = true;
         this._logger.decreaseIndent();
         this._logger.log("Destroying Switcher DONE");
     }
@@ -1376,7 +1264,7 @@ export class Switcher {
 
     // eslint-disable-next-line complexity
     animateClosed(reason=CloseReason.ACTIVATE_SELECTED) {
-        if (this._destroyed || this._animatingClosed) return;
+        if (this._animatingClosed) return;
         this._animatingClosed = true;
         let transition = 'userChoice';
         if (this._parent) {
@@ -1392,17 +1280,11 @@ export class Switcher {
             }
             this._removeBackgroundEffects();
 
-            if (this._parent === null) {
-                this._pinWindowActorsHidden();
-                this._manager.platform.lightenBackground();
-            }
+            if (this._parent === null) this._manager.platform.lightenBackground();
 
             // preview windows
             let currentWorkspace = this._manager.workspace_manager.get_active_workspace();
             if (reason === CloseReason.ACTIVATE_SELECTED) {
-                let activatingWin = this._parent !== null
-                    ? this._parent._windowToActivate
-                    : this._windowToActivate;
                 for (let [i, preview] of this._previews.entries()) {
                     let metaWin = preview.metaWin;
 
@@ -1411,14 +1293,7 @@ export class Switcher {
                         animation_time = this._settings.animation_time;
                     }
                     preview.removeIcon(animation_time);
-                    // Ease the selected window (including minimized) to its
-                    // resting rect; scale other minimized windows away.
-                    let isActivating = activatingWin !== null
-                        ? metaWin === activatingWin
-                        : i === this._currentIndex;
-                    let easeToRect = metaWin.get_workspace() === currentWorkspace
-                        && (!metaWin.minimized || isActivating);
-                    if (easeToRect) {
+                    if (!metaWin.minimized && metaWin.get_workspace() === currentWorkspace) {
                         let rect = metaWin.get_buffer_rect();
                         this._manager.platform.tween(preview, {
                             x: rect.x - this.actor.x,
@@ -1565,42 +1440,22 @@ export class Switcher {
 
     // Calls inhibit_culling on the given actor and recursively on all mapped children.
     _inhibitCulling(actor) {
-        if (!actor || this._destroyed)
-            return;
-        try {
-            if (!actor.mapped)
-                return;
+        if (actor.mapped) {
             actor.inhibit_culling();
             actor._culling_inhibited = true;
-            const children = actor.get_children?.() ?? null;
-            if (!children)
-                return;
-            for (let i = 0; i < children.length; i++)
-                this._inhibitCulling(children[i]);
-        } catch (e) {
-            this._logger.error(e);
+            actor.get_children().forEach(c => this._inhibitCulling(c));
         }
-    }
+    };
 
     // Calls uninhibit_culling on the given actor and recursively on all children. It will
     // only call uninhibit_culling() on those actors which were inhibited before.
     _uninhibitCulling(actor) {
-        if (!actor)
-            return;
-        try {
-            if (!actor._culling_inhibited)
-                return;
+        if (actor._culling_inhibited) {
             delete actor._culling_inhibited;
             actor.uninhibit_culling();
-            const children = actor.get_children?.() ?? null;
-            if (!children)
-                return;
-            for (let i = 0; i < children.length; i++)
-                this._uninhibitCulling(children[i]);
-        } catch (e) {
-            this._logger.error(e);
+            actor.get_children().forEach(c => this._uninhibitCulling(c));
         }
-    }
+    };
     // Usually, GNOME Shell uses one central perspective for all monitors combined. This
     // results in a somewhat sheared appearance of the cube on multi-monitor setups where
     // the primary monitor is not in the middle (or cubes are shown on multiple monitors).
@@ -1613,22 +1468,12 @@ export class Switcher {
     _enablePerspectiveCorrection() {
         if (this._settings.perspective_correction_method !== "Move Camera") return;
         if (this._parent !== null) return;
-        // Avoid double-connecting if show() runs more than once.
-        if (this._stageBeforeUpdateID || this._stageAfterUpdateID)
-            this._disablePerspectiveCorrection();
-
         this._disable_clipped_redraws();
-        // Track push_matrix() per stage view so after-update only pops when
-        // before-update actually pushed. Checking actor.visible independently
-        // in after-update can pop an empty stack and SIGSEGV in cogl.
-        this._perspectiveMatrixPushed = new Map();
-
         this._stageBeforeUpdateID = global.stage.connect('before-update', (stage, view) => {
-            if (this._destroyed || !this.actor || !this.actor.visible)
+            // Do nothing if neither overview or desktop switcher are shown.
+            if (!this.actor.visible) {
                 return;
-            // Already pushed for this view this frame (should not happen).
-            if (this._perspectiveMatrixPushed.has(view))
-                return;
+            }
 
             // Usually, the virtual camera is positioned centered in front of the stage. We will
             // move the virtual camera around. These variables will be the new stage-relative
@@ -1679,39 +1524,31 @@ export class Switcher {
             const offsetX = camOffsetX * width_scale / z_2d * z_near;
             const offsetY = camOffsetY * height_scale / z_2d * z_near;
 
-            const fb = view.get_framebuffer();
-
             // Set the new frustum.
-            fb.frustum(left + offsetX, right + offsetX, bottom + offsetY,
-                       top + offsetY, z_near, z_far);
+            view.get_framebuffer().frustum(left + offsetX, right + offsetX, bottom + offsetY,
+                                           top + offsetY, z_near, z_far);
 
             // Translate the virtual camera. This basically updates the view matrix according to
             // our new camera position.
-            fb.push_matrix();
-            fb.translate(camOffsetX * width_scale,
-                         camOffsetY * height_scale, 0);
-            this._perspectiveMatrixPushed.set(view, fb);
+            view.get_framebuffer().push_matrix();
+            view.get_framebuffer().translate(camOffsetX * width_scale,
+                                             camOffsetY * height_scale, 0);
 
             this._inhibitCulling(this.actor);
         });
 
-        // Revert the matrix changes after the update. Only pop if we pushed
-        // for this view — never key off actor.visible alone.
+        // Revert the matrix changes before the update,
         this._stageAfterUpdateID = global.stage.connect('after-update', (stage, view) => {
-            if (!this._perspectiveMatrixPushed || !this._perspectiveMatrixPushed.has(view))
+            // Nothing to do if neither overview or desktop switcher are shown.
+            if (!this.actor.visible) {
                 return;
-
-            const fb = this._perspectiveMatrixPushed.get(view);
-            this._perspectiveMatrixPushed.delete(view);
-
-            fb.pop_matrix();
-            if (!this._destroyed && stage.perspective) {
-                fb.perspective(stage.perspective.fovy, stage.perspective.aspect,
-                               stage.perspective.z_near,
-                               stage.perspective.z_far);
             }
-            if (this.actor)
-                this._uninhibitCulling(this.actor);
+
+            view.get_framebuffer().pop_matrix();
+            view.get_framebuffer().perspective(stage.perspective.fovy, stage.perspective.aspect,
+                                               stage.perspective.z_near,
+                                               stage.perspective.z_far);
+            this._uninhibitCulling(this.actor);
         });
     }
 

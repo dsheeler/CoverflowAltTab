@@ -337,7 +337,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
         }
     }
 
-
     _loadSettings() {
         try {
             let settings = this._extensionSettings;
@@ -526,8 +525,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
     }
 
     removeTweens(actor) {
-        if (actor)
-            actor.remove_all_transitions();
+        actor.remove_all_transitions();
     }
 
     initBackground(monitor=null) {
@@ -548,10 +546,13 @@ export class PlatformGnomeShell extends AbstractPlatform {
             reactive: false
         });
 
-        let constraint = Clutter.BindConstraint.new(this._backgroundGroup,
-            Clutter.BindCoordinate.ALL, 0);
-        this._backgroundShade.add_constraint(constraint);
-
+        if (monitor === null) {
+            let constraint = Clutter.BindConstraint.new(this._backgroundGroup, Clutter.BindCoordinate.ALL, 0);
+            this._backgroundShade.add_constraint(constraint);
+        } else {
+            this._backgroundShade.set_position(monitor.x, monitor.y);
+            this._backgroundShade.set_size(monitor.width, monitor.height);
+        }
         let shade = new MyRadialShaderEffect({name: 'shade'});
         shade.brightness = 1;
         shade.sharpness = this._settings.dim_factor;
@@ -575,26 +576,34 @@ export class PlatformGnomeShell extends AbstractPlatform {
             }));
         }
     }
+    
+    removeBackground() {
+        // Always restore Dash to Dock here. dimBackground() may have disabled
+        // intellihide / set _ignoreHover and animated the dock out; if the
+        // switcher is destroyed without lightenBackground() finishing (crash,
+        // early destroy, Esc before animations complete), the dock otherwise
+        // stays invisible for the rest of the session.
+        this._setDashToDockVisibility(SwitcherVisibility.HIDING);
+        this._setDashToDockVisibility(SwitcherVisibility.HIDDEN);
 
-    hidePanels() {
-        let panels = this.getPanels();
-        for (let panel of panels) {
-            try {
-                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
-                panelActor.set_reactive(false);
-                this.tween(panelActor, {
-                    opacity: 0,
-                    time: this._settings.animation_time,
-                    transition: 'easeOutQuad'
-                });
-            } catch (e) {
-                this._logger.error(e);
-                // ignore fake panels
-            }
+        // Same for panels: snap them back onscreen if hidePanels() left them
+        // translated off the stage without a completed showPanels() animation.
+        if (this._settings.hide_panel)
+            this.showPanels(0);
+        
+        if (this._bgManagers) {
+            for (let mgr of this._bgManagers)
+                mgr.destroy();
+            this._bgManagers = null;
         }
+      
+        if (this._backgroundGroup)
+            this._backgroundGroup.destroy();
+        this._backgroundGroup = null;
+        this._backgroundShade = null;
     }
 
-     dimBackground() {
+    dimBackground() {
         this._setDashToDockVisibility(SwitcherVisibility.SHOWING);
         if (this._settings.hide_panel) {
             this.hidePanels();
@@ -622,28 +631,6 @@ export class PlatformGnomeShell extends AbstractPlatform {
         });
     }
 
-    showPanels(time) {
-        // panels
-        let panels = this.getPanels();
-        for (let panel of panels){
-            try {
-                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
-                panelActor.set_reactive(true);
-                if (this._settings.hide_panel) {
-                    this.removeTweens(panelActor);
-                    this.tween(panelActor, {
-                        opacity: 255,
-                        time: time,
-                        transition: 'easeOutQuad'
-                    });
-                }
-            } catch (e) {
-                //ignore fake panels
-                this._logger.error(e);
-            }
-        }
-    }
-
     lightenBackground() {
         this._setDashToDockVisibility(SwitcherVisibility.HIDING);
         if (this._settings.hide_panel) {
@@ -662,33 +649,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
             opacity: 0,
         });
 
-    }
-
-    removeBackground() {
-        // Always restore Dash to Dock here. dimBackground() may have disabled
-        // intellihide / set _ignoreHover and animated the dock out; if the
-        // switcher is destroyed without lightenBackground() finishing (crash,
-        // early destroy, Esc before animations complete), the dock otherwise
-        // stays invisible for the rest of the session.
-        this._setDashToDockVisibility(SwitcherVisibility.HIDING);
-        this._setDashToDockVisibility(SwitcherVisibility.HIDDEN);
-
-        // Same for panels: snap them back onscreen if hidePanels() left them
-        // translated off the stage without a completed showPanels() animation.
-        if (this._settings.hide_panel)
-            this.showPanels(0);
-
-        if (this._bgManagers) {
-            for (let mgr of this._bgManagers)
-                mgr.destroy();
-            this._bgManagers = null;
-        }
-
-        if (this._backgroundGroup)
-            this._backgroundGroup.destroy();
-        this._backgroundGroup = null;
-        this._backgroundShade = null;
-    }
+    } 
 
     /**
      * Hide/show Dash to Dock via its exported dockManager (private _hide/_show).
@@ -719,9 +680,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
                         }
                     } else if (visibility === SwitcherVisibility.HIDING) {
                         dock._intellihide.enable();
-                        dock._updateDashVisibility();
+                        dock.updateDashVisibility();
                     } else if (visibility === SwitcherVisibility.HIDDEN) {
-                        dock._updateDashVisibility();
+                        dock.updateDashVisibility();
                     }
                 }
 
@@ -745,4 +706,45 @@ export class PlatformGnomeShell extends AbstractPlatform {
             panels.push(Main.overview._dash);
         return panels;
     }
+
+    hidePanels() {
+        let panels = this.getPanels();
+        for (let panel of panels) {
+            try {
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                panelActor.set_reactive(false);
+                this.tween(panelActor, {
+                    opacity: 0,
+                    time: this._settings.animation_time,
+                    transition: 'easeOutQuad'
+                });
+            } catch (e) {
+                this._logger.error(e);
+                // ignore fake panels
+            }
+        }
+    }
+
+    showPanels(time) {
+        // panels
+        let panels = this.getPanels();
+        for (let panel of panels){
+            try {
+                let panelActor = (panel instanceof Clutter.Actor) ? panel : panel.actor;
+                panelActor.set_reactive(true);
+                if (this._settings.hide_panel) {
+                    this.removeTweens(panelActor);
+                    this.tween(panelActor, {
+                        opacity: 255,
+                        time: time,
+                        transition: 'easeOutQuad'
+                    });
+                }
+            } catch (e) {
+                //ignore fake panels
+                this._logger.error(e);
+            }
+        }
+    }
+
 }
