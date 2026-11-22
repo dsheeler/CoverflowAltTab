@@ -213,6 +213,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         this._backgroundColor = null;
         this._settings_changed_callbacks = null;
         this._themeContext = null;
+        this._isolatedMonitor = null;
         this._logger = logger;
     }
 
@@ -535,6 +536,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
         Main.uiGroup.set_child_above_sibling(this._backgroundGroup, global.window_group);
 
         if (monitor !== null) {
+            this._isolatedMonitor = monitor;
             // BackgroundManager positions its actor in stage coordinates, so
             // clip the full-stage group instead of moving the background.
             this._backgroundGroup.set_clip(
@@ -590,13 +592,14 @@ export class PlatformGnomeShell extends AbstractPlatform {
         // translated off the stage without a completed showPanels() animation.
         if (this._settings.hide_panel)
             this.showPanels(0);
-        
+
         if (this._bgManagers) {
             for (let mgr of this._bgManagers)
                 mgr.destroy();
             this._bgManagers = null;
         }
-      
+
+        this._isolatedMonitor = null;
         if (this._backgroundGroup)
             this._backgroundGroup.destroy();
         this._backgroundGroup = null;
@@ -656,19 +659,19 @@ export class PlatformGnomeShell extends AbstractPlatform {
      * Falls back quietly if Dash to Dock / Ubuntu Dock is not enabled.
      */
     async _setDashToDockVisibility(visibility) {
-        try {
-            for (const uuid of DASH_TO_DOCK_UUIDS) {
-                const extension = Main.extensionManager.lookup(uuid);
-                if (!extension)
-                    continue;
+        for (const uuid of DASH_TO_DOCK_UUIDS) {
+            const extension = Main.extensionManager.lookup(uuid);
+            if (!extension)
+                continue;
 
-                // DtD exports `dockManager` specifically for other extensions.
-                // eslint-disable-next-line no-await-in-loop
-                const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
-                if (!dockManager)
-                    continue;
+            // DtD exports `dockManager` specifically for other extensions.
+            // eslint-disable-next-line no-await-in-loop
+            const {dockManager} = await import(`${extension.dir.get_uri()}/extension.js`);
+            if (!dockManager)
+                continue;
 
-                for (const dock of dockManager._allDocks) {
+            for (const dock of dockManager._allDocks) {
+                if (this._isolatedMonitor === null || dock.monitorIndex === this._isolatedMonitor.index) {
                     if (visibility === SwitcherVisibility.SHOWING) {
                         dock._ignoreHover = true;
                         dock._intellihide.disable();
@@ -685,11 +688,7 @@ export class PlatformGnomeShell extends AbstractPlatform {
                         dock.updateDashVisibility();
                     }
                 }
-
-                return;
             }
-        } catch (e) {
-            this._logger.error(e);
         }
     }
 
@@ -697,13 +696,11 @@ export class PlatformGnomeShell extends AbstractPlatform {
         let panels = [];
         for (let child of Main.layoutManager.uiGroup.get_children()) {
             if (child.get_name() === "panelBox") {
-                panels.push(child);
+                if (this._isolatedMonitor === null || Main.layoutManager.findMonitorForActor(child).index === this._isolatedMonitor.index) {
+                    panels.push(child);
+                }
             }
         }
-
-        // gnome-shell dash
-        if (Main.overview._dash)
-            panels.push(Main.overview._dash);
         return panels;
     }
 
